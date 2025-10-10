@@ -153,8 +153,9 @@ def test_cli_demo_kit(tmp_path):
 
     ts_text = (output_dir / "cip30_payload.ts").read_text(encoding="utf-8")
     assert "export const cip30MetadataEntries" in ts_text
-    assert "export const cip30MetadataMap" in ts_text
     assert "export const helperData" in ts_text
+    assert "Map<bigint" in ts_text
+    assert "BigInt(" in ts_text
 
     assert zip_path.exists()
     with ZipFile(zip_path, "r") as archive:
