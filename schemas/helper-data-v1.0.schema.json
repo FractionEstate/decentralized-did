@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://decentralized-did.github.io/schemas/helper-data-v1.0.schema.json",
+  "title": "Biometric Helper Data",
+  "description": "JSON Schema for biometric helper data (stored on IPFS)",
+  "type": "object",
+  "required": [
+    "version",
+    "fingers"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Helper data schema version"
+    },
+    "fingers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/fingerHelperData"
+      },
+      "minItems": 2,
+      "maxItems": 10,
+      "description": "Per-finger helper data"
+    }
+  },
+  "definitions": {
+    "fingerHelperData": {
+      "type": "object",
+      "required": [
+        "fingerId",
+        "salt",
+        "personalization",
+        "bchSyndrome",
+        "hmac"
+      ],
+      "properties": {
+        "fingerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9,
+          "description": "Finger identifier (0-9)"
+        },
+        "salt": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "256-bit salt (32 bytes hex) - CSPRNG generated"
+        },
+        "personalization": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "256-bit personalization tag (32 bytes hex) - User ID hash"
+        },
+        "bchSyndrome": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{32}$",
+          "description": "BCH syndrome (16 bytes hex, 127 bits padded to 128)"
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "BLAKE2b-256 HMAC (32 bytes hex) for integrity"
+        }
+      }
+    }
+  }
+}

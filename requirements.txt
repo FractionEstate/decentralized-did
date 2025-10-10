@@ -1,2 +1,45 @@
-pytest>=8.0.0
-jsonschema>=4.19.0
+# Decentralized DID - Production Dependencies
+# Phase 1 (Hackathon Demo)
+# Generated: 2025-10-10
+# Python: >=3.9
+
+# Core Cryptography
+# BLAKE2b-512, Ed25519, HMAC-SHA256
+# FIPS 140-2 validated, multiple security audits
+cryptography==42.0.0
+
+# Cardano Blockchain Integration
+# CIP-68 token support, Plutus scripts, transaction building
+pycardano==0.11.0
+
+# IPFS Storage
+# Helper data upload/retrieval, content addressing
+ipfshttpclient==0.8.0a2
+
+# JSON Schema Validation
+# DID Document and helper data validation
+jsonschema==4.20.0
+
+# Error Correction (Interim - Phase 1 only)
+# BCH(127, 64, 10) encoding/decoding
+# NOTE: Replace with custom implementation in Phase 2
+bchlib==0.14.0
+
+# HTTP Client
+# Async HTTP/2 support for IPFS and Blockfrost
+httpx==0.25.2
+
+# CLI Framework
+# Command-line interface (did-tool enroll, verify, etc.)
+click==8.1.7
+
+# Data Validation & Serialization
+# DID Document models, API data structures
+pydantic==2.5.0
+
+# Structured Logging
+# Audit trail and security monitoring
+structlog==23.2.0
+
+# Testing Framework
+pytest==7.4.3

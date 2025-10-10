@@ -1,0 +1,25 @@
+# Decentralized DID - Biometric Processing Dependencies
+# Phase 2 (Testnet Implementation)
+# Generated: 2025-10-10
+
+# Include production dependencies
+-r requirements.txt
+
+# .NET Interop (for SourceAFIS integration)
+# SourceAFIS is a C# library, requires .NET runtime or Python interop
+pythonnet==3.0.3
+
+# Numerical Computing
+# Required for minutiae coordinate transformations
+numpy==1.26.2
+
+# Image Processing
+# Fingerprint image preprocessing and format conversion
+Pillow==10.1.0
+
+# Optional: OpenCV for advanced preprocessing (Phase 2+)
+# opencv-python==4.8.1.78
+
+# Optional: NIST NBIS Python wrapper (Phase 2)
+# Note: Requires manual compilation of NBIS C library
+# See docs/biometric-setup.md for installation guide

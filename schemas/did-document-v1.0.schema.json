@@ -1,0 +1,287 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://decentralized-did.github.io/schemas/did-document-v1.0.schema.json",
+  "title": "did:cardano DID Document",
+  "description": "JSON Schema for did:cardano DID Documents (W3C DID Core compliant)",
+  "type": "object",
+  "required": [
+    "@context",
+    "id",
+    "verificationMethod"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "minItems": 1,
+      "description": "JSON-LD context (W3C DID Core + Ed25519 suite)"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^did:cardano:(mainnet|preprod|preview):[0-9a-f]{56}$",
+      "description": "DID identifier (did:cardano:<network>:<policy_id>)"
+    },
+    "controller": {
+      "type": "string",
+      "pattern": "^did:cardano:(mainnet|preprod|preview):[0-9a-f]{56}$",
+      "description": "DID controller (self-sovereign by default)"
+    },
+    "verificationMethod": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/verificationMethod"
+      },
+      "minItems": 1,
+      "description": "Public keys for verification"
+    },
+    "authentication": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Authentication methods (references to verificationMethod)"
+    },
+    "assertionMethod": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Assertion methods (for signing credentials)"
+    },
+    "biometricMetadata": {
+      "$ref": "#/definitions/biometricMetadata",
+      "description": "Biometric helper data references (IPFS URIs + hashes)"
+    },
+    "serviceEndpoint": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/serviceEndpoint"
+      },
+      "description": "Service endpoints (IPFS gateways, etc.)"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "DID creation timestamp (ISO 8601)"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last update timestamp (ISO 8601)"
+    },
+    "proof": {
+      "$ref": "#/definitions/proof",
+      "description": "Cardano transaction proof"
+    }
+  },
+  "definitions": {
+    "verificationMethod": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "controller",
+        "publicKeyMultibase"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^did:cardano:(mainnet|preprod|preview):[0-9a-f]{56}#[a-zA-Z0-9_-]+$",
+          "description": "Verification method ID (DID + fragment)"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "Ed25519VerificationKey2020"
+          ],
+          "description": "Key type (Ed25519 only for v1.0)"
+        },
+        "controller": {
+          "type": "string",
+          "pattern": "^did:cardano:(mainnet|preprod|preview):[0-9a-f]{56}$",
+          "description": "DID that controls this key"
+        },
+        "publicKeyMultibase": {
+          "type": "string",
+          "pattern": "^z[1-9A-HJ-NP-Za-km-z]{43,}$",
+          "description": "Public key (multibase base58btc, z-prefix)"
+        }
+      }
+    },
+    "biometricMetadata": {
+      "type": "object",
+      "required": [
+        "type",
+        "version",
+        "algorithm",
+        "fingers",
+        "helperDataRefs"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "BiometricHelperData",
+          "description": "Fixed type identifier"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+(\\.[0-9]+)?$",
+          "description": "Schema version (semantic versioning)"
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "fuzzy-extractor-bch127-blake2b"
+          ],
+          "description": "Fuzzy extractor algorithm identifier"
+        },
+        "fingers": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 10,
+          "description": "Number of enrolled fingers"
+        },
+        "helperDataRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/helperDataRef"
+          },
+          "minItems": 2,
+          "maxItems": 10,
+          "description": "Helper data references (IPFS URIs)"
+        },
+        "aggregationMethod": {
+          "type": "string",
+          "enum": [
+            "xor",
+            "concatenation",
+            "merkle"
+          ],
+          "description": "Multi-finger key aggregation method"
+        },
+        "minFingers": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10,
+          "description": "Minimum fingers required for verification"
+        },
+        "fallbackQualityThreshold": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100,
+          "description": "NFIQ quality threshold for fallback mode"
+        }
+      }
+    },
+    "helperDataRef": {
+      "type": "object",
+      "required": [
+        "fingerId",
+        "uri",
+        "hash",
+        "size"
+      ],
+      "properties": {
+        "fingerId": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9,
+          "description": "Finger identifier (0-9)"
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^(ipfs://|https://|ar://)",
+          "description": "Helper data URI (IPFS, HTTPS, or Arweave)"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^blake2b-256:[0-9a-f]{64}$",
+          "description": "BLAKE2b-256 hash for integrity verification"
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 1024,
+          "description": "Helper data size in bytes"
+        }
+      }
+    },
+    "serviceEndpoint": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "serviceEndpoint"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^did:cardano:(mainnet|preprod|preview):[0-9a-f]{56}#[a-zA-Z0-9_-]+$",
+          "description": "Service endpoint ID (DID + fragment)"
+        },
+        "type": {
+          "type": "string",
+          "description": "Service type (e.g., IPFSGateway)"
+        },
+        "serviceEndpoint": {
+          "type": "string",
+          "format": "uri",
+          "description": "Service endpoint URL"
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "required": [
+        "type",
+        "created",
+        "verificationMethod",
+        "proofPurpose",
+        "cardanoTxHash"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "const": "CardanoSignature2025",
+          "description": "Proof type (Cardano-specific)"
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Proof creation timestamp (ISO 8601)"
+        },
+        "verificationMethod": {
+          "type": "string",
+          "description": "Verification method ID used for proof"
+        },
+        "proofPurpose": {
+          "type": "string",
+          "enum": [
+            "assertionMethod",
+            "authentication"
+          ],
+          "description": "Purpose of the proof"
+        },
+        "cardanoTxHash": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "Cardano transaction hash (32 bytes hex)"
+        },
+        "cardanoSlot": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cardano slot number"
+        },
+        "cardanoEpoch": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cardano epoch number"
+        }
+      }
+    }
+  }
+}

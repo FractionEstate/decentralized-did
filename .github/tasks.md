@@ -94,7 +94,7 @@ Design complete system architecture with validated cryptographic choices and sec
   - Benchmark computation time for enrollment and verification.
   - Deliverable: `docs/design/fuzzy-extractor-spec.md`, formal security proofs
 
-- [ ] **task 3** - Design ten-finger aggregation scheme
+- [x] **task 3** - Design ten-finger aggregation scheme ✅
   - Research optimal finger weighting strategies (equal vs quality-weighted).
   - Design aggregation function (concatenation vs XOR vs Merkle tree).
   - Model collision resistance for aggregated digests.
@@ -103,7 +103,7 @@ Design complete system architecture with validated cryptographic choices and sec
   - Design rotation and revocation mechanisms.
   - Deliverable: `docs/design/aggregation-scheme.md`
 
-- [ ] **task 4** - Design DID method and metadata schema
+- [x] **task 4** - Design DID method and metadata schema ✅
   - Draft `did:cardano` method specification.
   - Design metadata schema with versioning strategy.
   - Define helper data storage options (inline, external, hybrid).
@@ -112,7 +112,7 @@ Design complete system architecture with validated cryptographic choices and sec
   - Design metadata size optimization strategies.
   - Deliverable: `docs/design/did-method-spec.md`, JSON Schema files
 
-- [ ] **task 5** - Architecture review and threat modeling
+- [x] **task 5** - Architecture review and threat modeling ✅
   - Conduct STRIDE threat modeling workshop.
   - Perform attack tree analysis for each component.
   - Design security controls and mitigations.
@@ -121,7 +121,7 @@ Design complete system architecture with validated cryptographic choices and sec
   - Define security assumptions and limitations.
   - Deliverable: `docs/design/architecture-security-review.md`
 
-- [ ] **task 6** - Select and validate dependencies
+- [x] **task 6** - Select and validate dependencies ✅
   - Evaluate fingerprint capture SDKs (licensing, compatibility, performance).
   - Select cryptographic library (review PyCryptodome, cryptography.io, libsodium).
   - Choose JSON Schema validation library and test performance.

@@ -1,0 +1,30 @@
+# Decentralized DID - Development Dependencies
+# Phase 1 (Hackathon Demo)
+# Generated: 2025-10-10
+
+# Include production dependencies
+-r requirements.txt
+
+# Testing Frameworks
+pytest==7.4.3
+pytest-cov==4.1.0
+pytest-benchmark==4.0.0
+pytest-mock==3.12.0
+hypothesis==6.92.0
+
+# Code Quality
+black==23.12.0  # Code formatter
+mypy==1.7.1     # Static type checker
+ruff==0.1.8     # Fast Python linter
+
+# Security Auditing
+pip-audit==2.6.1    # CVE scanner
+safety==2.3.5       # Dependency vulnerability checker
+
+# Documentation
+sphinx==7.2.6              # Documentation generator
+sphinx-rtd-theme==2.0.0    # ReadTheDocs theme
+
+# Development Utilities
+ipython==8.18.1      # Interactive Python shell
+jupyter==1.0.0       # Jupyter notebook (for experiments)
