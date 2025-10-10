@@ -2,10 +2,27 @@
 
 This repository combines a Python toolkit for biometric DID generation and a JavaScript demo wallet (`demo-wallet/`, based on Cardano Foundation's Veridian wallet). Follow these instructions whenever you contribute new code or documentation with Copilot assistance.
 
+## 0. Core Constraint: Open-Source Only
+**CRITICAL**: This project uses NO PAID SERVICES OR COMMERCIAL SOFTWARE.
+- All code must be open-source (Apache 2.0, MIT, BSD, GPL, LGPL, or public domain)
+- All tools and libraries must be free and open-source
+- All external services must be self-hostable or decentralized
+- Hardware must use commodity components with open drivers
+- When researching solutions, explicitly exclude commercial/proprietary options
+- Document open-source alternatives and their licenses in all research deliverables
+
+**Rationale**: This is a decentralized identity system built from scratch to ensure transparency, auditability, and community ownership. Paid services introduce centralization risks and lock-in.
+
 ## 1. Planning First
 - Read `docs/roadmap.md` and `docs/wallet-integration.md` before tackling a task to align with the current sprint goals.
 - Confirm whether a change touches the Python toolkit, the demo wallet, or shared documentation. Note downstream impacts (tests, fixtures, docs) in your plan.
 - For demo wallet work, keep upstream Veridian files intact where possible; annotate substantial divergences in comments or documentation.
+- **Always write and update phases and tasks in `.github/tasks.md`** following these strict rules:
+  - **Task numbering**: Each phase MUST restart at task 1 (not continuous numbering across phases)
+  - **Format**: `- [ ] **task N** - Task description` where N starts at 1 for each phase
+  - **Example**: Phase 0 has tasks 1-7, Phase 1 has tasks 1-6 (NOT tasks 8-13)
+  - When adding or editing tasks, verify all tasks in that phase follow this pattern
+  - Before committing changes, run: `python3 -c "import re; content=open('.github/tasks.md').read(); phases=re.split(r'^## Phase (\d+)', content, flags=re.MULTILINE); print('\n'.join([f'Phase {phases[i]}: tasks {min(map(int, t))}-{max(map(int, t))}' for i in range(1, len(phases), 2) if (t := re.findall(r'task (\d+)', phases[i+1]))]))"`
 
 ## 2. Coding Conventions
 - Keep files ASCII unless the file already uses Unicode and it is essential.
@@ -36,5 +53,56 @@ This repository combines a Python toolkit for biometric DID generation and a Jav
 - Summaries should state *what* changed, *why*, tests run, and outstanding follow-ups.
 - Call out assumptions or open questions explicitly so reviewers can respond quickly.
 - Use TODO comments sparingly; prefer GitHub issues or updates to `docs/roadmap.md` for larger gaps.
+
+## 7. Task Management in `.github/tasks.md`
+**Critical Pattern**: Task numbers MUST restart at 1 for each phase.
+
+### ✅ Correct Task Numbering
+```markdown
+## Phase 0 - Research
+- [ ] **task 1** - First research task
+- [ ] **task 2** - Second research task
+
+## Phase 1 - Design
+- [ ] **task 1** - First design task  ← Restarts at 1!
+- [ ] **task 2** - Second design task
+```
+
+### ❌ Incorrect Task Numbering
+```markdown
+## Phase 0 - Research
+- [ ] **task 1** - First research task
+- [ ] **task 2** - Second research task
+
+## Phase 1 - Design
+- [ ] **task 3** - First design task  ← WRONG! Should be task 1
+- [ ] **task 4** - Second design task
+```
+
+### Task Editing Checklist
+1. **Adding tasks**: Insert at the correct position, renumber subsequent tasks in that phase only
+2. **Removing tasks**: Delete the task, renumber subsequent tasks in that phase only
+3. **Moving tasks**: Renumber both source and destination phases
+4. **Verification**: After editing, verify each phase starts at task 1:
+   ```bash
+   grep -E "^## Phase|^\- \[ \] \*\*task [0-9]+" .github/tasks.md | less
+   ```
+5. **Quick count**: Verify task ranges per phase:
+   ```bash
+   python3 << 'EOF'
+   import re
+   with open('.github/tasks.md') as f:
+       phases = re.split(r'^## Phase (\d+)', f.read(), flags=re.MULTILINE)
+       for i in range(1, len(phases), 2):
+           tasks = [int(t) for t in re.findall(r'task (\d+)', phases[i+1])]
+           if tasks: print(f"Phase {phases[i]}: {len(tasks)} tasks (1-{max(tasks)})")
+   EOF
+   ```
+
+### Why This Pattern?
+- **Clarity**: Each phase is self-contained with clear task progression
+- **Maintainability**: Adding/removing phases doesn't require renumbering all subsequent tasks
+- **Navigation**: Easy to reference "Phase 3, task 2" without confusion
+- **Flexibility**: Phases can be reordered without breaking task references
 
 Following this agreement keeps Copilot-driven work aligned with the broader roadmap while preserving quality standards across both codebases.

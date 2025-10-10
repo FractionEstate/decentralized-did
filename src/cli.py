@@ -15,6 +15,7 @@ from .cardano.metadata_encoder import (
     pretty_print_metadata,
     to_wallet_metadata,
 )
+from .cardano.metadata_validator import ValidationError, validate_metadata
 from .did.generator import build_did, build_metadata_payload
 
 
@@ -48,9 +49,11 @@ def _build_templates(finger_payload: List[Dict[str, object]]) -> List[FingerTemp
 
 def cmd_generate(args: argparse.Namespace) -> None:
     input_payload = _load_json(Path(args.input))
-    wallet_address = args.wallet or str(input_payload.get("wallet_address", "")).strip()
+    wallet_address = args.wallet or str(
+        input_payload.get("wallet_address", "")).strip()
     if not wallet_address:
-        raise SystemExit("wallet address is required (via --wallet or input JSON)")
+        raise SystemExit(
+            "wallet address is required (via --wallet or input JSON)")
 
     templates = _build_templates(input_payload["fingers"])
     extractor = FuzzyExtractor()
@@ -67,7 +70,8 @@ def cmd_generate(args: argparse.Namespace) -> None:
     helper_uri = args.helper_uri
     if args.helpers_output:
         output_path = Path(args.helpers_output)
-        output_path.write_text(json.dumps(helper_map, indent=2), encoding="utf-8")
+        output_path.write_text(json.dumps(
+            helper_map, indent=2), encoding="utf-8")
         if not helper_uri:
             helper_uri = str(output_path)
 
@@ -90,7 +94,8 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
     if args.output:
         output_path = Path(args.output)
-        output_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+        output_path.write_text(json.dumps(
+            metadata, indent=2), encoding="utf-8")
     if not args.quiet:
         print(did)
         print(pretty_print_metadata(metadata))
@@ -98,9 +103,11 @@ def cmd_generate(args: argparse.Namespace) -> None:
 
 def cmd_verify(args: argparse.Namespace) -> None:
     metadata = _load_json(Path(args.metadata))
-    payload = next(iter(metadata.values())) if isinstance(metadata, dict) else metadata
+    payload = next(iter(metadata.values())) if isinstance(
+        metadata, dict) else metadata
     biometric = payload["biometric"]
-    helper_map: Dict[str, Dict[str, object]] | None = biometric.get("helperData")
+    helper_map: Dict[str, Dict[str, object]
+                     ] | None = biometric.get("helperData")
     if not helper_map:
         if args.helpers:
             helper_map = _load_json(Path(args.helpers))
@@ -119,7 +126,8 @@ def cmd_verify(args: argparse.Namespace) -> None:
     for template in templates:
         helper_dict = helper_map.get(template.finger_id)
         if not helper_dict:
-            raise SystemExit(f"missing helper data for finger {template.finger_id}")
+            raise SystemExit(
+                f"missing helper data for finger {template.finger_id}")
         helper = HelperData(**helper_dict)
         digest = extractor.reproduce(template, helper)
         digests.append((template.finger_id, digest))
@@ -131,16 +139,30 @@ def cmd_verify(args: argparse.Namespace) -> None:
         print("verification succeeded")
 
 
+def cmd_validate(args: argparse.Namespace) -> None:
+    metadata = _load_json(Path(args.metadata))
+    try:
+        validate_metadata(metadata)
+    except ValidationError as exc:  # pragma: no cover - jsonschema message reproduction
+        raise SystemExit(f"metadata validation failed: {exc.message}") from exc
+    if not args.quiet:
+        print("metadata is valid")
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Biometric DID toolkit")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    enroll = subparsers.add_parser("generate", help="generate DID metadata from biometric input")
-    enroll.add_argument("--input", required=True, help="path to JSON file with finger minutiae")
+    enroll = subparsers.add_parser(
+        "generate", help="generate DID metadata from biometric input")
+    enroll.add_argument("--input", required=True,
+                        help="path to JSON file with finger minutiae")
     enroll.add_argument("--wallet", help="Cardano wallet address override")
     enroll.add_argument("--output", help="destination file for metadata JSON")
-    enroll.add_argument("--label", type=int, help="Cardano metadata label override (default 1990)")
-    enroll.add_argument("--helpers-output", help="path to write helper data JSON")
+    enroll.add_argument("--label", type=int,
+                        help="Cardano metadata label override (default 1990)")
+    enroll.add_argument("--helpers-output",
+                        help="path to write helper data JSON")
     enroll.add_argument(
         "--helper-uri",
         help="URI or reference where helper data is stored when excluded from metadata",
@@ -150,15 +172,27 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="omit helper data from metadata output",
     )
-    enroll.add_argument("--quiet", action="store_true", help="suppress stdout output")
+    enroll.add_argument("--quiet", action="store_true",
+                        help="suppress stdout output")
     enroll.set_defaults(func=cmd_generate)
 
-    verify = subparsers.add_parser("verify", help="verify new biometric scan against saved metadata")
-    verify.add_argument("--metadata", required=True, help="metadata JSON previously generated")
-    verify.add_argument("--input", required=True, help="new biometric scan JSON to validate")
-    verify.add_argument("--helpers", help="path to helper data JSON if not in metadata")
+    verify = subparsers.add_parser(
+        "verify", help="verify new biometric scan against saved metadata")
+    verify.add_argument("--metadata", required=True,
+                        help="metadata JSON previously generated")
+    verify.add_argument("--input", required=True,
+                        help="new biometric scan JSON to validate")
+    verify.add_argument(
+        "--helpers", help="path to helper data JSON if not in metadata")
     verify.add_argument("--quiet", action="store_true")
     verify.set_defaults(func=cmd_verify)
+
+    validate_cmd = subparsers.add_parser(
+        "validate", help="validate metadata structure")
+    validate_cmd.add_argument(
+        "--metadata", required=True, help="metadata JSON to validate")
+    validate_cmd.add_argument("--quiet", action="store_true")
+    validate_cmd.set_defaults(func=cmd_validate)
 
     return parser
 
