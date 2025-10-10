@@ -1,0 +1,77 @@
+# Cardano Integration Guide
+
+## Objectives
+- Describe how biometric digests map into Cardano metadata standards.
+- Provide reference flows for wallets (CIP-30) and on-chain consumers (Plutus, CIP-68).
+- Highlight operational considerations for storing helper data externally (IPFS, Arweave, centralized vaults).
+
+## Metadata Layout
+```json
+{
+  "1990": {
+    "version": 1,
+    "walletAddress": "addr1…",
+    "biometric": {
+      "idHash": "<base64-url digest>",
+      "helperStorage": "inline|external",
+      "helperUri": "ipfs://… (optional)",
+      "helperData": {
+        "left_thumb": { "finger_id": "left_thumb", "salt_b64": "…", "auth_b64": "…" }
+        // ... other fingers when helperStorage == "inline"
+      }
+    }
+  }
+}
+```
+- Default label `1990` can be overridden when calling the CLI (`--label`).
+- `helperStorage` communicates whether helper data is embedded or must be fetched externally.
+- `helperUri` can be an IPFS CID, HTTPS link, or custom URI recognized by verifiers.
+
+## Wallet Metadata Flow (CIP-30)
+1. CLI generates metadata JSON and optional helper file.
+2. DApp uses `cardano.signData` or transaction-building APIs to attach metadata under agreed label.
+3. Wallet signs transaction; metadata becomes accessible on-chain.
+4. Verifiers fetch transaction metadata (using `blockfrost`, `ogmios`, or cardano-node) and reconstruct the DID digest.
+
+## CIP-68 NFT Pattern (Roadmap)
+- Mint a reference NFT whose datum stores `idHash` and `helperUri`.
+- Use inline datum or reference scripts so dApps can reference the biometric commitment without scanning transaction history.
+- Consider off-chain governance to handle rotations (new biometrics -> update CIP-68 mutable fields).
+
+## Plutus / On-Chain Consumption
+- Off-chain code performs biometric verification and produces the digest.
+- Script expects `idHash` argument; ensures it matches on-chain value before allowing action (e.g., unlocking identity-gated resource).
+- For privacy, use proof-of-knowledge protocols (future work) so scripts evaluate zero-knowledge attestations instead of raw digests.
+
+## External Helper Storage
+### IPFS/IPNS
+- Use `--helpers-output` to dump helper JSON.
+- Pin the file to IPFS, record CID.
+- Supply `--helper-uri ipfs://<CID>` so verifiers know where to fetch helper data.
+
+### Secure Vaults
+- Wallet custodians may store helper data in confidential enclaves.
+- Metadata includes `helperStorage=external` and `helperUri=vault://tenant/id` (custom scheme).
+- Verifiers authenticate to vault before retrieving helper JSON.
+
+### No Helper Publication
+- Advanced users can keep helper data entirely offline.
+- They must distribute helper JSON to verifiers through side channels.
+- Metadata should then include `helperStorage=external` without `helperUri`; CLI enforces manual sharing during verification.
+
+## Demo Kit Packaging
+- Use `python -m decentralized_did.cli demo-kit` (or `dec-did demo-kit`) to emit inline/external `wallet` and `cip30` metadata variants, helper JSON, and a presenter summary in a single directory.
+- Supply `--zip demo-kit.zip` when sharing artifacts with demo operators or wallet teams.
+- Override `--helper-uri` once helper data is hosted on IPFS or another storage backend so downstream verifiers know where to fetch it.
+- Consume the generated `cip30_payload.ts` in sample dApps to bootstrap `cip30MetadataMap` (`Map<bigint, Metadatum>`) construction without manual JSON wrangling.
+
+## Operational Checklist
+- [ ] Agree on metadata label with counterparties.
+- [ ] Ensure helper data is available (inline or via `helperUri`).
+- [ ] Validate digest re-computation using `python -m decentralized_did.cli verify` prior to on-chain submission.
+- [ ] Keep audit logs of helper data access, especially when stored externally.
+
+## Tooling Roadmap
+- Build CIP-30 reference DApp using `lucid` or `mesh.js` to sign enrollment transactions.
+- Automate IPFS pinning from CLI (e.g., via `--ipfs-endpoint`).
+- Provide Plutus scripts + tests showcasing identity-gated spending flows.

@@ -1,0 +1,1569 @@
+{
+  "onboarding": {
+    "slides": [
+      {
+        "title": "Welcome to Veridian",
+        "description": "Take full control of your digital identity with secure and seamless management"
+      },
+      {
+        "title": "Secure and Self-Sovereign",
+        "description": "Your identity is encrypted and stored safely on your device. Only you have access"
+      },
+      {
+        "title": "Privacy First",
+        "description": "Control when to present your credentials, keeping your personal data private"
+      },
+      {
+        "title": "Sign with Group Identity",
+        "description": "Sign and verify as an individual or part of a group, whenever needed"
+      }
+    ],
+    "getstarted": {
+      "button": {
+        "label": "Get Started"
+      }
+    },
+    "alreadywallet": {
+      "button": {
+        "label": "I already have a wallet"
+      }
+    }
+  },
+  "createpasscodemodule": {
+    "errornomatch": "Passcode didn’t match",
+    "errormatch": "Passcode already in use",
+    "cantremember": "Can't remember?",
+    "repeat": "Avoid matching numbers e.g. 111111",
+    "consecutive": "Avoid consecutive numbers e.g. 123456"
+  },
+  "setpasscode": {
+    "enterpasscode": "Create your Passcode",
+    "description": "Create a passcode to secure your wallet and to continue the onboarding process",
+    "recoverydescription": "Create a passcode to secure your wallet and to continue the recovery process",
+    "reenterpasscode": "Re-enter your Passcode",
+    "cancelbtn": "Cancel",
+    "backbtn": "Back"
+  },
+  "setupbiometrics": {
+    "title": "Enable biometrics",
+    "description": "Use biometrics for quicker access to your Veridian wallet. You can turn this on or off anytime in settings.",
+    "button": {
+      "enable": "Enable biometrics",
+      "skip": "Set up later"
+    }
+  },
+  "generateseedphrase": {
+    "onboarding": {
+      "title": "Your recovery phrase",
+      "paragraph": {
+        "bottom": "Keep these words safe! Store them securely and never share them with anyone."
+      },
+      "button": {
+        "continue": "Continue",
+        "switch": "Recover existing wallet",
+        "recoverydocumentation": "What’s a recovery phrase?"
+      },
+      "recoveryseedphrasedocs": {
+        "title": "Recovery phrase",
+        "button": {
+          "done": "Done"
+        },
+        "alert": "We can’t recover your wallet if you lose your recovery phrase. Keeping it safe means keeping your identity safe.",
+        "content": {
+          "what": {
+            "title": "What is a recovery phrase?",
+            "content": [
+              {
+                "text": "Your recovery phrase is like a master key for your wallet. It’s a unique set of 18 words that lets you securely access your identity wallet—even if you lose your phone or need to restore it on a new device."
+              }
+            ]
+          },
+          "why": {
+            "title": "Why is it so important?",
+            "content": [
+              {
+                "text": "<strong>Your wallet, your control:</strong> Unlike traditional accounts, no one—not even us—can reset your wallet for you. This keeps your identity and data secure and fully under your control."
+              },
+              {
+                "text": "<strong>One-of-a-kind key:</strong> The recovery phrase is the only way to restore your wallet if something happens to your device. Without it, you could permanently lose access to your identity."
+              },
+              {
+                "text": "<strong>Stay protected:</strong> Think of it like a spare key to your house. If you lose it, no one can unlock the door—even you!"
+              }
+            ]
+          },
+          "how": {
+            "title": "How to keep it safe:",
+            "content": [
+              {
+                "text": "<strong>Write it down:</strong> Store it somewhere secure, like a locked drawer or safe."
+              },
+              {
+                "text": "<strong>Don’t share it:</strong> Anyone with your recovery phrase can access your wallet. Keep it private."
+              },
+              {
+                "text": "<strong>No screenshots:</strong> Don’t save it on your phone or in the cloud—this protects it from hackers."
+              }
+            ]
+          }
+        }
+      }
+    },
+    "segment": "{{length}} words",
+    "privacy": {
+      "overlay": {
+        "text": "Press the ‘view recovery phrase’ button when you’re ready to see your recovery phrase. Remember to make sure nobody is looking!",
+        "button": "View Recovery Phrase"
+      }
+    },
+    "alert": {
+      "confirm": {
+        "text": "Have you double-checked you’ve copied your 18 word phrase correctly?",
+        "button": {
+          "confirm": "Yes, copied",
+          "cancel": "Cancel"
+        }
+      },
+      "exit": {
+        "text": "If you go back you will lose your current progress. Are you sure you want to do this?",
+        "button": {
+          "confirm": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "toggle": {
+        "text": "Switching tabs will remove the words you have already entered, are you sire you want to switch?",
+        "button": {
+          "confirm": "Yes, switch tabs",
+          "cancel": "Cancel"
+        }
+      },
+      "verify": {
+        "text": "Your recovery phrase couldn’t be verified. Please, try again or choose an alternative method",
+        "button": {
+          "confirm": "Try again",
+          "cancel": "Cancel"
+        }
+      }
+    },
+    "termsandconditions": {
+      "text": "I have read and agree to the <0>{{clickableTerms}}</0> and <1>{{clickablePrivacy}}</1>.",
+      "terms": "Terms of Use",
+      "privacy": "Privacy Policy"
+    }
+  },
+  "lockpage": {
+    "title": "Welcome back",
+    "description": "Please enter your passcode to login",
+    "error": "Incorrect passcode",
+    "forgotten": {
+      "button": "I've forgotten my passcode"
+    },
+    "attempterror": "{{attempt}} attempt remaining",
+    "attemptalert": {
+      "title": "Login unavailable",
+      "content": "Try again in {{time}}",
+      "hour": "{{value}} hour",
+      "hours": "{{value}} hours",
+      "minute": "{{value}} minute",
+      "minutes": "{{value}} minutes"
+    },
+    "alert": {
+      "text": {
+        "verify": "If you've forgotten your passcode, please verify your recovery phrase to gain access to your wallet",
+        "restart": "You currently haven't generated a recovery phrase, would you like to start your onboarding again?"
+      },
+      "button": {
+        "verify": "Verify your Recovery Phrase",
+        "restart": "Start again",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "verifyseedphrase": {
+    "onboarding": {
+      "title": "Verify your recovery phrase",
+      "button": {
+        "continue": "Verify",
+        "back": "Back",
+        "clear": "Clear all"
+      }
+    },
+    "paragraph": {
+      "top": "Please select each word in the order it was presented to you."
+    },
+    "alert": {
+      "fail": {
+        "text": "Sorry, the recovery phrase you have entered is incorrect!",
+        "button": {
+          "confirm": "Try again"
+        }
+      },
+      "exit": {
+        "text": "If you go back you will lose your current progress. Are you sure you want to do this?",
+        "button": {
+          "confirm": "Confirm",
+          "cancel": "Cancel"
+        }
+      },
+      "clear": {
+        "text": "Are you sure you want to clear all the words you have entered so far?",
+        "button": {
+          "confirm": "Clear all",
+          "cancel": "Cancel"
+        }
+      }
+    }
+  },
+  "verifyrecoveryseedphrase": {
+    "title": "Recover wallet",
+    "button": {
+      "continue": "Confirm",
+      "lock": "Try again in 1 minute",
+      "clear": "Clear all",
+      "switch": "Create new wallet"
+    },
+    "paragraph": {
+      "top": "Please verify your recovery phrase to recover your wallet. To start typing click on the first option."
+    },
+    "suggestions": {
+      "title": "Suggestions",
+      "error": "All words must be compatible with the suggestions"
+    },
+    "alert": {
+      "fail": {
+        "text": "Sorry, the recovery phrase you have entered is incorrect!",
+        "button": {
+          "confirm": "Try again"
+        }
+      },
+      "clear": {
+        "text": "Are you sure you want to clear all the words you have entered so far?",
+        "button": {
+          "confirm": "Clear all",
+          "cancel": "Cancel"
+        }
+      }
+    }
+  },
+  "tabsmenu": {
+    "label": {
+      "identifiers": "Identifiers",
+      "creds": "Credentials",
+      "scan": "Scan",
+      "notifications": "Notifications",
+      "menu": "Menu"
+    }
+  },
+  "custominput": {
+    "optional": "(optional)"
+  },
+  "switchmodemodal": {
+    "title": "Before you switch",
+    "button": {
+      "back": "Back",
+      "continue": "Continue"
+    },
+    "recovery": {
+      "title": "Switch to recover an existing wallet",
+      "paragraphtop": "You're about to switch to the wallet recovery process. Here's what will happen:",
+      "warning": {
+        "one": "<strong>Passcode & Operations Password:</strong> You'll keep your existing passcode and operations password. If you chose to skip setting an operations password, that preference will remain.",
+        "two": "<strong>Recovery Phrase:</strong> If you've gone beyond the generation of a new recovery phrase, this will be wiped. You'll need to verify the recovery phrase associated with your previous wallet.",
+        "three": "<strong>Connect URL:</strong> You will only need the Connect URL for the SSI agent screen."
+      },
+      "paragraphbot": "When you switch, you'll be able to enter your recovery details to access your existing wallet."
+    },
+    "create": {
+      "title": "Switch to create a new wallet",
+      "paragraphtop": "You're about to switch to the new wallet creation process. Here's what will happen:",
+      "warning": {
+        "one": "<strong>Passcode & Operations Password:</strong> You'll keep your existing passcode and operations password. If you chose to skip setting an operations password, that preference will remain.",
+        "two": "<strong>Recovery Phrase:</strong> You'll need to generate a recovery phrase and copy these words down somewhere safe",
+        "three": "<strong>Boot URL and Connect URL:</strong> You will need both your Boot URL and Connect URL for the SSI agent screen."
+      },
+      "paragraphbot": "When you switch, you'll start the process to create a brand new wallet."
+    },
+    "checkbox": "I have read and understand."
+  },
+  "removependingalert": {
+    "button": {
+      "done": "Done",
+      "confirm": "Yes, I'm sure",
+      "cancel": "Cancel"
+    }
+  },
+  "createpassword": {
+    "title": "Create password",
+    "change": "New password",
+    "cancel": "Cancel",
+    "description": "Add an extra layer of security for sensitive actions in your wallet by creating an optional password.",
+    "learnmore": "Learn More",
+    "input": {
+      "first": {
+        "symbolguide": "Symbol guide",
+        "title": "Create password",
+        "placeholder": "Type password"
+      },
+      "second": {
+        "title": "Confirm password",
+        "placeholder": "Retype your password"
+      },
+      "third": {
+        "title": "Create a hint",
+        "placeholder": "Create a password hint"
+      }
+    },
+    "button": {
+      "continue": "Create Password",
+      "skip": "Skip"
+    },
+    "alert": {
+      "text": "Are you sure you want to skip? By doing this, you will be required to use your passcode for any protected operations. You can, of course, set this up later if you prefer.",
+      "button": {
+        "confirm": "Yes, skip",
+        "cancel": "Cancel"
+      }
+    },
+    "error": {
+      "hasSpecialChar": "Use only lowercase/uppercase letters, numbers & symbols for your password.",
+      "passwordlength": "Must contain between 8-64 characters",
+      "hasNoUppercase": "Must contain an uppercase letter",
+      "hasNoLowercase": "Must contain a lowercase letter",
+      "hasNoNumber": "Must contain a number",
+      "hasNoSymbol": "Must contain a valid symbol.",
+      "hasNoMatch": "Passwords do not match",
+      "hintSameAsPassword": "Your hint cannot be your password"
+    },
+    "meter": {
+      "strengthlevel": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong"
+      },
+      "acceptcriteria": {
+        "text": "Must be between <strong>8-64 characters</strong>, contain a <strong>lowercase</strong> and <strong>uppercase</strong> letter, a <strong>number</strong>, and a <strong>symbol</strong>."
+      }
+    },
+    "symbolmodal": {
+      "title": "Symbol guide",
+      "done": "Done",
+      "text": "Please ensure the symbols you’re using in your password align with the standard US and UK keyboards listed below:",
+      "note": "Various operating systems and applications may apply limitations to this set.",
+      "symbolcolumn": "Symbol",
+      "name": "Name",
+      "listsymbol": {
+        "space": "Space",
+        "exclamationmark": "Exclamation Mark",
+        "numbersign": "Number sign (hash)",
+        "dollarsign": "Dollar sign",
+        "sterlingsign": "Sterling sign (pound)",
+        "eurosign": "Euro sign",
+        "percent": "Percent",
+        "ampersand": "Ampersand",
+        "singlequote": "Single quote",
+        "leftparenthesis": "Left parenthesis",
+        "rightparenthesis": "Right parenthesis",
+        "asterisk": "Asterisk",
+        "plus": "Plus",
+        "comma": "Comma",
+        "minus": "Minus",
+        "fullstop": "Full stop",
+        "slash": "Slash",
+        "colon": "Colon",
+        "semicolon": "Semicolon",
+        "lessthan": "Less than",
+        "equal": "Equal",
+        "greaterthan": "Greater than",
+        "questionmark": "Question mark",
+        "atsign": "At sign",
+        "leftbracket": "Left bracket",
+        "backslash": "Back slash",
+        "rightbracket": "Right bracket",
+        "caret": "Caret",
+        "underscore": "Uderscore",
+        "graveaccent": "Grave accent (backtick)",
+        "leftbrace": "Left brace",
+        "verticalbar": "Vertical bar",
+        "rightbrace": "Right brace",
+        "tilde": "Tilde"
+      }
+    },
+    "setuppassword": {
+      "title": "Create a password",
+      "description": "Add extra protection for sensitive actions. If you skip this for now, your PIN will be used instead — you can always set a password later.",
+      "button": {
+        "enable": "Add a password",
+        "skip": "Set up later"
+      }
+    }
+  },
+  "ssiagent": {
+    "title": "Enter your SSI agent details",
+    "description": "To continue, please enter the SSI agent boot and connect URLs (in your email or from your command line).",
+    "verifydescription": "To continue, please enter the SSI agent connect URL (in your email or from your command line).",
+    "button": {
+      "info": "Get more information",
+      "validate": "Validate",
+      "onboardingdocumentation": "Onboarding documentation",
+      "recoverydocumentation": "Recovery documentation"
+    },
+    "input": {
+      "boot": {
+        "label": "Boot URL",
+        "placeholder": "Paste or scan your boot URL"
+      },
+      "connect": {
+        "label": "Connect URL",
+        "placeholder": "Paste or scan your connect URL"
+      }
+    },
+    "error": {
+      "invalidurl": "Enter a valid URL",
+      "invalidbooturl": "Enter a valid boot URL",
+      "invalidconnecturl": "Enter a valid connect URL",
+      "mismatchconnecturl": "This connect URL doesn’t match the boot URL",
+      "recoverymismatchconnecturl": "Please check this connect URL matches the original boot URL used for onboarding and that your agent is still active",
+      "unknownissue": "We could not reach this server. Either the server is down, you have entered an incorrect URL or you have internet connectivity issues."
+    }
+  },
+  "operationspasswordregex": {
+    "label": {
+      "length": "8 - 64 characters long",
+      "uppercase": "Contains an uppercase letter",
+      "lowercase": "Contains a lowercase letter",
+      "number": "Contains a number",
+      "symbol": "Contains a symbol"
+    }
+  },
+  "tabs": {
+    "identifiers": {
+      "tab": {
+        "title": "Identifiers",
+        "create": "Add an identifier",
+        "favourites": "Favourites",
+        "allidentifiers": "All identifiers",
+        "filters": {
+          "all": "All",
+          "individual": "Individual",
+          "group": "Group",
+          "placeholder": "You haven’t created any {{ type }} identifiers yet."
+        },
+        "pendingidentifiers": "Pending identifiers",
+        "multisigidentifiers": "For groups",
+        "welcome": {
+          "skip": "Skip",
+          "welcometext": "Welcome, {{name}}",
+          "text": "You're in the perfect spot to create your secure and private digital identity. Let's begin by adding your first identifier!",
+          "add": "Add an Identifier"
+        }
+      },
+      "deletepending": {
+        "title": "Identifier options",
+        "description": "Your identifier is pending and may still complete. If you no longer require this identifier, tap “Delete identifier” to remove it.",
+        "mutilsigdescription": "This multi-sig is pending. It will complete once it meets the required member threshold. To remove it from your pending list, tap “Delete identifier”.",
+        "witnesserror": "There was an issue creating this identifier. Please contact your cloud provider for more information. To remove it from your pending list, tap “Delete Identifier”.",
+        "button": "Delete identifier",
+        "secondchecktitle": "Are you sure you want to delete this identifier?"
+      },
+      "layout": {
+        "created": "CREATED"
+      },
+      "details": {
+        "done": "Done",
+        "identifierdetail": {
+          "title": "Identifier details",
+          "showadvanced": "Show advanced details",
+          "identifierid": {
+            "title": "Identifier ID"
+          },
+          "created": {
+            "title": "Created"
+          },
+          "signingkey": {
+            "title": "Signing key",
+            "rotate": "Rotate key",
+            "multisigtitle": "Show {{singingKeys}} singing keys"
+          }
+        },
+        "keyrotation": {
+          "title": "Key rotation",
+          "rotatesigningkey": {
+            "title": "Rotation threshold",
+            "outof": "out of {{threshold}}"
+          },
+          "sequencenumber": {
+            "title": "Sequence number",
+            "lastrotate": "Last key event"
+          },
+          "nextkeyslist": {
+            "title": "Rotation key digest",
+            "showkey": "Show {{rotationKeys}} rotation key digests"
+          }
+        },
+        "group": {
+          "title": "Group information",
+          "groupmembers": {
+            "title": "Group members"
+          },
+          "signingkeysthreshold": {
+            "title": "Signing threshold",
+            "outof": "out of {{threshold}}"
+          },
+          "button": {
+            "viewmore": "View {{remainMembers}} more"
+          }
+        },
+        "delete": {
+          "button": "Delete identifier",
+          "alert": {
+            "title": "Are you sure you want to delete this identifier?",
+            "confirm": "Yes, I'm sure",
+            "cancel": "Cancel"
+          }
+        },
+        "rotatekeys": {
+          "message": "After rotating your keys, you may experience some delays when using this identifier for a short period.",
+          "signingkey": "List of signing keys",
+          "description": "Rotating your signing keys boosts security by reducing the risk of key compromise.",
+          "done": "Done"
+        },
+        "options": {
+          "title": "Identifier options",
+          "cancel": "Cancel",
+          "view": "View JSON",
+          "edit": "Edit identifier",
+          "share": "Share identifier",
+          "delete": "Delete identifier",
+          "rotatekeys": "Rotate keys",
+          "inner": {
+            "label": "Display name",
+            "theme": "Edit theme",
+            "confirm": "Confirm changes",
+            "color": "Choose card colour"
+          }
+        },
+        "clouderror": "We couldn’t locate this identifier in the cloud. It might become available again soon, but some information could be lost.\n\nIf you no longer require this identifier, tap “Delete identifier” to remove.",
+        "detailmodal": {
+          "you": "You",
+          "button": {
+            "done": "Done"
+          },
+          "advanceddetail": {
+            "title": "Advanced details",
+            "propexplain": {
+              "title": "About advanced details",
+              "content": "Provides additional details on this identifier for users interested in more technical insights."
+            },
+            "proptitle": "Advanced details",
+            "viewkey": "Show {{keys}} singing keys",
+            "hidekey": "Hide {{keys}} singing keys",
+            "viewrotationkey": "Show {{keys}} rotation key digests",
+            "hiderotationkey": "Hide {{keys}} rotation key digests"
+          },
+          "signingthreshold": {
+            "title": "Signing threshold",
+            "propexplain": {
+              "title": "About signing threshold",
+              "content": "Minimum number of signing keys required to approve a transaction or event within the identifier."
+            },
+            "threshold": {
+              "title": "Threshold",
+              "text": "{{threshold}} out of {{members}}"
+            }
+          },
+          "rotationthreshold": {
+            "title": "Rotation threshold",
+            "propexplain": {
+              "title": "About rotation threshold",
+              "content": "The minimum number of new keys required to rotate and replace old signing keys."
+            },
+            "threshold": {
+              "title": "Rotation threshold",
+              "text": "{{threshold}} out of {{members}}"
+            }
+          },
+          "groupmember": {
+            "title": "Group members",
+            "propexplain": {
+              "title": "About group members",
+              "content": "Displays the list of individuals or entities that jointly control this group identifier."
+            },
+            "bottomtext": "{{members}} group members"
+          }
+        }
+      }
+    },
+    "credentials": {
+      "tab": {
+        "title": "Credentials",
+        "placeholder": "No credentials yet. They will appear here once a connection issues them.",
+        "viewarchived": "Archived & Revoked",
+        "favourites": "Favourites",
+        "allcreds": "All credentials",
+        "filters": {
+          "all": "All",
+          "individual": "Individual",
+          "group": "Group",
+          "placeholder": "You currently have no {{ type }} credentials."
+        },
+        "pendingcred": "Pending credentials",
+        "deletepending": {
+          "title": "Credential options",
+          "description": "Your credential is pending and may still complete. If you no longer require this credential, tap “Delete credential” to remove it.",
+          "button": "Delete credential",
+          "secondchecktitle": "Are you sure you want to delete this credential?"
+        }
+      },
+      "layout": {
+        "issued": "Issued",
+        "issuer": "Issuer"
+      },
+      "details": {
+        "joinedmember": "Joined members",
+        "done": "Done",
+        "restore": "Restore",
+        "delete": "Delete",
+        "type": "Type",
+        "about": "About",
+        "credentialdetails": "Credential details",
+        "description": "Description",
+        "relatedidentifier": "Related identifier",
+        "id": "ID",
+        "modal": {
+          "about": "About {{ type }}"
+        },
+        "attributes": {
+          "title": "Credential attributes",
+          "label": "Attributes",
+          "description": "Essential details shared by the issuer, which verify and describe key information in this credential.",
+          "details": "Attribute details",
+          "issuee": "Issuer",
+          "issuancedate": "Issuance Date Time",
+          "lei": "LEI"
+        },
+        "schemaversion": "Schema Version",
+        "issuer": "Issuer",
+        "status": {
+          "label": "Status",
+          "issued": "Issued",
+          "revoked": "Revoked",
+          "timestamp": "Timestamp: "
+        },
+        "options": {
+          "title": "Credential options",
+          "view": "View JSON",
+          "archive": "Archive credential"
+        },
+        "button": {
+          "delete": "Delete credential",
+          "archive": "Archive credential"
+        },
+        "alert": {
+          "archive": {
+            "title": "Are you sure you want to archive this credential?",
+            "confirm": "Yes, I'm sure",
+            "cancel": "Cancel"
+          },
+          "delete": {
+            "title": "Are you sure you want to delete this credential?",
+            "confirm": "Yes, I'm sure",
+            "cancel": "Cancel"
+          },
+          "restore": {
+            "title": "Are you sure you want to view this with your other credentials?",
+            "confirm": "Yes, restore credential",
+            "cancel": "Cancel"
+          },
+          "missingissuer": {
+            "confirm": "OK",
+            "text": "This credential was issued through a connection that has since been deleted or is no longer accessible. As a result, the connection details cannot be displayed."
+          }
+        },
+        "toast": {
+          "clipboard": "Copied to clipboard"
+        },
+        "clouderror": "We couldn’t locate this credential in the cloud. It might become available again soon, but some information could be lost.\n\nIf you no longer require this credential, tap “Delete credential” to remove."
+      },
+      "create": {
+        "alert": {
+          "title": "Once this credential is visible you'll receive a notification. Until then you won't be able to access more details.",
+          "confirm": "Ok"
+        }
+      },
+      "archived": {
+        "title": "History",
+        "done": "Done",
+        "select": "Select",
+        "selectall": "Select All",
+        "deselectall": "Deselect all",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "restore": "Restore",
+        "oneselected": "1 Credential Selected",
+        "manyselected": "{{amount}} Credentials Selected",
+        "archivedtitle": "Archived credentials",
+        "revokedtitle": "Revoked credentials",
+        "revokedlabel": "Revoked",
+        "alert": {
+          "restoresingle": {
+            "title": "Are you sure you want to view this with your other credentials?",
+            "confirm": "Yes, restore credential",
+            "cancel": "Cancel"
+          },
+          "restoremultiple": {
+            "title": "Are you sure you want to view these with your other credentials?",
+            "confirm": "Yes, restore credentials",
+            "cancel": "Cancel"
+          },
+          "deletesingle": {
+            "title": "This will delete the selected credential from your wallet permanently",
+            "confirm": "Delete from wallet",
+            "cancel": "Cancel"
+          },
+          "deletemultiple": {
+            "title": "This will delete the selected credentials from your wallet permanently",
+            "confirm": "Delete from wallet",
+            "cancel": "Cancel"
+          },
+          "restorerevoked": {
+            "title": "You cannot restore revoked credentials.",
+            "confirm": "Ok"
+          }
+        }
+      }
+    },
+    "scan": {
+      "tab": {
+        "title": "Align the QR code within the frame to scan",
+        "permissionalert": "Enable the camera in your device settings to start scanning",
+        "cameraunavailable": "We're unable to access your camera.",
+        "missingidentifier": {
+          "title": "To establish a connection you will need to create an identifier",
+          "create": "Create identifier",
+          "cancel": "Cancel"
+        }
+      },
+      "pastemeerkatid": "Paste Meerkat ID"
+    },
+    "notifications": {
+      "tab": {
+        "header": "Notifications",
+        "empty": "No notifications",
+        "chips": {
+          "all": "All",
+          "identifiers": "Identifiers",
+          "credentials": "Credentials"
+        },
+        "unknownissuer": {
+          "text": "Someone is trying to issue you a credential. Ensure your connections are set up to accept it.",
+          "button": "OK"
+        },
+        "unknownrequest": {
+          "text": "Someone is requesting a credential from you. Ensure your connections are set up to accept it.",
+          "button": "OK"
+        },
+        "sections": {
+          "new": "New",
+          "earlier": {
+            "title": "Earlier",
+            "end": "End of notifications",
+            "buttons": {
+              "showealier": "View previous notifications"
+            }
+          }
+        },
+        "optionmodal": {
+          "title": "Notification options",
+          "done": "Done",
+          "showdetail": "Show details",
+          "markasread": "Mark as read",
+          "markasunread": "Mark as unread",
+          "delete": "Delete notification",
+          "deletealert": {
+            "text": "Deleting this notification cannot be undone. Once deleted you will no longer be able to require any actions required from this notification.",
+            "accept": "Delete",
+            "cancel": "Cancel"
+          }
+        },
+        "labels": {
+          "exnipexgrant": "<strong>{{connection}}</strong> wants to issue you a credential",
+          "multisigicp": "<strong>{{connection}}</strong> is requesting to create a group identifier with you",
+          "exnipexapply": "<strong>{{connection}}</strong> has requested a credential from you",
+          "exnipexgrantrevoke": "Your <strong>{{credential}}</strong> credential has been revoked",
+          "exnipexapplyproposed": "<strong>{{initiator}}</strong> has proposed a credential for the <strong>{{connection}}’s</strong> request",
+          "sign": "<strong>Signing request</strong> for <strong>{{connection}}</strong>",
+          "signeventinfo": "<strong>Signing event information</strong>",
+          "connectinstructions": "<strong>Check your email for instructions on how to connect with {{connection}}</strong>"
+        }
+      },
+      "details": {
+        "buttons": {
+          "close": "Close",
+          "accept": "Accept",
+          "decline": "Decline",
+          "cancel": "Cancel",
+          "back": "Back",
+          "choosecredential": "Choose credential",
+          "providecredential": "Provide credential",
+          "addcred": "Add Credential",
+          "done": "Done",
+          "ok": "Ok",
+          "delete": "Delete",
+          "reject": "Reject"
+        },
+        "credential": {
+          "request": {
+            "alert": {
+              "text": "You don’t have any credentials available that match this request. In order to offer this credential you will need to acquire one first.",
+              "confirm": "OK"
+            },
+            "information": {
+              "title": "Credential request",
+              "proposalfrom": "Proposal from",
+              "proposedcred": "Proposed credential",
+              "requestfrom": "Request from",
+              "requestedcredential": "Requested credential",
+              "informationrequired": "Information required",
+              "threshold": "Threshold",
+              "alert": {
+                "textdecline": "Are you sure you want to decline this credential request? You won't be able to change your decision later."
+              },
+              "groupmember": "Group members",
+              "joinedmembers": "Joined members",
+              "reachthreshold": "The threshold has been met, and your group has agreed to your proposed credential presentation.",
+              "initiatorselectcred": "As the group initiator, you'll select the credential to present. Once chosen, the rest of the group will be notified and asked to approve or decline the selection.",
+              "initiatorselectedcred": "You've already proposed a credential for this request. It will be sent once the group’s threshold is met.",
+              "memberreviewcred": "The group initiator has proposed a credential to present for a recent request. Please review the proposal and choose to accept or reject it.",
+              "memberwaitingproposal": "The group initiator will propose a credential to present. Once chosen, the you and the rest of the group will be notified and asked to approve or decline the selection.",
+              "memberjoined": "Your response has been recorded. Please check back for updates.",
+              "providecredential": "Provided credential",
+              "missingproposedcredential": "The proposed credential has either not yet been accepted in your wallet or you have since deleted it.",
+              "initiatordeletedproposedcredential": "You have deleted this credential from your wallet since proposing this."
+            },
+            "choosecredential": {
+              "description": "Below is a list of all '{{requestCred}}' credentials, ordered by the name of the issuer",
+              "title": "Choose credential",
+              "active": "Active",
+              "noactive": "There are no active '{{requestCred}}' credentials.",
+              "revoked": "Revoked",
+              "norevoked": "There are no revoked '{{requestCred}}' credentials.",
+              "disclaimer": "The below credentials are revoked and may not be accepted by the verifier."
+            }
+          },
+          "receive": {
+            "title": "Receive credential",
+            "receivefrom": "Receive credential",
+            "from": "from",
+            "credentialpending": "Credential pending",
+            "credentialdetailbutton": "Credential details",
+            "members": "Group members",
+            "revokedalert": "This credential has been revoked by the issuer and is no longer available.",
+            "relatedidentifier": "Related identifier",
+            "initiatoracceptedalert": "Your group is receiving a credential. Once the group initiator accepts it, you’ll be able to accept yours too.",
+            "alert": {
+              "textdecline": "Are you sure you want to decline this credential issuance? You won't be able to change your decision later."
+            }
+          }
+        },
+        "identifier": {
+          "title": "Identifier request",
+          "subtitle": "You have received a request to join a group identifier",
+          "requestfrom": "Request from",
+          "othermembers": "Other members",
+          "pending": "Pending",
+          "accepted": "Accepted",
+          "threshold": "Threshold",
+          "alert": {
+            "textdecline": "Are you sure you want to decline this request? You won't be able to change your decision later.",
+            "missingissuer": {
+              "confirm": "OK",
+              "text": "This credential was issued through a connection that has since been deleted or is no longer accessible. As a result, the connection details cannot be displayed."
+            }
+          },
+          "errorpage": {
+            "title": "Please review",
+            "alerttext": "You are missing one or more connections required for this group request. Please scan all necessary QR codes to proceed.",
+            "instructions": {
+              "title": "Instructions",
+              "detailtext": "In order to continue and complete the group setup, please follow the instructions below.",
+              "stepone": "Ensure you have scanned all participant's QR codes.",
+              "steptwo": "After scanning, try to open this notification again."
+            },
+            "help": {
+              "title": "Need help?",
+              "detailtext": "If you need assistance, please email us - <0>{{emailAddress}}</0>.",
+              "emailaddress": "support@veridian.id"
+            },
+            "continuesetup": "Continue setup"
+          }
+        },
+        "sign": {
+          "title": "Signing request",
+          "identifier": "Identifier",
+          "info": "Signature information",
+          "transaction": {
+            "data": "Signature data"
+          },
+          "button": {
+            "sign": "Sign",
+            "dontallow": "Don't allow"
+          }
+        },
+        "connectinstructions": {
+          "title": "Instructions",
+          "subtitle": "Connect with {{connection}}",
+          "description": "You should have received an email explaining how to create a connection between your wallet and with the {{connection}} team.",
+          "steps": {
+            "one": "Make sure your identifier is set up in the wallet",
+            "two": "Open the email subject “Connect with {{connection}} via your Identity Wallet”",
+            "three": "Find the QR code within the email",
+            "four": "Open the scanner using the button at the bottom of this notification or from the wallet’s navigation tab",
+            "five": "Scan the QR code or paste the Connection ID and advance",
+            "six": "You're now connected with {{connection}}"
+          },
+          "button": {
+            "label": "Scan now"
+          }
+        }
+      }
+    },
+    "menu": {
+      "tab": {
+        "header": "Menu",
+        "settings": {
+          "sections": {
+            "header": "Settings",
+            "security": {
+              "title": "Security",
+              "biometry": "Biometric authentication",
+              "biometricsalert": {
+                "message": "In order to use biometrics you need to enable this in your settings. Would you like to do this?",
+                "ok": "Go to settings",
+                "cancel": "Setup later"
+              },
+              "changepin": {
+                "title": "Change passcode",
+                "createpasscode": "Create new passcode",
+                "reenterpasscode": "Re-enter new passcode",
+                "cancel": "Cancel",
+                "back": "Back",
+                "description": "Create a new passcode to secure your wallet",
+                "cantremember": {
+                  "label": "Can't remember?"
+                }
+              },
+              "managepassword": {
+                "title": "Manage operations password",
+                "page": {
+                  "title": "Manage password",
+                  "enable": "Enable operations password",
+                  "change": "Change operations password",
+                  "alert": {
+                    "enablemessage": "By turning on an operations password you will be required to use this to verify any future operations instead of your passcode.",
+                    "disablemessage": "By turning off your operations password you will be required to use your passcode to verify any future operations.",
+                    "existingpassword": "Your new operations password must be different to your existing one.",
+                    "confirm": "Continue",
+                    "cancel": "Cancel",
+                    "ok": "Ok"
+                  }
+                }
+              },
+              "seedphrase": {
+                "title": "Recovery phrase",
+                "page": {
+                  "title": "Recovery phrase",
+                  "tips": {
+                    "label": "Useful tips:",
+                    "one": "Write down or make a copy of your recovery phrase and store it in a safe location.",
+                    "two": "Double-check that your words are copied in the correct order (1 to 18).",
+                    "three": "Ensure there are no spelling errors."
+                  },
+                  "hiddentext": "Press the ‘view recovery phrase’ button when you’re ready to see your recovery phrase. Remember to make sure nobody is looking!",
+                  "button": {
+                    "view": "View recovery phrase",
+                    "hide": "Hide recovery phrase"
+                  },
+                  "confirmmodal": {
+                    "title": "Stay safe",
+                    "subtitle": "Confirm and acknowledge the following:",
+                    "firstcondition": "Nobody else can see my screen",
+                    "secondcondition": "Sharing my recovery phrase with others puts my identity at risk",
+                    "thirdcondition": "Losing my recovery phrase means I will lose access to my wallet",
+                    "button": {
+                      "confirm": "View recovery phrase",
+                      "cancel": "Cancel"
+                    }
+                  }
+                }
+              }
+            },
+            "support": {
+              "title": "Support & Legal",
+              "contact": "Veridian support",
+              "learnmore": "Learn More About Veridian",
+              "terms": {
+                "title": "Terms and Privacy Policy",
+                "submenu": {
+                  "title": "Terms & privacy",
+                  "termsofuse": "Terms of use",
+                  "privacy": "Privacy policy"
+                }
+              },
+              "version": "App Version"
+            },
+            "deleteaccount": {
+              "button": "Delete account",
+              "alert": {
+                "title": "This will delete all wallet data. You can restore your account anytime with your secret recovery phrase.",
+                "confirm": "Delete account",
+                "cancel": "Cancel"
+              }
+            }
+          }
+        },
+        "items": {
+          "profile": {
+            "title": "Profile",
+            "tabheader": "Profile",
+            "tabedit": "Edit profile",
+            "actionedit": "Edit",
+            "actionconfirm": "Confirm",
+            "actioncancel": "Cancel",
+            "name": "Name"
+          },
+          "connections": {
+            "title": "Connections",
+            "tabheader": "Connections"
+          },
+          "connectwallet": {
+            "title": "Cardano connect",
+            "sublabel": "CIP-45",
+            "tabheader": "Cardano Connect",
+            "connectbtn": "Connect with Cardano",
+            "disconnectbeforecreatealert": {
+              "message": "You are currently connected. To connect with a new wallet, you will be disconnected from your current selection. Would you like to disconnect and continue?",
+              "confirm": "Continue",
+              "cancel": "Cancel"
+            },
+            "connectionbrokenalert": {
+              "message": "Your connection has been disconnected as you have deleted the chosen identifier paired with this connection. Please choose a new identifier to re-establish this connection.",
+              "confirm": "Ok"
+            },
+            "inputpidmodal": {
+              "header": "Paste Meerkat ID",
+              "cancel": "Cancel",
+              "confirm": "Confirm",
+              "scanQR": "Scan QR code"
+            },
+            "connectionhistory": {
+              "title": "Connection History",
+              "action": {
+                "delete": "Delete"
+              },
+              "deletealert": {
+                "message": "Are you sure you want to delete this connection?",
+                "confirm": "Yes, I’m sure",
+                "cancel": "Cancel"
+              },
+              "missingidentifieralert": {
+                "message": "To connect with Cardano, you need to create an individual identifier. Would you like to create one now?",
+                "confirm": "Create identifier",
+                "cancel": "Cancel"
+              },
+              "confirmconnect": {
+                "done": "Done",
+                "connectbtn": "Connect",
+                "disconnectbtn": "Disconnect",
+                "connectingbtn": "Connecting...",
+                "pending": "Pending"
+              }
+            },
+            "request": {
+              "stageone": {
+                "title": "Connect Cardano",
+                "message": "Would you like to establish a CIP-45 Connection?",
+                "alert": {
+                  "titleconfirm": "Are you sure you want to decline this connection?",
+                  "confirm": "Decline",
+                  "cancel": "Cancel"
+                }
+              },
+              "stagetwo": {
+                "title": "Choose identifier",
+                "message": "Which individual identifier would you like to make the connection with?",
+                "confirm": "Confirm"
+              },
+              "button": {
+                "back": "Back",
+                "accept": "Accept",
+                "decline": "Decline"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "connections": {
+    "page": {
+      "title": "Connections",
+      "create": "Add a connection",
+      "search": {
+        "placeholder": "Search connections",
+        "connections": "Connections",
+        "noresult": {
+          "title": "No results for “{{keyword}}”",
+          "text": "Check the spelling or try a new search"
+        }
+      },
+      "indentifierselector": {
+        "title": "Choose identifier",
+        "message": "Which identifier would you like to make the connection with?",
+        "button": {
+          "cancel": "Cancel",
+          "confirm": "Confirm"
+        }
+      },
+      "alert": {
+        "message": "To create a connection, you need to create an identifier. Would you like to create one now?",
+        "confirm": "Create identifier",
+        "cancel": "Cancel"
+      },
+      "deletepending": {
+        "title": "Connection options",
+        "description": "This connection is pending. You’ll be notified once they accept. If you no longer require this connection, tap “Delete connection” to remove.",
+        "button": "Delete connection",
+        "secondchecktitle": "Are you sure you want to delete this connection?"
+      }
+    },
+    "details": {
+      "done": "Done",
+      "label": "Label",
+      "date": "Date Created",
+      "endpoints": "Service Endpoints",
+      "history": "Connection History",
+      "connectedwith": "Connected with “{{ issuer }}“",
+      "issuance": "Received a “{{ credential }}“",
+      "requestpresent": "“{{ issuer }}“ has requested a credential presentation",
+      "update": "“{{ credential }}“ has been revoked",
+      "presented": "Presented “{{ credentialType }}“ credential",
+      "notavailable": "N/A",
+      "details": "Details",
+      "notes": "Notes",
+      "nocurrentnotes": "No current notes",
+      "nocurrentnotesext": "There are currently no notes associated with this connection.",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "title": "Title",
+      "message": "Message",
+      "delete": "Delete connection",
+      "options": {
+        "title": "Connection options",
+        "labels": {
+          "add": "Add a note",
+          "manage": "Manage notes",
+          "delete": "Delete connection"
+        },
+        "alert": {
+          "deleteconnection": {
+            "title": "Are you sure you want to delete this connection?",
+            "confirm": "Yes, I'm sure",
+            "cancel": "Cancel"
+          },
+          "deletenote": {
+            "title": "Are you sure you want to delete this note?",
+            "confirm": "Yes, I'm sure",
+            "cancel": "Cancel"
+          }
+        }
+      },
+      "clouderror": "We couldn’t locate this connection in the cloud. It might become available again soon, but some information could be lost.\n\nIf you no longer require this connection, tap “Delete connection” to remove."
+    },
+    "unknown": "Unknown"
+  },
+  "connectmodal": {
+    "title": "Add a",
+    "scan": "Scan QR Code",
+    "connect": "Scan to connect",
+    "provide": "Provide QR Code",
+    "close": "Done"
+  },
+  "verifypassword": {
+    "title": "Enter password",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "button": {
+      "forgot": "Forgotten your password?"
+    },
+    "error": {
+      "hasNoMatch": "Password didn't match"
+    },
+    "alert": {
+      "choice": {
+        "title": "Would you like to see your password hint or reset your password?"
+      },
+      "button": {
+        "seepasswordhint": "View hint",
+        "resetmypassword": "Reset password",
+        "tryagain": "Try again",
+        "cancel": "Cancel"
+      },
+      "hint": {
+        "title": "Your password hint is"
+      }
+    }
+  },
+  "verifypasscode": {
+    "cancel": "Cancel",
+    "title": "Enter passcode",
+    "description": "Please enter your passcode to verify",
+    "error": "Incorrect passcode",
+    "forgotten": {
+      "button": "I've forgotten my passcode"
+    },
+    "alert": {
+      "text": {
+        "verify": "If you've forgotten your passcode, please verify your recovery phrase to gain access to your wallet",
+        "restart": "You currently haven't generated a recovery phrase, would you like to start your onboarding again?"
+      },
+      "button": {
+        "verify": "Verify your Recovery Phrase",
+        "restart": "Start again",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "forgotauth": {
+    "cancel": "Cancel",
+    "passcode": {
+      "title": "Forgot passcode",
+      "description": "Please verify your recovery phrase to reset your passcode. To start typing click on the first option."
+    },
+    "password": {
+      "title": "Forgot password",
+      "description": "Please verify your recovery phrase to reset your password. To start typing click on the first option."
+    },
+    "newpasscode": {
+      "title": "New passcode",
+      "description": "Create a new passcode to re-secure your wallet and perform operations",
+      "reenterpasscode": "Re-enter passcode"
+    },
+    "newpassword": {
+      "title": "New password",
+      "description": "Create a new operations password so you can access additional wallet features."
+    }
+  },
+  "shareidentifier": {
+    "title": "Share connection",
+    "subtitle": {
+      "identifier": "To share, either scan the QR code or select from the provided options below",
+      "connection": "Show this QR code to the person you want to connect with, or click the 'More share options' link"
+    },
+    "done": "Done",
+    "divider": "or",
+    "copykey": "Copy connection URL",
+    "more": "More share options"
+  },
+  "createidentifier": {
+    "cancel": "Cancel",
+    "back": "Back",
+    "done": "Done",
+    "add": {
+      "title": "Add an identifier",
+      "confirmbutton": "Create identifier"
+    },
+    "share": {
+      "title": "Share identifier",
+      "subtitle": "You've scanned",
+      "copybutton": "Copy connection URL",
+      "notes": {
+        "top": "Before proceeding, please make sure that everyone you want to include as a signer scans this QR code.",
+        "middle": "After everyone has scanned your QR code, please be sure to scan everyone else's QR code as well.",
+        "bottom": "To continue with the initiation of the group identifier you must have scanned at least one other QR code."
+      },
+      "scanbutton": "Scan QR codes",
+      "initiatebutton": "Initiate group",
+      "scanalert": {
+        "text": "Have all the individuals you want to include as members scanned your QR code?",
+        "confirm": "Confirm and scan",
+        "cancel": "Cancel"
+      },
+      "delete": "Delete identifier",
+      "pending": {
+        "top": "Still loading.",
+        "bottom": "Check back later or contact support if it persists."
+      }
+    },
+    "receive": {
+      "title": "Setup identifier",
+      "confirmbutton": "Add identifier",
+      "notes": {
+        "top": "Before proceeding, please make sure everyone included as a member scans this QR code.",
+        "middle": "Remember to scan everyone else’s QR code too!"
+      }
+    },
+    "scan": {
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "pasteoobi": "Paste URL",
+      "initiate": "Initiate group",
+      "scanqrcode": "Scan QR code",
+      "pastecontents": "Paste contents"
+    },
+    "connections": {
+      "title": "Connections",
+      "subtitle": "These are the members you scanned. Please review before proceeding.",
+      "continue": "Confirm connections"
+    },
+    "threshold": {
+      "title": "Set a Threshold",
+      "subtitle": "Set the threshold to determine the level of consensus required",
+      "label": "Threshold",
+      "continue": "Confirm threshold"
+    },
+    "confirm": {
+      "title": "Confirm",
+      "subtitle": "Confirm all details for your group identifier are accurate",
+      "displayname": "Display Name",
+      "selectedmembers": "Selected Members",
+      "treshold": "Threshold",
+      "continue": "Confirm identifier",
+      "cancel": "Cancel",
+      "alert": {
+        "text": "Cancelling now means you'll need to restart the group initiation process.",
+        "cancel": "Yes, cancel",
+        "back": "Back"
+      }
+    },
+    "displayname": {
+      "title": "Display name",
+      "placeholder": "Create a name for this identifier"
+    },
+    "color": {
+      "title": "Choose card colour"
+    },
+    "aidtype": {
+      "title": "Identifier type",
+      "default": {
+        "label": "Individual"
+      },
+      "multisig": {
+        "label": "Group"
+      },
+      "delegated": {
+        "label": "Delegated"
+      }
+    },
+    "aidinfo": {
+      "title": "Identifier types",
+      "text": "A description of each type you can create identifiers for.",
+      "individual": {
+        "label": "Individual",
+        "text": "Use these identifiers to represent all your individual personas. Currently, a single key pair is used to sign statements with these identifiers, and it can be updated. In the future, these identifiers might become more robust with multi-device support and social recovery options."
+      },
+      "group": {
+        "label": "Group",
+        "text": "Use a group identifier to represent an entity controlled by multiple people, like a committee. You can set a threshold to decide how many members are needed to create a valid signature or recover the identifier."
+      },
+      "delegated": {
+        "label": "Delegated",
+        "text": "The delegated option is currently being developed. Identifiers might be delegated for advanced recovery in case of a security breach, which is ideal for an organisational structure in enterprises."
+      },
+      "button": {
+        "done": "Done"
+      }
+    },
+    "theme": {
+      "title": "Choose card style"
+    },
+    "error": {
+      "maxlength": "Must be less than 32 characters long"
+    }
+  },
+  "offline": {
+    "title": "You’re offline",
+    "description": "You’ve lost connection to the cloud agent. Once the connection has been re-established your wallet will return to normal usage."
+  },
+  "shareqr": {
+    "divider": "or",
+    "more": "More share options"
+  },
+  "toast": {
+    "copiedtoclipboard": "Copied to clipboard",
+    "identifierrequested": "Identifier request pending",
+    "identifiercreated": "Identifier pending",
+    "identifierupdated": "Identifier created",
+    "identifierdeleted": "Identifier successfully deleted",
+    "credentialdeleted": "Credential deleted successfully",
+    "credentialsdeleted": "Credentials deleted successfully",
+    "credentialarchived": "Credential archived successfully",
+    "credentialrestored": "Credential restored successfully",
+    "credentialsrestored": "Credentials restored successfully",
+    "connectiondeleted": "Connection deleted successfully",
+    "qrsuccess": "QR code scanned successfully",
+    "qrerror": "QR code not recognised",
+    "connectionrequestincoming": "New Connection Request",
+    "connectionrequestpending": "Connection request pending",
+    "newconnectionadded": "New connection added",
+    "credentialrequestpending": "Credential request pending",
+    "newcredentialadded": "New credential added",
+    "notesupdated": "Notes updated successfully",
+    "noteremoved": "Note removed successfully",
+    "maxfavouritesreached": "Maximum of 5 favourites reached",
+    "usernamecreationsuccess": "Welcome, {{username}}!",
+    "usernamecreationerror": "Unable to set name. Please try again.",
+    "walletconnectiondeleted": "Delete successfully",
+    "connectwalletsuccess": "Connected successfully",
+    "disconnectwallet": "Disconnected successfully",
+    "unableconnectwalleterror": "Unable to connect",
+    "peeridsuccess": "Peer ID successful",
+    "peeriderror": "Peer ID not recognised",
+    "peeridnotrecognised": "Peer ID not recognised",
+    "setupbiometricsuccess": "Biometrics setup successfully",
+    "rotatekeysuccess": "Individual keys rotated successfully",
+    "rotatekeyerror": "Unable to rotate keys",
+    "newmultisignmember": "New member added to group",
+    "multisignidentifiercreated": "Identifier added to “For groups“",
+    "delegatedidentifiercreated": "Identifier added to “For delegates“",
+    "passcodeupdated": "Passcode updated successfully",
+    "passwordupdated": "Password updated successfully",
+    "passworddisabled": "Password turned off",
+    "passwordcreated": "Password created successfully",
+    "sharecredsuccess": "Credential shared successfully",
+    "proposedcredsuccess": "Credential proposed to group",
+    "sharecrederror": "Unable to propose credential",
+    "deleteconnectionerror": "Unable to delete connection",
+    "deletecrederror": "Unable to delete credential",
+    "deleteidentifiererror": "Unable to delete identifier",
+    "archivedcrederror": "Unable to archive credential",
+    "signsuccessful": "Sign successful",
+    "savepasswordhinterror": "Unable to delete password hint",
+    "editidentifiererror": "Unable to update identifier",
+    "failedupdateconnectionerror": "Failed to update connection",
+    "duplicateconnectionerror": "Connection already established",
+    "groupidnotmatcherror": "Connection not part of this group",
+    "unknownerror": "Something went wrong, try again",
+    "proposalcredaccepted": "Credential proposal accepted",
+    "proposalcredreject": "Credential proposal rejected",
+    "proposalcredfailerror": "Unable to record response",
+    "deleteaccounterror": "Unable to delete account",
+    "deleteaccountsuccess": "Account deleted successfully",
+    "remotesignsuccess": "Signed successfully"
+  },
+  "request": {
+    "sign": {
+      "title": "Sign",
+      "identifier": "Identifier",
+      "transaction": {
+        "data": "Data"
+      }
+    },
+    "button": {
+      "acceptoffer": "Accept credential",
+      "cancel": "Cancel",
+      "back": "Back",
+      "accept": "Accept",
+      "decline": "Decline",
+      "sign": "Sign",
+      "dontallow": "Don't allow"
+    },
+    "alert": {
+      "cancel": "Cancel"
+    },
+    "pending": "{{action}} pending",
+    "success": "{{action}} successful"
+  },
+  "inputrequest": {
+    "title": {
+      "username": "Welcome! What should we call you?",
+      "connectionalias": "It looks like your new connection doesn't have a name yet. Let's give them one!"
+    },
+    "input": {
+      "title": "Name"
+    },
+    "button": {
+      "confirm": "Confirm"
+    }
+  },
+  "nameerror": {
+    "onlyspace": "Must contain at least 1 (non-space) character",
+    "maxlength": "You have reached the 32 character limit",
+    "hasspecialchar": "Only use letters (a-z), numbers (0-9), underscores (_) and hyphens (-)",
+    "duplicatename": "Must not be a name already in use"
+  },
+  "biometry": {
+    "reason": "Please authenticate",
+    "canceltitle": "Cancel",
+    "iosfallbacktitle": "Enter Passcode",
+    "iosfallbackpasswordtitle": "Enter Password",
+    "androidtitle": "Authentication",
+    "androidsubtitle": "Authentication using biometrics",
+    "setupbiometryheader": "Do you want to allow “Veridian” to use biometrics?",
+    "setupbiometryconfirm": "Ok",
+    "setupbiometrycancel": "Don't allow",
+    "cancelbiometryheader": "You canceled Biometrics. You can set this up later via the settings page."
+  },
+  "genericerror": {
+    "text": "Something went wrong. Please try again.",
+    "button": "OK"
+  },
+  "nowitnesserror": {
+    "text": "Your SSI agent is misconfigured. For additional information, contact your SSI Cloud Agent provider.",
+    "button": "OK"
+  },
+  "readmore": {
+    "more": "Read more",
+    "less": "Read less"
+  },
+  "systemcompatibility": {
+    "title": "Operating system outdated",
+    "description": "Your device's operating system does not meet the minimum requirements for secure data storage. To protect your information, update is required.",
+    "ios": {
+      "os": "Required iOS",
+      "youros": "Your iOS",
+      "storage": "Secure Storage"
+    },
+    "android": {
+      "os": "Required Android OS",
+      "youros": "Your Android OS",
+      "webview": "Required WebView",
+      "yourwebview": "Your WebView",
+      "storage": "Secure Storage"
+    },
+    "noinfo": "No device information available."
+  },
+  "systemthreats": {
+    "title": "Threats Detected",
+    "description": "The following security threats have been detected on your device.",
+    "nothreats": "No security threats detected",
+    "initerror": "Security module initialization failed. Critical protections are not active, leaving the application vulnerable.",
+    "detected": "Detected",
+    "privilegedaccess": "Privileged Access",
+    "debug": "Debug Mode",
+    "simulator": "Simulator/Emulator",
+    "appintegrity": "App Integrity",
+    "unofficialstore": "Unofficial Store",
+    "hooks": "Hooks Detected",
+    "devicebinding": "Device Binding",
+    "securehardwarenotavailable": "Secure Hardware Not Available",
+    "obfuscationissues": "Obfuscation Issues",
+    "developermode": "Developer Mode",
+    "adbenabled": "ADB Enabled",
+    "alert": "Security threats detected. Please resolve the issues listed, then close and reopen the app to continue.",
+    "help": "Help",
+    "rules": {
+      "privilegedaccess": "Detects if the app is running with elevated permissions, such as root access on Android or jailbroken status on iOS.",
+      "debug": "Indicates whether the app is running in debug mode, which may expose sensitive information and make reverse engineering easier.",
+      "simulator": "Detects if the app is running in a simulated environment (emulator/simulator), which is often used for testing and can pose security risks.",
+      "appintegrity": "Verifies if the app's code or resources have been tampered with or modified, which could indicate unauthorized alterations or potential malware injection.",
+      "unofficialstore": "Detects whether the app was installed from an unverified or third-party app store, which may increase the risk of malware and unauthorized modifications.",
+      "hooks": "Identifies attempts to hook or manipulate the app's runtime behavior, which is a common technique used by attackers to intercept and modify functionality.",
+      "devicebinding": "Ensures that the app is tied to a specific device to prevent unauthorized access from different devices, enhancing security against cloning and unauthorized installations.",
+      "securehardwarenotavailable": "Indicates that secure hardware features, such as a secure enclave or trusted execution environment (TEE), are unavailable. While this may be tolerable in some cases, it can reduce security.",
+      "obfuscationissues": "Indicates potential issues with code obfuscation, which is a security measure used to protect the app's code from reverse engineering. Lack of proper obfuscation increases security risks, especially on Android.",
+      "developermode": "Detects if the device has developer mode enabled, which may indicate an increased risk of debugging or modification attempts, particularly on Android.",
+      "adbenabled": "Indicates whether Android Debug Bridge (ADB) is enabled on the device, which can allow unauthorized access or debugging of the app."
+    }
+  }
+}

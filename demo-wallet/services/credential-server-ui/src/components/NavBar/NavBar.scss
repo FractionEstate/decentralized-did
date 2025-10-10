@@ -1,0 +1,145 @@
+#navBar {
+  > * {
+    padding-inline: 2.5rem;
+  }
+
+  a,
+  button,
+  li {
+    --left-padding: 1.25rem;
+    --right-padding: 1rem;
+    color: var(--text-color);
+    text-transform: none;
+    text-decoration: none;
+    border-radius: 1rem;
+    padding: 0.75rem var(--right-padding) 0.75rem var(--left-padding);
+
+    &.logo-button {
+      padding-inline: 0;
+      margin-right: 2rem;
+
+      .header-logo {
+        margin: 0;
+      }
+    }
+
+    &:hover:not(.logo-button):not(.switch-account-button) {
+      background-color: var(--color-primary-200);
+    }
+
+    &:active:not(.logo-button):not(.switch-account-button) {
+      background-color: var(--color-primary-200);
+    }
+
+    &:hover.logo-button,
+    &:active.logo-button {
+      background-color: transparent;
+    }
+
+    &.active {
+      color: var(--color-primary-700);
+    }
+
+    .active-bar {
+      height: 0.125rem;
+      width: calc(100% - (var(--left-padding) + var(--right-padding)));
+      position: absolute;
+      bottom: 0;
+      left: var(--left-padding);
+      border-radius: 0.125rem 0.125rem 0rem 0rem;
+      background-color: var(--color-primary-700);
+    }
+
+    img,
+    svg {
+      margin-right: 0.5rem;
+      vertical-align: text-bottom;
+    }
+  }
+
+  .nav-left,
+  .nav-right {
+    button,
+    li {
+      padding: 0;
+    }
+  }
+
+  .nav-right {
+    margin-right: 1rem;
+
+    a {
+      width: 3rem;
+      padding: 0.75rem;
+      &:not(:last-child) {
+        margin-right: 0.5rem;
+      }
+
+      svg {
+        margin: 0;
+      }
+    }
+  }
+
+  .nav-tablet {
+    .menu-button {
+      margin-right: 0;
+      padding: 0.75rem 1rem 0.75rem 1.25rem;
+    }
+
+    .header-logo {
+      padding: 0.75rem 0;
+    }
+  }
+}
+
+#drawer {
+  text-align: left;
+  height: 100%;
+
+  h6 {
+    padding-left: 1.5rem;
+    margin: 1.25rem 0;
+  }
+
+  .MuiList-root {
+    padding: 0;
+
+    .MuiButtonBase-root {
+      padding: 0.75rem 1rem;
+      border-radius: 1rem;
+
+      &:hover {
+        background-color: var(--color-primary-200);
+      }
+
+      &.active {
+        .MuiTypography-root,
+        .MuiListItemIcon-root {
+          color: var(--color-primary-700);
+        }
+      }
+
+      .active-bar {
+        height: 0.125rem;
+        width: calc(100% - 2.25rem);
+        position: absolute;
+        bottom: 0;
+        left: 1rem;
+        border-radius: 0.125rem 0.125rem 0rem 0rem;
+        background-color: var(--color-primary-700);
+      }
+
+      .MuiTypography-root,
+      .MuiListItemIcon-root {
+        font-weight: 600;
+        color: var(--text-color);
+      }
+
+      .MuiListItemIcon-root {
+        min-width: 1.5rem;
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}

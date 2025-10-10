@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  keria:
+    container_name: idw-keria
+    restart: unless-stopped
+    image: cardanofoundation/cf-idw-keria:1.1.0-PR1223-25dbe26-GHRUN15555427316
+    environment:
+      - KERI_AGENT_CORS=true
+      - ALLOW_INTRODUCTIONS=true
+      - REMOTE_SIGNING=true
+    volumes:
+      - keria-data:/usr/local/var/keri
+      - ./keria-config/config.json:/keria/scripts/keri/cf/backer-oobis.json
+    entrypoint: keria start --config-file backer-oobis --config-dir ./scripts --loglevel INFO
+    ports:
+      - 3901:3901
+      - 3902:3902
+      - 3903:3903
+
+  witnesses:
+    container_name: idw-witnesses
+    restart: unless-stopped
+    image: weboftrust/keri:1.1.26
+    environment:
+        - PYTHONUNBUFFERED=1
+        - PYTHONIOENCODING=UTF-8
+    entrypoint:
+        - kli
+    command:
+        - witness
+        - demo
+    volumes:
+        - ./keria-config/witnesses:/keripy/scripts/keri/cf/main
+    ports:
+      - 5642:5642
+      - 5643:5643
+      - 5644:5644
+      - 5645:5645
+      - 5646:5646
+      - 5647:5647
+
+  cred-issuance:
+    container_name: cred-issuance
+    build:
+      context: ./services/credential-server
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      - OOBI_ENDPOINT=http://cred-issuance:3001
+      - KERIA_ENDPOINT=http://keria:3901
+      - KERIA_BOOT_ENDPOINT=http://keria:3903
+    ports:
+      - 3001:3001
+    volumes:
+      - issuer-server-data:/app/data
+
+  cred-issuance-ui:
+    container_name: cred-issuance-ui
+    build:
+      context: ./services/credential-server-ui
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    environment:
+      - VITE_SERVER_URL=${VITE_SERVER_URL:-http://localhost:3001}
+    ports:
+      - 3000:80
+
+volumes:
+  keria-data:
+  issuer-server-data:

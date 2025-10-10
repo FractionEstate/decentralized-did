@@ -1,0 +1,24 @@
+.incoming-request {
+  ion-header ion-toolbar {
+    margin-top: 0.625rem;
+    --background: var(--ion-color-neutral-200);
+
+    ion-title.md {
+      margin-left: -3rem;
+    }
+  }
+
+  h2 {
+    text-align: center;
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    ion-header ion-toolbar {
+      margin-top: 0.531rem;
+
+      ion-title.md {
+        margin-left: -2rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,159 @@
+.page-header {
+  &.show-header {
+    visibility: visible;
+  }
+
+  &.hide-header {
+    visibility: hidden;
+    height: 0;
+  }
+
+  ion-toolbar {
+    --background: transparent;
+
+    ion-title.md {
+      margin-left: 0;
+    }
+  }
+
+  ion-toolbar,
+  ion-grid,
+  ion-col {
+    padding-inline: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+  }
+
+  ion-toolbar,
+  ion-buttons,
+  ion-button {
+    margin: 0;
+  }
+
+  ion-toolbar {
+    ion-buttons.has-action.md {
+      min-width: 10%;
+    }
+
+    ion-buttons.has-progressbar {
+      .action-button-label {
+        --padding-start: 1rem;
+      }
+
+      &.md {
+        min-width: auto;
+      }
+    }
+
+    ion-buttons ion-button {
+      color: var(--ion-color-neutral-700);
+      --ion-toolbar-color: var(--ion-color-neutral-700);
+
+      &.md {
+        --ripple-color: transparent;
+      }
+
+      &.button-has-icon-only,
+      &.back-button {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 1.5rem;
+        background: var(--ion-color-neutral-200);
+      }
+
+      &.close-button-label,
+      &.action-button-label {
+        font-size: 1rem;
+        font-weight: 700;
+
+        & > * {
+          color: var(--ion-color-neutral-700);
+        }
+
+        &.md {
+          font-size: 0.8rem;
+        }
+      }
+
+      ion-icon {
+        width: 1.475rem;
+        height: 1.475rem;
+        margin: 0;
+      }
+
+      &.close-button-label {
+        --padding-start: 0px;
+      }
+
+      &.action-button-label {
+        --padding-end: 0px;
+        &[disabled="false"] {
+          color: var(--ion-color-primary-700);
+        }
+      }
+
+      &[disabled],
+      &.button-disabled > p {
+        color: var(--ion-color-neutral-300) !important;
+        opacity: 1;
+      }
+    }
+
+    .progress-bar-container {
+      &.has-left {
+        margin-left: 1.25rem;
+      }
+
+      ion-progress-bar,
+      ion-progress-bar::part(progress) {
+        height: 0.5rem;
+        border-radius: 0.5rem;
+
+        --progress-background: var(--ion-color-neutral-800);
+        --buffer-background: var(--ion-color-neutral-400);
+      }
+    }
+  }
+
+  ion-title {
+    padding: 0;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    ion-toolbar,
+    ion-toolbar.md {
+      ion-buttons ion-button {
+        min-width: auto;
+
+        &.button-has-icon-only,
+        &.back-button {
+          width: 2.25rem;
+          height: 2.25rem;
+
+          &::part(native) {
+            padding: 0.35rem;
+          }
+        }
+
+        ion-icon {
+          width: 1.18rem;
+          height: 1.18rem;
+          margin: 0;
+        }
+      }
+
+      .progress-bar-container {
+        &.has-left {
+          margin-left: 0.75rem;
+        }
+
+        ion-progress-bar,
+        ion-progress-bar::part(progress) {
+          height: 0.35rem;
+          border-radius: 0.35rem;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+.set-passcode {
+  .responsive-page-content {
+    justify-content: space-evenly;
+  }
+
+  .page-header {
+    ion-toolbar {
+      --background: transparent;
+    }
+
+    .close-button-label {
+      min-width: 3.5rem;
+    }
+  }
+}

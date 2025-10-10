@@ -1,0 +1,20 @@
+.delete-pending-modal {
+  &.responsive-modal .responsive-modal-content .page-header ion-buttons {
+    min-width: 10%;
+  }
+
+  .user-tips {
+    margin-top: 0.75rem;
+    margin-bottom: 1.5rem !important;
+    margin-inline: 0;
+
+    p {
+      margin: 0 0 0.5rem;
+    }
+
+    @media screen and (min-width: 250px) and (max-width: 370px) {
+      margin-top: 0.25rem;
+      margin-bottom: 1rem !important;
+    }
+  }
+}

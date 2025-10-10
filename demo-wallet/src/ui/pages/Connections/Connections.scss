@@ -1,0 +1,240 @@
+.connections {
+  padding-inline: 0;
+
+  ion-header.page-header ion-toolbar {
+    margin-top: 0.625rem;
+    padding-right: 0;
+    padding-left: 0;
+
+    ion-button {
+      background: var(--ion-color-neutral-100);
+    }
+  }
+
+  ion-header {
+    margin-bottom: -1px;
+    padding-inline: 1.25rem;
+  }
+
+  ion-content.scrollable-page-content {
+    --offset-bottom: 1px !important;
+    --background: var(--ion-color-neutral-200);
+  }
+
+  .cards-placeholder-container {
+    padding-inline: 1.25rem;
+  }
+
+  .placeholder-spacer {
+    height: 3.5rem;
+  }
+
+  .back-button {
+    border-radius: 1.5rem;
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  > ion-content {
+    overflow: initial;
+  }
+
+  .page-header {
+    height: calc(var(--ion-safe-area-top, 0) + 4.25rem);
+    transition: all 0.25s;
+
+    ion-toolbar {
+      height: 100%;
+      overflow: hidden;
+    }
+  }
+
+  .connections-header-area {
+    display: flex;
+    flex-direction: column;
+    background: var(--ion-color-neutral-200);
+    z-index: 2;
+    position: relative;
+  }
+
+  &.hide-header {
+    .page-header {
+      height: var(--ion-safe-area-top, 0);
+      --min-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .connection-search-input {
+      opacity: 1 !important;
+      pointer-events: auto !important;
+    }
+  }
+
+  .connections-body {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 0 !important;
+
+    .connections-list {
+      height: 100%;
+    }
+  }
+
+  .alphabet-selector {
+    display: flex;
+    flex-direction: column;
+    margin-top: calc(3.25rem + env(safe-area-inset-bottom));
+
+    ion-button {
+      width: 1.5rem;
+      height: 1.25rem;
+      min-height: 1rem;
+      margin: 0;
+      font-size: 0.85rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1rem;
+      color: var(--ion-color-primary-700);
+      --background: transparent;
+      --background-activated: transparent;
+      --background-focused: transparent;
+      --box-shadow: none;
+
+      &::part(native) {
+        padding: 0;
+      }
+    }
+
+    @media screen and (min-width: 250px) and (max-width: 375px) {
+      ion-button {
+        height: 0.75rem;
+        width: 1.25rem;
+        font-size: 0.65rem;
+        min-height: 0.8rem;
+        line-height: 0.8rem;
+      }
+    }
+  }
+
+  .connections-list {
+    --top-space-space: 7.5rem;
+    height: calc(100vh - (var(--top-space-space) + var(--ion-safe-area-top)));
+
+    &.md {
+      --top-space-space: calc(8.125rem + var(--ion-safe-area-bottom));
+
+      @media screen and (min-width: 250px) and (max-width: 370px) {
+        --top-space-space: calc(7.625rem + var(--ion-safe-area-bottom));
+      }
+    }
+
+    > ion-grid {
+      padding: 0;
+
+      > ion-row > ion-col {
+        padding: 0 0 var(--ion-safe-area-bottom);
+      }
+    }
+
+    ion-item-group {
+      background: transparent;
+    }
+  }
+
+  .connections-list-alphabetic-block {
+    padding: 0 0 0 1.25rem;
+
+    ion-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.3125rem 0;
+
+      ion-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+
+    ion-item,
+    ion-item-divider {
+      --inner-padding-end: 0;
+      --background: var(--ion-color-neutral-200);
+      border-bottom: 1px solid var(--ion-color-neutral-300);
+
+      &::part(native) {
+        padding: 0;
+      }
+    }
+
+    ion-item-divider {
+      height: 3.69rem;
+      padding: 0;
+
+      ion-label {
+        font-size: 1rem;
+        font-weight: 500;
+      }
+    }
+
+    ion-chip {
+      width: 6.4rem;
+      height: 1.9rem;
+      font-weight: 400;
+      margin: 0.3rem auto;
+      border-radius: 0.5rem;
+      padding-inline: 0.62rem;
+
+      span {
+        text-transform: capitalize;
+        margin-right: 4px;
+        font-size: 0.8rem;
+      }
+    }
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 375px) {
+    ion-header,
+    .cards-placeholder-container {
+      padding-inline: 1rem;
+    }
+
+    .placeholder-spacer {
+      height: 2.5rem;
+    }
+
+    .alphabet-selector {
+      margin-top: calc(1.5rem + env(safe-area-inset-bottom));
+    }
+
+    .connections-list-alphabetic-block {
+      padding: 0 0 0 1rem;
+
+      ion-row {
+        padding: 0.25rem 0;
+      }
+
+      ion-item-divider {
+        height: 2.952rem;
+
+        ion-label {
+          font-size: 0.8rem;
+        }
+      }
+
+      ion-chip {
+        width: 5.12rem;
+        height: 1.52rem;
+        margin: 0.24rem auto;
+        padding: 0.496rem;
+
+        span {
+          margin-right: 3px;
+        }
+      }
+    }
+  }
+}

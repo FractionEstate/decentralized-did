@@ -1,0 +1,35 @@
+.responsive-page-layout {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem;
+  background: var(--ion-color-neutral-200);
+
+  &.md {
+    padding-bottom: calc(var(--ion-safe-area-bottom) + 1.25rem);
+  }
+
+  .responsive-page-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .custom-alert-container {
+      display: none;
+    }
+
+    > * {
+      flex: 0 1 auto;
+      margin: 0.5rem 0;
+    }
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    padding: 0.9rem;
+
+    .responsive-page-content {
+      > * {
+        margin: 0.35rem 0;
+      }
+    }
+  }
+}

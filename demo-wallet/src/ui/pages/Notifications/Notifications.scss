@@ -1,0 +1,179 @@
+.notifications-tab {
+  &.tab-layout {
+    padding: 0;
+  }
+
+  .tab-header,
+  .notifications-tab-section-title,
+  .notifications-tab-item {
+    padding-inline: 1.25rem;
+
+    @media screen and (min-width: 250px) and (max-width: 370px) {
+      padding-inline: 0.9rem;
+    }
+  }
+
+  .notification-empty {
+    text-align: center;
+    color: var(--ion-color-neutral-500);
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    margin: 1rem 0;
+  }
+
+  .notifications-tab-chips {
+    margin-top: 0.5rem;
+    display: flex;
+    overflow-x: scroll;
+    scrollbar-width: none;
+    padding-inline: 1.25rem;
+    font-size: 1rem;
+    font-weight: 400;
+
+    @media screen and (min-width: 250px) and (max-width: 370px) {
+      padding-inline: 0.9rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  .notifications-tab-content {
+    .show-ealier-btn {
+      --background: var(--ion-color-neutral-300);
+      --border-radius: 0.5rem;
+      color: var(--ion-color-neutral-800);
+      width: calc(100vw - 2.5rem);
+      margin: 0.75rem auto 2.25rem;
+      display: block;
+
+      &::part(native) {
+        border: none;
+      }
+    }
+
+    .notifications-tab-section {
+      margin-top: 1.5rem;
+
+      .notifications-tab-section-title {
+        margin-bottom: 0.5rem;
+      }
+
+      ion-list {
+        background: transparent;
+      }
+
+      .notifications-tab-item {
+        height: 4.5rem;
+        display: flex;
+        justify-content: space-between;
+        background: transparent;
+
+        &.unread {
+          background: var(--ion-color-primary-200);
+        }
+
+        &::part(native) {
+          padding: 0;
+          min-width: 100%;
+          background: transparent;
+          --inner-padding-end: 0;
+        }
+
+        .sign-logo {
+          width: 3rem;
+          height: 3rem;
+          border-radius: 3rem;
+          background: var(--ion-color-neutral-400);
+          margin-right: 1rem;
+        }
+
+        .notification-logo {
+          position: relative;
+
+          .notification-ref-icon {
+            position: absolute;
+            bottom: 0.115rem;
+            right: 0.7rem;
+            width: 0.85rem;
+            height: 0.85rem;
+            border-radius: 0.625rem;
+            padding: 0.25rem;
+            background-color: var(--ion-color-neutral-300);
+
+            @media screen and (min-width: 250px) and (max-width: 370px) {
+              width: 0.65rem;
+              height: 0.65rem;
+              bottom: 0.1rem;
+            }
+          }
+        }
+
+        .notifications-tab-item-logo {
+          border-radius: 3rem;
+          width: 3rem;
+          height: 3rem;
+          margin-right: 1rem;
+        }
+
+        @media screen and (min-width: 250px) and (max-width: 370px) {
+          .notifications-tab-item-logo {
+            border-radius: 2.4rem;
+            width: 2.4rem;
+            height: 2.4rem;
+            margin-right: 0.8rem;
+          }
+        }
+
+        .notifications-tab-item-fallback-logo {
+          background-color: var(--ion-color-neutral-800);
+          display: var(--display-fallback);
+          justify-content: center;
+          align-items: center;
+
+          ion-icon {
+            width: 100%;
+            height: 100%;
+          }
+        }
+
+        ion-label {
+          overflow: hidden;
+          color: var(--ion-color-neutral-700);
+          text-overflow: ellipsis;
+          font-size: 0.875rem;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 1rem;
+
+          .notifications-tab-item-time {
+            color: rgba(var(--ion-color-neutral-500-rgb), 0.5);
+            font-size: 0.625rem;
+            font-weight: 500;
+            line-height: 0.75rem;
+          }
+        }
+
+        @media screen and (min-width: 250px) and (max-width: 370px) {
+          ion-label {
+            line-height: 0.8rem;
+            font-size: 0.7rem;
+          }
+        }
+
+        ion-icon.notifications-tab-item-ellipsis {
+          width: 1.475rem;
+          height: 1.475rem;
+          margin: 0.25rem 0;
+          align-self: baseline;
+        }
+
+        @media screen and (min-width: 250px) and (max-width: 370px) {
+          ion-icon.notifications-tab-item-ellipsis {
+            width: 1.18rem;
+            height: 1.18rem;
+            margin: 0.5rem 0;
+          }
+        }
+      }
+    }
+  }
+}

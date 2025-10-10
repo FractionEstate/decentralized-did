@@ -1,0 +1,39 @@
+.read-more {
+  display: flex;
+  flex-direction: column;
+
+  span {
+    margin-bottom: 1.25rem;
+
+    &.clamp {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+
+      @supports (-webkit-line-clamp: 2) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: initial;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
+
+  ion-button {
+    margin: 0;
+    border-radius: 0.5rem;
+    --background: var(--ion-color-neutral-300);
+    --background-activated: var(--ion-color-neutral-400);
+    --background-focused: var(--ion-color-neutral-400);
+    color: var(--ion-color-neutral-800);
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    .clamp,
+    ion-button {
+      font-size: 0.8rem;
+    }
+  }
+}

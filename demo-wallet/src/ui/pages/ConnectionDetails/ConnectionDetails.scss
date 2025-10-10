@@ -1,0 +1,198 @@
+.connection-details {
+  background: var(--ion-color-neutral-200);
+
+  ion-header ion-toolbar {
+    --background: var(--ion-color-neutral-200);
+    margin-top: 0.625rem;
+
+    ion-button:not(.close-button-label),
+    ion-button.md:not(.close-button-label) {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 1.5rem;
+      background: var(--ion-color-neutral-100);
+
+      &:not(:first-child) {
+        margin-left: 0.5rem;
+      }
+
+      &::part(native) {
+        padding: 0.5rem;
+      }
+    }
+
+    @media screen and (min-width: 250px) and (max-width: 370px) {
+      ion-button:not(.close-button-label),
+      ion-button.md:not(.close-button-label) {
+        width: 2.25rem;
+        height: 2.25rem;
+
+        &::part(native) {
+          padding: 0.35rem;
+        }
+      }
+
+      ion-icon {
+        width: 1.18rem;
+        height: 1.18rem;
+        margin: 0;
+      }
+    }
+  }
+
+  .connection-details-content > *,
+  .connection-details-tab > *,
+  .connection-notes-tab > * {
+    margin-bottom: 1.56rem;
+  }
+
+  .connection-notes-empty {
+    font-style: italic;
+    text-align: center;
+  }
+
+  .connection-details-history-event {
+    flex-direction: row;
+    padding: 0.813rem 1rem;
+    border-radius: 0.75rem;
+    background-color: var(--ion-color-neutral-200);
+
+    &:not(:last-of-type) {
+      margin-bottom: 1rem;
+    }
+
+    .connection-details-logo {
+      width: 15%;
+      align-self: center;
+
+      svg {
+        width: 2.75rem;
+        border-radius: 0.25rem;
+      }
+
+      .fallback-logo {
+        width: 2.75rem;
+        border-radius: 2.5rem;
+        height: 2.75rem;
+
+        &.credential-miniature {
+          height: 1.56rem;
+          width: 2.75rem;
+          border-radius: 0.2rem;
+        }
+      }
+
+      .cred-card-template {
+        margin: 0;
+        height: 1.571rem;
+        width: 100%;
+        padding: 0;
+        border-radius: 0.125rem;
+      }
+    }
+
+    .connection-details-history-event-info {
+      width: 82%;
+      margin: 0 0 0 3%;
+
+      .connection-details-history-timestamp {
+        font-weight: 400;
+        text-wrap: nowrap;
+      }
+    }
+  }
+
+  .connection-details-card {
+    ion-text {
+      padding: 0.8125rem 0;
+      display: block;
+    }
+  }
+
+  .page-footer ion-icon {
+    margin-right: 0.5rem;
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    .connection-details-content > *,
+    .connection-details-tab > *,
+    .connection-notes-tab > * {
+      margin-bottom: 1.2rem;
+    }
+
+    .connection-details-card {
+      ion-text {
+        padding: 0.44rem 0;
+        font-size: 0.8rem;
+      }
+    }
+
+    .connection-details-history-event {
+      padding: 0.65rem 0.8rem;
+
+      .connection-details-logo {
+        .fallback-logo {
+          height: 2.2rem;
+          width: 2.2rem;
+          border-radius: 2.2rem;
+
+          &.credential-miniature {
+            height: 1.248rem;
+            width: 2.2rem;
+            border-radius: 0.2rem;
+          }
+        }
+
+        svg {
+          width: 2.2rem;
+          border-radius: 0.25rem;
+        }
+      }
+    }
+  }
+}
+
+.connection-detail-spinner-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.connection-details-history {
+  .card-details-info-block-inner {
+    padding: 1.25rem;
+
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      display: flex;
+
+      &:not(.connection-details-history-event) {
+        margin: 0;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    > p {
+      margin-left: 0.8rem;
+    }
+
+    &:not(:last-child) {
+      margin-bottom: 0.8rem;
+    }
+
+    .card-details-info-block-inner {
+      padding: 1rem;
+      border-radius: 0.75rem;
+
+      &:not(:last-child) {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+}

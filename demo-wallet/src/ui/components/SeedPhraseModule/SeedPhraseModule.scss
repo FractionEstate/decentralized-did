@@ -1,0 +1,135 @@
+.seed-phrase-module {
+  position: relative;
+  border: 1px solid var(--ion-color-neutral-400);
+  border-radius: 1rem;
+  box-shadow: none;
+
+  .overlay {
+    border-radius: 1rem;
+    padding-inline: 1rem;
+
+    p,
+    ion-icon {
+      color: var(--ion-color-neutral-100);
+      margin: 0;
+    }
+
+    ion-icon {
+      height: 1.4rem;
+      width: 1.4rem;
+      align-self: center;
+    }
+
+    ion-button {
+      font-size: 1rem;
+      height: 3.25rem;
+      margin: 0 auto;
+      color: var(--ion-color-neutral-100);
+      --border-color: var(--ion-color-neutral-100);
+    }
+
+    @media screen and (min-width: 250px) and (max-width: 425px) {
+      ion-button {
+        font-size: 0.8rem;
+        height: 2.5rem;
+      }
+    }
+  }
+
+  .seed-phrase-container {
+    padding: 0.5rem;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-radius: 1rem;
+
+    ion-chip {
+      border-radius: 0.5rem;
+      font-weight: 400;
+      width: 95%;
+      margin: 0.3rem auto;
+      padding-inline: 0.625rem;
+      font-size: 1rem;
+      --background: var(--ion-color-neutral-300);
+      --color: var(--ion-color-neutral-700);
+
+      &:focus-within,
+      &.empty-word:focus-within {
+        border: 1px dashed var(--ion-color-neutral-700);
+        background-color: transparent;
+      }
+
+      .word-input {
+        min-height: auto;
+
+        .input-highlight.sc-ion-input-md {
+          display: none;
+        }
+      }
+
+      &.empty-word {
+        border: 1px dashed var(--ion-color-neutral-300);
+        background-color: transparent;
+
+        &.error {
+          border-color: var(--ion-color-error-800);
+        }
+      }
+
+      .index {
+        margin-right: 0.25rem;
+      }
+    }
+
+    @media screen and (min-width: 250px) and (max-width: 370px) {
+      padding: 0.25rem;
+
+      ion-chip {
+        padding: 0.3rem 0.6rem;
+        min-height: 1.25rem;
+        margin: 0.2rem auto;
+
+        span {
+          font-size: 0.8rem;
+        }
+
+        .word-input {
+          font-size: 0.8rem;
+        }
+
+        .index {
+          margin-right: 0.125rem;
+        }
+      }
+    }
+  }
+
+  &.seed-phrase-visible {
+    .overlay {
+      display: none;
+    }
+
+    .seed-phrase-container {
+      filter: none;
+    }
+  }
+
+  &.seed-phrase-hidden {
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      gap: 1rem;
+      justify-content: center;
+      top: 0;
+      z-index: 2;
+      height: 100%;
+      text-align: center;
+      background: rgba(var(--ion-color-neutral-800-rgb), 0.8);
+      backdrop-filter: blur(1.25rem);
+    }
+
+    .seed-phrase-container {
+      filter: blur(5px);
+    }
+  }
+}

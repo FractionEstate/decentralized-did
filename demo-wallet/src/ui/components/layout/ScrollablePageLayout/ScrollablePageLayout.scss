@@ -1,0 +1,38 @@
+.scrollable-page-layout {
+  display: flex;
+  flex-direction: column;
+  padding-inline: 1.25rem;
+  background: var(--ion-color-neutral-200);
+
+  &.md {
+    padding-bottom: var(--ion-safe-area-bottom);
+  }
+
+  .scrollable-page-content {
+    display: flex;
+    flex-direction: column;
+
+    > * {
+      flex: 0 1 auto;
+      margin: 0 auto 1.5rem;
+    }
+
+    > h2 {
+      margin: 0.75rem 0 1.75rem;
+    }
+  }
+
+  @media screen and (min-width: 250px) and (max-width: 370px) {
+    padding-inline: 0.9rem;
+
+    .scrollable-page-content {
+      > * {
+        margin: 0 auto 1.2rem;
+      }
+
+      > h2 {
+        margin: 0.6rem 0 1.4rem;
+      }
+    }
+  }
+}
