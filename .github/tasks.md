@@ -53,7 +53,7 @@ Deep research into biometric systems, cryptography, privacy regulations, and Car
   - Study Sybil resistance in decentralized identity systems
   - Deliverable: `docs/research/threat-analysis.md`
 
-- [ ] **task 6** - Research decentralized identity standards and interoperability
+- [x] **task 6** - Research decentralized identity standards and interoperability
   - Study W3C DID Core specification.
   - Analyze W3C Verifiable Credentials Data Model.
   - Research DIF (Decentralized Identity Foundation) specifications.
@@ -63,7 +63,7 @@ Deep research into biometric systems, cryptography, privacy regulations, and Car
   - Study interoperability with existing Cardano identity projects (Atala PRISM).
   - Deliverable: `docs/research/decentralized-identity-standards.md`
 
-- [ ] **task 7** - Stakeholder workshops and requirements gathering
+- [x] **task 7** - Stakeholder workshops and requirements gathering ✅
   - Host kickoff workshop with engineering, security, legal, UX teams.
   - Interview potential wallet integration partners.
   - Conduct user research on biometric enrollment UX expectations.
@@ -75,7 +75,7 @@ Deep research into biometric systems, cryptography, privacy regulations, and Car
 ## Phase 1 - Architecture Design & Cryptographic Foundation
 Design complete system architecture with validated cryptographic choices and security properties.
 
-- [ ] **task 1** - Design quantization and normalization algorithms
+- [x] **task 1** - Design quantization and normalization algorithms ✅
   - Research grid size impact on FAR/FRR trade-offs (test 25µm, 50µm, 100µm).
   - Design rotation and translation normalization for fingerprint alignment.
   - Develop angle binning strategy (research 16, 32, 64 bin configurations).
@@ -84,7 +84,7 @@ Design complete system architecture with validated cryptographic choices and sec
   - Create mathematical model for quantization stability.
   - Deliverable: `docs/design/quantization-algorithm.md`, Python prototype
 
-- [ ] **task 2** - Design and validate fuzzy extractor construction
+- [x] **task 2** - Design and validate fuzzy extractor construction ✅
   - Select error correction code (evaluate BCH, Reed-Solomon, LDPC).
   - Calculate helper data entropy and privacy budget.
   - Design salt and personalization tag strategy.
