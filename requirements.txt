@@ -20,10 +20,11 @@ ipfshttpclient==0.8.0a2
 # DID Document and helper data validation
 jsonschema==4.20.0
 
-# Error Correction (Interim - Phase 1 only)
-# BCH(127, 64, 10) encoding/decoding
-# NOTE: Replace with custom implementation in Phase 2
-bchlib==0.14.0
+# Error Correction Codes
+# galois: Comprehensive finite field library with BCH support (MIT license)
+# reedsolo: Pure Python Reed-Solomon implementation (MIT license)
+galois>=0.4.0
+reedsolo>=1.7.0
 
 # HTTP Client
 # Async HTTP/2 support for IPFS and Blockfrost

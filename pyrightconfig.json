@@ -1,0 +1,17 @@
+{
+  "include": [
+    "src",
+    "tests"
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "**/.venv"
+  ],
+  "reportUnknownParameterType": "none",
+  "reportUnknownVariableType": "none",
+  "reportUnknownMemberType": "none",
+  "reportUnknownArgumentType": "none",
+  "reportUnknownLambdaType": "none",
+  "reportMissingTypeArgument": "none",
+  "pythonVersion": "3.11"
+}
