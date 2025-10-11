@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import { NetworkType } from "@cardano-foundation/cardano-connect-with-wallet-core";
@@ -8,30 +8,56 @@ import {
   demoHelperStorageMode,
   demoMetadataJson,
   demoMetadataLabel,
-  helperData,
 } from "../biometric/cip30_payload";
+import {
+  attachBiometricMetadata,
+  type Cip30Metadata,
+} from "../biometric/attachBiometricMetadata";
+import {
+  isMetadataParseError,
+  parseMetadataEnvelope,
+  type MetadataSummary,
+} from "../biometric/metadataPreview";
 
 interface IWalletInfoExtended {
-  name: string
-  address: string
-  oobi: string
+  name: string;
+  address: string;
+  oobi: string;
 }
+
 const Demo: React.FC = () => {
+  const initialMetadata = useMemo(() => {
+    try {
+      return parseMetadataEnvelope(demoMetadataJson);
+    } catch (err) {
+      const fallbackSummary: MetadataSummary = { helperKeys: [], labels: [] };
+      if (isMetadataParseError(err) || err instanceof Error) {
+        console.warn("Failed to parse default demo metadata", err);
+      }
+      return { map: new Map<bigint, unknown>(), summary: fallbackSummary };
+    }
+  }, []);
+
   const [payload, setPayload] = useState<string>(() => demoMetadataJson);
-  const [signature, setSignature] = useState<string>('');
+  const [signature, setSignature] = useState<string>("");
   const [showAcceptButton, setShowAcceptButton] = useState<boolean>(false);
   const [walletIsConnected, setWalletIsConnected] = useState<boolean>(false);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
+  const [metadataMap, setMetadataMap] = useState<Cip30Metadata>(initialMetadata.map);
+  const [metadataSummary, setMetadataSummary] = useState<MetadataSummary>(
+    initialMetadata.summary,
+  );
+  const [metadataError, setMetadataError] = useState<string | null>(null);
+  const [txStatus, setTxStatus] = useState<string>("");
 
-  const defautlWallet = {
+  const defaultWallet: IWalletInfoExtended = {
     name: "",
     address: "",
     oobi: "",
   };
 
-  const [peerConnectWalletInfo, setPeerConnectWalletInfo] = useState<
-    IWalletInfoExtended
-    >(defautlWallet);
+  const [peerConnectWalletInfo, setPeerConnectWalletInfo] =
+    useState<IWalletInfoExtended>(defaultWallet);
 
   // @ts-ignore: TS6133
   const [onPeerConnectAccept, setOnPeerConnectAccept] = useState(() => () => {
@@ -72,24 +98,27 @@ const Demo: React.FC = () => {
           const keriIdentifier =
             await enabledApi.experimental.getKeriIdentifier();
 
-          setPeerConnectWalletInfo({
-            ...peerConnectWalletInfo,
-            name: name,
+          setPeerConnectWalletInfo((prev) => ({
+            ...prev,
+            name,
             address: keriIdentifier.id,
             oobi: keriIdentifier.oobi,
-          });
+          }));
 
           setWalletIsConnected(true);
+          setShowAcceptButton(false);
           setError("");
+          setTxStatus("");
         } else {
-          setError( `Timeout while connecting P2P ${name} wallet`)
+          setError(`Timeout while connecting P2P ${name} wallet`);
         }
       };
 
       // @ts-ignore: TS6133
       const onApiEject = (name: string): void => {
-        setPeerConnectWalletInfo(defautlWallet);
+        setPeerConnectWalletInfo(defaultWallet);
         setError("");
+        setTxStatus("");
         disconnect();
       };
 
@@ -108,18 +137,43 @@ const Demo: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    const previousMetadataError = metadataError;
+
+    try {
+      const parsed = parseMetadataEnvelope(payload);
+      setMetadataMap(parsed.map);
+      setMetadataSummary(parsed.summary);
+
+      if (previousMetadataError) {
+        setMetadataError(null);
+        setError((prev) => (prev === previousMetadataError ? "" : prev));
+      }
+    } catch (err) {
+      const message = isMetadataParseError(err)
+        ? err.message
+        : err instanceof Error
+        ? err.message
+        : "Unknown metadata parsing error.";
+      setMetadataError(message);
+    }
+  }, [payload, metadataError]);
+
   const disconnectWallet = () => {
     disconnect();
-    setPeerConnectWalletInfo(defautlWallet);
+    setPeerConnectWalletInfo(defaultWallet);
     setShowAcceptButton(false);
     setWalletIsConnected(false);
+    setSignature("");
     setError("");
-  }
-  const helperKeys = Object.keys(helperData);
+    setTxStatus("");
+  };
 
   const resetToDemoPayload = () => {
     setPayload(demoMetadataJson);
-    setSignature('');
+    setSignature("");
+    setTxStatus("");
+    setError("");
   };
 
   const handleAcceptWallet = () => {
@@ -141,14 +195,15 @@ const Demo: React.FC = () => {
                 const enabledApi = await api.enable();
                 const keriIdentifier =
                     await enabledApi.experimental.getKeriIdentifier();
-                setPeerConnectWalletInfo({
-                  ...peerConnectWalletInfo,
+                setPeerConnectWalletInfo((prev) => ({
+                  ...prev,
                   address: keriIdentifier.id,
                   oobi: keriIdentifier.oobi,
-                });
+                }));
                 setShowAcceptButton(false);
                 setWalletIsConnected(true);
                 setError("");
+                setTxStatus("");
               } else {
                 setError(`Timeout while connecting P2P ${peerConnectWalletInfo.name} wallet`);
                 setWalletIsConnected(false);
@@ -169,6 +224,7 @@ const Demo: React.FC = () => {
       window.cardano["idw_p2p"]
     ) {
       setError("");
+      setTxStatus("");
       const api = window.cardano["idw_p2p"];
       const enabledApi = await api.enable();
       try {
@@ -188,6 +244,45 @@ const Demo: React.FC = () => {
       }
     } else {
       setError("Wallet not connected")
+    }
+  };
+
+  const sendMetadataViaWallet = async () => {
+    if (metadataError) {
+      setError(metadataError);
+      return;
+    }
+
+    if (!walletIsConnected) {
+      setError("Wallet not connected");
+      return;
+    }
+
+    if (!window.cardano || !window.cardano["idw_p2p"]) {
+      setError("Wallet not connected");
+      return;
+    }
+
+    setError("");
+    setTxStatus("");
+
+    try {
+      const enabledApi = await window.cardano["idw_p2p"].enable();
+      const txApi = enabledApi.experimental?.tx;
+
+      if (!txApi || typeof txApi.send !== "function") {
+        setError("Wallet missing experimental.tx.send helper");
+        return;
+      }
+
+      const payloadWithMetadata = attachBiometricMetadata({}, metadataMap);
+      await txApi.send(payloadWithMetadata);
+      setTxStatus("Sent CIP-30 metadata request to wallet. Confirm in the wallet UI.");
+    } catch (err) {
+      const reason = err && typeof err === "object" && "message" in err
+        ? String((err as { message?: unknown }).message)
+        : "Failed to send metadata";
+      setError(reason);
     }
   };
 
@@ -251,10 +346,15 @@ const Demo: React.FC = () => {
         <h2 className="text-xl font-semibold text-gray-700">Demo Biometric Metadata</h2>
         <p className="mt-2 text-sm text-gray-600">DID: {biometricDid}</p>
         <p className="mt-1 text-sm text-gray-600">Metadata label: {demoMetadataLabel}</p>
-        <p className="mt-1 text-sm text-gray-600">Helper storage: {demoHelperStorageMode}</p>
+        <p className="mt-1 text-sm text-gray-600">Helper storage: {metadataSummary.helperStorage ?? demoHelperStorageMode}</p>
         <p className="mt-1 text-sm text-gray-600">
-          Helper entries: {helperKeys.join(", ")}
+          Helper entries: {metadataSummary.helperKeys.length ? metadataSummary.helperKeys.join(", ") : "None detected"}
         </p>
+        <p className="mt-1 text-sm text-gray-600">Helper URI: {metadataSummary.helperUri ?? "Embedded in metadata"}</p>
+        <p className="mt-1 text-sm text-gray-600">Wallet address: {metadataSummary.walletAddress ?? "Unknown"}</p>
+        {metadataError ? (
+          <p className="mt-2 text-sm text-red-600">{metadataError}</p>
+        ) : null}
         <button
           className="mt-4 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg"
           onClick={resetToDemoPayload}
@@ -269,12 +369,21 @@ const Demo: React.FC = () => {
                   placeholder="Enter payload here..."
                   value={payload}
                   onChange={(e) => setPayload(e.target.value)}
-                  disabled={!peerConnectWalletInfo}
                 />
-        <button className="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg mt-4"
-                onClick={signMessageWithWallet} disabled={!walletIsConnected || !peerConnectWalletInfo || !payload.trim()}>
-          Sign Payload
-        </button>
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+          <button className="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg"
+                  onClick={signMessageWithWallet} disabled={!walletIsConnected || !payload.trim()}>
+            Sign Payload
+          </button>
+          <button className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg"
+                  onClick={sendMetadataViaWallet}
+                  disabled={!walletIsConnected || !!metadataError}>
+            Send CIP-30 metadata
+          </button>
+        </div>
+        {txStatus ? (
+          <p className="mt-4 text-sm text-green-600">{txStatus}</p>
+        ) : null}
       </div>
       {
         signature.length ? <>
@@ -290,3 +399,4 @@ const Demo: React.FC = () => {
 };
 
 export { Demo };
+

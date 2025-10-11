@@ -8,10 +8,17 @@ export interface Cip30Transaction {
   [key: string]: unknown;
 }
 
-export const attachBiometricMetadata = <T extends Cip30Transaction>(tx: T) => {
+export const cloneMetadataMap = (metadata: Cip30Metadata): Cip30Metadata => {
+  return new Map(metadata.entries());
+};
+
+export const attachBiometricMetadata = <T extends Cip30Transaction>(
+  tx: T,
+  metadata: Cip30Metadata = cip30MetadataMap,
+) => {
   const mergedMetadata: Cip30Metadata = new Map(tx.metadata ?? []);
 
-  for (const [label, payload] of cip30MetadataMap.entries()) {
+  for (const [label, payload] of metadata.entries()) {
     mergedMetadata.set(label, payload);
   }
 
