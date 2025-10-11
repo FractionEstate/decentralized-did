@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://decentralized-did.github.io/schemas/helper-data-v1.0.schema.json",
+  "title": "Biometric Helper Data",
+  "description": "Schema for fuzzy extractor helper data (public, no confidentiality needed)",
+  "type": "object",
+  "required": [
+    "version",
+    "algorithm",
+    "fingers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Schema version for helper data format compatibility"
+    },
+    "algorithm": {
+      "type": "string",
+      "const": "fuzzy-extractor-bch127-blake2b",
+      "description": "Cryptographic algorithm identifier"
+    },
+    "fingers": {
+      "type": "object",
+      "description": "Helper data for each enrolled finger",
+      "minProperties": 1,
+      "maxProperties": 10,
+      "additionalProperties": {
+        "$ref": "#/$defs/fingerHelperData"
+      }
+    }
+  },
+  "$defs": {
+    "fingerHelperData": {
+      "type": "object",
+      "required": [
+        "fingerId",
+        "version",
+        "salt",
+        "personalization",
+        "bchSyndrome",
+        "hmac"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "fingerId": {
+          "type": "string",
+          "description": "Finger identifier matching enrollment",
+          "enum": [
+            "left_thumb",
+            "left_index",
+            "left_middle",
+            "left_ring",
+            "left_pinky",
+            "right_thumb",
+            "right_index",
+            "right_middle",
+            "right_ring",
+            "right_pinky"
+          ]
+        },
+        "version": {
+          "type": "integer",
+          "const": 1,
+          "description": "Helper data format version"
+        },
+        "salt": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "256-bit cryptographic salt (32 bytes hex-encoded)"
+        },
+        "personalization": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "256-bit personalization tag (32 bytes hex-encoded)"
+        },
+        "bchSyndrome": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{16}$",
+          "description": "BCH(127,64,21) syndrome (8 bytes hex-encoded, 63 bits + padding)"
+        },
+        "hmac": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$",
+          "description": "HMAC-SHA256 tag for integrity protection (32 bytes hex-encoded)"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://decentralized-did.github.io/schemas/config-v1.0.schema.json",
+  "title": "CLI Configuration",
+  "description": "Schema for dec-did CLI configuration file (TOML format)",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "general": {
+      "type": "object",
+      "description": "General CLI settings",
+      "properties": {
+        "verbosity": {
+          "type": "string",
+          "enum": [
+            "quiet",
+            "normal",
+            "verbose",
+            "debug"
+          ],
+          "default": "normal",
+          "description": "Default logging level"
+        },
+        "jsonOutput": {
+          "type": "boolean",
+          "default": false,
+          "description": "Output structured JSON instead of human-readable text"
+        },
+        "colorOutput": {
+          "type": "boolean",
+          "default": true,
+          "description": "Use ANSI color codes in terminal output"
+        }
+      }
+    },
+    "biometric": {
+      "type": "object",
+      "description": "Biometric processing settings",
+      "properties": {
+        "qualityThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100,
+          "default": 70,
+          "description": "Minimum quality score for enrollment (0-100)"
+        },
+        "minMinutiae": {
+          "type": "integer",
+          "minimum": 10,
+          "maximum": 100,
+          "default": 20,
+          "description": "Minimum minutiae points required per finger"
+        },
+        "gridSize": {
+          "type": "number",
+          "minimum": 10,
+          "maximum": 200,
+          "default": 50,
+          "description": "Quantization grid size in micrometers"
+        },
+        "angleBins": {
+          "type": "integer",
+          "minimum": 8,
+          "maximum": 64,
+          "default": 32,
+          "description": "Number of angle bins for quantization"
+        }
+      }
+    },
+    "storage": {
+      "type": "object",
+      "description": "Helper data storage settings",
+      "properties": {
+        "defaultBackend": {
+          "type": "string",
+          "enum": [
+            "inline",
+            "file",
+            "ipfs",
+            "arweave"
+          ],
+          "default": "inline",
+          "description": "Default storage backend for helper data"
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "basePath": {
+              "type": "string",
+              "description": "Base directory for file storage"
+            },
+            "filenamePattern": {
+              "type": "string",
+              "default": "{wallet_address}-{timestamp}.json",
+              "description": "Filename pattern with {wallet_address}, {timestamp}, {did} placeholders"
+            }
+          }
+        },
+        "ipfs": {
+          "type": "object",
+          "properties": {
+            "apiUrl": {
+              "type": "string",
+              "format": "uri",
+              "default": "http://localhost:5001",
+              "description": "IPFS API endpoint URL"
+            },
+            "gateway": {
+              "type": "string",
+              "format": "uri",
+              "default": "http://localhost:8080",
+              "description": "IPFS gateway URL for retrieval"
+            },
+            "pin": {
+              "type": "boolean",
+              "default": true,
+              "description": "Pin uploaded helper data"
+            }
+          }
+        },
+        "arweave": {
+          "type": "object",
+          "properties": {
+            "nodeUrl": {
+              "type": "string",
+              "format": "uri",
+              "default": "https://arweave.net",
+              "description": "Arweave node URL"
+            },
+            "walletPath": {
+              "type": "string",
+              "description": "Path to Arweave wallet keyfile"
+            }
+          }
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "description": "Input validation settings",
+      "properties": {
+        "strictMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable strict validation (reject warnings)"
+        },
+        "allowLowQuality": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow enrollment below quality threshold (with warning)"
+        },
+        "requireMetadata": {
+          "type": "boolean",
+          "default": false,
+          "description": "Require capture metadata in fingerprint input"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "description": "Output format settings",
+      "properties": {
+        "metadataLabel": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535,
+          "default": 1990,
+          "description": "Cardano metadata label for DID transactions"
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "wallet",
+            "cip30",
+            "json",
+            "cbor",
+            "yaml"
+          ],
+          "default": "wallet",
+          "description": "Output format for metadata"
+        },
+        "prettyPrint": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pretty-print JSON/YAML output"
+        }
+      }
+    },
+    "plugins": {
+      "type": "object",
+      "description": "Plugin configuration",
+      "properties": {
+        "enabled": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of enabled plugin names"
+        },
+        "searchPaths": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional plugin search directories"
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "description": "Security settings",
+      "properties": {
+        "auditLog": {
+          "type": "string",
+          "description": "Path to audit log file"
+        },
+        "confirmDeletion": {
+          "type": "boolean",
+          "default": true,
+          "description": "Require confirmation before deleting data"
+        },
+        "allowExternalHelper": {
+          "type": "boolean",
+          "default": true,
+          "description": "Allow fetching helper data from external URIs"
+        }
+      }
+    },
+    "development": {
+      "type": "object",
+      "description": "Development and debugging settings",
+      "properties": {
+        "debugMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug mode (verbose logging, no cleanup)"
+        },
+        "profilePerformance": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable performance profiling"
+        },
+        "dumpIntermediates": {
+          "type": "boolean",
+          "default": false,
+          "description": "Dump intermediate processing results to files"
+        }
+      }
+    }
+  }
+}
