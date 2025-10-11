@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/cli.py
+# hypothesis_version: 6.140.3
+
+[0.05, '    ...extras,', '    metadata,', '  tx: {', '  });', '  };', ' as const;', ');', '--exclude-helpers', '--format', '--helper-uri', '--helpers', '--helpers-output', '--input', '--label', '--metadata', '--output', '--output-dir', '--quiet', '--wallet', '--zip', '.zip', ';', '=', 'Files:', 'Z', '__main__', 'angle_bins', 'ascii', 'biometric', 'cip30', 'cip30_demo.ts', 'cip30_payload.ts', 'command', 'demo-kit', 'demo_summary.txt', 'examples', 'external', 'finger_id', 'fingers', 'generate', 'grid_size', 'helperData', 'helpers.json', 'idHash', 'inline', 'metadata', 'minutiae', 'payload', 'r', 'seconds', 'store_true', 'type Cip30Wallet = {', 'utf-8', 'verify', 'w', 'wallet', 'wallet_address', '}', '};']

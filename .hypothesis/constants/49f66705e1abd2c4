@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/__init__.py
+# hypothesis_version: 6.140.3
+
+['cli_main']

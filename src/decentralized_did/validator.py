@@ -252,7 +252,7 @@ def get_config_validator() -> SchemaValidator:
     return _config_validator
 
 
-def validate_fingerprint_input(data: Dict[str, Any], strict: bool = False) -> None:
+def validate_fingerprint_input(data: Dict[str, Any], strict: bool = False) -> bool:
     """
     Validate fingerprint input payload.
 
@@ -260,14 +260,18 @@ def validate_fingerprint_input(data: Dict[str, Any], strict: bool = False) -> No
         data: Fingerprint input data
         strict: Enable strict validation mode
 
+    Returns:
+        True if validation passes
+
     Raises:
         ValidationError: If validation fails
     """
     validator = get_fingerprint_validator()
     validator.validate(data, strict=strict)
+    return True
 
 
-def validate_helper_data(data: Dict[str, Any], strict: bool = False) -> None:
+def validate_helper_data(data: Dict[str, Any], strict: bool = False) -> bool:
     """
     Validate helper data payload.
 
@@ -275,14 +279,18 @@ def validate_helper_data(data: Dict[str, Any], strict: bool = False) -> None:
         data: Helper data
         strict: Enable strict validation mode
 
+    Returns:
+        True if validation passes
+
     Raises:
         ValidationError: If validation fails
     """
     validator = get_helper_data_validator()
     validator.validate(data, strict=strict)
+    return True
 
 
-def validate_config(data: Dict[str, Any], strict: bool = False) -> None:
+def validate_config(data: Dict[str, Any], strict: bool = False) -> bool:
     """
     Validate configuration data.
 
@@ -290,11 +298,28 @@ def validate_config(data: Dict[str, Any], strict: bool = False) -> None:
         data: Configuration data
         strict: Enable strict validation mode
 
+    Returns:
+        True if validation passes
+
     Raises:
         ValidationError: If validation fails
     """
     validator = get_config_validator()
     validator.validate(data, strict=strict)
+    return True
+
+
+def get_schema_version(data: Dict[str, Any]) -> Optional[str]:
+    """
+    Extract schema version from data.
+
+    Args:
+        data: Data dictionary with optional version field
+
+    Returns:
+        Version string (e.g., "1.0") or None if not found
+    """
+    return data.get("version")
 
 
 __all__ = [
@@ -306,4 +331,5 @@ __all__ = [
     "get_fingerprint_validator",
     "get_helper_data_validator",
     "get_config_validator",
+    "get_schema_version",
 ]

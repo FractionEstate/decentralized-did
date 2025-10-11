@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/did/generator.py
+# hypothesis_version: 6.140.3
+
+['=', 'ascii', 'biometric', 'helperData', 'helperStorage', 'helperUri', 'idHash', 'inline', 'version', 'walletAddress']

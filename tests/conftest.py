@@ -7,12 +7,13 @@ from tests.test_data_generator import (
 )
 import sys
 from pathlib import Path
+from typing import Dict, List
+
 import pytest
-from typing import List, Dict
 
 ROOT = Path(__file__).resolve().parents[1]
 SRC = ROOT / "src"
-for path in (SRC, ROOT):
+for path in (ROOT, SRC):
     if str(path) not in sys.path:
         sys.path.insert(0, str(path))
 

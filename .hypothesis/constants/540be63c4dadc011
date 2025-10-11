@@ -1,0 +1,4 @@
+# file: /home/vscode/.local/bin/pytest
+# hypothesis_version: 6.140.3
+
+['__main__']

@@ -10,6 +10,11 @@
   ],
   "additionalProperties": false,
   "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri",
+      "description": "JSON Schema reference (optional)"
+    },
     "version": {
       "type": "string",
       "const": "1.0",

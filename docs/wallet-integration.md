@@ -35,6 +35,7 @@ python -m decentralized_did.cli demo-kit \
 - Writes `helpers.json` so wallets or backend services can stage the external helper payloads.
 - Generates `demo_summary.txt` capturing the DID, helper URI, and wallet address for presenters.
 - Emits `cip30_payload.ts` with ready-to-import constants (`biometricDid`, `cip30MetadataEntries`, `cip30MetadataMap`, `helperData`).
+- Provides `cip30_demo.ts` showcasing a minimal `attachBiometricMetadata` helper built atop the payload exports.
 - Optionally zips the artifacts when `--zip` is supplied, simplifying hand-offs to demo operators.
 - Provide `--helper-uri` to point wallets at a real storage location once the helpers are hosted.
 
