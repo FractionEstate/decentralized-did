@@ -1,9 +1,9 @@
 # CLI Architecture and User Experience Design
 
-**Phase 3, Task 1 - CLI Architecture and User Flows**  
-**Date**: 2025-10-11  
-**Target**: Production-ready CLI with comprehensive validation, error handling, and developer tooling  
-**Copyright**: 2025 Decentralized DID Project  
+**Phase 3, Task 1 - CLI Architecture and User Flows**
+**Date**: 2025-10-11
+**Target**: Production-ready CLI with comprehensive validation, error handling, and developer tooling
+**Copyright**: 2025 Decentralized DID Project
 **License**: Apache 2.0
 
 ---
@@ -844,44 +844,44 @@ from typing import Protocol
 
 class StorageBackend(Protocol):
     """Storage backend plugin interface."""
-    
+
     def store(self, data: bytes, metadata: dict) -> str:
         """
         Store helper data and return URI.
-        
+
         Args:
             data: Helper data bytes
             metadata: Additional metadata (did, timestamp, etc.)
-            
+
         Returns:
             URI where data is stored (e.g., ipfs://Qm...)
         """
         ...
-    
+
     def retrieve(self, uri: str) -> bytes:
         """
         Retrieve helper data from URI.
-        
+
         Args:
             uri: Storage URI
-            
+
         Returns:
             Helper data bytes
         """
         ...
-    
+
     def delete(self, uri: str) -> bool:
         """
         Delete helper data (optional operation).
-        
+
         Args:
             uri: Storage URI
-            
+
         Returns:
             True if deleted, False otherwise
         """
         ...
-    
+
     def health_check(self) -> bool:
         """Check if storage backend is accessible."""
         ...
@@ -897,27 +897,27 @@ from decentralized_did.plugins import StorageBackend, register_plugin
 
 class IPFSStorage(StorageBackend):
     """IPFS storage backend plugin."""
-    
+
     def __init__(self, config: dict):
         self.api_url = config.get("api_url", "http://localhost:5001")
         self.pin = config.get("pin", True)
         self.client = ipfshttpclient.connect(self.api_url)
-    
+
     def store(self, data: bytes, metadata: dict) -> str:
         """Store data in IPFS and return CID."""
         result = self.client.add_bytes(data)
         cid = result
-        
+
         if self.pin:
             self.client.pin.add(cid)
-        
+
         return f"ipfs://{cid}"
-    
+
     def retrieve(self, uri: str) -> bytes:
         """Retrieve data from IPFS."""
         cid = uri.replace("ipfs://", "")
         return self.client.cat(cid)
-    
+
     def delete(self, uri: str) -> bool:
         """Unpin data from IPFS."""
         cid = uri.replace("ipfs://", "")
@@ -926,7 +926,7 @@ class IPFSStorage(StorageBackend):
             return True
         except Exception:
             return False
-    
+
     def health_check(self) -> bool:
         """Check IPFS daemon is running."""
         try:
@@ -969,12 +969,12 @@ $ dec-did plugin validate ./my-plugin
 
 ### 7.1 Phase 3 Implementation Plan
 
-**Task 1** (Current): ✅ CLI Architecture Design  
-**Task 2**: JSON Schema Validation  
-**Task 3**: Storage Backend Implementation  
-**Task 4**: Advanced CLI Features  
-**Task 5**: Developer SDK  
-**Task 6**: CLI Documentation  
+**Task 1** (Current): ✅ CLI Architecture Design
+**Task 2**: JSON Schema Validation
+**Task 3**: Storage Backend Implementation
+**Task 4**: Advanced CLI Features
+**Task 5**: Developer SDK
+**Task 6**: CLI Documentation
 
 ### 7.2 Backward Compatibility
 
@@ -1123,9 +1123,9 @@ This CLI architecture provides a **production-ready foundation** for biometric D
 
 ### 11.1 Next Steps
 
-**Phase 3, Task 2**: Implement JSON Schema validation  
-**Phase 3, Task 3**: Implement storage backends (IPFS, Arweave, file system)  
-**Phase 3, Task 4**: Implement advanced CLI features (dry-run, batch, progress bars)  
+**Phase 3, Task 2**: Implement JSON Schema validation
+**Phase 3, Task 3**: Implement storage backends (IPFS, Arweave, file system)
+**Phase 3, Task 4**: Implement advanced CLI features (dry-run, batch, progress bars)
 
 ### 11.2 Sign-Off
 
@@ -1175,7 +1175,7 @@ dec-did demo-kit --wallet addr_test1... --output-dir demo --zip demo.zip
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: 2025-10-11  
-**Status**: Final  
+**Document Version**: 1.0
+**Last Updated**: 2025-10-11
+**Status**: Final
 **Review**: Architecture design complete, ready for implementation
