@@ -447,13 +447,74 @@ Implement biometric pipeline with comprehensive testing and validation.
 ## Phase 3 - CLI & Developer Experience
 Build production-ready CLI with comprehensive validation, error handling, and developer tooling.
 
-- [ ] **task 1** - Design CLI architecture and user flows
-  - Design command structure and argument parsing strategy.
-  - Create wireframes for enrollment and verification flows.
-  - Design error message taxonomy and user guidance.
-  - Plan progress indicators and verbose logging levels.
-  - Design configuration file format and loading strategy.
-  - Plan CLI plugin architecture for extensibility.
+- [x] **task 1** - Design CLI architecture and user flows
+  - ✅ Design command structure and argument parsing strategy.
+  - ✅ Create wireframes for enrollment and verification flows.
+  - ✅ Design error message taxonomy and user guidance.
+  - ✅ Plan progress indicators and verbose logging levels.
+  - ✅ Design configuration file format and loading strategy.
+  - ✅ Plan CLI plugin architecture for extensibility.
+  - **Architecture Design** (`docs/design/cli-architecture.md`, 1,150 lines):
+    - **Command Structure**:
+      - Primary: enroll, verify, rotate, revoke, export, validate
+      - Utilities: demo-kit, config, plugin
+      - Aliases: gen, check, val, exp for common commands
+      - Global options: --verbose, --quiet, --config, --json-output
+    - **User Flow Wireframes**:
+      - Enrollment: Single-finger, multi-finger with quality feedback
+      - Verification: Success and failure flows with diagnostics
+      - Quality feedback: Visual progress bars, threshold warnings
+      - Error recovery: Step-by-step guidance
+    - **Error Message Taxonomy**:
+      - 6 categories: Input validation, Quality, Verification, System, Configuration, Plugin
+      - Structured format: Type, Context, Cause, Solution, Documentation link
+      - Exit codes: Category-specific (2-7) for scripting
+      - Recovery guidance: Actionable steps for each error type
+    - **Progress Indicators and Logging**:
+      - 4 levels: Quiet (errors only), Normal (milestones), Verbose (details), Debug (everything)
+      - Spinner animations for long operations
+      - Progress bars for batch operations
+      - Structured JSON output for machine consumption
+      - Timestamp and elapsed time tracking
+    - **Configuration Format (TOML)**:
+      - Sections: general, biometric, storage, validation, output, plugins, security, development
+      - Search order: $DEC_DID_CONFIG → ./dec-did.toml → ~/.dec-did/config.toml → /etc/dec-did/config.toml
+      - Defaults: quality_threshold=70, label=1990, format=wallet, storage=inline
+      - Backend configs: IPFS, Arweave, file system
+      - Security: audit logging, confirmation prompts, strict validation
+    - **Plugin Architecture**:
+      - 3 types: Storage backends, Biometric sources, Output formatters
+      - Standard structure: plugin.toml metadata, __init__.py entry point, tests/, docs/
+      - API interfaces: StorageBackend (store, retrieve, delete, health_check)
+      - Plugin management: list, install, validate commands
+      - Auto-discovery: ~/.dec-did/plugins/, /usr/local/share/dec-did/plugins
+    - **Standards Compliance**:
+      - POSIX option syntax, GNU long options
+      - XDG Base Directory specification
+      - Standard exit codes (0=success, 1=general, 2=usage, etc.)
+      - Environment variable prefix: DEC_DID_*
+      - Pipeline support: stdin/stdout/stderr
+  - **Key Design Decisions**:
+    - ✅ TOML for configuration (human-readable, strongly-typed, wide support)
+    - ✅ Plugin-based extensibility (storage, formats, sources)
+    - ✅ Progressive disclosure (simple by default, powerful when needed)
+    - ✅ Backward compatibility (old CLI syntax still works)
+    - ✅ Open-source only (all dependencies and plugins)
+  - **Production Features**:
+    - ✅ Comprehensive error taxonomy with recovery guidance
+    - ✅ Quality feedback with visual indicators
+    - ✅ Configurable logging levels (quiet to debug)
+    - ✅ Plugin system for extensibility
+    - ✅ Configuration files with sensible defaults
+    - ✅ Batch operations with progress bars
+    - ✅ Dry-run mode for validation
+    - ✅ Audit logging for compliance
+  - **Implementation Roadmap**:
+    - Task 2: JSON Schema validation
+    - Task 3: Storage backend implementation (IPFS, Arweave, file)
+    - Task 4: Advanced CLI features (dry-run, batch, progress)
+    - Task 5: Developer SDK and libraries
+    - Task 6: CLI documentation and examples
   - Deliverable: `docs/design/cli-architecture.md`
 
 - [ ] **task 2** - Implement JSON Schema validation for inputs
