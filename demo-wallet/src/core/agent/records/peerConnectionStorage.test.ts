@@ -2,19 +2,36 @@ import { describe, expect, test, beforeEach, jest } from "@jest/globals";
 
 import { PeerConnectionMetadataRecord } from "./peerConnectionMetadataRecord";
 import { PeerConnectionStorage } from "./peerConnectionStorage";
+import type { StorageService } from "../../storage/storage.types";
 import type { StoredBiometricMetadata } from "../../cardano/walletConnect/peerConnection.types";
 
-const storageService = jest.mocked({
-  save: jest.fn(),
-  delete: jest.fn(),
-  deleteById: jest.fn(),
-  update: jest.fn(),
-  findById: jest.fn(),
-  findAllByQuery: jest.fn(),
-  getAll: jest.fn(),
-});
+const storageServiceMock = {
+  save: jest.fn<
+    (record: PeerConnectionMetadataRecord) => Promise<PeerConnectionMetadataRecord>
+  >(),
+  delete: jest.fn<
+    (record: PeerConnectionMetadataRecord) => Promise<void>
+  >(),
+  deleteById: jest.fn<
+    (id: string) => Promise<void>
+  >(),
+  update: jest.fn<
+    (record: PeerConnectionMetadataRecord) => Promise<void>
+  >(),
+  findById: jest.fn<
+    (id: string, recordClass: any) => Promise<PeerConnectionMetadataRecord | null>
+  >(),
+  findAllByQuery: jest.fn<
+    (query: any, recordClass: any) => Promise<PeerConnectionMetadataRecord[]>
+  >(),
+  getAll: jest.fn<
+    (recordClass: any) => Promise<PeerConnectionMetadataRecord[]>
+  >(),
+};
 
-const peerConnectionStorage = new PeerConnectionStorage(storageService as any);
+const peerConnectionStorage = new PeerConnectionStorage(
+  storageServiceMock as unknown as StorageService<PeerConnectionMetadataRecord>,
+);
 
 const biometricMetadata: StoredBiometricMetadata = {
   did: "did:cardano:addr#commitment",
@@ -52,7 +69,7 @@ describe("Connection service of agent", () => {
   });
 
   test("Should get all peer connection", async () => {
-    storageService.getAll.mockResolvedValue([
+    storageServiceMock.getAll.mockResolvedValue([
       peerConnectionMetadataRecord,
       peerConnectionMetadataRecord2,
     ]);
@@ -72,7 +89,7 @@ describe("Connection service of agent", () => {
   });
 
   test("Should get peer connection meta data record", async () => {
-    storageService.findById.mockResolvedValue(peerConnectionMetadataRecord);
+    storageServiceMock.findById.mockResolvedValue(peerConnectionMetadataRecord);
     expect(
       await peerConnectionStorage.getPeerConnectionMetadata(
         peerConnectionMetadataRecord.id
@@ -81,7 +98,7 @@ describe("Connection service of agent", () => {
   });
 
   test("Should get peer connection", async () => {
-    storageService.findById.mockResolvedValue(peerConnectionMetadataRecord);
+    storageServiceMock.findById.mockResolvedValue(peerConnectionMetadataRecord);
     expect(
       await peerConnectionStorage.getPeerConnection(
         peerConnectionMetadataRecord.id
@@ -98,7 +115,7 @@ describe("Connection service of agent", () => {
   });
 
   test("Should throw if peerConnection metadata record is missing", async () => {
-    storageService.findById.mockResolvedValue(null);
+    storageServiceMock.findById.mockResolvedValue(null);
     await expect(
       peerConnectionStorage.getPeerConnectionMetadata(
         peerConnectionMetadataRecord.id
@@ -112,17 +129,17 @@ describe("Connection service of agent", () => {
     await peerConnectionStorage.createPeerConnectionMetadataRecord(
       peerConnectionMetadataRecordProps
     );
-    expect(storageService.save).toBeCalledWith(peerConnectionMetadataRecord);
+    expect(storageServiceMock.save).toBeCalledWith(peerConnectionMetadataRecord);
   });
 
   test("Should update peer connection metadata record", async () => {
-    storageService.findById.mockResolvedValue(peerConnectionMetadataRecord);
+    storageServiceMock.findById.mockResolvedValue(peerConnectionMetadataRecord);
     await peerConnectionStorage.updatePeerConnectionMetadata(
       peerConnectionMetadataRecord.id,
       {
         name: "update name",
       }
     );
-    expect(storageService.update).toBeCalled();
+    expect(storageServiceMock.update).toBeCalled();
   });
 });

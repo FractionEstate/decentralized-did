@@ -84,7 +84,7 @@ const ConfirmConnectModal = ({
 
   const biometricMetadata = connectionData?.biometricMetadata;
   const helperUriDisplay = biometricMetadata?.helperUri
-    ? ellipsisText(biometricMetadata.helperUri, 40)
+    ? biometricMetadata.helperUri
     : biometricMetadata?.helperStorage === "inline"
       ? "Embedded in metadata"
       : "Not provided";
