@@ -1,4 +1,0 @@
-# file: /workspaces/decentralized-did/src/decentralized_did/cardano/wallet_integration.py
-# hypothesis_version: 6.140.3
-
-['cip30', 'did', 'inline', 'metadata', 'utf-8', 'wallet']
