@@ -38,6 +38,7 @@ python -m decentralized_did.cli demo-kit \
 - Provides `cip30_demo.ts` showcasing a minimal `attachBiometricMetadata` helper built atop the payload exports.
 - Optionally zips the artifacts when `--zip` is supplied, simplifying hand-offs to demo operators.
 - Provide `--helper-uri` to point wallets at a real storage location once the helpers are hosted.
+- Syncs the inline payload into `demo-wallet/services/cip45-sample-dapp/src/biometric/cip30_payload.ts`, letting the demo dApp surface the DID, metadata label, and helper roster without extra setup.
 
 ### Python Library
 

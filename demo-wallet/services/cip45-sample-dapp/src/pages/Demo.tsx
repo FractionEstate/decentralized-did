@@ -3,6 +3,13 @@ import { QRCode } from "react-qrcode-logo";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import { NetworkType } from "@cardano-foundation/cardano-connect-with-wallet-core";
 import idwLogo from "../../public/idw.png";
+import {
+  biometricDid,
+  demoHelperStorageMode,
+  demoMetadataJson,
+  demoMetadataLabel,
+  helperData,
+} from "../biometric/cip30_payload";
 
 interface IWalletInfoExtended {
   name: string
@@ -10,7 +17,7 @@ interface IWalletInfoExtended {
   oobi: string
 }
 const Demo: React.FC = () => {
-  const [payload, setPayload] = useState<string>('');
+  const [payload, setPayload] = useState<string>(() => demoMetadataJson);
   const [signature, setSignature] = useState<string>('');
   const [showAcceptButton, setShowAcceptButton] = useState<boolean>(false);
   const [walletIsConnected, setWalletIsConnected] = useState<boolean>(false);
@@ -108,6 +115,13 @@ const Demo: React.FC = () => {
     setWalletIsConnected(false);
     setError("");
   }
+  const helperKeys = Object.keys(helperData);
+
+  const resetToDemoPayload = () => {
+    setPayload(demoMetadataJson);
+    setSignature('');
+  };
+
   const handleAcceptWallet = () => {
     if (peerConnectWalletInfo) {
       onPeerConnectAccept();
@@ -233,7 +247,22 @@ const Demo: React.FC = () => {
           {error.length ? <p className="text-red-500">{error}</p> : null}
         </div>
       </div>
-      <div className="mb-6 mt-12 text-center">
+      <div className="mt-10 mb-6 p-6 border border-gray-200 rounded-lg bg-gray-50 text-left">
+        <h2 className="text-xl font-semibold text-gray-700">Demo Biometric Metadata</h2>
+        <p className="mt-2 text-sm text-gray-600">DID: {biometricDid}</p>
+        <p className="mt-1 text-sm text-gray-600">Metadata label: {demoMetadataLabel}</p>
+        <p className="mt-1 text-sm text-gray-600">Helper storage: {demoHelperStorageMode}</p>
+        <p className="mt-1 text-sm text-gray-600">
+          Helper entries: {helperKeys.join(", ")}
+        </p>
+        <button
+          className="mt-4 bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg"
+          onClick={resetToDemoPayload}
+        >
+          Reset to demo payload
+        </button>
+      </div>
+      <div className="mb-6 text-center">
                 <textarea
                   className="form-textarea mt-1 block w-full rounded-lg p-4 bg-white text-gray-900"
                   rows={4}
