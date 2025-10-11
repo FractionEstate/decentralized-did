@@ -64,6 +64,7 @@
 - Supply `--zip demo-kit.zip` when sharing artifacts with demo operators or wallet teams.
 - Override `--helper-uri` once helper data is hosted on IPFS or another storage backend so downstream verifiers know where to fetch it.
 - Consume the generated `cip30_payload.ts` in sample dApps to bootstrap `cip30MetadataMap` (`Map<bigint, Metadatum>`) construction without manual JSON wrangling, or import the ready-made `cip30_demo.ts` helper to call `attachBiometricMetadata` against a CIP-30 wallet.
+- Use the machine-readable `demo_summary.json` inventory when scripting deployments (e.g., uploading helper data to IPFS or injecting metadata into CI pipelines).
 
 ## Operational Checklist
 - [ ] Agree on metadata label with counterparties.

@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 import sys
@@ -43,6 +44,7 @@ def test_demo_kit_outputs_artifacts(tmp_path: Path) -> None:
         "metadata_cip30_external.json",
         "helpers.json",
         "demo_summary.txt",
+        "demo_summary.json",
         "cip30_payload.ts",
         "cip30_demo.ts",
     }
@@ -59,6 +61,12 @@ def test_demo_kit_outputs_artifacts(tmp_path: Path) -> None:
     assert "attachBiometricMetadata" in ts_demo
     assert "buildBiometricMetadata" in ts_demo
     assert "experimental().tx.send" in ts_demo
+
+    summary_json = json.loads(
+        (output_dir / "demo_summary.json").read_text(encoding="utf-8"))
+    assert summary_json["generatedAt"]
+    assert summary_json["artifacts"]["wallet"]["inline"] == "metadata_wallet_inline.json"
+    assert summary_json["artifacts"]["typescript"]["demo"] == "cip30_demo.ts"
 
     assert zip_path.exists()
     with ZipFile(zip_path, "r") as archive:

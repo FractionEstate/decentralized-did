@@ -43,8 +43,8 @@ python -m decentralized_did.cli demo-kit \
 	--input examples/sample_fingerprints.json \
 	--wallet addr_test1demo123 \
 	--output-dir demo-kit
-# resulting folder includes wallet/cip30 metadata JSON, helper data, summary sheet, and `cip30_payload.ts`
-# (`cip30MetadataEntries`, `cip30MetadataMap`, and `helperData` exports for dApps)
+# resulting folder includes wallet/cip30 metadata JSON, helper data, `demo_summary.{txt,json}`,
+# and `cip30_payload.ts` (`cip30MetadataEntries`, `cip30MetadataMap`, and `helperData` exports for dApps)
 # (with ready-made `cip30MetadataEntries` + `cip30MetadataMap` exports)
 
 # or use the console script after installation

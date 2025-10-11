@@ -270,6 +270,35 @@ def cmd_demo_kit(args: argparse.Namespace) -> None:
     files_created.append(dapp_path)
 
     timestamp = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    summary_data = {
+        "generatedAt": timestamp,
+        "did": inline_bundle.did,
+        "walletAddress": wallet_address,
+        "metadataLabel": label,
+        "helperEntries": len(helper_map),
+        "helperUri": helper_uri,
+        "artifacts": {
+            "wallet": {
+                "inline": wallet_inline_path.name,
+                "external": wallet_external_path.name,
+            },
+            "cip30": {
+                "inline": cip30_inline_path.name,
+                "external": cip30_external_path.name,
+            },
+            "helpers": helpers_path.name,
+            "typescript": {
+                "payload": ts_path.name,
+                "demo": dapp_path.name,
+            },
+            "notes": "demo_summary.txt",
+        },
+    }
+
+    summary_json_path = output_dir / "demo_summary.json"
+    _write_json(summary_json_path, summary_data)
+    files_created.append(summary_json_path)
+
     listed_files = [path.name for path in files_created]
     summary_lines = [
         f"Demo kit generated: {timestamp}",
