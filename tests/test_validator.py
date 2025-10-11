@@ -47,14 +47,13 @@ def valid_fingerprint():
                 "minutiae": minutiae,
                 "quality": 85.0,
                 "imageWidth": 500,
-                "imageHeight": 500,
-                "imageResolution": 500
+                "imageHeight": 500
             }
         ],
         "metadata": {
             "captureDate": "2025-10-11T12:00:00Z",
             "deviceId": "FP5000",
-            "captureEnvironment": "indoor"
+            "resolution": 500
         }
     }
 
@@ -63,22 +62,17 @@ def valid_fingerprint():
 def valid_helper_data():
     """Valid helper data matching schema."""
     return {
-        "$schema": "https://decentralized-did.org/schemas/helper-data-v1.0.json",
         "version": "1.0",
-        "format": "wallet",
-        "salt": "0" * 64,  # 32 bytes hex
-        "syndrome": "a" * 256,  # 128 bytes hex
-        "hmac": "b" * 64,  # 32 bytes hex
-        "parameters": {
-            "quantization_bits": 8,
-            "code_length": 1024,
-            "error_correction_capability": 100,
-            "security_parameter": 128
-        },
-        "metadata": {
-            "finger_position": "right_thumb",
-            "enrollment_timestamp": "2025-10-11T12:00:00Z",
-            "version": "1.0"
+        "algorithm": "fuzzy-extractor-bch127-blake2b",
+        "fingers": {
+            "right_thumb": {
+                "fingerId": "right_thumb",
+                "version": 1,
+                "salt": "0" * 64,  # 32 bytes hex
+                "personalization": "1" * 64,  # 32 bytes hex
+                "bchSyndrome": "a" * 16,  # 8 bytes hex
+                "hmac": "b" * 64  # 32 bytes hex
+            }
         }
     }
 
@@ -87,34 +81,29 @@ def valid_helper_data():
 def valid_config():
     """Valid configuration matching schema."""
     return {
-        "$schema": "https://decentralized-did.org/schemas/config-v1.0.json",
-        "version": "1.0",
         "general": {
-            "default_format": "wallet",
-            "log_level": "info",
-            "color_output": True
+            "verbosity": "normal",
+            "jsonOutput": False,
+            "colorOutput": True
         },
         "biometric": {
-            "quality_threshold": 70,
-            "min_minutiae": 30,
-            "max_enrollment_attempts": 3,
-            "capture_timeout": 30
+            "qualityThreshold": 70,
+            "minMinutiae": 20,
+            "gridSize": 50
         },
         "storage": {
             "backend": "inline",
             "inline": {
-                "embed_in_metadata": True
+                "embedInMetadata": True
             }
         },
         "validation": {
-            "strict_mode": False,
-            "allow_low_quality": False,
-            "require_metadata": True
+            "strictMode": False,
+            "allowLowQuality": False
         },
         "output": {
-            "format": "json",
-            "pretty_print": True,
-            "include_metadata": True
+            "format": "wallet",
+            "pretty": True
         }
     }
 
