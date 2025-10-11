@@ -5,6 +5,7 @@ import configureStore from "redux-mock-store";
 import EN_TRANSLATIONS from "../../../../../locales/en/en.json";
 import { TabsRoutePath } from "../../../../../routes/paths";
 import { setToastMsg } from "../../../../../store/reducers/stateCache";
+import type { StoredBiometricMetadata } from "../../../../../core/cardano/walletConnect/peerConnection.types";
 import { identifierFix } from "../../../../__fixtures__/identifierFix";
 import { walletConnectionsFix } from "../../../../__fixtures__/walletConnectionsFix";
 import { ToastMsgType } from "../../../../globals/types";
@@ -48,7 +49,36 @@ const storeMocked = {
   dispatch: dispatchMock,
 };
 
+const biometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
+  [
+    1990,
+    {
+      walletAddress: "addr_test1demo123",
+      biometric: {
+        idHash: "abc123",
+        helperStorage: "external",
+        helperUri: "https://example.com/helpers.json",
+      },
+    },
+  ],
+];
+
+const biometricMetadata: StoredBiometricMetadata = {
+  did: "did:cardano:addr#digest",
+  label: 1990,
+  walletAddress: "addr_test1demo123",
+  idHash: "abc123",
+  helperStorage: "external",
+  helperUri: "https://example.com/helpers.json",
+  metadata: biometricMetadataEntries,
+  createdAt: "2025-01-01T00:00:00.000Z",
+};
+
 describe("Confirm connect modal", () => {
+  beforeEach(() => {
+    dispatchMock.mockClear();
+  });
+
   test("Confirm connect modal render", async () => {
     const closeFn = jest.fn();
     const confirmFn = jest.fn();
@@ -103,6 +133,30 @@ describe("Confirm connect modal", () => {
     });
 
     expect(confirmFn).toBeCalled();
+  });
+
+  test("renders biometric metadata summary when available", () => {
+    const { getByTestId, getByText } = render(
+      <Provider store={storeMocked}>
+        <ConfirmConnectModal
+          openModal={true}
+          closeModal={jest.fn()}
+          onConfirm={jest.fn()}
+          onDeleteConnection={jest.fn()}
+          isConnectModal={false}
+          connectionData={{
+            ...walletConnectionsFix[0],
+            biometricMetadata,
+          }}
+        />
+      </Provider>
+    );
+
+    expect(getByTestId("biometric-metadata-section")).toBeVisible();
+    expect(getByText("Biometric metadata")).toBeVisible();
+    expect(getByText("Label")).toBeVisible();
+    expect(getByText("external")).toBeVisible();
+    expect(getByText("https://example.com/helpers.json")).toBeVisible();
   });
   test("Confirm connect modal render: display fallback logo", async () => {
     const closeFn = jest.fn();

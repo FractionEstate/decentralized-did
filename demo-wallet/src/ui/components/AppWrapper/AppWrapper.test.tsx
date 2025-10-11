@@ -24,8 +24,10 @@ import {
   PeerConnectSigningEvent,
   PeerConnectedEvent,
   PeerConnectionBrokenEvent,
+  PeerBiometricMetadataEvent,
   PeerConnectionEventTypes,
   PeerDisconnectedEvent,
+  StoredBiometricMetadata,
 } from "../../../core/cardano/walletConnect/peerConnection.types";
 import { store } from "../../../store";
 import { updateOrAddConnectionCache } from "../../../store/reducers/connectionsCache";
@@ -44,6 +46,7 @@ import {
   ConnectionData,
   setConnectedWallet,
   setWalletConnectionsCache,
+  updateWalletConnectionMetadata,
 } from "../../../store/reducers/walletConnectionsCache";
 import { ToastMsgType } from "../../globals/types";
 import {
@@ -53,6 +56,7 @@ import {
   peerConnectRequestSignChangeHandler,
   peerConnectedChangeHandler,
   peerConnectionBrokenChangeHandler,
+  peerBiometricMetadataChangeHandler,
   peerDisconnectedChangeHandler,
 } from "./AppWrapper";
 import {
@@ -205,12 +209,45 @@ const peerConnectionBrokenEvent: PeerConnectionBrokenEvent = {
   payload: {},
 };
 
+const storedBiometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
+  [
+    1990,
+    {
+      walletAddress: "addr_test1qpl4w3u",
+      biometric: {
+        idHash: "abc123",
+        helperStorage: "inline",
+        helperData: { left_thumb: { salt_b64: "salt" } },
+      },
+    },
+  ],
+];
+
+const storedBiometricMetadata: StoredBiometricMetadata = {
+  did: "did:cardano:addr#digest",
+  label: 1990,
+  walletAddress: "addr_test1qpl4w3u",
+  idHash: "abc123",
+  helperStorage: "inline",
+  metadata: storedBiometricMetadataEntries,
+  createdAt: "2025-01-01T00:00:00.000Z",
+};
+
+const peerBiometricMetadataEvent: PeerBiometricMetadataEvent = {
+  type: PeerConnectionEventTypes.BiometricMetadataUpdated,
+  payload: {
+    dAppAddress: "dApp-address",
+    metadata: storedBiometricMetadata,
+  },
+};
+
 const peerConnection: ConnectionData = {
   id: "dApp-address",
   name: "dApp-name",
   iconB64: "icon",
   selectedAid: "identifier",
   url: "http://localhost:3000",
+  biometricMetadata: storedBiometricMetadata,
 };
 
 const identifierAddedEvent: IdentifierAddedEvent = {
@@ -366,6 +403,26 @@ describe("Peer connection states changed handler", () => {
     expect(dispatch).toBeCalledWith(
       setToastMsg(ToastMsgType.DISCONNECT_WALLET_SUCCESS)
     );
+  });
+
+  test("handle biometric metadata event", async () => {
+    dispatch.mockClear();
+    Agent.agent.peerConnectionMetadataStorage.getAllPeerConnectionMetadata =
+      jest.fn().mockResolvedValue([peerConnection]);
+    await peerBiometricMetadataChangeHandler(
+      peerBiometricMetadataEvent,
+      dispatch
+    );
+    expect(dispatch).toBeCalledWith(
+      updateWalletConnectionMetadata({
+        id: peerConnection.id,
+        biometricMetadata: storedBiometricMetadata,
+      })
+    );
+    expect(dispatch).toBeCalledWith(
+      setWalletConnectionsCache([peerConnection])
+    );
+    expect(dispatch).toBeCalledWith(setConnectedWallet(peerConnection));
   });
 });
 

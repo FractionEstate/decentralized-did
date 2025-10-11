@@ -18,6 +18,7 @@ import {
   PeerConnectSigningEvent,
   PeerConnectedEvent,
   PeerConnectionBrokenEvent,
+  PeerBiometricMetadataEvent,
   PeerDisconnectedEvent,
 } from "../../../core/cardano/walletConnect/peerConnection.types";
 import { KeyStoreKeys, SecureStorage } from "../../../core/storage";
@@ -75,6 +76,7 @@ import {
   setConnectedWallet,
   setPendingConnection,
   setWalletConnectionsCache,
+  updateWalletConnectionMetadata,
 } from "../../../store/reducers/walletConnectionsCache";
 import { OperationType, ToastMsgType } from "../../globals/types";
 import { CredentialsFilters } from "../../pages/Credentials/Credentials.types";
@@ -188,6 +190,40 @@ const peerConnectionBrokenChangeHandler = async (
 ) => {
   dispatch(setConnectedWallet(null));
   dispatch(setToastMsg(ToastMsgType.DISCONNECT_WALLET_SUCCESS));
+};
+
+const peerBiometricMetadataChangeHandler = async (
+  event: PeerBiometricMetadataEvent,
+  dispatch: ReturnType<typeof useAppDispatch>
+) => {
+  const dAppAddress = event.payload?.dAppAddress;
+  const metadata = event.payload?.metadata;
+
+  if (!dAppAddress || !metadata) {
+    return;
+  }
+
+  dispatch(
+    updateWalletConnectionMetadata({
+      id: dAppAddress,
+      biometricMetadata: metadata,
+    })
+  );
+
+  try {
+    const existingConnections =
+      await Agent.agent.peerConnectionMetadataStorage.getAllPeerConnectionMetadata();
+    dispatch(setWalletConnectionsCache(existingConnections));
+
+    const connectedWallet = existingConnections.find(
+      (connection) => connection.id === dAppAddress
+    );
+    if (connectedWallet) {
+      dispatch(setConnectedWallet(connectedWallet));
+    }
+  } catch (error) {
+    showError("Failed to refresh biometric metadata", error, dispatch);
+  }
 };
 
 const AppWrapper = (props: { children: ReactNode }) => {
@@ -578,6 +614,11 @@ const AppWrapper = (props: { children: ReactNode }) => {
         return peerConnectionBrokenChangeHandler(event, dispatch);
       }
     );
+    PeerConnection.peerConnection.onPeerBiometricMetadataUpdated(
+      async (event: PeerBiometricMetadataEvent) => {
+        return peerBiometricMetadataChangeHandler(event, dispatch);
+      }
+    );
 
     Agent.agent.keriaNotifications.onNewNotification((event) => {
       notificationStateChanged(event, dispatch);
@@ -682,5 +723,6 @@ export {
   peerConnectRequestSignChangeHandler,
   peerConnectedChangeHandler,
   peerConnectionBrokenChangeHandler,
+  peerBiometricMetadataChangeHandler,
   peerDisconnectedChangeHandler,
 };

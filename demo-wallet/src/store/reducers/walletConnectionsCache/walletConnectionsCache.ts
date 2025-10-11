@@ -4,6 +4,7 @@ import {
   ConnectionData,
   WalletConnectState,
 } from "./walletConnectionsCache.types";
+import type { StoredBiometricMetadata } from "../../../core/cardano/walletConnect/peerConnection.types";
 
 const initialState: WalletConnectState = {
   walletConnections: [],
@@ -44,6 +45,32 @@ const walletConnectionsCacheSlice = createSlice({
     showConnectWallet: (state, action: PayloadAction<boolean>) => {
       state.showConnectWallet = action.payload;
     },
+    updateWalletConnectionMetadata: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        biometricMetadata: StoredBiometricMetadata;
+      }>
+    ) => {
+      const { id, biometricMetadata } = action.payload;
+      state.walletConnections = state.walletConnections.map((connection) =>
+        connection.id === id
+          ? { ...connection, biometricMetadata }
+          : connection
+      );
+      if (state.connectedWallet?.id === id) {
+        state.connectedWallet = {
+          ...state.connectedWallet,
+          biometricMetadata,
+        };
+      }
+      if (state.pendingConnection?.id === id) {
+        state.pendingConnection = {
+          ...state.pendingConnection,
+          biometricMetadata,
+        };
+      }
+    },
     clearWalletConnection: () => initialState,
   },
 });
@@ -56,6 +83,7 @@ export const {
   setPendingConnection,
   setIsConnecting,
   showConnectWallet,
+  updateWalletConnectionMetadata,
   clearWalletConnection,
 } = walletConnectionsCacheSlice.actions;
 

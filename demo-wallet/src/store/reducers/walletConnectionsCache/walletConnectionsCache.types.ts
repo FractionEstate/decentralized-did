@@ -1,3 +1,5 @@
+import type { StoredBiometricMetadata } from "../../../core/cardano/walletConnect/peerConnection.types";
+
 interface ConnectionData {
   id: string;
   name?: string;
@@ -5,6 +7,7 @@ interface ConnectionData {
   createdAt?: string;
   iconB64?: string;
   selectedAid?: string;
+  biometricMetadata?: StoredBiometricMetadata;
 }
 
 interface WalletConnectState {

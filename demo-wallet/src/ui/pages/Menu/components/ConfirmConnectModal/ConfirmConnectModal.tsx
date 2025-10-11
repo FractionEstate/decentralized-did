@@ -82,6 +82,13 @@ const ConfirmConnectModal = ({
     "secondary-button": !isConnectModal,
   });
 
+  const biometricMetadata = connectionData?.biometricMetadata;
+  const helperUriDisplay = biometricMetadata?.helperUri
+    ? ellipsisText(biometricMetadata.helperUri, 40)
+    : biometricMetadata?.helperStorage === "inline"
+      ? "Embedded in metadata"
+      : "Not provided";
+
   return (
     <OptionModal
       modalIsOpen={openModal}
@@ -150,6 +157,32 @@ const ConfirmConnectModal = ({
       >
         {buttonTitle}
       </IonButton>
+      {!isConnecting && biometricMetadata && (
+        <div
+          className="biometric-metadata-section"
+          data-testid="biometric-metadata-section"
+        >
+          <h4>Biometric metadata</h4>
+          <dl>
+            <div className="biometric-row">
+              <dt>DID</dt>
+              <dd>{ellipsisText(biometricMetadata.did, 40)}</dd>
+            </div>
+            <div className="biometric-row">
+              <dt>Label</dt>
+              <dd>{biometricMetadata.label}</dd>
+            </div>
+            <div className="biometric-row">
+              <dt>Helper storage</dt>
+              <dd>{biometricMetadata.helperStorage}</dd>
+            </div>
+            <div className="biometric-row">
+              <dt>Helper URI</dt>
+              <dd>{helperUriDisplay}</dd>
+            </div>
+          </dl>
+        </div>
+      )}
     </OptionModal>
   );
 };

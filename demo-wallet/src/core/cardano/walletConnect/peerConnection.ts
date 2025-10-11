@@ -10,6 +10,7 @@ import {
   PeerConnectSigningEvent,
   PeerConnectedEvent,
   PeerConnectionBrokenEvent,
+  PeerBiometricMetadataEvent,
   PeerConnectionEventTypes,
   PeerDisconnectedEvent,
 } from "./peerConnection.types";
@@ -65,6 +66,15 @@ class PeerConnection {
   ) {
     this.eventEmitter.on(
       PeerConnectionEventTypes.PeerConnectionBroken,
+      callback
+    );
+  }
+
+  onPeerBiometricMetadataUpdated(
+    callback: (event: PeerBiometricMetadataEvent) => void
+  ) {
+    this.eventEmitter.on(
+      PeerConnectionEventTypes.BiometricMetadataUpdated,
       callback
     );
   }
