@@ -60,7 +60,7 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 
 ---
 
-## Phase 2: Polish 🔄 30% COMPLETE
+## Phase 2: Polish 🔄 50% COMPLETE
 
 **Goal**: Remove broken features, simplify navigation, improve error messages
 
@@ -69,22 +69,23 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 - [x] Add user-friendly error messages ✅ **DONE**
 - [x] Replace technical jargon with simple language ✅ **DONE**
 - [x] Integrated error utility into SimplifiedOnboarding ✅ **DONE**
-- [ ] Simplify tab bar labels (5 tabs → 4 tabs, better names)
-- [ ] Add loading states to all API calls
+- [x] Simplify tab bar labels (Identifiers→Wallet, Menu→Settings) ✅ **DONE**
+- [x] Create loading states implementation guide ✅ **DONE**
+- [ ] Add loading states to key components (CreateIdentifier, Credentials, etc.)
 - [ ] Test mobile responsiveness
 - [ ] Remove SSI Agent UI components
 
 ### Completed Quick Wins ✅
 
 #### 1. Hide Credentials Tab (5 min) - **DONE**
-**Commit**: 4430001  
+**Commit**: 4430001
 **File**: `demo-wallet/src/ui/components/navigation/TabsMenu/TabsMenu.tsx`
 - Commented out Credentials tab (Hyperledger Aries not used)
 - Reduced from 5 tabs → 4 tabs
 - Impact: No more empty/confusing tab
 
 #### 2. User-Friendly Error Utility (60 min) - **DONE**
-**Commit**: 4430001  
+**Commit**: 4430001
 **File**: `demo-wallet/src/utils/userFriendlyErrors.ts` (282+ lines)
 
 **Features**:
@@ -110,28 +111,76 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 **Impact**: Users see actionable messages, not jargon
 
 #### 3. Integrated Error Utility into SimplifiedOnboarding (15 min) - **DONE**
-**Commit**: 4430001  
+**Commit**: 4430001
 **File**: `demo-wallet/src/ui/pages/SimplifiedOnboarding/SimplifiedOnboarding.tsx`
 - Loading states during wallet creation
 - User-friendly biometric error messages
 - Success confirmations with emojis
 
-### Next Quick Wins (30 minutes remaining)
+#### 4. Simplified Tab Labels (5 min) - **DONE**
+**Commit**: 681a696
+**File**: `demo-wallet/src/locales/en/en.json`
+- "Identifiers" → "Wallet"
+- "Menu" → "Settings"
+- Kept: "Scan", "Notifications"
+- Impact: Familiar terms, no jargon
 
-#### 4. Simplify Tab Labels (5 min) - **NEXT**
-   - "Identifiers" → "Wallet"
-   - "Menu" → "Settings"
-   - Keep: "Scan", "Notifications"
+#### 5. Loading States Implementation Guide (45 min) - **DONE**
+**Commit**: 05fb047
+**File**: `docs/LOADING-STATES-GUIDE.md` (437 lines)
 
-#### 5. Add Loading Spinners (10 min)
-   - All API calls show spinner
-   - Use LOADING_MESSAGES from utility
-   - Pattern: setLoading(true) → API → showToast() → setLoading(false)
+**Content**:
+- Standard 6-step pattern for all async operations
+- 4 common UI patterns (button spinner, full-page, inline, list)
+- 3 real-world before/after examples
+- Complete implementation checklist
+- 4 common mistakes with fixes
+- Priority component list
+- Testing checklist
 
-#### 6. Mobile Responsive Check (15 min)
-   - Test in Chrome DevTools
-   - Check touch targets (>44px)
-   - Verify keyboard behavior
+**Impact**: Developers can now easily add consistent loading feedback
+
+### Next Steps (Remaining 50% of Phase 2)
+
+#### 6. Apply Loading States to Components (60 min) - **IN PROGRESS**
+**Priority Components**:
+1. CreateIdentifier (wallet creation) - High visibility
+2. Credentials (list loading)
+3. Identifiers (list loading)
+4. SetupBiometrics (enrollment)
+5. VerifyPasscode (authentication)
+
+**Pattern** (from guide):
+```typescript
+const [isLoading, setIsLoading] = useState(false);
+const [showToast] = useIonToast();
+
+const handleAction = async () => {
+  if (isLoading) return;
+  setIsLoading(true);
+  showToast({ message: LOADING_MESSAGES.loading, duration: 0 });
+
+  try {
+    await asyncOperation();
+    await showToast({ message: SUCCESS_MESSAGES.saved, duration: 2000 });
+  } catch (error) {
+    showErrorToast(error, showToast, 'context');
+  } finally {
+    setIsLoading(false);
+  }
+};
+```
+
+#### 7. Mobile Responsive Testing (30 min)
+- Test in Chrome DevTools mobile emulation
+- Check touch targets (>44px)
+- Verify keyboard doesn't hide buttons
+- Test on actual device (iPhone/Android)
+
+#### 8. Remove SSI Agent Components (15 min)
+- Delete CreateSSIAgent page (558 lines unused)
+- Clean up imports
+- Document removal in changelog
 
 ---
 
