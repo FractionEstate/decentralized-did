@@ -366,10 +366,10 @@ const CreateIdentifier = ({
                 isCreating
                   ? "Creating..."
                   : `${i18n.t(
-                      multiSigGroup
-                        ? "createidentifier.receive.confirmbutton"
-                        : "createidentifier.add.confirmbutton"
-                    )}`
+                    multiSigGroup
+                      ? "createidentifier.receive.confirmbutton"
+                      : "createidentifier.add.confirmbutton"
+                  )}`
               }
               primaryButtonAction={handleContinue}
               primaryButtonDisabled={

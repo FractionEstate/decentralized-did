@@ -9,10 +9,10 @@ import { SeedPhraseScreen } from "./SeedPhraseScreen";
 import { VerificationScreen } from "./VerificationScreen";
 import { SuccessScreen } from "./SuccessScreen";
 import { ProgressIndicator } from "./ProgressIndicator";
-import { 
-  showErrorToast, 
-  LOADING_MESSAGES, 
-  SUCCESS_MESSAGES 
+import {
+  showErrorToast,
+  LOADING_MESSAGES,
+  SUCCESS_MESSAGES
 } from "../../../utils/userFriendlyErrors";
 import "./SimplifiedOnboarding.scss";
 
@@ -102,10 +102,10 @@ const SimplifiedOnboarding = () => {
       console.log("Onboarding completed in", duration, "ms");
     } catch (error) {
       console.error("Wallet creation failed:", error);
-      
+
       // Show user-friendly error message
       showErrorToast(error, showToast, "wallet_creation");
-      
+
       setState({
         ...state,
         errors: [...state.errors, "Failed to create wallet"],
@@ -141,10 +141,10 @@ const SimplifiedOnboarding = () => {
           onComplete={handleBiometricComplete}
           onError={(error) => {
             console.error("Biometric capture failed:", error);
-            
+
             // Show user-friendly error message
             showErrorToast(error, showToast, "biometric_capture");
-            
+
             setState({
               ...state,
               errors: [...state.errors, error],

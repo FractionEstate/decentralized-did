@@ -1,7 +1,7 @@
 # Mobile Testing Results - October 12, 2025
 
-**Status**: ⏳ IN PROGRESS  
-**Dev Server**: ✅ Running at http://localhost:3003/  
+**Status**: ⏳ IN PROGRESS
+**Dev Server**: ✅ Running at http://localhost:3003/
 **Testing Tool**: Chrome DevTools Device Toolbar (Cmd/Ctrl + Shift + M)
 
 ---
@@ -438,7 +438,7 @@ LOW:
 // tests/e2e/mobile-responsive.spec.ts
 test.describe('Mobile Responsiveness', () => {
   const devices = ['iPhone SE', 'iPhone 14 Pro', 'Samsung Galaxy S20+'];
-  
+
   for (const device of devices) {
     test(`should render correctly on ${device}`, async ({ page }) => {
       // Auto-test touch targets, layouts, etc.

@@ -231,12 +231,12 @@ export function logError(error: any, context?: string): void {
  * Helper to show toast with user-friendly error (works with Ionic useIonToast)
  */
 export function showErrorToast(
-  error: any, 
-  showToast: (options: any) => Promise<void>, 
+  error: any,
+  showToast: (options: any) => Promise<void>,
   context?: string
 ): void {
   const userError = getUserFriendlyError(error);
-  
+
   showToast({
     message: `${userError.title}\n${userError.message}`,
     duration: 4000,
@@ -249,7 +249,7 @@ export function showErrorToast(
       },
     ],
   });
-  
+
   logError(error, context);
 }
 

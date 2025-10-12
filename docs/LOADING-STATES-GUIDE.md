@@ -14,10 +14,10 @@ This guide shows how to add loading states to components to provide clear user f
 ```typescript
 import { useState } from 'react';
 import { useIonToast } from '@ionic/react';
-import { 
-  LOADING_MESSAGES, 
+import {
+  LOADING_MESSAGES,
   SUCCESS_MESSAGES,
-  showErrorToast 
+  showErrorToast
 } from '../../../utils/userFriendlyErrors';
 
 const MyComponent = () => {
@@ -27,7 +27,7 @@ const MyComponent = () => {
   const handleAsyncOperation = async () => {
     // 1. Prevent double-clicks
     if (isLoading) return;
-    
+
     // 2. Show loading state
     setIsLoading(true);
     showToast({
@@ -58,7 +58,7 @@ const MyComponent = () => {
   };
 
   return (
-    <IonButton 
+    <IonButton
       onClick={handleAsyncOperation}
       disabled={isLoading}
     >
@@ -112,7 +112,7 @@ SUCCESS_MESSAGES = {
 
 ### Pattern 1: Button with Spinner
 ```tsx
-<IonButton 
+<IonButton
   onClick={handleAction}
   disabled={isLoading}
 >
@@ -183,7 +183,7 @@ const [showToast] = useIonToast();
 
 const handleCreate = async () => {
   if (isCreating) return; // Prevent double-clicks
-  
+
   setIsCreating(true);
   showToast({
     message: LOADING_MESSAGES.creating_wallet,
@@ -194,7 +194,7 @@ const handleCreate = async () => {
 
   try {
     const { identifier } = await Agent.agent.identifiers.createIdentifier(metadata);
-    
+
     await showToast({
       message: SUCCESS_MESSAGES.wallet_created,
       duration: 2000,
@@ -235,7 +235,7 @@ const [showToast] = useIonToast();
 
 const scanFingerprint = async () => {
   if (isScanning) return;
-  
+
   setIsScanning(true);
   showToast({
     message: LOADING_MESSAGES.scanning,
@@ -246,14 +246,14 @@ const scanFingerprint = async () => {
 
   try {
     const result = await BiometricService.scan();
-    
+
     await showToast({
       message: SUCCESS_MESSAGES.biometric_verified,
       duration: 1500,
       position: 'top',
       color: 'success',
     });
-    
+
     onSuccess(result);
   } catch (error) {
     showErrorToast(error, showToast, 'biometric_scan');
@@ -283,7 +283,7 @@ const [showToast] = useIonToast();
 
 const sendTransaction = async (amount: number, address: string) => {
   if (isSending) return;
-  
+
   setIsSending(true);
   showToast({
     message: LOADING_MESSAGES.sending,
@@ -294,7 +294,7 @@ const sendTransaction = async (amount: number, address: string) => {
 
   try {
     await WalletService.send(amount, address);
-    
+
     await showToast({
       message: SUCCESS_MESSAGES.transaction_sent,
       duration: 2000,
@@ -431,7 +431,7 @@ After adding loading states, test:
 
 ---
 
-**Last Updated**: October 12, 2025  
-**Related Files**: 
+**Last Updated**: October 12, 2025
+**Related Files**:
 - `demo-wallet/src/utils/userFriendlyErrors.ts` (utility)
 - `demo-wallet/src/ui/pages/SimplifiedOnboarding/SimplifiedOnboarding.tsx` (example)
