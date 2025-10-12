@@ -30,8 +30,11 @@ const getNextRootRoute = (data: DataProps) => {
       : RoutePath.GENERATE_SEED_PHRASE;
   }
 
+  // BIOMETRIC DID: Skip SSI Agent setup (Hyperledger Aries not used)
+  // Original code checked authentication.seedPhraseIsSet and routed to SSI_AGENT
+  // Now we go directly to main app after seed phrase is set
   if (authentication.seedPhraseIsSet) {
-    path = RoutePath.SSI_AGENT;
+    path = RoutePath.TABS_MENU;
   }
 
   if (authentication.ssiAgentIsSet) {
@@ -78,8 +81,9 @@ const getNextSetPasscodeRoute = (store: StoreState) => {
     nextPath = RoutePath.CREATE_PASSWORD;
   }
 
+  // BIOMETRIC DID: Skip SSI Agent, go directly to main app after seed phrase
   if (seedPhraseIsSet) {
-    nextPath = RoutePath.SSI_AGENT;
+    nextPath = RoutePath.TABS_MENU;
   }
 
   if (ssiAgentIsSet) {
