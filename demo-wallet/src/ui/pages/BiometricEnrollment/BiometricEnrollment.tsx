@@ -324,10 +324,10 @@ export const BiometricEnrollment = () => {
         dataTestId="alert-skip-biometric-enrollment"
         headerText="Skip Biometric Enrollment?"
         subheaderText="You can enroll later in settings."
-        primaryButtonText="Skip"
-        primaryButtonAction={confirmSkip}
-        secondaryButtonText="Cancel"
-        secondaryButtonAction={() => setShowSkipAlert(false)}
+        confirmButtonText="Skip"
+        actionConfirm={confirmSkip}
+        cancelButtonText="Cancel"
+        actionCancel={() => setShowSkipAlert(false)}
       />
 
       <Alert
@@ -336,10 +336,10 @@ export const BiometricEnrollment = () => {
         dataTestId="alert-enrollment-error"
         headerText="Enrollment Failed"
         subheaderText={enrollmentState.error || "Please try again."}
-        primaryButtonText="Retry"
-        primaryButtonAction={retryEnrollment}
-        secondaryButtonText="Skip"
-        secondaryButtonAction={() => {
+        confirmButtonText="Retry"
+        actionConfirm={retryEnrollment}
+        cancelButtonText="Skip"
+        actionCancel={() => {
           setShowErrorAlert(false);
           handleSkip();
         }}

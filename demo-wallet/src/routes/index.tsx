@@ -17,6 +17,7 @@ import { NotificationDetails } from "../ui/pages/NotificationDetails";
 import { Onboarding } from "../ui/pages/Onboarding";
 import { SetPasscode } from "../ui/pages/SetPasscode";
 import { SetupBiometrics } from "../ui/pages/SetupBiometrics/SetupBiometrics";
+import { BiometricEnrollment } from "../ui/pages/BiometricEnrollment";
 import { VerifyRecoverySeedPhrase } from "../ui/pages/VerifyRecoverySeedPhrase";
 import { VerifySeedPhrase } from "../ui/pages/VerifySeedPhrase";
 import { getNextRoute } from "./nextRoute";
@@ -101,6 +102,11 @@ const Routes = () => {
       <Route
         path={RoutePath.SETUP_BIOMETRICS}
         component={SetupBiometrics}
+        exact
+      />
+      <Route
+        path={RoutePath.BIOMETRIC_ENROLLMENT}
+        component={BiometricEnrollment}
         exact
       />
       <Route

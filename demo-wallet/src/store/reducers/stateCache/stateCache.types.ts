@@ -27,6 +27,7 @@ interface AuthenticationCacheProps {
   loginAttempt: LoginAttempts;
   firstAppLaunch: boolean;
   finishSetupBiometrics?: boolean;
+  biometricDidEnrolled?: boolean;
 }
 
 enum IncomingRequestType {

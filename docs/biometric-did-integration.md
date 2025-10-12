@@ -166,13 +166,13 @@ This document describes the **complete biometric DID integration** into the demo
       - Endpoints: `/generate`, `/verify`
       - Pros: Works on all platforms
       - Cons: Requires server infrastructure
-    
+
     - **Option B**: Native Capacitor Plugin
       - Bundle Python CLI with app
       - Execute via shell on device
       - Pros: Fully offline, no server
       - Cons: Platform-specific builds
-    
+
     - **Option C**: WebAssembly
       - Compile Python CLI to WASM
       - Run in browser/WebView
@@ -427,7 +427,7 @@ npm run dev
        let command = call.getString("command") ?? ""
        let process = Process()
        process.launchPath = "/usr/bin/python3"
-       process.arguments = ["-m", "decentralized_did.cli", ...] 
+       process.arguments = ["-m", "decentralized_did.cli", ...]
        process.launch()
        // ... handle stdout/stderr
    }

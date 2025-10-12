@@ -83,39 +83,8 @@ const SetupBiometrics = () => {
   };
 
   const processBiometrics = async () => {
-    let isBiometricAuthenticated: boolean | BiometryError = false;
-    if (!Capacitor.isNativePlatform()) {
-      navToNextStep();
-      return;
-    }
-
-    try {
-      await disablePrivacy();
-      isBiometricAuthenticated = await handleBiometricAuth();
-    } finally {
-      await enablePrivacy();
-    }
-
-    if (isBiometricAuthenticated === true) {
-      await Agent.agent.basicStorage.createOrUpdateBasicRecord(
-        new BasicRecord({
-          id: MiscRecordId.APP_BIOMETRY,
-          content: { enabled: true },
-        })
-      );
-      dispatch(setEnableBiometricsCache(true));
-      dispatch(
-        setToastMsg(ToastMsgType.SETUP_BIOMETRIC_AUTHENTICATION_SUCCESS)
-      );
-      navToNextStep();
-    } else if (isBiometricAuthenticated instanceof BiometryError) {
-      if (
-        isBiometricAuthenticated.code === BiometryErrorType.userCancel ||
-        isBiometricAuthenticated.code === BiometryErrorType.biometryNotAvailable
-      ) {
-        setShowCancelBiometricsAlert(true);
-      }
-    }
+    // Navigate to biometric enrollment page for full DID enrollment
+    ionRouter.push(RoutePath.BIOMETRIC_ENROLLMENT, "forward", "push");
   };
 
   const skip = () => {

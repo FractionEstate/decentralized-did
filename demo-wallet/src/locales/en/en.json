@@ -52,6 +52,16 @@
       "skip": "Set up later"
     }
   },
+  "biometric": {
+    "enrollment": {
+      "title": "Enroll Biometric DID",
+      "description": "Capture your fingerprints to create a decentralized identity. This process is secure and your biometric data never leaves your device."
+    },
+    "verification": {
+      "title": "Verify Biometric",
+      "description": "Place your finger on the sensor to verify your identity."
+    }
+  },
   "generateseedphrase": {
     "onboarding": {
       "title": "Your recovery phrase",
@@ -1421,6 +1431,10 @@
     "peeriderror": "Peer ID not recognised",
     "peeridnotrecognised": "Peer ID not recognised",
     "setupbiometricsuccess": "Biometrics setup successfully",
+    "biometricenrollmentsuccess": "Biometric DID enrollment completed successfully",
+    "biometricenrollmenterror": "Biometric enrollment failed. Please try again.",
+    "biometricverificationsuccess": "Biometric verification successful",
+    "biometricverificationerror": "Biometric verification failed. Please try again.",
     "rotatekeysuccess": "Individual keys rotated successfully",
     "rotatekeyerror": "Unable to rotate keys",
     "newmultisignmember": "New member added to group",
