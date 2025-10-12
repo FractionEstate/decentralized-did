@@ -6,7 +6,7 @@
 
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { checkmarkCircle, closeCircle, fingerPrintOutline } from "ionicons/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { i18n } from "../../../i18n";
 import {
   biometricDidService,
@@ -49,8 +49,26 @@ export const BiometricVerification = ({
   const [error, setError] = useState<string | undefined>();
   const [matchedFingers, setMatchedFingers] = useState<string[]>([]);
   const [attempts, setAttempts] = useState(0);
+  const [webAuthnAvailable, setWebAuthnAvailable] = useState(false);
+  const [webAuthnBiometricType, setWebAuthnBiometricType] = useState<string | null>(null);
+  const [hasWebAuthnCredential, setHasWebAuthnCredential] = useState(false);
 
   const MAX_ATTEMPTS = 3;
+
+  // Check WebAuthn availability on mount
+  useEffect(() => {
+    const checkWebAuthn = async () => {
+      const isAvailable = fingerprintCaptureService.isWebAuthnAvailable();
+      const biometricType = fingerprintCaptureService.getWebAuthnBiometricType();
+      const hasCredential = await biometricDidService.hasWebAuthnCredential();
+
+      setWebAuthnAvailable(isAvailable);
+      setWebAuthnBiometricType(biometricType);
+      setHasWebAuthnCredential(hasCredential);
+    };
+
+    checkWebAuthn();
+  }, []);
 
   const startVerification = async () => {
     if (attempts >= MAX_ATTEMPTS) {
@@ -125,6 +143,51 @@ export const BiometricVerification = ({
     }
   };
 
+  const startWebAuthnVerification = async () => {
+    if (attempts >= MAX_ATTEMPTS) {
+      setError("Maximum verification attempts exceeded. Please use passcode.");
+      onFailure("Max attempts exceeded");
+      return;
+    }
+
+    setStatus(VerificationStatus.Verifying);
+    setError(undefined);
+
+    try {
+      // Load stored WebAuthn credential
+      const credential = await biometricDidService.loadWebAuthnCredential();
+      if (!credential) {
+        throw new Error("No biometric credential found. Please enroll first.");
+      }
+
+      // Verify with WebAuthn
+      const success = await fingerprintCaptureService.verifyWithWebAuthn(
+        credential.credentialId
+      );
+
+      if (success) {
+        setStatus(VerificationStatus.Success);
+        setTimeout(() => {
+          onSuccess();
+        }, 1000);
+      } else {
+        throw new Error("Biometric verification failed");
+      }
+    } catch (error) {
+      setStatus(VerificationStatus.Failed);
+      const errorMsg =
+        error instanceof Error ? error.message : "Verification failed";
+      setError(errorMsg);
+      setAttempts((prev) => prev + 1);
+
+      if (attempts + 1 >= MAX_ATTEMPTS) {
+        setTimeout(() => {
+          onFailure("Maximum attempts exceeded");
+        }, 2000);
+      }
+    }
+  };
+
   const retry = () => {
     setStatus(VerificationStatus.Ready);
     setError(undefined);
@@ -171,6 +234,17 @@ export const BiometricVerification = ({
             </div>
           )}
           <div className="verification-actions">
+            {webAuthnAvailable && hasWebAuthnCredential && (
+              <button
+                className="verify-button webauthn-button"
+                onClick={startWebAuthnVerification}
+              >
+                <IonIcon icon={fingerPrintOutline} slot="start" />
+                {webAuthnBiometricType
+                  ? `Verify with ${webAuthnBiometricType}`
+                  : "Verify with Biometric"}
+              </button>
+            )}
             <button className="verify-button" onClick={startVerification}>
               {i18n.t("biometric.verification.button.verify")}
             </button>

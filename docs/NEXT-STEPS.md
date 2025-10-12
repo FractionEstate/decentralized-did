@@ -1,8 +1,8 @@
 # 🚀 Next Steps: Production Hardening & Hardware Integration
 
-**Date**: October 12, 2025  
-**Current Status**: ✅ Demo-Wallet Integration Complete (10/10 tasks)  
-**Project Phase**: Transitioning from Mock Mode → Production Ready  
+**Date**: October 12, 2025
+**Current Status**: ✅ Demo-Wallet Integration Complete (10/10 tasks)
+**Project Phase**: Transitioning from Mock Mode → Production Ready
 
 ---
 
@@ -102,7 +102,7 @@ async captureWithWebAuthn(fingerId: string): Promise<FingerprintCapture> {
   if (!window.PublicKeyCredential) {
     throw new Error('WebAuthn not supported in this browser');
   }
-  
+
   try {
     const credential = await navigator.credentials.create({
       publicKey: {
@@ -120,7 +120,7 @@ async captureWithWebAuthn(fingerId: string): Promise<FingerprintCapture> {
         }
       }
     });
-    
+
     // Note: WebAuthn doesn't provide raw minutiae
     // This is suitable for VERIFICATION only, not enrollment
     return {
@@ -136,7 +136,7 @@ async captureWithWebAuthn(fingerId: string): Promise<FingerprintCapture> {
 }
 ```
 
-**Use Case**: Unlock wallet with Touch ID / Face ID / Windows Hello  
+**Use Case**: Unlock wallet with Touch ID / Face ID / Windows Hello
 **Limitation**: Can't generate DID (no raw minutiae), verification only
 
 **Status**: Can implement immediately, no hardware needed
@@ -161,14 +161,14 @@ from pathlib import Path
 
 class BiometricCLI:
     """Real Python CLI integration"""
-    
+
     def __init__(self, cli_path: str = "python -m decentralized_did.cli"):
         self.cli_path = cli_path
-    
-    async def generate(self, fingers: List[FingerData], wallet_address: str, 
+
+    async def generate(self, fingers: List[FingerData], wallet_address: str,
                       storage: str = "inline") -> GenerateResponse:
         """Call real CLI generate command"""
-        
+
         # Write input to temp file
         input_data = {
             "version": "1.0",
@@ -180,11 +180,11 @@ class BiometricCLI:
                 for f in fingers
             ]
         }
-        
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as f:
             json.dump(input_data, f)
             input_file = f.name
-        
+
         try:
             # Call CLI
             cmd = [
@@ -196,7 +196,7 @@ class BiometricCLI:
                 '--format', 'json',
                 '--json-output'
             ]
-            
+
             result = subprocess.run(
                 cmd,
                 capture_output=True,
@@ -204,10 +204,10 @@ class BiometricCLI:
                 timeout=30,
                 check=True
             )
-            
+
             # Parse output
             output = json.loads(result.stdout)
-            
+
             return GenerateResponse(
                 did=output['did'],
                 id_hash=output['id_hash'],
@@ -215,14 +215,14 @@ class BiometricCLI:
                 metadata=output['metadata'],
                 storage_reference=output.get('storage_reference')
             )
-            
+
         finally:
             Path(input_file).unlink(missing_ok=True)
-    
+
     async def verify(self, fingers: List[FingerData], helpers: List[HelperDataEntry],
                      expected_id_hash: str) -> VerifyResponse:
         """Call real CLI verify command"""
-        
+
         # Similar implementation for verify command
         # ... (see api_server_mock.py for structure)
         pass
@@ -290,12 +290,12 @@ from typing import List, Tuple
 
 class FingerprintSensor:
     """libfprint sensor integration"""
-    
+
     def __init__(self):
         try:
             self.ctx = fprint.Context()
             self.devices = list(self.ctx.devices())
-            
+
             if not self.devices:
                 print("⚠️  No fingerprint devices found. Using mock mode.")
                 self.mock_mode = True
@@ -307,37 +307,37 @@ class FingerprintSensor:
         except Exception as e:
             print(f"⚠️  Failed to initialize libfprint: {e}")
             self.mock_mode = True
-    
+
     def capture_fingerprint(self, finger_id: str) -> np.ndarray:
         """Capture fingerprint image from USB sensor"""
-        
+
         if self.mock_mode:
             # Fallback to mock data
             return self._generate_mock_image()
-        
+
         device = self.devices[0]
         device.open()
-        
+
         try:
             print(f"📍 Place {finger_id} on sensor...")
-            
+
             # Capture image
             image = device.enroll_image()
-            
+
             # Convert to numpy array
             img_array = np.frombuffer(image.data, dtype=np.uint8)
             img_array = img_array.reshape((image.height, image.width))
-            
+
             print(f"✅ Captured {finger_id}: {image.width}x{image.height} pixels")
-            
+
             return img_array
-            
+
         finally:
             device.close()
-    
+
     def extract_minutiae(self, image: np.ndarray) -> List[Tuple[float, float, float]]:
         """Extract minutiae using NBIS mindtct"""
-        
+
         # Save image to temp file
         with tempfile.NamedTemporaryFile(suffix='.pgm', delete=False) as f:
             # Convert numpy array to PGM format
@@ -345,25 +345,25 @@ class FingerprintSensor:
             f.write(f"P5\n{width} {height}\n255\n".encode())
             f.write(image.tobytes())
             img_path = f.name
-        
+
         try:
             # Run NBIS mindtct
             output_prefix = img_path.replace('.pgm', '')
-            
+
             result = subprocess.run(
                 ['mindtct', img_path, output_prefix],
                 capture_output=True,
                 text=True,
                 timeout=10
             )
-            
+
             if result.returncode != 0:
                 raise Exception(f"NBIS extraction failed: {result.stderr}")
-            
+
             # Parse XYT file (minutiae coordinates)
             minutiae = []
             xyt_file = f"{output_prefix}.xyt"
-            
+
             with open(xyt_file, 'r') as f:
                 for line in f:
                     line = line.strip()
@@ -373,52 +373,52 @@ class FingerprintSensor:
                             x, y, theta = map(float, parts[:3])
                             # Normalize to 0-1 range and 0-360 degrees
                             minutiae.append((x / 500.0, y / 500.0, theta))
-            
+
             # Cleanup NBIS output files
             for ext in ['.xyt', '.brw', '.dm', '.hcm', '.lcm', '.lfm', '.min', '.qm']:
                 Path(f"{output_prefix}{ext}").unlink(missing_ok=True)
-            
+
             print(f"✅ Extracted {len(minutiae)} minutiae points")
-            
+
             return minutiae
-            
+
         finally:
             Path(img_path).unlink(missing_ok=True)
-    
+
     def capture_and_extract(self, finger_id: str) -> List[List[float]]:
         """Capture fingerprint and extract minutiae (one call)"""
-        
+
         if self.mock_mode:
             return self._generate_mock_minutiae(finger_id)
-        
+
         # Capture image
         image = self.capture_fingerprint(finger_id)
-        
+
         # Extract minutiae
         minutiae = self.extract_minutiae(image)
-        
+
         # Convert to format expected by CLI
         return [[x, y, angle] for x, y, angle in minutiae]
-    
+
     def _generate_mock_minutiae(self, finger_id: str) -> List[List[float]]:
         """Generate mock minutiae for testing"""
         import hashlib
         import random
-        
+
         # Deterministic seed based on finger_id
         seed = int(hashlib.md5(finger_id.encode()).hexdigest()[:8], 16)
         random.seed(seed)
-        
+
         # Generate 20-40 minutiae points
         num_points = random.randint(20, 40)
         minutiae = []
-        
+
         for _ in range(num_points):
             x = random.random()
             y = random.random()
             angle = random.random() * 360
             minutiae.append([x, y, angle])
-        
+
         return minutiae
 
 # Global sensor instance
@@ -431,7 +431,7 @@ async def capture_fingerprint(request: dict):
     try:
         finger_id = request.get('finger_id', 'unknown')
         minutiae = fingerprint_sensor.capture_and_extract(finger_id)
-        
+
         return {
             "finger_id": finger_id,
             "minutiae": minutiae,
@@ -449,12 +449,12 @@ async def capture_fingerprint(request: dict):
 
 async captureFingerprint(fingerId: FingerId): Promise<FingerprintCapture> {
   const API_BASE_URL = process.env.BIOMETRIC_API_URL || "http://localhost:8000";
-  
+
   if (process.env.NODE_ENV === "development" && !process.env.USE_REAL_SENSOR) {
     // Use mock data
     return this.captureMockFingerprint(fingerId);
   }
-  
+
   try {
     // Call real sensor via API
     const response = await fetch(`${API_BASE_URL}/api/biometric/capture`, {
@@ -462,13 +462,13 @@ async captureFingerprint(fingerId: FingerId): Promise<FingerprintCapture> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ finger_id: fingerId }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`Capture failed: ${response.statusText}`);
     }
-    
+
     const data = await response.json();
-    
+
     return {
       fingerId: data.finger_id,
       minutiae: data.minutiae.map(([x, y, angle]: number[]) => ({
@@ -609,16 +609,16 @@ async def verify_biometric(request: VerifyRequest):
     # Check cache for recent verification
     cache_key = f"verify:{request.expected_id_hash}:{hash(str(request.fingers))}"
     cached_result = redis_client.get(cache_key)
-    
+
     if cached_result:
         return json.loads(cached_result)
-    
+
     # Perform verification
     result = await cli.verify(...)
-    
+
     # Cache result for 5 minutes
     redis_client.setex(cache_key, 300, json.dumps(result))
-    
+
     return result
 
 # Add performance monitoring
@@ -633,10 +633,10 @@ verify_duration = Histogram('biometric_verify_duration_seconds', 'Verify request
 @app.post("/api/biometric/generate")
 async def generate_did(request: GenerateRequest):
     generate_requests.inc()
-    
+
     with generate_duration.time():
         result = await cli.generate(...)
-    
+
     return result
 
 # Start Prometheus metrics server
@@ -682,10 +682,10 @@ def test_generate_endpoint():
         "wallet_address": "addr1test123",
         "storage": "inline"
     }
-    
+
     response = client.post("/api/biometric/generate", json=request_data)
     assert response.status_code == 200
-    
+
     data = response.json()
     assert "did" in data
     assert data["did"].startswith("did:cardano:")
@@ -695,14 +695,14 @@ def test_verify_endpoint():
     # First generate
     generate_response = client.post("/api/biometric/generate", json={...})
     did_data = generate_response.json()
-    
+
     # Then verify
     verify_response = client.post("/api/biometric/verify", json={
         "fingers": [...],  # Same fingers
         "helpers": did_data["helpers"],
         "expected_id_hash": did_data["id_hash"]
     })
-    
+
     assert verify_response.status_code == 200
     assert verify_response.json()["success"] is True
 
@@ -731,25 +731,25 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    
+
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
         pip install -r api_requirements.txt
         pip install pytest pytest-cov
-    
+
     - name: Run API tests
       run: |
         pytest tests/test_api.py -v --cov=. --cov-report=xml
-    
+
     - name: Upload coverage
       uses: codecov/codecov-action@v3
 ```

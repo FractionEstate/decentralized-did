@@ -12,14 +12,65 @@ import {
 
 export class FingerprintCaptureService {
   private static instance: FingerprintCaptureService;
+  private webAuthnAvailable: boolean | null = null;
+  private webAuthnBiometricType: string | null = null;
 
-  private constructor() { }
+  private constructor() {
+    this.checkWebAuthnAvailability();
+  }
 
   public static getInstance(): FingerprintCaptureService {
     if (!FingerprintCaptureService.instance) {
       FingerprintCaptureService.instance = new FingerprintCaptureService();
     }
     return FingerprintCaptureService.instance;
+  }
+
+  /**
+   * Check if WebAuthn is available in this browser
+   */
+  private async checkWebAuthnAvailability(): Promise<void> {
+    if (typeof window === 'undefined') {
+      this.webAuthnAvailable = false;
+      return;
+    }
+
+    try {
+      // Check if PublicKeyCredential is available
+      this.webAuthnAvailable = !!(window.PublicKeyCredential);
+
+      if (this.webAuthnAvailable) {
+        // Try to detect the biometric type
+        if (navigator.userAgent.includes('Mac')) {
+          this.webAuthnBiometricType = 'Touch ID';
+        } else if (navigator.userAgent.includes('Windows')) {
+          this.webAuthnBiometricType = 'Windows Hello';
+        } else if (navigator.userAgent.includes('Android')) {
+          this.webAuthnBiometricType = 'Fingerprint';
+        } else if (navigator.userAgent.includes('iOS')) {
+          this.webAuthnBiometricType = 'Touch ID / Face ID';
+        } else {
+          this.webAuthnBiometricType = 'Biometric';
+        }
+      }
+    } catch (error) {
+      console.warn('WebAuthn availability check failed:', error);
+      this.webAuthnAvailable = false;
+    }
+  }
+
+  /**
+   * Check if WebAuthn is available for biometric authentication
+   */
+  public isWebAuthnAvailable(): boolean {
+    return this.webAuthnAvailable === true;
+  }
+
+  /**
+   * Get the type of biometric available via WebAuthn
+   */
+  public getWebAuthnBiometricType(): string | null {
+    return this.webAuthnBiometricType;
   }
 
   /**
@@ -50,6 +101,146 @@ export class FingerprintCaptureService {
 
       Finger: ${fingerId}`
     );
+  }
+
+  /**
+   * Enroll biometric using WebAuthn (Touch ID, Face ID, Windows Hello)
+   * Note: WebAuthn doesn't expose raw biometric data, so this creates a credential
+   * that can be used for verification but not for DID generation
+   */
+  async enrollWithWebAuthn(userId: string, userName: string): Promise<{
+    credentialId: string;
+    publicKey: string;
+    success: boolean;
+  }> {
+    if (!this.isWebAuthnAvailable()) {
+      throw new Error('WebAuthn is not available in this browser');
+    }
+
+    try {
+      // Create credential options
+      const challenge = crypto.getRandomValues(new Uint8Array(32));
+      const userIdBytes = new TextEncoder().encode(userId);
+
+      const publicKeyCredentialCreationOptions: PublicKeyCredentialCreationOptions = {
+        challenge,
+        rp: {
+          name: "Biometric DID Wallet",
+          id: window.location.hostname,
+        },
+        user: {
+          id: userIdBytes,
+          name: userName,
+          displayName: userName,
+        },
+        pubKeyCredParams: [
+          { alg: -7, type: "public-key" },  // ES256
+          { alg: -257, type: "public-key" }, // RS256
+        ],
+        authenticatorSelection: {
+          authenticatorAttachment: "platform", // Built-in sensor only
+          userVerification: "required",
+          requireResidentKey: false,
+        },
+        timeout: 60000,
+        attestation: "none",
+      };
+
+      // Create credential
+      const credential = await navigator.credentials.create({
+        publicKey: publicKeyCredentialCreationOptions,
+      }) as PublicKeyCredential;
+
+      if (!credential) {
+        throw new Error('Failed to create WebAuthn credential');
+      }
+
+      // Extract credential data
+      const credentialId = this.arrayBufferToBase64(credential.rawId);
+      const response = credential.response as AuthenticatorAttestationResponse;
+      const publicKey = this.arrayBufferToBase64(response.getPublicKey()!);
+
+      console.log('✅ WebAuthn enrollment successful');
+
+      return {
+        credentialId,
+        publicKey,
+        success: true,
+      };
+    } catch (error) {
+      console.error('WebAuthn enrollment failed:', error);
+      throw new Error(`WebAuthn enrollment failed: ${(error as Error).message}`);
+    }
+  }
+
+  /**
+   * Verify biometric using WebAuthn
+   * Returns true if the user successfully authenticates with their biometric
+   */
+  async verifyWithWebAuthn(credentialId: string, challenge?: Uint8Array): Promise<boolean> {
+    if (!this.isWebAuthnAvailable()) {
+      throw new Error('WebAuthn is not available in this browser');
+    }
+
+    try {
+      // Use provided challenge or generate new one
+      const challengeBytes = challenge || crypto.getRandomValues(new Uint8Array(32));
+
+      // Convert credentialId from base64 to ArrayBuffer
+      const credentialIdBytes = this.base64ToArrayBuffer(credentialId);
+
+      const publicKeyCredentialRequestOptions: PublicKeyCredentialRequestOptions = {
+        challenge: challengeBytes as BufferSource,
+        allowCredentials: [
+          {
+            id: credentialIdBytes,
+            type: "public-key",
+            transports: ["internal"],
+          },
+        ],
+        timeout: 60000,
+        userVerification: "required",
+      };
+
+      // Get assertion (authenticate)
+      const assertion = await navigator.credentials.get({
+        publicKey: publicKeyCredentialRequestOptions,
+      }) as PublicKeyCredential;
+
+      if (!assertion) {
+        return false;
+      }
+
+      console.log('✅ WebAuthn verification successful');
+      return true;
+    } catch (error) {
+      console.error('WebAuthn verification failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Convert ArrayBuffer to base64 string
+   */
+  private arrayBufferToBase64(buffer: ArrayBuffer): string {
+    const bytes = new Uint8Array(buffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  }
+
+  /**
+   * Convert base64 string to ArrayBuffer
+   */
+  private base64ToArrayBuffer(base64: string): ArrayBuffer {
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
   }
 
   /**

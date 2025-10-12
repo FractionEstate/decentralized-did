@@ -15,6 +15,7 @@ import {
 
 const HELPER_DATA_KEY_PREFIX = "biometric_helpers_";
 const CURRENT_DID_KEY = "biometric_current_did";
+const WEBAUTHN_CREDENTIAL_KEY = "biometric_webauthn_credential";
 
 export class BiometricDidService {
   private static instance: BiometricDidService;
@@ -31,6 +32,68 @@ export class BiometricDidService {
       BiometricDidService.instance = new BiometricDidService();
     }
     return BiometricDidService.instance;
+  }
+
+  /**
+   * Save WebAuthn credential for biometric verification
+   */
+  async saveWebAuthnCredential(credentialId: string, publicKey: string): Promise<void> {
+    try {
+      const credentialData = JSON.stringify({
+        credentialId,
+        publicKey,
+        createdAt: new Date().toISOString(),
+      });
+
+      await SecureStorage.set(WEBAUTHN_CREDENTIAL_KEY, credentialData);
+      console.log('✅ WebAuthn credential saved');
+    } catch (error) {
+      console.error('Failed to save WebAuthn credential:', error);
+      throw new Error(`Failed to save WebAuthn credential: ${(error as Error).message}`);
+    }
+  }
+
+  /**
+   * Load WebAuthn credential
+   */
+  async loadWebAuthnCredential(): Promise<{ credentialId: string; publicKey: string } | null> {
+    try {
+      const credentialData = await SecureStorage.get(WEBAUTHN_CREDENTIAL_KEY);
+
+      if (!credentialData) {
+        return null;
+      }
+
+      const parsed = JSON.parse(credentialData);
+      return {
+        credentialId: parsed.credentialId,
+        publicKey: parsed.publicKey,
+      };
+    } catch (error) {
+      console.error('Failed to load WebAuthn credential:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Check if WebAuthn credential exists
+   */
+  async hasWebAuthnCredential(): Promise<boolean> {
+    const credential = await this.loadWebAuthnCredential();
+    return credential !== null;
+  }
+
+  /**
+   * Delete WebAuthn credential
+   */
+  async deleteWebAuthnCredential(): Promise<void> {
+    try {
+      await SecureStorage.delete(WEBAUTHN_CREDENTIAL_KEY);
+      console.log('✅ WebAuthn credential deleted');
+    } catch (error) {
+      console.error('Failed to delete WebAuthn credential:', error);
+      throw new Error(`Failed to delete WebAuthn credential: ${(error as Error).message}`);
+    }
   }
 
   /**
