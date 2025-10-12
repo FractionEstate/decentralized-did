@@ -55,11 +55,33 @@
   "biometric": {
     "enrollment": {
       "title": "Enroll Biometric DID",
-      "description": "Capture your fingerprints to create a decentralized identity. This process is secure and your biometric data never leaves your device."
+      "description": "Capture your fingerprints to create a decentralized identity. This process is secure and your biometric data never leaves your device.",
+      "success": "Biometric DID enrollment completed successfully!",
+      "skip": "You can enroll your biometric DID later in settings.",
+      "error": "Enrollment failed. Please try again."
     },
     "verification": {
       "title": "Verify Biometric",
-      "description": "Place your finger on the sensor to verify your identity."
+      "description": "Place your finger on the sensor to verify your identity.",
+      "unlock": {
+        "title": "Unlock with Biometric",
+        "description": "Place your finger on the sensor to unlock your wallet."
+      },
+      "sign": {
+        "title": "Sign Transaction",
+        "description": "Place your finger on the sensor to authorize this transaction."
+      },
+      "capturing": "Capturing fingerprint...",
+      "verifying": "Verifying...",
+      "success": "Verification successful!",
+      "failed": "Verification failed",
+      "maxattempts": "Maximum verification attempts exceeded. Please use your passcode.",
+      "button": {
+        "verify": "Verify with Fingerprint",
+        "retry": "Try Again",
+        "cancel": "Cancel",
+        "usepasscode": "Use Passcode Instead"
+      }
     }
   },
   "generateseedphrase": {
