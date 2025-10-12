@@ -1,0 +1,16 @@
+# FastAPI Backend Server Requirements
+# Install with: pip install -r api_requirements.txt
+
+# Core API framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# CORS support
+python-multipart==0.0.6
+
+# Already installed from main requirements.txt:
+# - numpy
+# - cryptography
+# - base64 (built-in)
+# - hashlib (built-in)

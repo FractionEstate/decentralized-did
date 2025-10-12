@@ -205,34 +205,90 @@ export class BiometricDidService {
     command: string,
     stdinData?: string
   ): Promise<string> {
-    // Options for web execution:
-    //
-    // 1. **Backend API** (Recommended for production):
-    //    POST /api/biometric/generate
-    //    POST /api/biometric/verify
-    //
-    // 2. **WebAssembly**:
-    //    Compile Python CLI to WASM using Pyodide
-    //
-    // 3. **Electron**:
-    //    Use require('child_process').execSync in preload script
+    // Backend API implementation
+    const API_BASE_URL = process.env.BIOMETRIC_API_URL || "http://localhost:8000";
 
-    throw new Error(
-      `Web CLI execution not implemented. Use one of:
+    try {
+      if (command.includes("generate")) {
+        // Parse input data
+        const input = stdinData ? JSON.parse(stdinData) : {};
 
-      1. Backend API endpoint (recommended):
-         - Deploy Python CLI as API service
-         - Call /api/biometric/generate and /api/biometric/verify
+        // Extract wallet address from command
+        const walletMatch = command.match(/--wallet\s+(\S+)/);
+        const walletAddress = walletMatch ? walletMatch[1] : "addr_test1_demo";
 
-      2. WebAssembly (advanced):
-         - Compile CLI to WASM with Pyodide
-         - Load and execute in browser
+        // Extract storage type from command
+        const storageMatch = command.match(/--storage\s+(\S+)/);
+        const storage = storageMatch ? storageMatch[1] : "inline";
 
-      3. Development mode:
-         - Set NODE_ENV=development for mock data
+        // Call API endpoint
+        const response = await fetch(`${API_BASE_URL}/api/biometric/generate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fingers: input.fingers || [],
+            wallet_address: walletAddress,
+            storage: storage,
+            format: "json",
+          }),
+        });
 
-      Command: ${command}`
-    );
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || "API request failed");
+        }
+
+        return JSON.stringify(await response.json());
+
+      } else if (command.includes("verify")) {
+        // Parse input data
+        const input = stdinData ? JSON.parse(stdinData) : {};
+
+        // Extract expected hash from command
+        const hashMatch = command.match(/--expected-hash\s+(\S+)/);
+        const expectedHash = hashMatch ? hashMatch[1] : "";
+
+        // Call API endpoint
+        const response = await fetch(`${API_BASE_URL}/api/biometric/verify`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fingers: input.fingers || [],
+            helpers: input.helpers || {},
+            expected_id_hash: expectedHash,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.detail || "API request failed");
+        }
+
+        return JSON.stringify(await response.json());
+      }
+
+      throw new Error(`Unknown command: ${command}`);
+
+    } catch (error) {
+      if (error instanceof Error && error.message.includes("fetch")) {
+        throw new Error(
+          `Backend API unavailable. Please ensure API server is running at ${API_BASE_URL}.
+
+          To start the API server:
+          1. cd /path/to/decentralized-did
+          2. python api_server_mock.py
+
+          Or set BIOMETRIC_API_URL environment variable to your API endpoint.
+
+          Command: ${command}`
+        );
+      }
+      throw error;
+    }
   }
 
   /**
