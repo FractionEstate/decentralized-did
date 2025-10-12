@@ -128,11 +128,7 @@ const getNextGenerateSeedPhraseRoute = () => {
 };
 
 const getNextVerifySeedPhraseRoute = () => {
-  const nextPath = RoutePath.SSI_AGENT;
-  return { pathname: nextPath };
-};
-
-const getNextCreateSSIAgentRoute = () => {
+  // BIOMETRIC DID: Skip SSI Agent - we don't use Hyperledger Aries
   const nextPath = RoutePath.TABS_MENU;
   return { pathname: nextPath };
 };
@@ -218,10 +214,6 @@ const nextRoute: Record<string, NextRoute> = {
     nextPath: () => getNextVerifySeedPhraseRoute(),
     updateRedux: [],
   },
-  [RoutePath.SSI_AGENT]: {
-    nextPath: () => getNextCreateSSIAgentRoute(),
-    updateRedux: [updateStoreAfterSetupSSI, clearSeedPhraseCache],
-  },
   [RoutePath.CREATE_PASSWORD]: {
     nextPath: (data: DataProps) => getNextCreatePasswordRoute(data),
     updateRedux: [updateStoreAfterCreatePassword],
@@ -242,7 +234,6 @@ const nextRoute: Record<string, NextRoute> = {
 
 export {
   getNextCreatePasswordRoute,
-  getNextCreateSSIAgentRoute,
   getNextGenerateSeedPhraseRoute,
   getNextOnboardingRoute,
   getNextRootRoute,

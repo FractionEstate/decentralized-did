@@ -9,7 +9,6 @@ import {
 } from "../store/reducers/stateCache";
 import { TabsMenu, tabsRoutes } from "../ui/components/navigation/TabsMenu";
 import { CreatePassword } from "../ui/pages/CreatePassword";
-import { CreateSSIAgent } from "../ui/pages/CreateSSIAgent";
 import { CredentialDetails } from "../ui/pages/CredentialDetails";
 import { GenerateSeedPhrase } from "../ui/pages/GenerateSeedPhrase";
 import { IdentifierDetails } from "../ui/pages/IdentifierDetails";
@@ -80,11 +79,6 @@ const Routes = () => {
         exact
       />
 
-      <Route
-        path={RoutePath.SSI_AGENT}
-        component={CreateSSIAgent}
-        exact
-      />
       {tabsRoutes.map((tab, index: number) => {
         return (
           <Route

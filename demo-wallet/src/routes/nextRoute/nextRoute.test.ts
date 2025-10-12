@@ -5,7 +5,6 @@ import {
   getNextRoute,
   updateStoreAfterSetPasscodeRoute,
   getNextVerifySeedPhraseRoute,
-  getNextCreateSSIAgentRoute,
 } from "./nextRoute";
 import { RootState } from "../../store";
 import { RoutePath } from "../index";
@@ -281,13 +280,8 @@ describe("NextRoute", () => {
     });
   });
 
-  test("should return correct route for /ssiagent", () => {
-    const result = getNextCreateSSIAgentRoute();
-
-    expect(result).toEqual({
-      pathname: RoutePath.TABS_MENU,
-    });
-  });
+  // Test removed: getNextCreateSSIAgentRoute no longer exists
+  // SSI Agent components removed (not used in Biometric DID wallet)
 });
 
 describe("getNextRoute", () => {
