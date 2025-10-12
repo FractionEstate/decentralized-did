@@ -1,0 +1,183 @@
+.success-screen {
+  --background: linear-gradient(135deg, #34c759 0%, #30a14e 100%);
+}
+
+.success-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.success-container {
+  max-width: 600px;
+  width: 100%;
+  color: white;
+
+  .celebration {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .celebration-icon {
+      font-size: 80px;
+      animation: celebration 1s ease-out;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin: 0;
+    }
+  }
+
+  .completion-checklist {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      font-size: 15px;
+
+      .icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  .wallet-address-box {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+
+    .address-label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .address-display {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .address-text {
+        flex: 1;
+        font-size: 14px;
+        font-family: 'Courier New', monospace;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 12px;
+        border-radius: 8px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .copy-button {
+        --color: white;
+        --background: rgba(255, 255, 255, 0.2);
+        --border-radius: 8px;
+        height: 40px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .capabilities {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 32px;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        font-size: 14px;
+        margin-bottom: 8px;
+        line-height: 1.5;
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .start-button {
+      --background: white;
+      --color: #34c759;
+      --border-radius: 12px;
+      height: 56px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .help-button {
+      --color: white;
+      font-size: 14px;
+    }
+  }
+}
+
+@keyframes celebration {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .success-container {
+    .celebration {
+      .celebration-icon {
+        font-size: 64px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+
+    .wallet-address-box {
+      .address-display {
+        flex-direction: column;
+        align-items: stretch;
+
+        .copy-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

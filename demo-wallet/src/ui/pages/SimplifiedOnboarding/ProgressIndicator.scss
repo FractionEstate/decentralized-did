@@ -1,0 +1,68 @@
+.progress-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  border-radius: 24px;
+  padding: 12px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.progress-dot {
+  transition: all 0.3s ease;
+
+  .dot-fill {
+    color: #007aff;
+    font-size: 16px;
+  }
+
+  .dot-empty {
+    color: #e0e0e0;
+    font-size: 16px;
+  }
+
+  &.active {
+    transform: scale(1.2);
+  }
+}
+
+.progress-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .progress-indicator {
+    top: 10px;
+    padding: 8px 16px;
+
+    .progress-text {
+      font-size: 12px;
+    }
+  }
+
+  .progress-dots {
+    gap: 8px;
+  }
+
+  .progress-dot {
+    .dot-fill,
+    .dot-empty {
+      font-size: 14px;
+    }
+  }
+}

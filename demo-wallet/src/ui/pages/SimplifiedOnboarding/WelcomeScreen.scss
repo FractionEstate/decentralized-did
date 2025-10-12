@@ -1,0 +1,109 @@
+.welcome-screen {
+  --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.welcome-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.welcome-container {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  color: white;
+}
+
+.welcome-header {
+  margin-bottom: 48px;
+
+  .logo {
+    font-size: 64px;
+    margin-bottom: 16px;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 16px 0 8px;
+  }
+
+  .tagline {
+    font-size: 18px;
+    opacity: 0.9;
+  }
+}
+
+.value-prop {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 32px 24px;
+  margin-bottom: 32px;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  .benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+
+    .icon {
+      font-size: 24px;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .primary-button {
+    --background: white;
+    --color: #667eea;
+    --border-radius: 12px;
+    font-size: 18px;
+    font-weight: 600;
+    height: 56px;
+  }
+
+  .secondary-button {
+    --color: white;
+    font-size: 14px;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .welcome-header h1 {
+    font-size: 28px;
+  }
+
+  .value-prop h2 {
+    font-size: 20px;
+  }
+}
