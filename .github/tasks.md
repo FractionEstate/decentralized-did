@@ -751,8 +751,12 @@ Build production-ready CLI with comprehensive validation, error handling, and de
   - Deliverable: `src/decentralized_did/storage/`, `tests/test_storage.py` (6 files, 1,031 lines total)
 
 - [x] **task 4** - Implement advanced CLI features
-  - **Status**: ✅ COMPLETE (Phase 1: Core Infrastructure)
-  - **Summary**: Implemented foundational CLI infrastructure with logging, progress indicators, and storage backend integration
+  - **Status**: ✅ COMPLETE (Phase 1: Core Infrastructure + Phase 2: Storage Integration)
+  - **Summary**: Implemented foundational CLI infrastructure with logging, progress indicators, and storage backend integration. Integrated storage into existing enroll/verify commands.
+
+  ---
+
+  ### Phase 1: Core Infrastructure (Completed)
   - **Implementation Details**:
     - **CLI Logging Module** (`src/decentralized_did/cli_logging.py`, 207 lines):
       - `CLILogger` class with structured logging
@@ -801,7 +805,7 @@ Build production-ready CLI with comprehensive validation, error handling, and de
         - `add_storage_args()`: Add storage options to parser
         - `create_storage_backend_from_args()`: Build backend from CLI args
         - `build_enhanced_parser()`: Build argument parser with all commands
-  - **Test Suite** (`tests/test_cli_enhanced.py`, 294 lines, 25 tests):
+  - **Test Suite Phase 1** (`tests/test_cli_enhanced.py`, 294 lines, 25 tests):
     - **CLI Logging Tests** (8 tests):
       - Logger creation with different levels
       - Log level filtering (quiet, normal, verbose, debug)
@@ -824,68 +828,201 @@ Build production-ready CLI with comprehensive validation, error handling, and de
       - Storage config as JSON string
       - storage-info command execution
       - storage-test command execution (inline, file)
-  - **Test Results**: ✅ 25/25 tests passing (100%)
-  - **Features Implemented**:
-    - ✅ Verbose logging with 4 configurable levels
-    - ✅ Progress bars and spinners for long-running operations
-    - ✅ Storage backend integration (inline, file, IPFS)
-    - ✅ Dry-run mode support (flag implemented, ready for command integration)
-    - ✅ JSON output mode for machine-readable results
-    - ✅ Colored output with auto-detection
-    - ✅ Storage backend testing commands
-    - ✅ Comprehensive error handling
-  - **Features Deferred** (to be implemented in Phase 2):
-    - ⏳ Batch enrollment processing (requires full enroll command integration)
-    - ⏳ Metadata export in multiple formats (CBOR, YAML - awaiting export command)
-    - ⏳ Enrollment rotation and revocation commands (awaiting rotate/revoke commands)
-    - ⏳ Shell completion scripts (bash, zsh, fish - can be added after core commands stable)
-  - **CLI Command Examples**:
-    ```bash
-    # Show storage backend information
-    dec-did storage-info
-    dec-did storage-info --json-output
+  - **Test Results Phase 1**: ✅ 25/25 tests passing (100%)
 
-    # Test inline storage backend
-    dec-did storage-test --storage-backend inline --verbose
+  ---
 
-    # Test file storage with backup
-    dec-did storage-test --storage-backend file \
-        --storage-path /var/lib/dec-did/storage \
-        --storage-backup \
-        --verbose
+  ### Phase 2: Storage Integration (Completed)
+  - **Commit**: `1528a0c` - feat: Phase 3 Task 4 Part 2 - Integrate storage backends into enroll/verify commands
+  - **Implementation Details**:
+    - **Updated `cmd_generate` (enroll)** in `src/decentralized_did/cli.py`:
+      - Integrated `_create_storage_backend_from_args()` to create backend from CLI options
+      - Automatic helper data storage to selected backend (file, inline, ipfs)
+      - Helper URI automatically set from storage reference
+      - Progress spinner for biometric feature extraction
+      - Dry-run mode: simulates operations without creating files/storage
+      - JSON output mode: clean structured output without mixed logging
+      - Verbose/debug logging with step markers
+      - Backwards compatible with existing `--helpers-output` flag
+    - **Updated `cmd_verify`**:
+      - Automatic helper data retrieval from storage backend
+      - Parses helper URI from metadata and creates `StorageReference`
+      - Fallback to `--helpers` file if storage unavailable
+      - Progress bar for multi-finger verification
+      - Dry-run mode support (simulates verification)
+      - JSON output mode (structured success/failure result)
+      - Verbose logging with detailed steps
+    - **Enhanced Argument Parsing**:
+      - `_add_common_args()`: Global options for all commands
+        - `--verbose, -v`: Verbose output
+        - `--debug`: Debug output (implies verbose)
+        - `--quiet, -q`: Suppress non-error output
+        - `--json-output`: Machine-readable JSON output
+        - `--dry-run`: Simulate without making changes
+      - `_add_storage_args()`: Storage backend configuration
+        - `--storage-backend {inline,file,ipfs}`: Backend selection
+        - `--storage-config JSON`: Backend-specific config
+        - `--storage-path PATH`: File storage directory
+        - `--storage-backup`: Enable file backup
+        - `--ipfs-api URL`: IPFS API endpoint
+        - `--ipfs-gateway URL`: IPFS HTTP gateway
+        - `--ipfs-pin`: Pin to IPFS
+      - Applied to `generate` and `verify` subcommands
+    - **JSON Output Mode Improvements**:
+      - Suppress logging in JSON mode to avoid mixed output
+      - Output only final structured JSON object to stdout
+      - `generate` JSON output: `{"did", "helper_storage", "helper_uri", "metadata_label"}`
+      - `verify` JSON output: `{"result", "verified", "fingerprints_checked"}`
+    - **Dry-Run Mode Implementation**:
+      - `_create_storage_backend_from_args()` accepts `dry_run` parameter
+      - Returns `None` in dry-run mode to prevent storage creation
+      - File storage directories not created in dry-run
+      - Metadata files not written in dry-run
+      - Helper data not stored in dry-run
+      - Verification simulation in dry-run (no actual crypto operations)
+  - **Test Suite Phase 2** (`tests/test_cli_storage_integration.py`, 339 lines, 13 tests):
+    - **Storage Integration Tests**:
+      1. `test_enroll_with_file_storage`: Enroll with file backend, verify external storage
+      2. `test_verify_with_file_storage`: End-to-end enroll/verify with file storage
+      3. `test_enroll_with_inline_storage`: Backwards compatibility (inline helper data)
+      4. `test_enroll_with_file_storage_and_backup`: File storage with backup enabled
+      5. `test_enroll_dry_run_mode`: Dry-run creates no files/directories
+      6. `test_verify_dry_run_mode`: Verify dry-run simulation
+      7. `test_enroll_json_output_mode`: Clean JSON output without logging
+      8. `test_verify_json_output_mode`: Verify JSON output parsing
+      9. `test_enroll_with_storage_config_json`: Custom storage config via JSON string
+      10. `test_verify_without_storage_fails`: Error when helper data missing
+      11. `test_verbose_output_flag`: Verbose flag produces detailed output
+      12. `test_quiet_output_flag`: Quiet flag suppresses output
+      13. `test_enroll_verify_roundtrip_with_storage`: Complete workflow test
+  - **Test Results Phase 2**: ✅ 13/13 tests passing (100%)
+  - **Combined Test Results**: ✅ 40/40 tests passing (100%)
+    - 2 original CLI tests (test_cli.py)
+    - 25 enhanced CLI tests (test_cli_enhanced.py)
+    - 13 storage integration tests (test_cli_storage_integration.py)
 
-    # Test IPFS storage with pinning
-    dec-did storage-test --storage-backend ipfs \
-        --ipfs-api /ip4/127.0.0.1/tcp/5001 \
-        --ipfs-pin \
-        --debug
+  ---
 
-    # Dry-run mode (for future commands)
-    dec-did enroll --input fingerprints.json --dry-run
-    ```
-  - **Design Patterns**:
-    - Factory pattern: Logger and backend creation from CLI args
-    - Context managers: Progress bars and spinners auto-cleanup
-    - Strategy pattern: Pluggable storage backends via CLI flags
-    - Decorator pattern: Common args added to multiple subcommands
-  - **Integration Points**:
-    - Storage backends: Fully integrated via `create_storage_backend_from_args()`
-    - Logging: `create_logger()` provides consistent logging across all commands
-    - Progress: Context managers ready for batch enrollment, verification
-    - Dry-run: Flag available for all commands (implementation command-specific)
-  - **Next Steps** (Phase 2 - Full Command Integration):
-    - Integrate storage backends into existing `enroll` and `verify` commands
-    - Add batch enrollment with progress bars
-    - Implement export command with CBOR/YAML support
-    - Create rotate and revoke commands
-    - Add shell completion scripts
-    - Update CLI documentation with all options
-  - **Code Quality**:
-    - Type hints throughout
-    - Comprehensive docstrings
-    - 100% test coverage for implemented features
-    - Clean separation of concerns (logging, progress, storage)
-  - Deliverable: 3 new modules (808 lines), 25 tests (294 lines), CLI infrastructure ready for Phase 2
+  ### CLI Command Examples (Updated)
+  ```bash
+  # Enroll with file storage backend
+  dec-did generate \
+      --input fingerprints.json \
+      --output metadata.json \
+      --storage-backend file \
+      --storage-path /var/lib/dec-did/helpers \
+      --verbose
+
+  # Enroll with IPFS storage and pinning
+  dec-did generate \
+      --input fingerprints.json \
+      --output metadata.json \
+      --storage-backend ipfs \
+      --ipfs-api /ip4/127.0.0.1/tcp/5001 \
+      --ipfs-pin \
+      --verbose
+
+  # Verify with file storage backend
+  dec-did verify \
+      --metadata metadata.json \
+      --input new_scan.json \
+      --storage-backend file \
+      --storage-path /var/lib/dec-did/helpers \
+      --verbose
+
+  # Enroll with dry-run (simulation only)
+  dec-did generate \
+      --input fingerprints.json \
+      --output metadata.json \
+      --storage-backend file \
+      --storage-path /tmp/helpers \
+      --dry-run
+
+  # JSON output mode for machine-readable results
+  dec-did generate \
+      --input fingerprints.json \
+      --output metadata.json \
+      --json-output
+
+  # Verify with JSON output
+  dec-did verify \
+      --metadata metadata.json \
+      --input new_scan.json \
+      --json-output
+
+  # Storage backend testing commands
+  dec-did storage-info
+  dec-did storage-test --storage-backend file --storage-path /tmp/test
+  ```
+
+  ---
+
+  ### Features Implemented (Phase 1 + Phase 2)
+  - ✅ Verbose logging with 4 configurable levels
+  - ✅ Progress bars and spinners for long-running operations
+  - ✅ Storage backend integration (inline, file, IPFS)
+  - ✅ **Storage integration in enroll command**
+  - ✅ **Storage integration in verify command**
+  - ✅ **Dry-run mode fully functional**
+  - ✅ **JSON output mode for machine-readable results**
+  - ✅ Colored output with auto-detection
+  - ✅ Storage backend testing commands
+  - ✅ Comprehensive error handling
+  - ✅ **Automatic helper data retrieval from storage**
+  - ✅ **Progress indicators in verify (progress bar)**
+  - ✅ **Progress indicators in enroll (spinner)**
+
+  ### Features Deferred (Phase 3 - Future Work)
+  - ⏳ Batch enrollment command (process multiple fingerprint files)
+  - ⏳ Export command (CBOR, YAML formats)
+  - ⏳ Rotate command (generate new helper data from same biometric)
+  - ⏳ Revoke command (delete helper data from storage)
+  - ⏳ Shell completion scripts (bash, zsh, fish)
+
+  ---
+
+  ### Design Patterns
+  - Factory pattern: Logger and backend creation from CLI args
+  - Context managers: Progress bars and spinners auto-cleanup
+  - Strategy pattern: Pluggable storage backends via CLI flags
+  - Decorator pattern: Common args added to multiple subcommands
+  - **Dry-run pattern**: Non-destructive simulation mode
+  - **Clean output separation**: JSON mode suppresses logging
+
+  ### Integration Points
+  - Storage backends: Fully integrated via `_create_storage_backend_from_args()`
+  - Logging: `create_logger()` provides consistent logging across all commands
+  - Progress: Context managers used in both enroll and verify
+  - Dry-run: Implemented in both enroll and verify commands
+  - JSON output: Available in both enroll and verify commands
+
+  ### Code Quality
+  - Type hints throughout
+  - Comprehensive docstrings
+  - 100% test coverage (40/40 tests passing)
+  - Clean separation of concerns (logging, progress, storage)
+  - Backwards compatible with existing CLI behavior
+  - No breaking changes to existing tests
+
+  ### Files Modified/Created
+  - Modified: `src/decentralized_did/cli.py` (+583 lines)
+  - Created: `tests/test_cli_storage_integration.py` (339 lines, 13 tests)
+  - Phase 1 deliverables: 3 modules (805 lines), 25 tests
+  - Phase 2 deliverables: 1 module updated, 13 tests added
+  - **Total**: 1,388 lines production code, 633 lines tests
+
+  ### Commits
+  - Phase 1: `99bfa80` - CLI infrastructure
+  - Phase 1 Fix: `d358709` - Type fix
+  - **Phase 2**: `1528a0c` - Storage integration
+
+  ### Next Steps (Optional Phase 3)
+  - Implement batch enrollment command for bulk processing
+  - Add export command with CBOR and YAML support
+  - Create rotate command for helper data rotation
+  - Create revoke command for helper data deletion
+  - Add shell completion scripts generation
+  - Update user documentation with all new options
 
 - [ ] **task 5** - Create developer SDK and libraries
   - Package core modules as importable Python library.
