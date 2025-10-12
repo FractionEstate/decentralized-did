@@ -19,8 +19,13 @@ const config = {
       },
       {
         test: /\.(ts|tsx)$/,
-        use: "ts-loader",
-        exclude: /node_modules/,
+        use: {
+          loader: "ts-loader",
+          options: {
+            configFile: "tsconfig.build.json"
+          }
+        },
+        exclude: [/node_modules/, /tests/],
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
