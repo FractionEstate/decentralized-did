@@ -6,7 +6,6 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { checkmarkCircle, fingerPrintOutline } from "ionicons/icons";
 import { useState, useEffect, useRef } from "react";
-import { Agent } from "../../../core/agent/agent";
 import { i18n } from "../../../i18n";
 import { RoutePath } from "../../../routes";
 import { getNextRoute } from "../../../routes/nextRoute";
@@ -149,24 +148,7 @@ export const BiometricEnrollment = () => {
       // Store current DID for quick access
       await biometricDidService.saveCurrentDid(result.did);
 
-      // Store biometric metadata via wallet connect API
-      await Agent.agent.peerConnectionMetadataStorage.createPeerConnectionMetadataRecord(
-        {
-          id: walletAddress,
-          selectedAid: "", // Would be set from actual identifier
-          biometricMetadata: {
-            did: result.did,
-            label: 1990,
-            walletAddress: result.wallet_address,
-            idHash: result.id_hash,
-            helperStorage: "inline",
-            helperData: result.helpers,
-            metadata: [[1990, result.metadata_cip30_inline]],
-            createdAt: new Date().toISOString(),
-          },
-        }
-      );
-
+      // Update enrollment state with success
       setEnrollmentState((prev) => ({
         ...prev,
         status: BiometricEnrollmentStatus.Complete,
@@ -174,13 +156,15 @@ export const BiometricEnrollment = () => {
         idHash: result.id_hash,
       }));
 
+      // Show success toast
       dispatch(setToastMsg(ToastMsgType.BIOMETRIC_ENROLLMENT_SUCCESS));
 
-      // Navigate to next step
+      // Navigate to next step after brief delay
       setTimeout(() => {
         navToNextStep();
       }, 2000);
     } catch (error) {
+      console.error("Biometric enrollment error:", error);
       setEnrollmentState((prev) => ({
         ...prev,
         status: BiometricEnrollmentStatus.Failed,
