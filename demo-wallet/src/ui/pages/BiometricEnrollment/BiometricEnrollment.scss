@@ -1,0 +1,176 @@
+.biometric-enrollment {
+  .enrollment-intro {
+    text-align: center;
+    padding: 2rem;
+
+    .large-icon {
+      font-size: 6rem;
+      color: var(--ion-color-primary);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      margin-bottom: 2rem;
+    }
+
+    .finger-count {
+      background: var(--ion-color-light);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 2rem;
+
+      strong {
+        font-size: 2rem;
+        color: var(--ion-color-primary);
+      }
+    }
+  }
+
+  .enrollment-progress {
+    padding: 2rem;
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+
+      h2 {
+        font-size: 1.5rem;
+      }
+
+      .progress-counter {
+        font-size: 1.2rem;
+        color: var(--ion-color-primary);
+        font-weight: bold;
+      }
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--ion-color-light);
+      border-radius: 4px;
+      margin-bottom: 2rem;
+      overflow: hidden;
+
+      .progress-fill {
+        height: 100%;
+        background: var(--ion-color-primary);
+        transition: width 0.3s ease;
+      }
+    }
+
+    .current-finger {
+      text-align: center;
+      margin: 3rem 0;
+
+      .pulse-icon {
+        font-size: 8rem;
+        color: var(--ion-color-primary);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      h3 {
+        font-size: 1.5rem;
+        margin: 1rem 0 0.5rem;
+      }
+
+      .finger-name {
+        font-size: 1.2rem;
+        color: var(--ion-color-primary);
+        font-weight: bold;
+      }
+    }
+
+    .completed-fingers {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 0.5rem;
+      margin-top: 2rem;
+
+      .completed-finger {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        background: var(--ion-color-light);
+        border-radius: 4px;
+        font-size: 0.9rem;
+
+        ion-icon {
+          color: var(--ion-color-success);
+          margin-right: 0.5rem;
+          font-size: 1.2rem;
+        }
+      }
+    }
+
+    ion-spinner {
+      display: block;
+      margin: 2rem auto;
+      --color: var(--ion-color-primary);
+    }
+  }
+
+  .enrollment-complete {
+    text-align: center;
+    padding: 2rem;
+
+    .success-icon {
+      font-size: 8rem;
+      color: var(--ion-color-success);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: var(--ion-color-medium);
+      margin-bottom: 2rem;
+    }
+
+    .did-display {
+      background: var(--ion-color-light);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: left;
+      margin-top: 2rem;
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      code {
+        display: block;
+        font-size: 0.85rem;
+        word-break: break-all;
+        color: var(--ion-color-primary);
+        background: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
