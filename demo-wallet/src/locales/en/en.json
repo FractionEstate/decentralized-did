@@ -70,7 +70,8 @@
       },
       "sign": {
         "title": "Sign Transaction",
-        "description": "Place your finger on the sensor to authorize this transaction."
+        "description": "Place your finger on the sensor to authorize this transaction.",
+        "button": "Sign with Fingerprint"
       },
       "capturing": "Capturing fingerprint...",
       "verifying": "Verifying...",

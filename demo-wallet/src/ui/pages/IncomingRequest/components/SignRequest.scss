@@ -106,5 +106,53 @@
         }
       }
     }
+
+    .sign-passcode-fallback {
+      margin-top: 1.5rem;
+      text-align: center;
+      padding: 1rem 0;
+
+      .passcode-fallback-link {
+        background: none;
+        border: none;
+        color: var(--ion-color-primary);
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: underline;
+        padding: 0.5rem 1rem;
+
+        &:hover {
+          color: var(--ion-color-primary-shade);
+        }
+
+        &:active {
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}
+
+.biometric-verification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10000;
+  background: var(--ion-background-color, #fff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }

@@ -1,5 +1,7 @@
 import { IonText } from "@ionic/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAppSelector } from "../../../../store/hooks";
+import { getStateCache } from "../../../../store/reducers/stateCache";
 import { i18n } from "../../../../i18n";
 import { IncomingRequestType } from "../../../../store/reducers/stateCache/stateCache.types";
 import {
@@ -10,6 +12,11 @@ import { PageFooter } from "../../../components/PageFooter";
 import { PageHeader } from "../../../components/PageHeader";
 import { Spinner } from "../../../components/Spinner";
 import { Verification } from "../../../components/Verification";
+import {
+  BiometricVerification,
+  VerificationMode,
+} from "../../../components/BiometricVerification";
+import { biometricDidService } from "../../../../core/biometric";
 import { ScrollablePageLayout } from "../../../components/layout/ScrollablePageLayout";
 import { RequestProps } from "../IncomingRequest.types";
 import "./SignRequest.scss";
@@ -23,6 +30,23 @@ const SignRequest = ({
   handleCancel,
 }: RequestProps<IncomingRequestType.PEER_CONNECT_SIGN>) => {
   const [verifyIsOpen, setVerifyIsOpen] = useState(false);
+  const [showBiometricVerification, setShowBiometricVerification] = useState(false);
+  const [biometricDid, setBiometricDid] = useState<string | null>(null);
+  const stateCache = useAppSelector(getStateCache);
+  const authentication = stateCache.authentication;
+
+  // Load biometric DID if enrolled
+  useEffect(() => {
+    const loadBiometricDid = async () => {
+      try {
+        const did = await biometricDidService.getCurrentDid();
+        setBiometricDid(did);
+      } catch (error) {
+        console.error("Failed to load biometric DID:", error);
+      }
+    };
+    loadBiometricDid();
+  }, []);
 
   const signDetails = (() => {
     if (!requestData.signTransaction) {
@@ -45,8 +69,40 @@ const SignRequest = ({
     handleAccept();
   };
 
+  const handleBiometricSignClick = () => {
+    setShowBiometricVerification(true);
+  };
+
+  const handleBiometricVerificationSuccess = () => {
+    setShowBiometricVerification(false);
+    handleSign();
+  };
+
+  const handleBiometricVerificationFailure = (error: string) => {
+    console.error("Biometric verification failed:", error);
+    // Keep biometric verification open for retry
+  };
+
+  const handleBiometricVerificationCancel = () => {
+    setShowBiometricVerification(false);
+  };
+
+  // Check if biometric DID is available
+  const canUseBiometricDid = biometricDid && authentication.biometricDidEnrolled;
+
   return (
     <>
+      {showBiometricVerification && canUseBiometricDid ? (
+        <div className="biometric-verification-overlay">
+          <BiometricVerification
+            mode={VerificationMode.TransactionSign}
+            did={biometricDid}
+            onSuccess={handleBiometricVerificationSuccess}
+            onFailure={handleBiometricVerificationFailure}
+            onCancel={handleBiometricVerificationCancel}
+          />
+        </div>
+      ) : null}
       <ScrollablePageLayout
         activeStatus={activeStatus}
         pageId={pageId}
@@ -60,8 +116,16 @@ const SignRequest = ({
         footer={
           <PageFooter
             customClass="sign-footer"
-            primaryButtonText={`${i18n.t("request.button.sign")}`}
-            primaryButtonAction={() => setVerifyIsOpen(true)}
+            primaryButtonText={
+              canUseBiometricDid
+                ? `${i18n.t("biometric.verification.sign.button")}`
+                : `${i18n.t("request.button.sign")}`
+            }
+            primaryButtonAction={
+              canUseBiometricDid
+                ? handleBiometricSignClick
+                : () => setVerifyIsOpen(true)
+            }
             secondaryButtonText={`${i18n.t("request.button.dontallow")}`}
             secondaryButtonAction={handleCancel}
           />
@@ -106,6 +170,17 @@ const SignRequest = ({
               </IonText>
             )}
           </CardDetailsBlock>
+          {canUseBiometricDid && (
+            <div className="sign-passcode-fallback">
+              <button
+                className="passcode-fallback-link"
+                onClick={() => setVerifyIsOpen(true)}
+                data-testid="use-passcode-button"
+              >
+                {i18n.t("biometric.verification.button.usepasscode")}
+              </button>
+            </div>
+          )}
         </div>
       </ScrollablePageLayout>
       <Spinner show={initiateAnimation} />
