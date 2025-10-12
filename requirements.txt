@@ -44,3 +44,17 @@ structlog==23.2.0
 
 # Testing Framework
 pytest==7.4.3
+
+# API Server (FastAPI)
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Security - Rate Limiting
+slowapi==0.1.9
+
+# Security - Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# NumPy (for biometric processing)
+numpy>=1.24.0
