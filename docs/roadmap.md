@@ -1,11 +1,13 @@
 # Roadmap
 
-## Current Sprint (Oct 2025)
-- Finalize the biometric metadata ingestion plan for the bundled `demo-wallet` (Veridian fork).
-- Define the experimental CIP-30 bridge (store metadata bundle, surface approval UX, persist helper URI).
-- Publish contributor guidance (`copilot-instructions.md`) and keep roadmap/docs cross-referenced.
-- Capture integration test scenarios that exercise Python CLI output against the wallet flow.
-- Deliver the CLI "demo-kit" packaging command so demo operators can share consistent artifacts.
+## Current Sprint (Oct 2024)
+- ✅ **COMPLETED**: Finalized the biometric metadata ingestion plan for the bundled `demo-wallet` (Veridian fork).
+- ✅ **COMPLETED**: Defined the experimental CIP-30 bridge (store metadata bundle, surface approval UX, persist helper URI).
+- ✅ **COMPLETED**: Published contributor guidance (`copilot-instructions.md`) and kept roadmap/docs cross-referenced.
+- ✅ **COMPLETED**: Captured integration test scenarios that exercise Python CLI output against the wallet flow.
+- ✅ **COMPLETED**: Delivered the CLI "demo-kit" packaging command so demo operators can share consistent artifacts.
+- ✅ **VERIFIED**: Demo-wallet (Veridian) is 100% functional with biometric DID support (see `docs/demo-wallet-verification.md`).
+- 🔄 **IN PROGRESS**: Integrate live CLI enrollment/verification flows into demo-wallet UI.
 
 ## Near-Term (Quarter 1)
 - Land biometric metadata storage and approval UI inside the demo wallet (peer connection + signing screens).
