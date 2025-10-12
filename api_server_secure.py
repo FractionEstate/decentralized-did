@@ -11,7 +11,7 @@ Security Features:
 - Security headers
 """
 
-from src.biometrics.fuzzy_extractor_v2 import extract_key, reproduce_key
+from src.biometrics.fuzzy_extractor_v2 import fuzzy_extract_gen, fuzzy_extract_rep, HelperData
 from src.did.generator_v2 import (
     build_did_from_master_key,
     build_wallet_bundle,
@@ -426,11 +426,16 @@ async def generate_did(
             # Convert minutiae list to bytes (mock implementation)
             minutiae_bytes = os.urandom(32)
 
-            # Extract key using fuzzy extractor
-            key, salt, syndrome, hmac_tag = extract_key(
-                minutiae_bytes,
-                user_id=generate_request.wallet_address,
-                finger_id=finger.finger_id
+            # Convert to 64-bit numpy array (fuzzy extractor requires 64 bits = 8 bytes)
+            import numpy as np
+            from src.biometrics.fuzzy_extractor_v2 import bytes_to_bitarray
+            biometric_bits = bytes_to_bitarray(minutiae_bytes[:8])[
+                :64]  # Take first 64 bits
+
+            # Extract key using fuzzy extractor Gen function
+            key, helper_data = fuzzy_extract_gen(
+                biometric_bitstring=biometric_bits,
+                user_id=f"{generate_request.wallet_address}:{finger.finger_id}"
             )
 
             # Create FingerKey for aggregation
@@ -439,14 +444,14 @@ async def generate_did(
                 key=key
             ))
 
-            # Create helper data entry
+            # Create helper data entry from HelperData object
             helper_entries.append(HelperDataEntryInternal(
                 finger_id=finger.finger_id,
-                version=1,
-                salt=_encode_bytes(salt),
-                personalization=_encode_bytes(os.urandom(16)),
-                bch_syndrome=_encode_bytes(syndrome),
-                hmac=_encode_bytes(hmac_tag),
+                version=helper_data.version,
+                salt=_encode_bytes(helper_data.salt),
+                personalization=_encode_bytes(helper_data.personalization),
+                bch_syndrome=_encode_bytes(helper_data.bch_syndrome),
+                hmac=_encode_bytes(helper_data.hmac),
             ))
 
         # Step 2: Aggregate finger keys
@@ -561,15 +566,27 @@ async def verify_did(
                 helper = verify_request.helpers[finger_id]
 
                 import base64
-                salt = base64.b64decode(helper.salt_b64)
-                syndrome = base64.b64decode(helper.auth_b64)
+                import numpy as np
+                from src.biometrics.fuzzy_extractor_v2 import bytes_to_bitarray
 
-                reproduced_key = reproduce_key(
-                    minutiae_bytes,
-                    salt=salt,
-                    syndrome=syndrome,
-                    user_id="",
-                    finger_id=finger_id
+                # Reconstruct HelperData object from base64-encoded fields
+                helper_data = HelperData(
+                    version=1,
+                    salt=base64.b64decode(helper.salt_b64),
+                    personalization=base64.b64decode(helper.person_b64) if hasattr(
+                        helper, 'person_b64') else os.urandom(32),
+                    bch_syndrome=base64.b64decode(helper.auth_b64),
+                    hmac=base64.b64decode(helper.hmac_b64) if hasattr(
+                        helper, 'hmac_b64') else os.urandom(32),
+                )
+
+                # Convert minutiae to 64-bit numpy array
+                biometric_bits = bytes_to_bitarray(minutiae_bytes[:8])[:64]
+
+                # Reproduce key using fuzzy extractor Rep function
+                reproduced_key = fuzzy_extract_rep(
+                    biometric_bitstring=biometric_bits,
+                    helper_data=helper_data
                 )
 
                 if reproduced_key:
