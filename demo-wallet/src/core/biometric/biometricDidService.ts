@@ -14,6 +14,7 @@ import {
 } from "./biometricDid.types";
 
 const HELPER_DATA_KEY_PREFIX = "biometric_helpers_";
+const CURRENT_DID_KEY = "biometric_current_did";
 
 export class BiometricDidService {
   private static instance: BiometricDidService;
@@ -314,6 +315,40 @@ export class BiometricDidService {
       return await SecureStorage.keyExists(key);
     } catch (error) {
       return false;
+    }
+  }
+
+  /**
+   * Store the current user's biometric DID
+   */
+  async saveCurrentDid(did: string): Promise<void> {
+    try {
+      await SecureStorage.set(CURRENT_DID_KEY, did);
+    } catch (error) {
+      throw new Error(`Failed to save current DID: ${error}`);
+    }
+  }
+
+  /**
+   * Retrieve the current user's biometric DID
+   */
+  async getCurrentDid(): Promise<string | null> {
+    try {
+      return await SecureStorage.get(CURRENT_DID_KEY);
+    } catch (error) {
+      console.error("Failed to get current DID:", error);
+      return null;
+    }
+  }
+
+  /**
+   * Delete the current user's biometric DID
+   */
+  async deleteCurrentDid(): Promise<void> {
+    try {
+      await SecureStorage.delete(CURRENT_DID_KEY);
+    } catch (error) {
+      console.warn("Failed to delete current DID:", error);
     }
   }
 }

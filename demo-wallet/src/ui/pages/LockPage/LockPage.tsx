@@ -5,6 +5,8 @@ import {
 import { App, AppState } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
+import { IonIcon } from "@ionic/react";
+import { fingerPrintSharp } from "ionicons/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -35,6 +37,10 @@ import {
 import { ForgotAuthInfo } from "../../components/ForgotAuthInfo";
 import { ForgotType } from "../../components/ForgotAuthInfo/ForgotAuthInfo.types";
 import {
+  BiometricVerification,
+  VerificationMode,
+} from "../../components/BiometricVerification";
+import {
   MaxLoginAttemptAlert,
   useLoginAttempt,
 } from "../../components/MaxLoginAttemptAlert";
@@ -45,6 +51,7 @@ import { BackEventPriorityType } from "../../globals/types";
 import { useExitAppWithDoubleTap } from "../../hooks/exitAppWithDoubleTapHook";
 import { usePrivacyScreen } from "../../hooks/privacyScreenHook";
 import { useBiometricAuth } from "../../hooks/useBiometricsHook";
+import { biometricDidService } from "../../../core/biometric";
 import { showError } from "../../utils/error";
 import "./LockPage.scss";
 
@@ -54,6 +61,8 @@ const LockPageContainer = () => {
   const [passcode, setPasscode] = useState("");
   const [alertIsOpen, setAlertIsOpen] = useState(false);
   const [passcodeIncorrect, setPasscodeIncorrect] = useState(false);
+  const [showBiometricVerification, setShowBiometricVerification] = useState(false);
+  const [biometricDid, setBiometricDid] = useState<string | null>(null);
   const preventBiometricOnEvent = useRef(false);
 
   const { handleBiometricAuth } = useBiometricAuth(true);
@@ -100,7 +109,18 @@ const LockPageContainer = () => {
     if (firstAppLaunch) {
       handleUseBiometrics();
     }
+    // Load biometric DID if enrolled
+    loadBiometricDid();
   }, []);
+
+  const loadBiometricDid = async () => {
+    try {
+      const did = await biometricDidService.getCurrentDid();
+      setBiometricDid(did);
+    } catch (error) {
+      console.error("Failed to load biometric DID:", error);
+    }
+  };
 
   const handleUseBiometrics = async () => {
     if (biometricsCache.enabled) {
@@ -155,6 +175,26 @@ const LockPageContainer = () => {
       dispatch(login());
       dispatch(setFirstAppLaunchComplete());
     }
+  };
+
+  const handleBiometricDidUnlock = () => {
+    setShowBiometricVerification(true);
+  };
+
+  const handleBiometricVerificationSuccess = async () => {
+    await resetLoginAttempt();
+    dispatch(login());
+    dispatch(setFirstAppLaunchComplete());
+    setShowBiometricVerification(false);
+  };
+
+  const handleBiometricVerificationFailure = (error: string) => {
+    console.error("Biometric verification failed:", error);
+    // Keep the verification UI open for retry
+  };
+
+  const handleBiometricVerificationCancel = () => {
+    setShowBiometricVerification(false);
   };
 
   const resetPasscode = async () => {
@@ -246,6 +286,14 @@ const LockPageContainer = () => {
     >
       {isLock ? (
         <MaxLoginAttemptAlert lockDuration={lockDuration} />
+      ) : showBiometricVerification && biometricDid ? (
+        <BiometricVerification
+          mode={VerificationMode.Unlock}
+          did={biometricDid}
+          onSuccess={handleBiometricVerificationSuccess}
+          onFailure={handleBiometricVerificationFailure}
+          onCancel={handleBiometricVerificationCancel}
+        />
       ) : (
         <>
           <h2
@@ -260,6 +308,18 @@ const LockPageContainer = () => {
           >
             {i18n.t("lockpage.description")}
           </p>
+          {biometricDid && authentication.biometricDidEnrolled && (
+            <div className="biometric-unlock-option">
+              <button
+                className="biometric-unlock-button"
+                onClick={handleBiometricDidUnlock}
+                data-testid="biometric-unlock-button"
+              >
+                <IonIcon icon={fingerPrintSharp} />
+                <span>{i18n.t("biometric.verification.unlock.button")}</span>
+              </button>
+            </div>
+          )}
           <PasscodeModule
             error={
               <ErrorMessage

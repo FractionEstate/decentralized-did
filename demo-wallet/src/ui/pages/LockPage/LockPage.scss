@@ -29,7 +29,45 @@
   .lock-page-title {
     margin-top: 4rem;
   }
-  
+
+  .biometric-unlock-option {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 1rem;
+
+    .biometric-unlock-button {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 2rem;
+      background: var(--ion-color-primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      ion-icon {
+        font-size: 1.5rem;
+      }
+
+      &:hover {
+        background: var(--ion-color-primary-shade);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+
   img {
     max-width: 68%;
   }

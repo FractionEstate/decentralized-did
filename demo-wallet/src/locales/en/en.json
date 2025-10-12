@@ -65,7 +65,8 @@
       "description": "Place your finger on the sensor to verify your identity.",
       "unlock": {
         "title": "Unlock with Biometric",
-        "description": "Place your finger on the sensor to unlock your wallet."
+        "description": "Place your finger on the sensor to unlock your wallet.",
+        "button": "Unlock with Fingerprint"
       },
       "sign": {
         "title": "Sign Transaction",

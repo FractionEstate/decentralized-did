@@ -145,6 +145,9 @@ export const BiometricEnrollment = () => {
       // Store helper data securely
       await biometricDidService.saveHelperData(result.did, result.helpers);
 
+      // Store current DID for quick access
+      await biometricDidService.saveCurrentDid(result.did);
+
       // Store biometric metadata via wallet connect API
       await Agent.agent.peerConnectionMetadataStorage.createPeerConnectionMetadataRecord(
         {
