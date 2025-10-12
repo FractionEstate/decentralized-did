@@ -5,7 +5,7 @@
 
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { checkmarkCircle, fingerPrintOutline } from "ionicons/icons";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Agent } from "../../../core/agent/agent";
 import { i18n } from "../../../i18n";
 import { RoutePath } from "../../../routes";
@@ -66,6 +66,9 @@ export const BiometricEnrollment = () => {
   const [showSkipAlert, setShowSkipAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
 
+  // Use ref to track current finger index to avoid stale closures
+  const currentFingerRef = useRef(0);
+
   // Get wallet address (would come from user's wallet)
   // For now, use a test address
   const walletAddress = "addr_test1_demo";
@@ -74,6 +77,7 @@ export const BiometricEnrollment = () => {
   const progress = (enrollmentState.currentFinger / totalFingers) * 100;
 
   const startEnrollment = async () => {
+    currentFingerRef.current = 0;
     setEnrollmentState({
       status: BiometricEnrollmentStatus.InProgress,
       currentFinger: 0,
@@ -84,7 +88,7 @@ export const BiometricEnrollment = () => {
   };
 
   const captureNextFinger = async () => {
-    const { currentFinger, completedFingers } = enrollmentState;
+    const currentFinger = currentFingerRef.current;
 
     if (currentFinger >= totalFingers) {
       await completeEnrollment();
@@ -106,20 +110,17 @@ export const BiometricEnrollment = () => {
         );
       }
 
-      // Update state
+      // Increment ref and update state
+      currentFingerRef.current = currentFinger + 1;
       setEnrollmentState((prev) => ({
         ...prev,
-        currentFinger: prev.currentFinger + 1,
+        currentFinger: currentFinger + 1,
         completedFingers: [...prev.completedFingers, fingerId],
       }));
 
       // Auto-advance to next finger
       setTimeout(() => {
-        if (currentFinger + 1 < totalFingers) {
-          captureNextFinger();
-        } else {
-          completeEnrollment();
-        }
+        captureNextFinger();
       }, 500);
     } catch (error) {
       setEnrollmentState((prev) => ({
