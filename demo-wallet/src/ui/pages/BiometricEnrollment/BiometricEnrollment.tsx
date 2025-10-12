@@ -64,6 +64,8 @@ export const BiometricEnrollment = () => {
 
   const [showSkipAlert, setShowSkipAlert] = useState(false);
   const [showErrorAlert, setShowErrorAlert] = useState(false);
+  const [webAuthnAvailable, setWebAuthnAvailable] = useState(false);
+  const [webAuthnBiometricType, setWebAuthnBiometricType] = useState<string | null>(null);
 
   // Use ref to track current finger index to avoid stale closures
   const currentFingerRef = useRef(0);
@@ -75,6 +77,14 @@ export const BiometricEnrollment = () => {
   const totalFingers = FINGER_IDS.length;
   const progress = (enrollmentState.currentFinger / totalFingers) * 100;
 
+  // Check WebAuthn availability on mount
+  useEffect(() => {
+    const available = fingerprintCaptureService.isWebAuthnAvailable();
+    const biometricType = fingerprintCaptureService.getWebAuthnBiometricType();
+    setWebAuthnAvailable(available);
+    setWebAuthnBiometricType(biometricType);
+  }, []);
+
   const startEnrollment = async () => {
     currentFingerRef.current = 0;
     setEnrollmentState({
@@ -84,6 +94,48 @@ export const BiometricEnrollment = () => {
     });
 
     await captureNextFinger();
+  };
+
+  const startWebAuthnEnrollment = async () => {
+    try {
+      setEnrollmentState({
+        status: BiometricEnrollmentStatus.InProgress,
+        currentFinger: 0,
+        completedFingers: [],
+      });
+
+      // Enroll with WebAuthn (Touch ID, Face ID, Windows Hello)
+      const { credentialId, publicKey } = await fingerprintCaptureService.enrollWithWebAuthn(
+        walletAddress,
+        'My Wallet'
+      );
+
+      // Save the WebAuthn credential
+      await biometricDidService.saveWebAuthnCredential(credentialId, publicKey);
+
+      // Mark enrollment as complete
+      setEnrollmentState((prev) => ({
+        ...prev,
+        status: BiometricEnrollmentStatus.Complete,
+        did: `did:webauthn:${walletAddress}`,
+      }));
+
+      // Show success toast
+      dispatch(setToastMsg(ToastMsgType.BIOMETRIC_ENROLLMENT_SUCCESS));
+
+      // Navigate to next step after brief delay
+      setTimeout(() => {
+        navToNextStep();
+      }, 2000);
+    } catch (error) {
+      console.error('WebAuthn enrollment error:', error);
+      setEnrollmentState((prev) => ({
+        ...prev,
+        status: BiometricEnrollmentStatus.Failed,
+        error: error instanceof Error ? error.message : 'WebAuthn enrollment failed',
+      }));
+      setShowErrorAlert(true);
+    }
   };
 
   const captureNextFinger = async () => {
@@ -225,8 +277,34 @@ export const BiometricEnrollment = () => {
           <IonIcon icon={fingerPrintOutline} className="large-icon" />
           <h1>{i18n.t("biometric.enrollment.title")}</h1>
           <p>{i18n.t("biometric.enrollment.description")}</p>
-          <div className="finger-count">
-            <strong>{totalFingers}</strong> fingerprints will be captured
+
+          {/* WebAuthn Option (if available) */}
+          {webAuthnAvailable && webAuthnBiometricType && (
+            <div className="enrollment-option webauthn-option">
+              <h3>Quick Setup: {webAuthnBiometricType}</h3>
+              <p>
+                Use your device's built-in biometric authentication for quick and secure enrollment.
+              </p>
+              <button
+                className="webauthn-enroll-button"
+                onClick={startWebAuthnEnrollment}
+              >
+                <IonIcon icon={fingerPrintOutline} />
+                Enable {webAuthnBiometricType}
+              </button>
+            </div>
+          )}
+
+          {/* Sensor-based Option */}
+          <div className={`enrollment-option sensor-option ${webAuthnAvailable ? 'alternative' : ''}`}>
+            {webAuthnAvailable && <h3>Advanced: Fingerprint Sensor</h3>}
+            {!webAuthnAvailable && <h3>Fingerprint Sensor Enrollment</h3>}
+            <p>
+              Use a USB fingerprint sensor for maximum security with {totalFingers} fingerprints.
+            </p>
+            <div className="finger-count">
+              <strong>{totalFingers}</strong> fingerprints will be captured
+            </div>
           </div>
         </div>
       );

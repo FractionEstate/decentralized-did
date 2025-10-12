@@ -30,6 +30,76 @@
         color: var(--ion-color-primary);
       }
     }
+
+    .enrollment-option {
+      background: var(--ion-color-light);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: left;
+
+      h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--ion-color-dark);
+      }
+
+      p {
+        font-size: 0.95rem;
+        color: var(--ion-color-medium);
+        margin-bottom: 1rem;
+      }
+
+      &.webauthn-option {
+        background: linear-gradient(135deg, var(--ion-color-primary-tint) 0%, var(--ion-color-primary-shade) 100%);
+        color: white;
+        border: 2px solid var(--ion-color-primary);
+
+        h3, p {
+          color: white;
+        }
+
+        .webauthn-enroll-button {
+          width: 100%;
+          padding: 1rem;
+          background: white;
+          color: var(--ion-color-primary);
+          border: none;
+          border-radius: 8px;
+          font-size: 1.1rem;
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: all 0.2s ease;
+
+          ion-icon {
+            font-size: 1.5rem;
+          }
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+        }
+      }
+
+      &.sensor-option {
+        &.alternative {
+          border: 2px solid var(--ion-color-medium);
+
+          h3 {
+            color: var(--ion-color-medium-shade);
+          }
+        }
+      }
+    }
   }
 
   .enrollment-progress {
