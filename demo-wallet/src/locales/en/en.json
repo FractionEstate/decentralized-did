@@ -282,11 +282,11 @@
   },
   "tabsmenu": {
     "label": {
-      "identifiers": "Identifiers",
+      "identifiers": "Wallet",
       "creds": "Credentials",
       "scan": "Scan",
       "notifications": "Notifications",
-      "menu": "Menu"
+      "menu": "Settings"
     }
   },
   "custominput": {
