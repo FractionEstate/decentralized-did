@@ -14,8 +14,10 @@ import { DataProps, NextRoute, StoreState } from "./nextRoute.types";
 const getNextRootRoute = (data: DataProps) => {
   const authentication = data.store.stateCache.authentication;
 
-  let path = RoutePath.ONBOARDING;
+  // BIOMETRIC DID: Use simplified 3-step onboarding for new users
+  let path = RoutePath.SIMPLIFIED_ONBOARDING;
 
+  // If user already started old flow, continue with it
   if (authentication.passcodeIsSet) {
     path = RoutePath.SETUP_BIOMETRICS;
   }
@@ -47,12 +49,7 @@ const getNextRootRoute = (data: DataProps) => {
 const getNextOnboardingRoute = (data: DataProps) => {
   const nextRoute = getNextRootRoute(data);
 
-  if (nextRoute.pathname === RoutePath.ONBOARDING) {
-    return {
-      pathname: RoutePath.SET_PASSCODE,
-    };
-  }
-
+  // SimplifiedOnboarding is now the default - it's self-contained, just return it
   return nextRoute;
 };
 

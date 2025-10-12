@@ -1,7 +1,7 @@
 # Simplified Wallet Onboarding - 3 Steps to Done
 
-**Date**: October 12, 2025  
-**Status**: 🎨 UX Design Specification  
+**Date**: October 12, 2025
+**Status**: 🎨 UX Design Specification
 **Target**: < 2 minutes total onboarding time
 
 ---
@@ -14,7 +14,7 @@ Users should be able to create a secure biometric wallet in **3 simple steps** w
 
 **Target Time**: 90 seconds total
 - Step 1 (Scan Fingers): 30 seconds
-- Step 2 (Backup Seed Phrase): 45 seconds  
+- Step 2 (Backup Seed Phrase): 45 seconds
 - Step 3 (Verify): 15 seconds
 
 ---
@@ -754,23 +754,23 @@ Total: 5 steps, 90 seconds
 ```
 <OnboardingFlow>
   <ProgressIndicator currentStep={step} totalSteps={3} />
-  
+
   {step === 0 && <WelcomeScreen onStart={handleStart} />}
-  
+
   {step === 1 && (
     <BiometricScanScreen
       fingersToScan={['right-index', 'right-middle', 'right-thumb']}
       onComplete={handleBiometricComplete}
     />
   )}
-  
+
   {step === 2 && (
     <SeedPhraseScreen
       words={seedPhrase}
       onConfirm={handleSeedConfirm}
     />
   )}
-  
+
   {step === 3 && (
     <VerificationScreen
       seedPhrase={seedPhrase}
@@ -778,7 +778,7 @@ Total: 5 steps, 90 seconds
       onSuccess={handleVerificationSuccess}
     />
   )}
-  
+
   {step === 4 && (
     <SuccessScreen
       walletAddress={address}
@@ -850,6 +850,6 @@ This simplified 3-step onboarding flow makes creating a secure biometric wallet 
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: October 12, 2025  
+**Document Version**: 1.0
+**Last Updated**: October 12, 2025
 **Status**: Ready for Implementation
