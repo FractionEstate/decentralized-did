@@ -60,7 +60,7 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 
 ---
 
-## Phase 2: Polish 🔄 50% COMPLETE
+## Phase 2: Polish 🔄 60% COMPLETE
 
 **Goal**: Remove broken features, simplify navigation, improve error messages
 
@@ -71,7 +71,8 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 - [x] Integrated error utility into SimplifiedOnboarding ✅ **DONE**
 - [x] Simplify tab bar labels (Identifiers→Wallet, Menu→Settings) ✅ **DONE**
 - [x] Create loading states implementation guide ✅ **DONE**
-- [ ] Add loading states to key components (CreateIdentifier, Credentials, etc.)
+- [x] Apply loading states to CreateIdentifier (wallet creation) ✅ **DONE**
+- [ ] Add loading states to remaining components (Credentials, Identifiers, etc.)
 - [ ] Test mobile responsiveness
 - [ ] Remove SSI Agent UI components
 
@@ -140,11 +141,43 @@ RoutePath.ROOT → SIMPLIFIED_ONBOARDING → 90 seconds → Done! ✅
 
 **Impact**: Developers can now easily add consistent loading feedback
 
-### Next Steps (Remaining 50% of Phase 2)
+#### 6. Applied Loading States to CreateIdentifier (30 min) - **DONE**
+**Commit**: 56f3a21
+**File**: `demo-wallet/src/ui/components/CreateIdentifier/CreateIdentifier.tsx`
 
-#### 6. Apply Loading States to Components (60 min) - **IN PROGRESS**
-**Priority Components**:
-1. CreateIdentifier (wallet creation) - High visibility
+**Changes**:
+- Added `useIonToast` hook and `isCreating` state
+- Prevent double-clicks during wallet creation
+- Show loading toast: "Creating your wallet..."
+- Show success toast: "✓ Wallet created successfully!"
+- Use `showErrorToast()` for user-friendly errors
+- Button shows "Creating..." when loading
+- Button disabled during creation
+- Always reset state in finally block
+
+**Pattern Applied**:
+```typescript
+if (isCreating) return; // Prevent double-clicks
+setIsCreating(true);
+showToast({ message: LOADING_MESSAGES.creating_wallet, duration: 0 });
+
+try {
+  await Agent.agent.identifiers.createIdentifier(metadata);
+  await showToast({ message: SUCCESS_MESSAGES.wallet_created, duration: 2000 });
+} catch (e) {
+  showErrorToast(e, showToast, 'create_identifier');
+} finally {
+  setIsCreating(false);
+}
+```
+
+**Impact**: High-visibility component now has professional feedback
+
+### Next Steps (Remaining 40% of Phase 2)
+
+#### 7. Apply Loading States to More Components (30 min) - **NEXT**
+**Remaining Priority Components**:
+1. ~~CreateIdentifier (wallet creation)~~ ✅ **DONE**
 2. Credentials (list loading)
 3. Identifiers (list loading)
 4. SetupBiometrics (enrollment)
