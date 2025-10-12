@@ -1875,23 +1875,128 @@ Transition from mock implementation to production-ready biometric capture with r
 
 ---
 
+## Phase 14 - Hardware Testing & Validation
+
+**Goal**: Validate the biometric DID system with real USB fingerprint sensors and measure actual performance metrics (FAR/FRR).
+
+**Status**: 🚀 **READY TO START**
+
+**Timeline**: 2-3 weeks (including hardware delivery)
+
+**Budget**: $30-50 (USB fingerprint sensor + accessories)
+
+### Tasks
+
+- [ ] **task 1** - Hardware Procurement
+  - Order USB fingerprint sensor (Eikon Touch 700 recommended, $25-30)
+  - Confirm order and tracking information
+  - Document expected delivery date (2-3 days with Amazon Prime)
+  - Status: **READY**
+  - Deliverable: Order confirmation, tracking number
+
+- [ ] **task 2** - Environment Setup & Preparation
+  - Install libfprint and dependencies (`libfprint-2-2`, `fprintd`)
+  - Install pyfprint Python bindings
+  - Configure USB permissions (udev rules, plugdev group)
+  - Test fprintd service
+  - Create test scripts directory (`tests/hardware/`)
+  - Status: **READY** (can start while waiting for hardware)
+  - Deliverable: Configured development environment, verified fprintd installation
+
+- [ ] **task 3** - Hardware Connection & Detection
+  - Connect USB fingerprint sensor
+  - Verify device detection (`lsusb`, `dmesg`)
+  - Test fprintd communication
+  - Capture first test scan
+  - Document device information (vendor ID, product ID, driver version)
+  - Status: **BLOCKED** (waiting for hardware arrival)
+  - Deliverable: Hardware detection report, device specifications
+
+- [ ] **task 4** - Baseline Capture Testing
+  - Create capture test script (`tests/hardware/capture_test.py`)
+  - Capture 10+ samples per finger (3 fingers: index, middle, thumb)
+  - Extract and validate minutiae data format
+  - Analyze capture statistics (size, consistency)
+  - Save raw biometric data for analysis
+  - Status: **BLOCKED** (requires hardware)
+  - Deliverable: Capture test results, raw biometric data samples
+
+- [ ] **task 5** - Fuzzy Extractor Integration Testing
+  - Create fuzzy extractor test script (`tests/hardware/fuzzy_extractor_test.py`)
+  - Test enrollment flow with real biometric data (Gen function)
+  - Test genuine verification (same finger, 10+ attempts)
+  - Test impostor verification (different finger, 10+ attempts)
+  - Calculate FRR (False Reject Rate) and FAR (False Accept Rate)
+  - Target: FRR < 5%, FAR < 0.1%
+  - Status: **BLOCKED** (requires Task 4 complete)
+  - Deliverable: FAR/FRR metrics, security analysis report
+
+- [ ] **task 6** - Multi-Finger Aggregation Testing
+  - Create aggregation test script (`tests/hardware/aggregation_test.py`)
+  - Test 3-finger enrollment (production flow)
+  - Test 2-finger verification with different combinations
+  - Test aggregation key consistency
+  - Document optimal finger combinations
+  - Status: **BLOCKED** (requires Task 5 complete)
+  - Deliverable: Multi-finger test results, combination recommendations
+
+- [ ] **task 7** - Performance Benchmarking
+  - Create performance test script (`tests/hardware/performance_test.py`)
+  - Measure capture time (sensor to minutiae)
+  - Measure enrollment time (Gen function)
+  - Measure verification time (Rep function)
+  - Measure aggregation time
+  - Target: < 2 seconds total verification time
+  - Status: **BLOCKED** (requires Task 6 complete)
+  - Deliverable: Performance benchmark report, timing analysis
+
+- [ ] **task 8** - Hardware Compatibility Documentation
+  - Document tested sensor specifications
+  - Create hardware compatibility guide
+  - Document setup instructions (step-by-step)
+  - Create troubleshooting guide (common issues, solutions)
+  - Document alternative sensor options
+  - Status: **BLOCKED** (requires all tests complete)
+  - Deliverable: `docs/hardware/COMPATIBILITY-GUIDE.md`, `docs/hardware/TROUBLESHOOTING.md`
+
+- [ ] **task 9** - Results Analysis & Reporting
+  - Analyze all test results comprehensively
+  - Create FAR/FRR analysis report
+  - Create performance analysis report
+  - Document findings and recommendations
+  - Identify areas for improvement
+  - Status: **BLOCKED** (requires all tests complete)
+  - Deliverable: `docs/hardware/REAL-HARDWARE-RESULTS.md`, recommendations document
+
+- [ ] **task 10** - Phase 14 Completion & Next Steps
+  - Update `.github/tasks.md` with Phase 14 results
+  - Create phase completion summary (`docs/completion/phase-14-complete.md`)
+  - Update `PROJECT-STATUS.md` with hardware testing outcomes
+  - Provide recommendations for next phase (production deployment or refinement)
+  - Commit and push all changes
+  - Status: **BLOCKED** (requires all tasks complete)
+  - Deliverable: Phase 14 completion document, updated project documentation
+
+---
+
 # Project Tasks Overview
 This document outlines all tasks and milestones for the "Decentralized Anonymous Digital Identity on Cardano" project. Each phase includes specific tasks, their descriptions, and relevant links to documentation for further reference.
 
-The project follows a comprehensive 13-phase approach covering:
+The project follows a comprehensive 14-phase approach covering:
 - **Phase 0**: Deep research into biometrics, cryptography, regulations, and standards ✅
 - **Phase 1**: Architecture design and cryptographic foundation ✅
 - **Phase 2**: Core implementation with comprehensive testing ✅
 - **Phase 3**: CLI and developer experience ✅
 - **Phase 4**: Cardano ecosystem integration ✅
-- **Phase 5**: Privacy, security, and compliance
-- **Phase 6**: Governance and community building
-- **Phase 7**: Hardware integration and advanced features
-- **Phase 8**: Interoperability and standards
-- **Phase 9**: Performance optimization and scalability
-- **Phase 10**: Production deployment and operations
-- **Phase 11**: Hackathon preparation and demo
-- **Phase 12**: Post-hackathon evolution and sustainability
-- **Phase 13**: Production hardening & real hardware integration 🔄 **IN PROGRESS**
+- **Phase 5**: Privacy, security, and compliance ✅
+- **Phase 6**: Governance and community building ✅
+- **Phase 7**: Hardware integration and advanced features ✅
+- **Phase 8**: Interoperability and standards ✅
+- **Phase 9**: Performance optimization and scalability ✅
+- **Phase 10**: Production deployment and operations ✅
+- **Phase 11**: Hackathon preparation and demo ✅
+- **Phase 12**: Post-hackathon evolution and sustainability ✅
+- **Phase 13**: Production hardening & real hardware integration ✅
+- **Phase 14**: Hardware testing & validation 🔄 **READY TO START**
 
 Each task includes detailed research requirements, implementation steps, testing strategies, and deliverables to ensure thorough execution.
