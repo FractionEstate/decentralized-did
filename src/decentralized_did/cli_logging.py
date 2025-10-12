@@ -87,7 +87,7 @@ class CLILogger:
         """Format message with optional timestamp and data."""
         if self.json_mode:
             import json
-            output = {
+            output: Dict[str, Any] = {
                 "timestamp": datetime.now().isoformat(),
                 "level": level,
                 "message": message,

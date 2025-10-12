@@ -844,22 +844,22 @@ Build production-ready CLI with comprehensive validation, error handling, and de
     # Show storage backend information
     dec-did storage-info
     dec-did storage-info --json-output
-    
+
     # Test inline storage backend
     dec-did storage-test --storage-backend inline --verbose
-    
+
     # Test file storage with backup
     dec-did storage-test --storage-backend file \
         --storage-path /var/lib/dec-did/storage \
         --storage-backup \
         --verbose
-    
+
     # Test IPFS storage with pinning
     dec-did storage-test --storage-backend ipfs \
         --ipfs-api /ip4/127.0.0.1/tcp/5001 \
         --ipfs-pin \
         --debug
-    
+
     # Dry-run mode (for future commands)
     dec-did enroll --input fingerprints.json --dry-run
     ```
