@@ -1,6 +1,6 @@
 import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
-import { IonCol, IonGrid, IonIcon, IonModal, IonRow } from "@ionic/react";
+import { IonCol, IonGrid, IonIcon, IonModal, IonRow, useIonToast } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Salter } from "signify-ts";
@@ -28,6 +28,11 @@ import {
 import { BackEventPriorityType, ToastMsgType } from "../../globals/types";
 import { useOnlineStatusEffect } from "../../hooks";
 import { showError } from "../../utils/error";
+import {
+  showErrorToast,
+  LOADING_MESSAGES,
+  SUCCESS_MESSAGES,
+} from "../../../utils/userFriendlyErrors";
 import { nameChecker } from "../../utils/nameChecker";
 import { combineClassNames } from "../../utils/style";
 import { createThemeValue } from "../../utils/theme";
@@ -63,6 +68,7 @@ const CreateIdentifier = ({
   const identifiers = useAppSelector(getIdentifiersCache);
   const individualFirstCreate = useAppSelector(getIndividualFirstCreateSetting);
   const [keyboardIsOpen, setKeyboardIsOpen] = useState(false);
+  const [showToast] = useIonToast();
   const componentId = "create-identifier-modal";
   const dispatch = useAppDispatch();
   const initalState = {
@@ -79,6 +85,7 @@ const CreateIdentifier = ({
     ...initalState,
   });
   const [blur, setBlur] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [multiSigGroup, setMultiSigGroup] = useState<
     MultiSigGroup | undefined
   >();
@@ -142,6 +149,9 @@ const CreateIdentifier = ({
   };
 
   const handleCreateIdentifier = async () => {
+    // Prevent double-clicks
+    if (isCreating) return;
+
     const selectedTheme = createThemeValue(
       identifierData.color,
       identifierData.selectedTheme
@@ -166,6 +176,16 @@ const CreateIdentifier = ({
       };
     }
     metadata.groupMetadata = groupMetadata;
+
+    // Show loading state
+    setIsCreating(true);
+    showToast({
+      message: LOADING_MESSAGES.creating_wallet,
+      duration: 0,
+      position: "top",
+      color: "primary",
+    });
+
     try {
       if (
         Object.values(identifiers).some(
@@ -205,6 +225,14 @@ const CreateIdentifier = ({
         groupMetadata,
       });
 
+      // Show success message
+      await showToast({
+        message: SUCCESS_MESSAGES.wallet_created,
+        duration: 2000,
+        position: "top",
+        color: "success",
+      });
+
       dispatch(
         setToastMsg(
           identifierData.selectedAidType === 1 || multiSigGroup
@@ -219,6 +247,7 @@ const CreateIdentifier = ({
 
       if (errorMessage === DUPLICATE_NAME) {
         setDuplicateName(true);
+        setIsCreating(false);
         return;
       }
 
@@ -231,12 +260,15 @@ const CreateIdentifier = ({
         )
       ) {
         dispatch(showNoWitnessAlert(true));
+        setIsCreating(false);
         return;
       }
 
-      showError("Unable to create identifier", e, dispatch);
+      // Show user-friendly error
+      showErrorToast(e, showToast, "create_identifier");
     } finally {
       setBlur && setBlur(false);
+      setIsCreating(false);
     }
   };
 
@@ -330,13 +362,18 @@ const CreateIdentifier = ({
             <PageFooter
               pageId={componentId}
               customClass={keyboardIsOpen ? "ion-hide" : ""}
-              primaryButtonText={`${i18n.t(
-                multiSigGroup
-                  ? "createidentifier.receive.confirmbutton"
-                  : "createidentifier.add.confirmbutton"
-              )}`}
+              primaryButtonText={
+                isCreating
+                  ? "Creating..."
+                  : `${i18n.t(
+                      multiSigGroup
+                        ? "createidentifier.receive.confirmbutton"
+                        : "createidentifier.add.confirmbutton"
+                    )}`
+              }
               primaryButtonAction={handleContinue}
               primaryButtonDisabled={
+                isCreating ||
                 identifierData.displayName.length === 0 ||
                 !!localValidateMessage
               }
