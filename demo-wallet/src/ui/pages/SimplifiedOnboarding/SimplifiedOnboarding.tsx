@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useIonToast } from "@ionic/react";
 import { RoutePath } from "../../../routes";
 import { TabsRoutePath } from "../../../routes/paths";
 import { WelcomeScreen } from "./WelcomeScreen";
@@ -8,6 +9,11 @@ import { SeedPhraseScreen } from "./SeedPhraseScreen";
 import { VerificationScreen } from "./VerificationScreen";
 import { SuccessScreen } from "./SuccessScreen";
 import { ProgressIndicator } from "./ProgressIndicator";
+import { 
+  showErrorToast, 
+  LOADING_MESSAGES, 
+  SUCCESS_MESSAGES 
+} from "../../../utils/userFriendlyErrors";
 import "./SimplifiedOnboarding.scss";
 
 export interface OnboardingState {
@@ -21,6 +27,7 @@ export interface OnboardingState {
 
 const SimplifiedOnboarding = () => {
   const history = useHistory();
+  const [showToast] = useIonToast();
   const [state, setState] = useState<OnboardingState>({
     step: 0,
     biometricData: [],
@@ -61,12 +68,28 @@ const SimplifiedOnboarding = () => {
     console.log("Verification successful");
     // Track analytics: step_3_verification_success
 
+    // Show loading state
+    showToast({
+      message: LOADING_MESSAGES.creating_wallet,
+      duration: 0, // Will dismiss after wallet creation
+      position: "top",
+      color: "primary",
+    });
+
     // Create wallet with biometric + seed phrase
     try {
       const walletAddress = await createWalletWithBiometric(
         state.biometricData,
         state.seedPhrase
       );
+
+      // Dismiss loading toast
+      await showToast({
+        message: SUCCESS_MESSAGES.wallet_created,
+        duration: 2000,
+        position: "top",
+        color: "success",
+      });
 
       setState({
         ...state,
@@ -79,6 +102,10 @@ const SimplifiedOnboarding = () => {
       console.log("Onboarding completed in", duration, "ms");
     } catch (error) {
       console.error("Wallet creation failed:", error);
+      
+      // Show user-friendly error message
+      showErrorToast(error, showToast, "wallet_creation");
+      
       setState({
         ...state,
         errors: [...state.errors, "Failed to create wallet"],
@@ -114,6 +141,10 @@ const SimplifiedOnboarding = () => {
           onComplete={handleBiometricComplete}
           onError={(error) => {
             console.error("Biometric capture failed:", error);
+            
+            // Show user-friendly error message
+            showErrorToast(error, showToast, "biometric_capture");
+            
             setState({
               ...state,
               errors: [...state.errors, error],

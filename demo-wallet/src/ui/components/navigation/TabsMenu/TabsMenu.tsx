@@ -45,12 +45,13 @@ const tabsRoutes = [
     component: Identifiers,
     icon: [fingerPrint, fingerPrintOutline],
   },
-  {
-    label: i18n.t("tabsmenu.label.creds"),
-    path: TabsRoutePath.CREDENTIALS,
-    component: Credentials,
-    icon: [idCard, idCardOutline],
-  },
+  // BIOMETRIC DID: Credentials tab hidden (Hyperledger Aries VCs not used)
+  // {
+  //   label: i18n.t("tabsmenu.label.creds"),
+  //   path: TabsRoutePath.CREDENTIALS,
+  //   component: Credentials,
+  //   icon: [idCard, idCardOutline],
+  // },
   {
     label: i18n.t("tabsmenu.label.scan"),
     path: TabsRoutePath.SCAN,
