@@ -1,6 +1,6 @@
 /**
  * Biometric Enrollment E2E Test
- * 
+ *
  * Tests the complete enrollment flow:
  * - Biometric capture (3+ fingers)
  * - Fuzzy extraction and key generation
@@ -129,7 +129,7 @@ test.describe('Biometric Enrollment Flow', () => {
       // Required fields
       expect(helper).toHaveProperty('salt_b64');
       expect(helper).toHaveProperty('auth_b64');
-      
+
       // Verify base64 encoding
       expect(typeof helper.salt_b64).toBe('string');
       expect(typeof helper.auth_b64).toBe('string');
@@ -149,7 +149,7 @@ test.describe('Biometric Enrollment Flow', () => {
     // Assert - DID should follow Cardano DID spec
     const didRegex = /^did:cardano:[a-zA-Z0-9_-]+$/;
     expect(response.did).toMatch(didRegex);
-    
+
     // DID should be reasonable length
     expect(response.did.length).toBeGreaterThan(20);
     expect(response.did.length).toBeLessThan(200);
@@ -170,10 +170,10 @@ test.describe('Biometric Enrollment Performance', () => {
 
     // Assert
     biometricAssertions.assertValidDid(response.did);
-    
+
     // Enrollment should complete within 5 seconds
     expect(duration).toBeLessThan(5000);
-    
+
     console.log(`Enrollment completed in ${duration}ms`);
   });
 

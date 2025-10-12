@@ -1827,14 +1827,20 @@ Transition from mock implementation to production-ready biometric capture with r
   - Status: **COMPLETE** - Ready for production deployment
   - Deliverable: `api_server_secure.py` (650 lines), `docs/security/api-hardening.md` (comprehensive guide)
 
-- [ ] **task 9** - Add automated E2E testing
-  - Create Playwright tests for enrollment flow.
-  - Create Playwright tests for verification flow.
-  - Add WebAuthn mock for CI/CD environments.
-  - Test error handling and edge cases.
-  - Add performance benchmarks (enrollment/verification time).
-  - Integrate tests into CI/CD pipeline.
-  - Deliverable: `demo-wallet/tests/e2e/biometric.spec.ts`
+- [x] **task 9** - Add automated E2E testing ✅
+  - Installed Playwright test framework in demo-wallet.
+  - Created playwright.config.ts with Chromium/Firefox/WebKit configuration.
+  - Created test directory structure (fixtures, mocks, utils).
+  - Implemented WebAuthn mock for biometric simulation (webauthn-mock.ts).
+  - Created API client utilities for backend interactions (api-client.ts).
+  - Created test fixtures with custom biometric assertions (biometric-fixtures.ts).
+  - Implemented enrollment flow tests (12 test scenarios including performance).
+  - Implemented verification flow tests (13 test scenarios including error handling).
+  - Added performance benchmarks (enrollment < 5s, verification < 3s).
+  - Created GitHub Actions workflow for automated E2E testing (.github/workflows/e2e-tests.yml).
+  - Created comprehensive E2E testing documentation (README.md).
+  - Status: **COMPLETE** - E2E test suite ready
+  - Deliverable: `demo-wallet/tests/e2e/` (6 files, 1700+ lines), `.github/workflows/e2e-tests.yml`, `demo-wallet/tests/e2e/README.md`
 
 - [x] **task 10** - Create production deployment guide ✅
   - Created comprehensive production deployment documentation (6000+ lines total).

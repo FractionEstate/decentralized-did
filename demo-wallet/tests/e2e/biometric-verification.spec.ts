@@ -1,6 +1,6 @@
 /**
  * Biometric Verification E2E Test
- * 
+ *
  * Tests the complete verification flow:
  * - Biometric capture (2+ fingers)
  * - Key reproduction using helper data
@@ -25,7 +25,7 @@ test.describe('Biometric Verification Flow', () => {
     walletAddress = 'addr_test1qz' + 'v'.repeat(56);
     const enrollmentRequest = createMockEnrollmentRequest(walletAddress, 3, 'inline');
     enrollmentResponse = await apiClient.generate(enrollmentRequest);
-    
+
     expect(enrollmentResponse).toBeTruthy();
     expect(enrollmentResponse.helpers).toBeTruthy();
   });
@@ -134,7 +134,7 @@ test.describe('Biometric Verification Flow', () => {
     // Act
     try {
       const response = await apiClient.verify(verifyRequest);
-      
+
       // May succeed with error correction or fail gracefully
       expect(response).toHaveProperty('verified');
       expect(response).toHaveProperty('matched_fingers');
@@ -219,10 +219,10 @@ test.describe('Biometric Verification Performance', () => {
 
     // Assert
     biometricAssertions.assertValidVerification(response, true, 2);
-    
+
     // Verification should complete within 3 seconds
     expect(duration).toBeLessThan(3000);
-    
+
     console.log(`Verification completed in ${duration}ms`);
   });
 

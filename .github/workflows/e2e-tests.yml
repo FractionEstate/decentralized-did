@@ -57,7 +57,7 @@ jobs:
           mkdir -p logs data
           python3 api_server_secure.py &> logs/api_server.log &
           echo $! > logs/api_server.pid
-          
+
           # Wait for API to be ready
           for i in {1..30}; do
             if curl -s http://localhost:8000/health > /dev/null; then

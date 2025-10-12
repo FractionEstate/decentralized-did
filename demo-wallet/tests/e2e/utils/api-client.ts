@@ -1,6 +1,6 @@
 /**
  * API Client Utilities for E2E Testing
- * 
+ *
  * Helper functions to interact with the backend API during tests.
  */
 
@@ -94,12 +94,12 @@ export class BiometricApiClient {
 
     expect(response.ok).toBeTruthy();
     const data = await response.json();
-    
+
     // Validate response structure
     expect(data).toHaveProperty('did');
     expect(data).toHaveProperty('wallet_bundle');
     expect(data).toHaveProperty('helpers');
-    
+
     return data;
   }
 
@@ -117,12 +117,12 @@ export class BiometricApiClient {
 
     expect(response.ok).toBeTruthy();
     const data = await response.json();
-    
+
     // Validate response structure
     expect(data).toHaveProperty('verified');
     expect(data).toHaveProperty('matched_fingers');
     expect(data).toHaveProperty('unmatched_fingers');
-    
+
     return data;
   }
 
@@ -141,7 +141,7 @@ export class BiometricApiClient {
         const response = await fetch(`${this.config.baseUrl}${endpoint}`, {
           method: 'GET',
         });
-        
+
         if (response.status === 429) {
           rateLimited++;
         } else if (response.ok) {
@@ -181,7 +181,7 @@ export function createMockEnrollmentRequest(
   fingerCount: number = 3,
   helperStorage: 'inline' | 'external' = 'inline'
 ): GenerateRequest {
-  const fingers: FingerData[] = Array.from({ length: fingerCount }, (_, i) => 
+  const fingers: FingerData[] = Array.from({ length: fingerCount }, (_, i) =>
     createMockFingerData(`finger_${i + 1}`)
   );
 
@@ -223,16 +223,16 @@ export async function waitForApiReady(
       const response = await fetch(`${baseUrl}/health`, {
         method: 'GET',
       });
-      
+
       if (response.ok) {
         return true;
       }
     } catch (error) {
       // API not ready yet
     }
-    
+
     await new Promise(resolve => setTimeout(resolve, retryDelay));
   }
-  
+
   return false;
 }

@@ -1,6 +1,6 @@
 /**
  * Playwright Test Fixtures for E2E Testing
- * 
+ *
  * Provides reusable test fixtures with WebAuthn mocking and API client.
  */
 
@@ -25,9 +25,9 @@ export const test = base.extend<TestFixtures>({
   },
 
   // API client fixture
-  apiClient: async ({}, use) => {
+  apiClient: async ({ }, use) => {
     const apiUrl = process.env.API_URL || 'http://localhost:8000';
-    
+
     // Wait for API to be ready
     const isReady = await waitForApiReady(apiUrl, 30, 1000);
     if (!isReady) {
@@ -35,15 +35,15 @@ export const test = base.extend<TestFixtures>({
     }
 
     const client = new BiometricApiClient({ baseUrl: apiUrl });
-    
+
     // Verify API health
     await client.checkHealth();
-    
+
     await use(client);
   },
 
   // Enrolled fingers storage fixture
-  enrolledFingers: async ({}, use) => {
+  enrolledFingers: async ({ }, use) => {
     const storage = new Map<string, any>();
     await use(storage);
     storage.clear();
@@ -79,7 +79,7 @@ export const biometricAssertions = {
    */
   assertValidHelperData(helpers: Record<string, any>, expectedFingers: string[]) {
     expect(Object.keys(helpers).sort()).toEqual(expectedFingers.sort());
-    
+
     for (const [fingerId, helper] of Object.entries(helpers)) {
       expect(helper).toHaveProperty('salt_b64');
       expect(helper).toHaveProperty('auth_b64');
@@ -98,7 +98,7 @@ export const biometricAssertions = {
   ) {
     expect(response.verified).toBe(expectedVerified);
     expect(response.matched_fingers).toHaveLength(expectedMatchedCount);
-    
+
     if (expectedVerified) {
       expect(response).toHaveProperty('did');
       biometricAssertions.assertValidDid(response.did);
