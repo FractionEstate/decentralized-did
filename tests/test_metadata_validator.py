@@ -15,8 +15,8 @@ EXAMPLE = {
             "helperData": {
                 "left_thumb": {
                     "finger_id": "left_thumb",
-                    "salt_b64": "aaaa",
-                    "auth_b64": "bbbb",
+                    "salt_b64": "aaaaaaaa",  # 8+ characters required
+                    "auth_b64": "bbbbbbbb",  # 8+ characters required
                     "grid_size": 0.05,
                     "angle_bins": 32,
                 }
