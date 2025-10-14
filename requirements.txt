@@ -12,6 +12,10 @@ cryptography==42.0.0
 # CIP-68 token support, Plutus scripts, transaction building
 pycardano==0.11.0
 
+# CBOR Encoding
+# Transaction metadata encoding for CIP-20
+cbor2==5.6.2
+
 # IPFS Storage
 # Helper data upload/retrieval, content addressing
 ipfshttpclient==0.8.0a2

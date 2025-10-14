@@ -5,7 +5,7 @@ Interactive tutorials explaining the biometric DID system's algorithms and imple
 ## 📚 Available Notebooks
 
 ### 1. Biometric DID Tutorial (`biometric-did-tutorial.ipynb`)
-**Difficulty**: Beginner to Intermediate  
+**Difficulty**: Beginner to Intermediate
 **Duration**: 30-45 minutes
 
 Comprehensive walkthrough of the complete biometric DID pipeline with visualizations.
@@ -142,7 +142,7 @@ def test_error_tolerance():
     for error_count in range(1, 15):
         # Add artificial errors
         noisy_template = add_noise(template, error_count)
-        
+
         # Try to reproduce
         try:
             verified = extractor.reproduce(noisy_template, helper)
