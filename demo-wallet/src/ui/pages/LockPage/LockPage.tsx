@@ -14,7 +14,7 @@ import { Agent } from "../../../core/agent/agent";
 import { MiscRecordId } from "../../../core/agent/agent.types";
 import { KeyStoreKeys, SecureStorage } from "../../../core/storage";
 import { i18n } from "../../../i18n";
-import { PublicRoutes, RoutePath } from "../../../routes/paths";
+import { PublicRoutes, RoutePath, TabsRoutePath } from "../../../routes/paths";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   getBiometricsCache,
@@ -144,6 +144,10 @@ const LockPageContainer = () => {
         dispatch(login());
         dispatch(setFirstAppLaunchComplete());
         handleClearState();
+
+        // Explicit navigation after successful login
+        // Fixes issue where LockPage conditional rendering doesn't trigger re-navigation
+        router.push(TabsRoutePath.IDENTIFIERS);
       } else {
         await incrementLoginAttempt();
         setPasscodeIncorrect(true);
@@ -174,6 +178,9 @@ const LockPageContainer = () => {
     if (authenResult === true) {
       dispatch(login());
       dispatch(setFirstAppLaunchComplete());
+
+      // Explicit navigation after successful biometric authentication
+      router.push(TabsRoutePath.IDENTIFIERS);
     }
   };
 
@@ -186,6 +193,9 @@ const LockPageContainer = () => {
     dispatch(login());
     dispatch(setFirstAppLaunchComplete());
     setShowBiometricVerification(false);
+
+    // Explicit navigation after successful biometric authentication
+    router.push(TabsRoutePath.IDENTIFIERS);
   };
 
   const handleBiometricVerificationFailure = (error: string) => {
