@@ -12,3 +12,15 @@ dist/
 .mypy_cache/
 .coverage
 htmlcov/
+
+# Demo output files
+demos/enrollment.json
+demos/verification.json
+demos/multi-finger.json
+demos/inline.json
+demos/file.json
+demos/helper_data/
+
+# Notebook outputs
+notebooks/.ipynb_checkpoints/
+notebooks/*-checkpoint.ipynb

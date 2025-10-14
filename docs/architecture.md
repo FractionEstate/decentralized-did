@@ -98,7 +98,7 @@ assert digest == verified_digest  # Reproducible!
 did = build_did("addr1qx...", digest)
 ```
 
-**Full API reference**: [`docs/SDK.md`](SDK.md)  
+**Full API reference**: [`docs/SDK.md`](SDK.md)
 **Working examples**: [`examples/sdk_demo.py`](../examples/sdk_demo.py)
 
 ## Deployment View
