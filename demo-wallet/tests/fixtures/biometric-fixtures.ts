@@ -30,7 +30,7 @@ export const test = base.extend<{ apiClient: ApiClient }>({
 
     // Verify API is available before running tests
     try {
-      await client.healthCheck();
+      await client.checkHealth();
     } catch (error) {
       console.error('API health check failed. Is the backend running?');
       throw error;
