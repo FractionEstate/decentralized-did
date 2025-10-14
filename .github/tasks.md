@@ -1814,15 +1814,15 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
   - **Dependencies**: Hardware acquisition, driver setup
   - **Deliverable**: Real fingerprint sensor working end-to-end
 
-- [ ] **task 3** - API server security hardening (⚡ IN PROGRESS - 35% complete)
+- [ ] **task 3** - API server security hardening (⚡ IN PROGRESS - 50% complete)
   - **Priority**: HIGH (required for production)
-  - **Status**: Phase 2 (Authentication) complete, Phase 3-7 in progress
+  - **Status**: Phase 1-2 complete (100%), Phase 3-7 in progress
   - **Time Tracking**:
     * Session start: October 14, 2025 (after Task 1 reached 90%)
-    * Phase 1 complete: 6 hours (Rate Limiting)
-    * Phase 2 complete: 6 hours (Authentication & Authorization) ✅ JUST COMPLETED
-    * Total so far: 12 hours of 35 hours estimated
-    * Phase 3-7 remaining: ~23 hours
+    * Phase 1 complete: 6 hours (Rate Limiting) ✅
+    * Phase 2 complete: 12 hours (Authentication - core + middleware + endpoints) ✅
+    * Total so far: 18 hours of 35 hours estimated
+    * Phase 3-7 remaining: ~17 hours
   - **Scope**:
     * ✅ Phase 1: Rate Limiting (COMPLETE - 6 hours)
       - InMemoryBackend (sliding window, thread-safe)
@@ -1831,14 +1831,29 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
       - RateLimitConfig (5 endpoint policies)
       - 20 tests passing in 2.51s (100%)
       - Commit: 87fec60 (790 lines added)
-    * ✅ Phase 2: Authentication & Authorization (COMPLETE - 6 hours)
-      - JWTManager (HS256 tokens, access + refresh)
-      - APIKeyManager (bcrypt hashing, API key lifecycle)
-      - WalletSignatureVerifier (CIP-8 placeholder)
-      - Helper functions (token extraction, RBAC)
-      - 38 tests passing in 8.05s (100%)
-      - Commit: ea01af9 (1064 lines added)
-      - Dependencies: PyJWT 2.8.0, bcrypt 4.1.2, slowapi 0.1.9
+    * ✅ Phase 2: Authentication & Authorization (COMPLETE - 12 hours)
+      - **Core Module** (6 hours, commit ea01af9):
+        * JWTManager (HS256 tokens, access + refresh)
+        * APIKeyManager (bcrypt hashing, API key lifecycle)
+        * WalletSignatureVerifier (CIP-8 placeholder)
+        * Helper functions (token extraction, RBAC)
+        * 38 tests passing in 8.05s (100%)
+        * 1,064 lines added
+      - **Middleware** (2 hours, commit bd3eaaf):
+        * AuthenticationMiddleware (JWT + API key extraction)
+        * RBAC decorators (@require_auth, @require_role, @require_permissions)
+        * Request context injection (auth info, rate limit)
+        * 29 tests passing in 7.91s (100%)
+        * 922 lines added
+      - **REST Endpoints** (4 hours, commit ad5dcbd):
+        * POST /auth/register - API key registration with validation
+        * POST /auth/login - JWT login with wallet signature (CIP-8 placeholder)
+        * POST /auth/refresh - Access token refresh
+        * DELETE /auth/revoke/{key_id} - API key revocation with permissions
+        * 19 tests passing in 4.42s (100%)
+        * 962 lines added
+      - **Dependencies**: PyJWT 2.8.0, bcrypt 4.1.2, slowapi 0.1.9, pytest-asyncio 0.21.1
+      - **Total Phase 2**: 106 tests (38+29+19+20), 2,948 lines, 12 hours
     * ⏳ Phase 3: Input Validation & Sanitization (TODO - 6-8 hours)
       - Pydantic models with strict validation
       - Custom validators (Cardano addresses, DIDs, hex)
