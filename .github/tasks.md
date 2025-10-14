@@ -1689,7 +1689,7 @@ Comprehensive codebase audit (October 14, 2025) revealed critical misalignments:
 - **Production Ready**: ✅ All automated work complete
 
 ## Phase 4.6 - Production Readiness & Demo Wallet Update (IN PROGRESS)
-**Status**: 🚧 IN PROGRESS (Task 1: 70% complete)
+**Status**: 🚧 IN PROGRESS (Task 1: 80% complete)
 **Goal**: Update demo wallet to use deterministic DIDs and prepare system for production deployment
 **Timeline**: 2-3 weeks (estimated)
 **Dependencies**: Phase 4.5 complete ✅
@@ -1697,27 +1697,28 @@ Comprehensive codebase audit (October 14, 2025) revealed critical misalignments:
 
 ### Overview
 With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.6 focuses on:
-1. 🚧 Updating the demo wallet to use the new deterministic DID format (70% complete)
+1. 🚧 Updating the demo wallet to use the new deterministic DID format (80% complete)
 2. Continuing paused hardware integration work (optional)
 3. Hardening API servers for production use
 4. Performance optimization and monitoring
 5. Production deployment guides
 
 ### Progress Summary
-- **Task 1**: 70% complete (ahead of schedule - 3 hours vs 3-4 day target)
+- **Task 1**: 80% complete (ahead of schedule - 4 hours vs 3-4 day target)
   - Core logic: ✅ COMPLETE (100%)
   - Type definitions: ✅ COMPLETE (100%)
   - UI components: ✅ COMPLETE (100%)
   - Unit tests: ✅ COMPLETE (19/19 passing)
   - Integration tests: ✅ COMPLETE (14 tests created, 5/5 passing without API server)
-  - E2E tests: ⏳ PENDING
+  - E2E tests: ✅ COMPLETE (4 new tests for deterministic DIDs)
   - Manual testing: ⏳ PENDING
+  - Documentation updates: ⏳ PENDING
 
 ### Tasks
 
 - [-] **task 1** - Update demo wallet for deterministic DIDs
   - **Priority**: HIGH (demo wallet currently uses legacy wallet-based format)
-  - **Status**: 70% COMPLETE (ahead of schedule)
+  - **Status**: 80% COMPLETE (ahead of schedule)
   - **Completed**:
     * ✅ Added generateDeterministicDID() function (Blake2b + Base58)
     * ✅ Updated transformGenerateResult() to use deterministic format
@@ -1727,10 +1728,10 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * ✅ Updated BiometricEnrollment component (enhanced display)
     * ✅ Created comprehensive unit tests (19 tests, 100% passing)
     * ✅ Created integration tests (14 tests, 5/5 passing without API server)
+    * ✅ Updated E2E enrollment tests (4 new tests for deterministic DIDs)
     * ✅ 2 successful builds (no errors)
     * ✅ Installed dependencies (blakejs, bs58, @types/bs58)
   - **Remaining**:
-    * ⏳ E2E test updates (2-3 hours)
     * ⏳ Manual testing (4-5 hours)
     * ⏳ Documentation updates (1-2 hours)
   - **Files Modified**:
@@ -1739,6 +1740,8 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * `demo-wallet/src/ui/components/BiometricVerification/BiometricVerification.tsx` ✅
     * `demo-wallet/src/ui/pages/BiometricEnrollment/BiometricEnrollment.tsx` ✅
     * `demo-wallet/package.json` ✅
+    * `demo-wallet/tests/e2e/biometric-enrollment.spec.ts` ✅
+    * `demo-wallet/tests/utils/api-client.ts` ✅
   - **Files Created**:
     * `demo-wallet/src/core/biometric/__tests__/biometricDidService.deterministic.test.ts` ✅ (289 lines)
     * `demo-wallet/src/core/biometric/__tests__/biometricDidService.integration.test.ts` ✅ (470 lines)
@@ -1748,8 +1751,9 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * Unit tests: 19/19 passing ✅
     * Integration tests: 5/5 passing without API server ✅
     * Integration tests with API: 9 skipped (requires Python API server)
-    * Test coverage: Enrollment, verification, error handling, storage operations
-  - **Deliverable**: Demo wallet using deterministic DIDs (70% complete)
+    * E2E tests: Updated with 4 new deterministic DID tests ✅
+    * Test coverage: Enrollment, verification, Sybil resistance, metadata v1.1
+  - **Deliverable**: Demo wallet using deterministic DIDs (80% complete)
 
 - [ ] **task 2** - Complete hardware fingerprint sensor integration
   - **Priority**: MEDIUM (paused after Phase 4, ready to resume)
