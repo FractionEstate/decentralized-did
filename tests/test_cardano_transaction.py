@@ -524,7 +524,7 @@ def test_utxo_selection_performance():
     skey = PaymentSigningKey.generate()
     builder = CardanoTransactionBuilder(
         network=Network.TESTNET,
-        signing_key=skey,
+        signing_key=skey,  # type: ignore
         dry_run=True
     )
 

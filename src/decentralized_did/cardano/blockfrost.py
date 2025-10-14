@@ -238,17 +238,26 @@ class BlockfrostClient:
         try:
             data = self._request("GET", endpoint, params=params)
 
-            utxos = [
-                UTXOInfo(
-                    tx_hash=utxo["tx_hash"],
-                    tx_index=utxo["output_index"],
-                    amount=utxo["amount"],
-                    address=utxo["address"],
-                    block=utxo["block"],
-                    data_hash=utxo.get("data_hash"),
-                )
-                for utxo in data
-            ]
+            # Type assertion: data is a list of dictionaries
+            if not isinstance(data, list):
+                raise BlockfrostAPIError(
+                    f"Unexpected response format: {type(data)}")
+
+            utxos: List[UTXOInfo] = []
+            for utxo in data:
+                if not isinstance(utxo, dict):
+                    continue
+
+                utxos.append(UTXOInfo(
+                    tx_hash=str(utxo.get("tx_hash", "")),
+                    tx_index=int(utxo.get("output_index", 0)),
+                    amount=utxo.get("amount", []) if isinstance(
+                        utxo.get("amount"), list) else [],
+                    address=str(utxo.get("address", "")),
+                    block=str(utxo.get("block", "")),
+                    data_hash=str(utxo.get("data_hash")) if utxo.get(
+                        "data_hash") else None,
+                ))
 
             logger.info(
                 f"Found {len(utxos)} UTXOs for address {address[:20]}...")
