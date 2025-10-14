@@ -37,7 +37,7 @@ from decentralized_did.cardano.transaction import (
     save_keys,
     TransactionResult,
 )
-from pycardano import Network
+from pycardano import Network, Address
 import os
 import sys
 import json
@@ -178,36 +178,39 @@ def deploy_to_testnet(
         if signing_key_path.exists():
             print("✅ Using existing payment keys")
             from decentralized_did.cardano.transaction import load_signing_key
+            from pycardano import PaymentVerificationKey
+
             signing_key = load_signing_key(signing_key_path)
 
-            # Load address from file
+            # Recreate address from signing key
+            verification_key = PaymentVerificationKey.from_signing_key(
+                signing_key)
+            address = Address(
+                payment_part=verification_key.hash(), network=Network.TESTNET)
+
+            # Save address file if it doesn't exist
             address_file = keys_dir / "payment.addr"
-            if address_file.exists():
-                address = address_file.read_text().strip()
-            else:
-                print("❌ Address file not found")
-                return results
+            if not address_file.exists():
+                address_file.write_text(str(address))
         else:
             print("🔑 Generating new payment keys...")
-            signing_key, verification_key, address = create_payment_keys(
-                network=Network.TESTNET)
+            signing_key, verification_key, address = create_payment_keys()
 
             # Save keys
             save_keys(
                 signing_key=signing_key,
                 verification_key=verification_key,
-                signing_key_path=signing_key_path,
-                verification_key_path=verification_key_path
+                output_dir=str(keys_dir)
             )
 
             # Save address
             address_file = keys_dir / "payment.addr"
-            address_file.write_text(address)
+            address_file.write_text(str(address))
 
             print(f"✅ Keys generated and saved to {keys_dir}")
 
         print(f"\n📍 Address: {address}")
-        results["address"] = address
+        results["address"] = str(address)
 
         # Step 2: Check UTXOs
         print_section("Step 2: Query UTXOs from Blockfrost")
@@ -215,7 +218,7 @@ def deploy_to_testnet(
         client = BlockfrostClient(api_key=api_key, network="testnet")
         print(f"🌐 Connected to Blockfrost testnet API")
 
-        utxos = client.query_utxos(address)
+        utxos = client.get_address_utxos(str(address))
 
         if not utxos:
             print("\n❌ No UTXOs found at this address!")
@@ -227,7 +230,15 @@ def deploy_to_testnet(
             results["error"] = "No UTXOs found"
             return results
 
-        total_lovelace = sum(utxo.amount_lovelace for utxo in utxos)
+        # Calculate total lovelace from UTXOs
+        def get_lovelace_amount(utxo) -> int:
+            """Extract lovelace amount from UTXO amount list."""
+            for asset in utxo.amount:
+                if asset["unit"] == "lovelace":
+                    return int(asset["quantity"])
+            return 0
+
+        total_lovelace = sum(get_lovelace_amount(utxo) for utxo in utxos)
         total_ada = total_lovelace / 1_000_000
 
         print(f"✅ Found {len(utxos)} UTXO(s)")
@@ -235,11 +246,24 @@ def deploy_to_testnet(
             f"💰 Total balance: {total_ada:.6f} ADA ({total_lovelace} lovelace)")
 
         for i, utxo in enumerate(utxos, 1):
-            print(f"   UTXO {i}: {utxo.amount_lovelace:,} lovelace")
+            lovelace = get_lovelace_amount(utxo)
+            print(f"   UTXO {i}: {lovelace:,} lovelace")
 
         results["utxos_count"] = len(utxos)
         results["balance_ada"] = total_ada
         results["balance_lovelace"] = total_lovelace
+
+        # Convert UTXOInfo to UTXOInput format for transaction builder
+        from decentralized_did.cardano.transaction import UTXOInput
+        utxo_inputs = [
+            UTXOInput(
+                tx_hash=utxo.tx_hash,
+                tx_index=utxo.tx_index,
+                amount_lovelace=get_lovelace_amount(utxo),
+                address=utxo.address
+            )
+            for utxo in utxos
+        ]
 
         # Step 3: Create sample DID document
         print_section("Step 3: Create Sample Biometric DID")
@@ -275,7 +299,7 @@ def deploy_to_testnet(
         # Dry-run to estimate fees
         dry_result = builder.build_enrollment_transaction(
             did_document=did_document,
-            utxos=utxos,
+            available_utxos=utxo_inputs,
             storage_format="inline",  # Store DID inline for testing
             recipient_address=address,  # Send change back to ourselves
         )
@@ -321,7 +345,7 @@ def deploy_to_testnet(
 
         tx_result = builder_real.build_enrollment_transaction(
             did_document=did_document,
-            utxos=utxos,
+            available_utxos=utxo_inputs,
             storage_format="inline",
             recipient_address=address,
         )

@@ -15,6 +15,7 @@
 - ✅ **Fuzzy extractor**: BCH error correction (10-bit capacity) for noisy recaptures
 - ✅ **Fast performance**: 41ms enrollment, 43ms verification (23 ops/sec sustained)
 - ✅ **Helper data**: 105-byte compact storage with cryptographic integrity
+- ✅ **Mobile-first**: QR code enrollment using phone's built-in fingerprint scanner (no hardware needed!)
 
 ### DID Generation
 - ✅ **W3C compliant**: Standard `did:cardano:` format
@@ -26,11 +27,13 @@
 - ✅ **CLI tools**: `dec-did` command for enrollment, verification, demo kits
 - ✅ **Working examples**: Tested code samples and complete workflows
 - ✅ **Comprehensive docs**: 1,000+ lines of API reference and guides
+- ✅ **Mobile enrollment**: QR code bridge for phone-based fingerprint capture
 
 ### Demo Wallet
 - ✅ **Production-ready**: Simplified 3-step onboarding (85% fewer steps)
 - ✅ **Professional UX**: Loading states, user-friendly errors, clean navigation
 - ✅ **Fast builds**: 19-second webpack compilation with zero errors
+- ✅ **Mobile support**: Scan QR code, enroll with phone, complete on desktop
 
 ## 🚀 Quick Start
 
@@ -118,7 +121,38 @@ dec-did demo-kit \
 
 **Result**: Generates `wallet` and `cip30` metadata JSON, helper data files, TypeScript exports for dApp integration
 
-## 📦 Repository Structure
+## � Mobile Enrollment (No Hardware Needed!)
+
+**Most users don't have fingerprint readers on their computers, but 90%+ of smartphones have built-in fingerprint sensors.** Use the mobile-first QR code enrollment flow:
+
+### Desktop → Phone → Desktop Flow
+
+```
+1. Desktop dApp shows QR code
+2. User scans QR with phone camera
+3. Phone captures fingerprints (built-in sensor)
+4. Phone sends encrypted DID to desktop
+5. Desktop wallet signs transaction
+6. Done! (30-60 seconds total)
+```
+
+### Why Mobile-First?
+
+| Device | Fingerprint Availability | Cost |
+|--------|------------------------|------|
+| Desktop | <5% (USB readers) | $50-200 |
+| Laptop | ~30% (Windows Hello/TouchID) | Built-in |
+| **Smartphone** | **>90% (built-in sensor)** | **$0 (already owned)** |
+
+### Supported Platforms
+
+- ✅ **iOS**: Touch ID / Face ID (iPhone 5s+, most iPads)
+- ✅ **Android**: BiometricPrompt API (Android 9+, most devices)
+- ✅ **PWA**: WebAuthn API (Chrome, Safari mobile)
+
+**Complete guide**: [`docs/mobile-enrollment-architecture.md`](docs/mobile-enrollment-architecture.md)
+
+## �📦 Repository Structure
 
 ```
 decentralized-did/
