@@ -54,6 +54,7 @@ slowapi==0.1.9         # MIT license - Rate limiting for FastAPI
 
 # Testing Framework
 pytest==7.4.3
+pytest-asyncio==0.21.1  # Async test support for FastAPI middleware
 
 # API Server (FastAPI)
 fastapi==0.104.1
