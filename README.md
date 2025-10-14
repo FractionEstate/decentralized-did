@@ -206,6 +206,66 @@ DID Generation (did:cardano:...)
 
 **Full analysis**: [`docs/testing/security-test-report.md`](docs/testing/security-test-report.md)
 
+## 🔗 Cardano Integration
+
+### Deploy to Testnet
+
+```bash
+# Get free Blockfrost API key: https://blockfrost.io
+export BLOCKFROST_API_KEY="preprodXXXXXXXX"
+
+# Deploy sample biometric DID to testnet
+python3 scripts/deploy_testnet.py
+
+# Verify on explorer
+# https://preprod.cardanoscan.io/transaction/YOUR_TX_HASH
+```
+
+**Features:**
+- ✅ PyCardano transaction builder
+- ✅ CIP-20 metadata (label 674)
+- ✅ UTXO selection and fee estimation
+- ✅ Blockfrost API integration
+- ✅ Automatic confirmation tracking
+
+**Cost:** ~0.19-0.25 ADA per enrollment (~$0.08 USD @ $0.40/ADA)
+
+**Complete guide:** [`docs/testnet-deployment-guide.md`](docs/testnet-deployment-guide.md)
+
+### Transaction Builder
+
+```python
+from pycardano import Network
+from decentralized_did.cardano.transaction import CardanoTransactionBuilder
+from decentralized_did.cardano.blockfrost import BlockfrostClient
+
+# Initialize builder
+builder = CardanoTransactionBuilder(
+    network=Network.TESTNET,
+    signing_key=your_signing_key,
+    dry_run=False
+)
+
+# Build transaction with DID metadata
+result = builder.build_enrollment_transaction(
+    did_document=did_doc,
+    utxos=utxos,
+    storage_format="inline",
+    recipient_address="addr_test1..."
+)
+
+# Submit to blockchain
+client = BlockfrostClient(api_key=api_key, network="testnet")
+tx_hash = client.submit_transaction(result.tx_cbor)
+
+print(f"Transaction: https://preprod.cardanoscan.io/transaction/{tx_hash}")
+```
+
+**Documentation:**
+- [`docs/cardano-integration.md`](docs/cardano-integration.md) - Metadata schema and integration patterns
+- [`docs/wallet-integration.md`](docs/wallet-integration.md) - Wallet integration guide
+- [`docs/research/meshjs-vs-pycardano.md`](docs/research/meshjs-vs-pycardano.md) - Technology comparison
+
 ## Documentation Highlights
 - `docs/proposal.md`: project vision, scope, success criteria.
 - `docs/architecture.md`: system architecture and data flow.
@@ -313,18 +373,20 @@ EOF
 
 ## 🚀 Roadmap
 
-### Phase 3 (Current) - Refinement & Production Readiness
+### Phase 3 (Completed) - Refinement & Production Readiness
 - ✅ **CLI Architecture**: Modular commands, dry-run mode, enhanced logging
 - ✅ **Storage Integration**: Inline, file system, and IPFS backends
 - ✅ **Developer SDK**: Clean public API with comprehensive documentation
-- ⏳ **Documentation**: Enhanced README, API reference, examples (in progress)
-- ⏳ **Demonstration**: Video tutorials, interactive demos, sample workflows
+- ✅ **Documentation**: Enhanced README, API reference, examples
+- ✅ **Production Testing**: 49 unit tests, 100% passing
 
-### Phase 4 (Upcoming) - Cardano Integration
-- Testnet deployment and transaction testing
-- CIP draft submission (DID method specification)
-- Wallet integration patterns (CIP-30, CIP-95)
-- Smart contract interactions (optional verification)
+### Phase 4 (Current) - Cardano Integration
+- ✅ **Transaction Builder**: PyCardano integration with UTXO selection and fee estimation
+- ✅ **Blockfrost Client**: REST API integration with rate limiting and error handling
+- ✅ **Testnet Deployment**: Complete deployment script and guide ([docs/testnet-deployment-guide.md](docs/testnet-deployment-guide.md))
+- ⏳ **Wallet Integration**: CIP-30 connector for browser wallets (next)
+- ⏳ **CIP Draft**: DID method specification submission
+- ⏳ **Smart Contracts**: Optional on-chain verification (future)
 
 ### Future Research
 - **Hardware Integration**: Fingerprint scanner drivers (open-source only)
