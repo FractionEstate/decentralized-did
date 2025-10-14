@@ -12,10 +12,52 @@ import {
   BiometricVerifyResult,
   HelperDataEntry,
 } from "./biometricDid.types";
+import { blake2b } from "blakejs";
+import bs58 from "bs58";
 
 const HELPER_DATA_KEY_PREFIX = "biometric_helpers_";
 const CURRENT_DID_KEY = "biometric_current_did";
 const WEBAUTHN_CREDENTIAL_KEY = "biometric_webauthn_credential";
+
+/**
+ * Generate deterministic DID from biometric commitment
+ *
+ * This function creates a Sybil-resistant DID that:
+ * - Is derived solely from biometric data (no wallet address)
+ * - Is deterministic (same biometric = same DID)
+ * - Preserves privacy (no personal information in identifier)
+ *
+ * @param commitment - 32-byte biometric commitment (master key)
+ * @param network - Target network ("mainnet" or "testnet")
+ * @returns Deterministic DID in format: did:cardano:{network}:{base58_hash}
+ */
+function generateDeterministicDID(commitment: Uint8Array | string, network: string = "mainnet"): string {
+  // Convert string to Uint8Array if needed
+  let commitmentBytes: Uint8Array;
+  if (typeof commitment === "string") {
+    // If string, assume it's hex or base64 - convert appropriately
+    if (commitment.length === 64) {
+      // Hex string (64 chars = 32 bytes)
+      commitmentBytes = new Uint8Array(
+        commitment.match(/.{2}/g)!.map(byte => parseInt(byte, 16))
+      );
+    } else {
+      // Base64 string
+      commitmentBytes = Uint8Array.from(atob(commitment), c => c.charCodeAt(0));
+    }
+  } else {
+    commitmentBytes = commitment;
+  }
+
+  // Hash the commitment with Blake2b (32 bytes output)
+  const hash = blake2b(commitmentBytes, undefined, 32);
+
+  // Encode with Base58 for compact, URL-safe representation
+  const base58Hash = bs58.encode(hash);
+
+  // Build DID with network identifier
+  return `did:cardano:${network}:${base58Hash}`;
+}
 
 export class BiometricDidService {
   private static instance: BiometricDidService;
@@ -200,11 +242,19 @@ export class BiometricDidService {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     if (command.includes("generate")) {
-      // Return mock generate result
+      // Generate mock commitment (32 bytes)
+      const mockCommitment = new Uint8Array(32);
+      for (let i = 0; i < 32; i++) {
+        mockCommitment[i] = Math.floor(Math.random() * 256);
+      }
+
+      // Generate deterministic DID from mock commitment
+      const mockDid = generateDeterministicDID(mockCommitment, "mainnet");
+
+      // Return mock generate result with deterministic DID
       return JSON.stringify({
-        did: "did:cardano:addr_test1_mock#MockIdHash123",
-        id_hash: "MockIdHash123",
-        wallet_address: "addr_test1_mock",
+        did: mockDid,
+        commitment: bs58.encode(mockCommitment),
         helpers: {
           left_thumb: {
             finger_id: "left_thumb",
@@ -361,13 +411,34 @@ export class BiometricDidService {
     cliOutput: any,
     walletAddress: string
   ): BiometricGenerateResult {
+    // API already returns deterministic DID in Phase 4.5 format
+    let did = cliOutput.did;
+
+    // Fallback for development/mock mode: generate deterministic DID locally
+    if (!did && process.env.NODE_ENV === "development") {
+      // Extract commitment from CLI output (should be master_key or similar)
+      const commitment = cliOutput.commitment || cliOutput.master_key;
+      if (commitment) {
+        did = generateDeterministicDID(commitment, "mainnet");
+      } else {
+        // Last resort: use id_hash (legacy compatibility)
+        const idHash = cliOutput.id_hash || cliOutput.idHash;
+        console.warn("⚠️  No commitment found, using id_hash for mock DID");
+        did = `did:cardano:mainnet:${idHash}`;
+      }
+    }
+
+    if (!did) {
+      throw new Error("Failed to generate DID: No DID returned from API and no commitment available");
+    }
+
+    // Extract id_hash for backward compatibility (not used in deterministic format)
     const idHash = cliOutput.id_hash || cliOutput.idHash;
-    const did = cliOutput.did || `did:cardano:${walletAddress}#${idHash}`;
 
     return {
       did,
       id_hash: idHash,
-      wallet_address: walletAddress,
+      wallet_address: walletAddress, // Kept in metadata, not in DID identifier
       helpers: cliOutput.helpers || {},
       metadata_cip30_inline: {
         version: 1,

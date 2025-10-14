@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "network": "testnet",
+  "timestamp": "2025-10-14T21:04:37Z",
+  "address": "addr_test1vpwmsvg48h05ch9nnkuppu6chdqjpd7d5wlxs338h57pmaqlpemfm",
+  "utxos_count": 1,
+  "balance_ada": 9999.739723,
+  "balance_lovelace": 9999739723,
+  "did": "did:cardano:testnet:4ApYK4gyR9RfMAgN5MPqD1YCbPHJvJYHciG4ZM71cHtU",
+  "verification_methods": 4,
+  "estimated_fee_ada": 0.189745,
+  "estimated_fee_lovelace": 189745,
+  "tx_size": 781,
+  "metadata_size": 381,
+  "tx_hash": "56de360088e361cabadb74e5f7cde5cc16260973a7cda77fe9363d8ef91dc3cf",
+  "actual_fee_ada": 0.189745,
+  "actual_fee_lovelace": 189745,
+  "confirmed": true,
+  "block_height": 4009788,
+  "slot": 104792681
+}

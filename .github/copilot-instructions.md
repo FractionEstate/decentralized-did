@@ -77,7 +77,7 @@ metadata = build_metadata_payload(
 ```python
 # DEPRECATED: Wallet-based format (Sybil vulnerable)
 did = build_did(wallet_address, digest, deterministic=False)  # Shows warning
-# Result: did:cardano:addr1...#hash (VULNERABLE)
+# Result: did:cardano:addr1...´hash´ (VULNERABLE)
 
 # DEPRECATED: Metadata v1.0 (single controller)
 metadata = build_metadata_payload(wallet_address, digest, version=1)  # Shows warning

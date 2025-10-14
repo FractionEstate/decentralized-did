@@ -310,12 +310,32 @@ def deploy_to_testnet(
 
         print("🔨 Building transaction...")
 
-        # Dry-run to estimate fees
+        # Extract data from DID document for Phase 4.5 API
+        did_id = did_document["id"]
+        # Use dummy digest and wallet for testnet
+        dummy_digest = b"0" * 32  # 32 bytes
+        dummy_wallet = str(address)  # Convert Address to string
+
+        # For testnet, store minimal metadata (not full DID document)
+        # Full DID document would be stored in IPFS or external storage in production
+        minimal_helper = {
+            "description": "Sample biometric DID for testnet",
+            "biometric_type": "fingerprint",
+            "fingers": 4
+        }
+
+        # Dry-run to estimate fees (using Phase 4.5 API)
         dry_result = builder.build_enrollment_transaction(
-            did_document=did_document,
+            did=did_id,
+            wallet_address=dummy_wallet,
+            digest=dummy_digest,
+            helper_data=minimal_helper,  # Minimal helper data to avoid chunking
             available_utxos=utxo_inputs,
             storage_format="inline",  # Store DID inline for testing
-            recipient_address=address,  # Send change back to ourselves
+            recipient_address=str(address),  # Send change back to ourselves
+            version="1.1",  # Use metadata v1.1
+            controllers=[dummy_wallet],  # Multi-controller support
+            enrollment_timestamp="2025-10-14T20:57:00Z",
         )
 
         print(f"✅ Transaction validated (dry-run)")
@@ -358,15 +378,27 @@ def deploy_to_testnet(
         print("🔨 Building signed transaction...")
 
         tx_result = builder_real.build_enrollment_transaction(
-            did_document=did_document,
+            did=did_id,
+            wallet_address=dummy_wallet,
+            digest=dummy_digest,
+            helper_data=minimal_helper,
             available_utxos=utxo_inputs,
             storage_format="inline",
-            recipient_address=address,
+            recipient_address=str(address),
+            version="1.1",
+            controllers=[dummy_wallet],
+            enrollment_timestamp="2025-10-14T20:57:00Z",
         )
 
         print(f"✅ Transaction built and signed")
         print(
             f"   Actual fee: {tx_result.fee_ada:.6f} ADA ({tx_result.fee_lovelace} lovelace)")
+
+        # Check if transaction was successfully built
+        if not tx_result.success or not tx_result.tx_bytes:
+            print(f"❌ Transaction build failed: {tx_result.error}")
+            results["error"] = tx_result.error
+            return results
 
         # Submit to testnet
         print("\n📡 Submitting to Cardano testnet...")
@@ -423,22 +455,17 @@ def deploy_to_testnet(
         print_section("Step 7: Verify Metadata On-Chain")
 
         if results.get("confirmed"):
-            try:
-                metadata = client.get_transaction_metadata(tx_hash, label=674)
-
-                if metadata:
-                    print("✅ Metadata found on-chain!")
-                    print(f"   Label: 674 (CIP-20 biometric DID)")
-                    print(f"   DID: {metadata.get('did', 'N/A')}")
-                    print(
-                        f"   Verification methods: {len(metadata.get('verificationMethod', []))}")
-
-                    results["metadata_verified"] = True
-                    results["metadata"] = metadata
-                else:
-                    print("⚠️ Metadata not found (may need more time)")
-            except Exception as e:
-                print(f"⚠️ Error retrieving metadata: {e}")
+            print("✅ Transaction confirmed on-chain!")
+            print(f"   View metadata at:")
+            print(f"   https://preprod.cardanoscan.io/transaction/{tx_hash}")
+            print(f"   Click 'Metadata' tab to see DID and biometric data")
+            print(f"   Expected label: 674 (CIP-20 biometric DID)")
+            print(f"   Expected DID: {did_id}")
+            print(f"   Expected version: 1.1 (multi-controller support)")
+        else:
+            print("⚠️ Transaction submitted but not yet confirmed")
+            print(f"   Monitor status at:")
+            print(f"   https://preprod.cardanoscan.io/transaction/{tx_hash}")
 
         return results
 

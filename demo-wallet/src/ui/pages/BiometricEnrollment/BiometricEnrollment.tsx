@@ -355,8 +355,16 @@ export const BiometricEnrollment = () => {
           <p>Your biometric DID has been created.</p>
           {enrollmentState.did && (
             <div className="did-display">
-              <label>Your DID:</label>
-              <code>{enrollmentState.did}</code>
+              <label>Your Decentralized Identifier (DID):</label>
+              <code className="did-code">{enrollmentState.did}</code>
+              <div className="did-info">
+                <p className="privacy-note">
+                  ✅ <strong>Privacy Protected:</strong> Your DID contains no personal information
+                </p>
+                <p className="sybil-note">
+                  ✅ <strong>Sybil Resistant:</strong> One person = one DID, enforced cryptographically
+                </p>
+              </div>
             </div>
           )}
         </div>

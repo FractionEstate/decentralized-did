@@ -20,18 +20,22 @@ export interface HelperDataEntry {
 }
 
 export interface BiometricGenerateResult {
-  did: string;
-  id_hash: string;
-  wallet_address: string;
+  did: string; // Deterministic format: did:cardano:{network}:{base58_hash}
+  id_hash?: string; // Optional: for backward compatibility (not used in deterministic format)
+  wallet_address: string; // Kept in metadata only, not in DID identifier
   helpers: Record<string, HelperDataEntry>;
   metadata_cip30_inline: {
-    version: number;
-    walletAddress: string;
+    version: number; // 1.1 for deterministic DIDs with multi-controller support
+    walletAddress?: string; // Deprecated: use controllers array instead
+    controllers?: string[]; // Multi-controller support (metadata v1.1)
     biometric: {
-      idHash: string;
+      idHash?: string; // Optional: for backward compatibility
+      commitment?: string; // Base58 encoded biometric commitment (deterministic format)
       helperStorage: string;
       helperData: Record<string, HelperDataEntry>;
     };
+    enrollmentTimestamp?: string; // ISO 8601 timestamp (metadata v1.1)
+    revoked?: boolean; // Revocation flag (metadata v1.1)
   };
 }
 

@@ -101,8 +101,19 @@ export const BiometricVerification = ({
         throw new Error("No biometric data found. Please enroll first.");
       }
 
-      // Get expected ID hash from DID
-      const idHash = did.split("#")[1];
+      // Extract ID hash from DID
+      // Deterministic format: did:cardano:{network}:{base58_hash}
+      // Legacy format: did:cardano:{wallet}#{hash}
+      let idHash: string;
+      if (did.includes("#")) {
+        // Legacy format: extract hash after #
+        idHash = did.split("#")[1];
+      } else {
+        // Deterministic format: extract base58 hash (last component)
+        const parts = did.split(":");
+        idHash = parts[parts.length - 1];
+      }
+
       if (!idHash) {
         throw new Error("Invalid DID format");
       }
