@@ -91,16 +91,7 @@ Your tamper-proof identity security architecture is **well-documented** but **po
 - Timeline estimates
 - Success criteria
 
-### 2. Migration Guide (`docs/MIGRATION-GUIDE.md`)
-**4,000+ lines** - Developer reference
-- Step-by-step migration
-- Breaking changes explained
-- Code examples
-- Multi-wallet scenarios
-- Troubleshooting guide
-- FAQ section
-
-### 3. This Summary (`docs/AUDIT-SUMMARY.md`)
+### 2. This Summary (`docs/AUDIT-SUMMARY.md`)
 **Quick reference** - Executive overview
 - Key findings
 - Action plan
@@ -110,8 +101,7 @@ Your tamper-proof identity security architecture is **well-documented** but **po
 
 ### For You (Today)
 1. ✅ Read `docs/AUDIT-REPORT.md` (detailed analysis)
-2. ✅ Read `docs/MIGRATION-GUIDE.md` (how to migrate)
-3. ✅ Review `docs/roadmap.md` (updated with Phase 4.5)
+2. ✅ Review `docs/roadmap.md` (updated with Phase 4.5)
 
 ### For Implementation (Week 1 Day 1)
 Start with the most critical fix:
@@ -195,7 +185,6 @@ You'll know you're done when:
 ## 🔗 Quick Links
 
 - **Full Audit**: [`docs/AUDIT-REPORT.md`](./AUDIT-REPORT.md)
-- **Migration Guide**: [`docs/MIGRATION-GUIDE.md`](./MIGRATION-GUIDE.md)
 - **Security Architecture**: [`docs/tamper-proof-identity-security.md`](./tamper-proof-identity-security.md)
 - **Sybil Resistance**: [`docs/sybil-resistance-design.md`](./sybil-resistance-design.md)
 - **Updated Roadmap**: [`docs/roadmap.md`](./roadmap.md)
