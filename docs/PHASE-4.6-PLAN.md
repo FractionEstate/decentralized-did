@@ -23,7 +23,7 @@ Phase 4.6 bridges the gap between Phase 4.5's Sybil-resistant core system and fu
 
 ### Task 1: Update Demo Wallet for Deterministic DIDs (HIGH PRIORITY)
 
-**Current State**: 
+**Current State**:
 - Demo wallet uses legacy wallet-based DID format (`did:cardano:{wallet}#{hash}`)
 - Phase 4.5 changed all API servers to use deterministic format
 - Mismatch between wallet and backend needs resolution
@@ -223,16 +223,16 @@ from functools import lru_cache
 class BlockfrostCache:
     def __init__(self, redis_url: str):
         self.redis = aioredis.from_url(redis_url)
-    
+
     async def get_did(self, did: str):
         # Check cache first
         cached = await self.redis.get(f"did:{did}")
         if cached:
             return json.loads(cached)
-        
+
         # Query blockchain
         result = await blockfrost.check_did_exists(did)
-        
+
         # Cache for 5 minutes
         await self.redis.setex(f"did:{did}", 300, json.dumps(result))
         return result
@@ -351,13 +351,13 @@ async def enroll(request: Request):
        environment:
          - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
        restart: unless-stopped
-     
+
      demo_wallet:
        build: ./demo-wallet
        ports:
          - "3000:3000"
        restart: unless-stopped
-     
+
      redis:
        image: redis:7-alpine
        ports:
@@ -370,10 +370,10 @@ async def enroll(request: Request):
    server {
        listen 443 ssl http2;
        server_name api.yourdomain.com;
-       
+
        ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
        ssl_certificate_key /etc/letsencrypt/live/yourdomain.com/privkey.pem;
-       
+
        location / {
            proxy_pass http://localhost:8000;
            proxy_set_header Host $host;
@@ -469,12 +469,12 @@ export default function () {
     biometric_commitment: 'abc123...',
     wallet_address: 'addr1...',
   }));
-  
+
   check(res, {
     'status is 200': (r) => r.status === 200,
     'duration < 100ms': (r) => r.timings.duration < 100,
   });
-  
+
   sleep(1);
 }
 ```
