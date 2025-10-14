@@ -430,17 +430,92 @@ class CardanoTransactionBuilder:
                     outputs_count=1,
                 )
 
-            # Build actual transaction (requires PyCardano ChainContext)
-            # This will be implemented in Phase 4.2 with Blockfrost integration
-            logger.warning(
-                "Actual transaction building requires Blockfrost integration "
-                "(Phase 4.2). Use dry_run=True for validation."
+            # Build actual transaction with PyCardano (manual approach)
+            from pycardano import (
+                Transaction,
+                TransactionBody,
+                TransactionInput,
+                TransactionOutput,
+                TransactionWitnessSet,
+                VerificationKeyWitness,
+                Value,
+            )
+
+            # Validate available_utxos
+            if not available_utxos:
+                return TransactionResult(
+                    success=False,
+                    error="No UTXOs available for transaction building"
+                )
+
+            # Select UTXOs (returns tuple)
+            selected_inputs, total_input = self.select_utxos(
+                available_utxos=available_utxos,
+                required_lovelace=MIN_LOVELACE + estimated_fee
+            )
+
+            # Create inputs
+            tx_inputs = [
+                TransactionInput.from_primitive([utxo.tx_hash, utxo.tx_index])
+                for utxo in selected_inputs
+            ]
+
+            # Calculate change
+            change_amount = total_input - estimated_fee
+
+            # Create output (change back to sender)
+            from pycardano import Address as PyAddress
+            # Ensure recipient_address is string
+            addr_str = str(recipient_address) if recipient_address else str(
+                self.address)
+            output_address = PyAddress.from_primitive(addr_str)
+            tx_outputs = [
+                TransactionOutput(output_address, Value(change_amount))
+            ]
+
+            # Create transaction body
+            tx_body = TransactionBody(
+                inputs=tx_inputs,
+                outputs=tx_outputs,
+                fee=estimated_fee,
+                auxiliary_data_hash=auxiliary_data.hash() if auxiliary_data else None,
+            )
+
+            # Sign transaction
+            witnesses = TransactionWitnessSet()
+            if self.signing_key:
+                signature = self.signing_key.sign(tx_body.hash())
+                vkey_witness = VerificationKeyWitness(
+                    self.signing_key.to_verification_key(),
+                    signature
+                )
+                witnesses.vkey_witnesses = [vkey_witness]
+
+            # Build final transaction
+            tx = Transaction(
+                transaction_body=tx_body,
+                transaction_witness_set=witnesses,
+                auxiliary_data=auxiliary_data,
+            )
+
+            tx_bytes = tx.to_cbor()
+
+            logger.info(
+                f"Transaction built successfully: "
+                f"size={len(tx_bytes)} bytes, "
+                f"fee={estimated_fee} lovelace"
             )
 
             return TransactionResult(
-                success=False,
-                error="Actual transaction building not yet implemented. "
-                      "Blockfrost integration coming in Phase 4.2."
+                success=True,
+                tx_hash=str(tx_body.hash()),
+                tx_bytes=tx_bytes,
+                tx_size=len(tx_bytes),
+                fee_lovelace=estimated_fee,
+                fee_ada=estimated_fee / 1_000_000,
+                metadata_size=metadata_size,
+                inputs_count=len(selected_inputs),
+                outputs_count=1,
             )
 
         except Exception as e:

@@ -173,24 +173,24 @@ import ReactNativeBiometrics from 'react-native-biometrics';
 
 async function captureFingerprint(): Promise<FingerprintTemplate> {
   const rnBiometrics = new ReactNativeBiometrics();
-  
+
   // Check if biometrics available
   const { available, biometryType } = await rnBiometrics.isSensorAvailable();
-  
+
   if (!available) {
     throw new Error('No biometric sensor available');
   }
-  
+
   // Request biometric authentication
   const { success, signature } = await rnBiometrics.createSignature({
     promptMessage: 'Scan your fingerprint',
     payload: 'enrollment-session-' + Date.now()
   });
-  
+
   if (!success) {
     throw new Error('Biometric capture failed');
   }
-  
+
   // Extract template data (varies by platform)
   return extractTemplateFromSignature(signature);
 }
@@ -205,7 +205,7 @@ async function captureWebAuthn(): Promise<FingerprintTemplate> {
   if (!window.PublicKeyCredential) {
     throw new Error('WebAuthn not supported');
   }
-  
+
   const credential = await navigator.credentials.create({
     publicKey: {
       challenge: new Uint8Array(32),
@@ -222,7 +222,7 @@ async function captureWebAuthn(): Promise<FingerprintTemplate> {
       }
     }
   });
-  
+
   return processWebAuthnCredential(credential);
 }
 ```
@@ -248,7 +248,7 @@ function generateEnrollmentQR(): string {
     expiresAt: Date.now() + 300000, // 5 minutes
     version: '1.0'
   };
-  
+
   return JSON.stringify(payload);
 }
 ```
@@ -266,14 +266,14 @@ function encryptDIDPayload(
 ): EncryptedPayload {
   const nonce = randomBytes(24);
   const message = JSON.stringify(did);
-  
+
   const encrypted = box(
     Buffer.from(message),
     nonce,
     sessionPublicKey,
     ephemeralPrivateKey
   );
-  
+
   return {
     ciphertext: Buffer.from(encrypted).toString('base64'),
     nonce: Buffer.from(nonce).toString('base64'),
@@ -292,10 +292,10 @@ from decentralized_did.did import BiometricDIDGenerator
 def process_mobile_enrollment(templates: List[bytes]) -> dict:
     """
     Process fingerprint templates captured on mobile device.
-    
+
     Args:
         templates: List of ISO/IEC 19794-2 fingerprint templates
-        
+
     Returns:
         Dictionary with DID document and helper data
     """
@@ -304,12 +304,12 @@ def process_mobile_enrollment(templates: List[bytes]) -> dict:
         num_fingers=len(templates),
         bits_per_finger=64
     )
-    
+
     # Process templates
     digest, helper_data = aggregator.enroll([
         parse_iso_template(t) for t in templates
     ])
-    
+
     # Generate DID
     did_gen = BiometricDIDGenerator()
     did_document = did_gen.generate_did_document(
@@ -321,7 +321,7 @@ def process_mobile_enrollment(templates: List[bytes]) -> dict:
             'platform': 'android'  # or 'ios'
         }
     )
-    
+
     return {
         'did': did_document['id'],
         'document': did_document,

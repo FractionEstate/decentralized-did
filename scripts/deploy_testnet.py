@@ -357,7 +357,9 @@ def deploy_to_testnet(
         # Submit to testnet
         print("\n📡 Submitting to Cardano testnet...")
 
-        tx_hash = client.submit_transaction(tx_result.tx_cbor)
+        # Convert bytes to hex string for Blockfrost
+        tx_cbor_hex = tx_result.tx_bytes.hex()
+        tx_hash = client.submit_transaction(tx_cbor_hex)
 
         print(f"✅ Transaction submitted successfully!")
         print(f"   TX Hash: {tx_hash}")
