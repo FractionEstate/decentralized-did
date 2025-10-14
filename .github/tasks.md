@@ -1697,44 +1697,49 @@ Comprehensive codebase audit (October 14, 2025) revealed critical misalignments:
 
 ### Overview
 With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.6 focuses on:
-1. 🚧 Updating the demo wallet to use the new deterministic DID format (80% complete)
+1. 🚧 Updating the demo wallet to use the new deterministic DID format (85% complete)
 2. Continuing paused hardware integration work (optional)
 3. Hardening API servers for production use
 4. Performance optimization and monitoring
 5. Production deployment guides
 
 ### Progress Summary
-- **Task 1**: 80% complete (ahead of schedule - 4 hours vs 3-4 day target)
+- **Task 1**: 85% complete (ahead of schedule - 6 hours vs 3-4 day target)
   - Core logic: ✅ COMPLETE (100%)
   - Type definitions: ✅ COMPLETE (100%)
   - UI components: ✅ COMPLETE (100%)
-  - Unit tests: ✅ COMPLETE (19/19 passing)
+  - Unit tests: ✅ COMPLETE (18/18 passing - legacy test removed)
   - Integration tests: ✅ COMPLETE (14 tests created, 5/5 passing without API server)
-  - E2E tests: ✅ COMPLETE (4 new tests for deterministic DIDs)
+  - E2E tests: ✅ COMPLETE (11 total tests, 4 new for deterministic DIDs)
+  - Legacy code removal: ✅ COMPLETE (100%)
   - Manual testing: ⏳ PENDING
-  - Documentation updates: ⏳ PENDING
+  - Documentation updates: 🔄 IN PROGRESS
 
 ### Tasks
 
 - [-] **task 1** - Update demo wallet for deterministic DIDs
   - **Priority**: HIGH (demo wallet currently uses legacy wallet-based format)
-  - **Status**: 80% COMPLETE (ahead of schedule)
+  - **Status**: 85% COMPLETE (ahead of schedule)
   - **Completed**:
     * ✅ Added generateDeterministicDID() function (Blake2b + Base58)
     * ✅ Updated transformGenerateResult() to use deterministic format
     * ✅ Removed wallet address from DID identifier construction
     * ✅ Updated type definitions for metadata v1.1
-    * ✅ Updated BiometricVerification component (dual-format support)
+    * ✅ Updated BiometricVerification component (simplified extraction)
     * ✅ Updated BiometricEnrollment component (enhanced display)
-    * ✅ Created comprehensive unit tests (19 tests, 100% passing)
+    * ✅ Created comprehensive unit tests (18 tests, 100% passing)
     * ✅ Created integration tests (14 tests, 5/5 passing without API server)
-    * ✅ Updated E2E enrollment tests (4 new tests for deterministic DIDs)
-    * ✅ 2 successful builds (no errors)
+    * ✅ Updated E2E enrollment tests (11 total tests, 4 new deterministic tests)
+    * ✅ Removed ALL legacy format support (no dual-format code)
+    * ✅ Updated all test fixtures to deterministic format
+    * ✅ Deleted MIGRATION-GUIDE.md (not needed - not live yet)
+    * ✅ 3 successful builds (no errors)
     * ✅ Installed dependencies (blakejs, bs58, @types/bs58)
+    * ✅ 3 commits pushed to GitHub
   - **Remaining**:
+    * 🔄 Documentation updates (1-2 hours, in progress)
     * ⏳ Manual testing (4-5 hours)
-    * ⏳ Documentation updates (1-2 hours)
-  - **Files Modified**:
+  - **Files Modified** (15 total):
     * `demo-wallet/src/core/biometric/biometricDidService.ts` ✅
     * `demo-wallet/src/core/biometric/biometricDid.types.ts` ✅
     * `demo-wallet/src/ui/components/BiometricVerification/BiometricVerification.tsx` ✅
@@ -1742,18 +1747,33 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * `demo-wallet/package.json` ✅
     * `demo-wallet/tests/e2e/biometric-enrollment.spec.ts` ✅
     * `demo-wallet/tests/utils/api-client.ts` ✅
+    * `demo-wallet/src/core/agent/records/peerConnectionMetadataRecord.test.ts` ✅
+    * `demo-wallet/src/core/agent/records/peerConnectionStorage.test.ts` ✅
+    * `demo-wallet/src/core/cardano/walletConnect/identityWalletConnect.test.ts` ✅
+    * `demo-wallet/src/ui/components/AppWrapper/AppWrapper.test.tsx` ✅
+    * `demo-wallet/src/ui/pages/Menu/components/ConfirmConnectModal/ConfirmConnectModal.test.tsx` ✅
+    * `demo-wallet/README.md` ✅
+    * `docs/AUDIT-SUMMARY.md` ✅
   - **Files Created**:
     * `demo-wallet/src/core/biometric/__tests__/biometricDidService.deterministic.test.ts` ✅ (289 lines)
     * `demo-wallet/src/core/biometric/__tests__/biometricDidService.integration.test.ts` ✅ (470 lines)
     * `demo-wallet/tests/integration/README.md` ✅ (integration test documentation)
     * `demo-wallet/TASK-1-IMPLEMENTATION-PLAN.md` ✅
+  - **Files Deleted**:
+    * `docs/MIGRATION-GUIDE.md` ✅ (602 lines removed - not needed)
   - **Testing**:
-    * Unit tests: 19/19 passing ✅
+    * Unit tests: 18/18 passing ✅ (removed 1 legacy test)
     * Integration tests: 5/5 passing without API server ✅
     * Integration tests with API: 9 skipped (requires Python API server)
-    * E2E tests: Updated with 4 new deterministic DID tests ✅
-    * Test coverage: Enrollment, verification, Sybil resistance, metadata v1.1
-  - **Deliverable**: Demo wallet using deterministic DIDs (80% complete)
+    * E2E tests: 11 total (7 original + 4 new deterministic tests) ✅
+    * Test coverage: Enrollment, verification, Sybil resistance, metadata v1.1, privacy
+    * Total test suite: 43 tests (18 unit + 14 integration + 11 E2E)
+  - **Git Commits**:
+    * Commit bb31bd9: Update E2E enrollment tests for deterministic DID format
+    * Commit e1e182e: Update Phase 4.6 progress: Task 1 now 80% complete
+    * Commit 10a4e16: Remove legacy DID format support - simplify to deterministic only
+    * Commit 44ba705: docs: Remove migration guide references from AUDIT-SUMMARY
+  - **Deliverable**: Demo wallet using deterministic DIDs (85% complete)
 
 - [ ] **task 2** - Complete hardware fingerprint sensor integration
   - **Priority**: MEDIUM (paused after Phase 4, ready to resume)
