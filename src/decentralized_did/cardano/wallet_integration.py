@@ -60,7 +60,8 @@ class WalletMetadataBundle:
 
         if create_dirs:
             destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(self.to_json(fmt=fmt, pretty=pretty), encoding="utf-8")
+        destination.write_text(self.to_json(
+            fmt=fmt, pretty=pretty), encoding="utf-8")
 
 
 def build_wallet_metadata_bundle(
@@ -71,9 +72,22 @@ def build_wallet_metadata_bundle(
     label: int = DEFAULT_METADATA_LABEL,
     helper_storage: str = "inline",
     helper_uri: Optional[str] = None,
-    version: int = 1,
+    version: str = "1.1",
 ) -> WalletMetadataBundle:
-    """Create a metadata bundle ready for wallet integration."""
+    """Create a metadata bundle ready for wallet integration.
+
+    Args:
+        wallet_address: Bech32-encoded Cardano address
+        digest: 32-byte biometric digest
+        helper_map: Helper data dictionary (or None for external storage)
+        label: Cardano metadata label (default: 674 for biometric DIDs)
+        helper_storage: "inline" or "external"
+        helper_uri: URI for external helper storage (IPFS, etc.)
+        version: Metadata schema version ("1.1" or "1.0", default: "1.1")
+
+    Returns:
+        WalletMetadataBundle with metadata payload and DID
+    """
 
     payload = build_metadata_payload(
         wallet_address,

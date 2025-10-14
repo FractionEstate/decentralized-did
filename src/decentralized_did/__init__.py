@@ -47,7 +47,7 @@ from .biometrics.aggregator import aggregate_finger_digests, helpers_to_dict
 from .biometrics.feature_extractor import Minutia, FingerTemplate, minutiae_from_dicts
 
 # DID generation
-from .did.generator import build_did, build_metadata_payload
+from .did.generator import build_did, build_metadata_payload, generate_deterministic_did
 
 # Storage backends
 from .storage.base import StorageBackend, StorageReference, StorageError
@@ -76,6 +76,7 @@ __all__ = [
     # DID generation
     "build_did",
     "build_metadata_payload",
+    "generate_deterministic_did",
 
     # Storage
     "StorageBackend",

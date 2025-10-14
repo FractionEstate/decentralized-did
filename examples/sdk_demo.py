@@ -11,7 +11,7 @@ from decentralized_did import (
     Minutia,
     FingerTemplate,
     aggregate_finger_digests,
-    build_did,
+    generate_deterministic_did,
 )
 
 
@@ -73,8 +73,7 @@ print(f"   ✅ Aggregated: {aggregated.hex()[:32]}... ({len(aggregated)} bytes)"
 
 # Step 5: Generate DID
 print("\n5️⃣  Generating DID...")
-wallet_address = "addr1qx2kd88c92l6j5jhkjehfvjdj2gvfe5g8c4v7y4k3hl2p8jv2kd88c92l6"
-did = build_did(wallet_address, aggregated)
+did = generate_deterministic_did(aggregated, network="mainnet")
 print(f"   ✅ DID: {did}")
 
 print("\n" + "=" * 70)

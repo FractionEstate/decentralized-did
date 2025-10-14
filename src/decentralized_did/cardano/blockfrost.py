@@ -8,6 +8,8 @@ Features:
 - UTXO querying by address
 - Transaction submission
 - Transaction status tracking
+- DID duplicate detection (Sybil attack prevention)
+- Metadata querying by label
 - Rate limit handling
 - Error handling and retries
 - Both testnet and mainnet support
@@ -73,6 +75,23 @@ class BlockfrostAPIError(BlockfrostError):
     pass
 
 
+class DIDAlreadyExistsError(BlockfrostError):
+    """DID already exists on blockchain"""
+
+    def __init__(self, did: str, tx_hash: str, enrollment_data: Optional[Dict[str, Any]] = None):
+        self.did = did
+        self.tx_hash = tx_hash
+        self.enrollment_data = enrollment_data or {}
+
+        message = (
+            f"DID already exists: {did}\n"
+            f"Original enrollment transaction: {tx_hash}\n"
+            f"This biometric identity has already been enrolled on the blockchain.\n"
+            f"If you control this identity, you can add a new controller wallet instead of re-enrolling."
+        )
+        super().__init__(message)
+
+
 class BlockfrostClient:
     """
     Blockfrost API client for Cardano blockchain interaction.
@@ -81,6 +100,8 @@ class BlockfrostClient:
     - Query UTXOs by address
     - Submit transactions
     - Track transaction status
+    - Check for duplicate DIDs (Sybil attack prevention)
+    - Query metadata by label
     - Handle rate limits and errors
 
     Usage:
@@ -88,7 +109,15 @@ class BlockfrostClient:
         ...     api_key="your_blockfrost_key",
         ...     network="testnet"
         ... )
+        >>> # Query UTXOs
         >>> utxos = client.get_address_utxos("addr_test1...")
+        >>>
+        >>> # Check for duplicate DID before enrollment
+        >>> existing = client.check_did_exists("did:cardano:mainnet:zQm...")
+        >>> if existing:
+        ...     print(f"DID already enrolled at: {existing['enrollment_timestamp']}")
+        >>>
+        >>> # Submit transaction
         >>> tx_hash = client.submit_transaction(tx_cbor)
         >>> status = client.get_transaction_status(tx_hash)
     """
@@ -486,6 +515,130 @@ class BlockfrostClient:
             f"Network info: supply={data.get('supply')}, stake={data.get('stake')}")
 
         return data
+
+    def check_did_exists(self, did: str) -> Optional[Dict[str, Any]]:
+        """
+        Check if DID exists on blockchain by querying metadata.
+
+        This method queries the blockchain for transactions with metadata label 674
+        (biometric DID standard) and searches for the specified DID. This enables
+        duplicate detection and prevents Sybil attacks.
+
+        Args:
+            did: DID to search for (e.g., "did:cardano:mainnet:zQm...")
+
+        Returns:
+            Enrollment data dict if DID exists, None otherwise.
+            Dict contains:
+                - tx_hash: Transaction hash of original enrollment
+                - controllers: List of wallet addresses controlling this DID
+                - enrollment_timestamp: ISO 8601 timestamp of enrollment
+                - revoked: Whether DID has been revoked
+                - metadata: Full metadata from blockchain
+
+        Raises:
+            BlockfrostAPIError: API error occurred
+            BlockfrostRateLimitError: Rate limit exceeded
+
+        Example:
+            >>> existing = client.check_did_exists("did:cardano:mainnet:zQm...")
+            >>> if existing:
+            ...     print(f"DID enrolled at: {existing['enrollment_timestamp']}")
+            ...     print(f"Controllers: {existing['controllers']}")
+            ... else:
+            ...     print("DID available for enrollment")
+        """
+        endpoint = "/metadata/txs/labels/674"  # Biometric DID metadata label
+
+        logger.debug(f"Checking if DID exists: {did}")
+
+        try:
+            # Query transactions with biometric DID metadata label
+            # Blockfrost returns paginated results (default 100 per page)
+            page = 1
+            max_pages = 10  # Prevent infinite loops
+
+            while page <= max_pages:
+                params = {"page": page, "count": 100, "order": "desc"}
+                data = self._request("GET", endpoint, params=params)
+
+                if not isinstance(data, list) or len(data) == 0:
+                    # No more results
+                    break
+
+                # Search through transactions for matching DID
+                for tx_metadata in data:
+                    tx_hash = tx_metadata.get("tx_hash")
+                    if not tx_hash:
+                        continue
+
+                    # Get transaction metadata details
+                    try:
+                        tx_detail_endpoint = f"/txs/{tx_hash}/metadata"
+                        tx_details = self._request("GET", tx_detail_endpoint)
+
+                        # Search for our metadata label
+                        for metadata_entry in tx_details:
+                            if metadata_entry.get("label") != "674":
+                                continue
+
+                            json_metadata = metadata_entry.get(
+                                "json_metadata", {})
+
+                            # Check if this metadata contains our DID
+                            metadata_did = json_metadata.get("did")
+                            if metadata_did == did:
+                                # Found it! Extract enrollment data
+                                logger.info(
+                                    f"DID already exists: {did[:50]}... "
+                                    f"(tx: {tx_hash[:16]}...)"
+                                )
+
+                                # Extract v1.1 metadata fields
+                                controllers = json_metadata.get(
+                                    "controllers", [])
+                                if not controllers:
+                                    # Fallback to v1.0 format (wallet_address)
+                                    wallet = json_metadata.get(
+                                        "wallet_address")
+                                    controllers = [wallet] if wallet else []
+
+                                enrollment_data = {
+                                    "tx_hash": tx_hash,
+                                    "controllers": controllers,
+                                    "enrollment_timestamp": json_metadata.get(
+                                        "enrollment_timestamp", "unknown"
+                                    ),
+                                    "revoked": json_metadata.get("revoked", False),
+                                    "metadata": json_metadata,
+                                }
+
+                                return enrollment_data
+
+                    except BlockfrostAPIError as e:
+                        # Skip transactions we can't read
+                        logger.debug(
+                            f"Could not read metadata for tx {tx_hash[:16]}...: {e}"
+                        )
+                        continue
+
+                # Move to next page
+                page += 1
+                if len(data) < 100:
+                    # Last page
+                    break
+
+            # DID not found after searching all pages
+            logger.info(f"DID not found on blockchain: {did[:50]}...")
+            return None
+
+        except BlockfrostAPIError as e:
+            if "404" in str(e):
+                # No transactions with this label yet
+                logger.info(
+                    "No biometric DID transactions found on blockchain")
+                return None
+            raise
 
 
 # Utility functions

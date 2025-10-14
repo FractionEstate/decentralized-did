@@ -16,12 +16,16 @@ def test_bundle_produces_both_formats(tmp_path):
     wallet_metadata = bundle.as_wallet_metadata()
     assert "2024" in wallet_metadata
     payload = wallet_metadata["2024"]
-    assert payload["walletAddress"] == "addr_test1qpl4w3u"
+    # v1.1 format uses controllers array
+    assert payload["version"] == "1.1"
+    assert payload["controllers"][0] == "addr_test1qpl4w3u"
     assert payload["biometric"]["helperData"] == helper_map
 
     cip30 = bundle.as_cip30_request()
     assert cip30["metadata"][0][0] == 2024
-    assert cip30["metadata"][0][1]["walletAddress"] == "addr_test1qpl4w3u"
+    # v1.1 format uses controllers array
+    assert cip30["metadata"][0][1]["version"] == "1.1"
+    assert cip30["metadata"][0][1]["controllers"][0] == "addr_test1qpl4w3u"
 
     pretty = bundle.to_json(fmt="wallet", pretty=True)
     assert "\n" in pretty

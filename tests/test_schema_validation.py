@@ -284,28 +284,6 @@ class TestHelperDataValidation:
             validate_helper_data(data)
         # Should mention pattern match failure
         assert "does not match" in exc_info.value.message or "pattern" in exc_info.value.message.lower()
-        ) or "pattern" in exc_info.value.message.lower()
-
-    def test_invalid_hex_format(self):
-        """Test validation fails with non-hex characters."""
-        data= {
-            "version": "1.0",
-            "algorithm": "fuzzy-extractor-bch127-blake2b",
-            "fingers": {
-                "right_thumb": {
-                    "fingerId": "right_thumb",
-                    "version": 1,
-                    "salt": "GGGGGGGG" + ("0" * 56),  # Invalid: G is not hex
-                    "personalization": "1" * 64,
-                    "bchSyndrome": "a" * 16,
-                    "hmac": "b" * 64
-                }
-            }
-        }
-        with pytest.raises(ValidationError) as exc_info:
-            validate_helper_data(data)
-        assert "salt" in exc_info.value.message.lower(
-        ) or "pattern" in exc_info.value.message.lower()
 
 
 class TestConfigValidation:
@@ -313,7 +291,7 @@ class TestConfigValidation:
 
     def test_valid_minimal_config(self):
         """Test validation of minimal valid config."""
-        data= {
+        data = {
             "general": {
                 "verbosity": "normal"
             }
@@ -360,7 +338,7 @@ class TestConfigValidation:
 
     def test_invalid_quality_threshold(self):
         """Test validation fails with out-of-range quality threshold."""
-        data= {
+        data = {
             "biometric": {
                 "qualityThreshold": 150  # Invalid: > 100
             }
@@ -387,7 +365,7 @@ class TestErrorMessages:
 
     def test_error_has_field_path(self):
         """Test that validation errors include field path."""
-        data= {
+        data = {
             "version": "1.0",
             "fingers": []  # Invalid: minItems is 1
         }
@@ -459,7 +437,7 @@ class TestSchemaVersioning:
 
     def test_helper_data_version_enforcement(self):
         """Test that helper data schema enforces version 1.0."""
-        data= {
+        data = {
             "version": "2.0",  # Invalid version
             "algorithm": "fuzzy-extractor-bch127-blake2b",
             "fingers": {

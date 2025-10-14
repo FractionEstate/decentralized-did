@@ -21,15 +21,14 @@ pip install -e .
 ## Quick Start
 
 ```python
-from decentralized_did import FuzzyExtractor, build_did, aggregate_finger_digests
+from decentralized_did import FuzzyExtractor, generate_deterministic_did, aggregate_finger_digests
 
 # 1. Generate digest from biometric template
 extractor = FuzzyExtractor()
 digest, helper = extractor.gen(biometric_template)
 
-# 2. Create DID
-wallet_address = "addr1qx..."
-did = build_did(wallet_address, digest)
+# 2. Create DID (deterministic, privacy-preserving)
+did = generate_deterministic_did(digest, network="mainnet")
 
 # 3. Verify later with noisy recapture
 verified_digest = extractor.rep(noisy_template, helper)
@@ -116,37 +115,55 @@ aggregated = aggregate_finger_digests(finger_digests)
 
 ### DID Module
 
-#### build_did
+#### generate_deterministic_did
 
-Construct a W3C-compliant DID from wallet address and biometric digest.
+Generate a privacy-preserving, deterministic DID from a biometric digest.
+
+```python
+from decentralized_did import generate_deterministic_did
+
+did = generate_deterministic_did(digest, network="mainnet")
+# Output: "did:cardano:mainnet:zQmNhFJPjg3MqLzM7CzZGVvjV5fCDuWnQ5Lzg3FHKfNm4tS"
+```
+
+**Format**: `did:cardano:{network}:{base58_multihash}`
+
+**Parameters:**
+
+- `digest` (bytes): 32-byte biometric digest
+- `network` (str): "mainnet" or "testnet" (default: "mainnet")
+
+**Returns**: str - Deterministic DID string
+
+**Security**: One person = one DID (Sybil-resistant), no wallet address exposure
+
+#### build_did (DEPRECATED)
+
+Legacy wallet-based DID format. Use `generate_deterministic_did()` instead.
 
 ```python
 from decentralized_did import build_did
 
-did = build_did(wallet_address, digest)
-# Output: "did:cardano:mainnet:addr1qx...:Base64url(digest)"
+# ⚠️ DEPRECATED: Vulnerable to Sybil attacks
+did = build_did(wallet_address, digest, deterministic=False)
 ```
 
-**Format**: `did:cardano:{network}:{address}:{digest}`
-
-**Parameters:**
-
-- `wallet_address` (str): Bech32-encoded Cardano address
-- `digest` (bytes): 32-byte biometric digest
-
-**Returns**: str - Formatted DID string
+**Note**: This method shows a deprecation warning. Migrate to `generate_deterministic_did()`.
 
 #### build_metadata_payload
 
-Create Cardano transaction metadata payload for DID registration.
+Create Cardano transaction metadata payload for DID registration (v1.1 schema).
 
 ```python
 from decentralized_did import build_metadata_payload
 
 metadata = build_metadata_payload(
-    did="did:cardano:mainnet:addr1qx...",
-    helper_storage={"type": "ipfs", "cid": "Qm..."},
-    timestamp="2025-10-14T12:00:00Z"
+    wallet_address="addr1qx...",
+    digest=digest,
+    version="1.1",
+    controllers=["addr1qx...", "addr1qy..."],  # Multi-controller support
+    enrollment_timestamp="2025-10-14T12:00:00Z",
+    revoked=False
 )
 ```
 
@@ -244,7 +261,7 @@ class MyStorage(StorageBackend):
 ### Pattern 1: Single-Finger Enrollment
 
 ```python
-from decentralized_did import FuzzyExtractor, build_did, InlineStorage
+from decentralized_did import FuzzyExtractor, generate_deterministic_did, InlineStorage
 
 # 1. Capture biometric
 template = capture_fingerprint()  # Your capture code
@@ -253,15 +270,21 @@ template = capture_fingerprint()  # Your capture code
 extractor = FuzzyExtractor()
 digest, helper = extractor.gen(template)
 
-# 3. Generate DID
-wallet_address = get_user_wallet_address()
-did = build_did(wallet_address, digest)
+# 3. Generate DID (deterministic)
+did = generate_deterministic_did(digest, network="mainnet")
 
 # 4. Store helper data
 storage = InlineStorage()
 ref = await storage.store(helper)
 
-# 5. Register on Cardano
+# 5. Submit to blockchain
+metadata = build_metadata_payload(
+    wallet_address=get_user_wallet_address(),
+    digest=digest,
+    version="1.1"
+)
+tx_id = await submit_cardano_transaction(metadata)
+```# 5. Register on Cardano
 metadata = build_metadata_payload(did, {"type": ref.type, "location": ref.location})
 tx_id = await submit_cardano_transaction(wallet_address, metadata)
 
@@ -275,7 +298,7 @@ print(f"Transaction: {tx_id}")
 from decentralized_did import (
     FuzzyExtractor,
     aggregate_finger_digests,
-    build_did,
+    generate_deterministic_did,
     FileStorage,
 )
 
@@ -300,9 +323,8 @@ for name, template in fingers.items():
 # 3. Aggregate digests
 aggregated = aggregate_finger_digests(finger_digests)
 
-# 4. Generate DID
-wallet_address = get_user_wallet_address()
-did = build_did(wallet_address, aggregated)
+# 4. Generate DID (deterministic)
+did = generate_deterministic_did(aggregated, network="mainnet")
 
 # 5. Store helper data
 storage = FileStorage(base_dir="./helpers")

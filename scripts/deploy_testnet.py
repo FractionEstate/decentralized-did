@@ -30,6 +30,7 @@ Usage:
 Open-source compliance: All dependencies are Apache 2.0, MIT, or BSD-3.
 """
 
+from decentralized_did.did.generator import generate_deterministic_did
 from decentralized_did.cardano.blockfrost import BlockfrostClient
 from decentralized_did.cardano.transaction import (
     CardanoTransactionBuilder,
@@ -50,25 +51,38 @@ import argparse
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Import deterministic DID generation
+
 
 def create_sample_did_document() -> Dict[str, Any]:
     """
     Create a sample biometric DID document for testing.
 
+    Uses deterministic DID generation from biometric commitment.
+    Same fingerprints will always produce the same DID.
+
     Returns:
         W3C DID document with sample biometric verification methods
     """
+    # Simulate biometric commitment from 4 fingerprints
+    # In production, this would come from actual fingerprint capture
+    sample_commitment = b"sample_4finger_commitment_testnet"
+
+    # Generate deterministic DID from commitment
+    # Same commitment will always produce same DID (Sybil resistance)
+    did_id = generate_deterministic_did(sample_commitment, network="preprod")
+
     return {
         "@context": [
             "https://www.w3.org/ns/did/v1",
             "https://w3id.org/security/suites/ed25519-2020/v1"
         ],
-        "id": "did:cardano:testnet:sample123",
+        "id": did_id,
         "verificationMethod": [
             {
-                "id": "did:cardano:testnet:sample123#fingerprint-0",
+                "id": f"{did_id}#fingerprint-0",
                 "type": "BiometricVerificationMethod2024",
-                "controller": "did:cardano:testnet:sample123",
+                "controller": did_id,
                 "biometricType": "fingerprint",
                 "captureDevice": "ZKTeco ZK9500",
                 "templateFormat": "ISO/IEC 19794-2:2011",
@@ -78,9 +92,9 @@ def create_sample_did_document() -> Dict[str, Any]:
                 "position": "right-index"
             },
             {
-                "id": "did:cardano:testnet:sample123#fingerprint-1",
+                "id": f"{did_id}#fingerprint-1",
                 "type": "BiometricVerificationMethod2024",
-                "controller": "did:cardano:testnet:sample123",
+                "controller": did_id,
                 "biometricType": "fingerprint",
                 "captureDevice": "ZKTeco ZK9500",
                 "templateFormat": "ISO/IEC 19794-2:2011",
@@ -90,9 +104,9 @@ def create_sample_did_document() -> Dict[str, Any]:
                 "position": "right-middle"
             },
             {
-                "id": "did:cardano:testnet:sample123#fingerprint-2",
+                "id": f"{did_id}#fingerprint-2",
                 "type": "BiometricVerificationMethod2024",
-                "controller": "did:cardano:testnet:sample123",
+                "controller": did_id,
                 "biometricType": "fingerprint",
                 "captureDevice": "ZKTeco ZK9500",
                 "templateFormat": "ISO/IEC 19794-2:2011",
@@ -102,9 +116,9 @@ def create_sample_did_document() -> Dict[str, Any]:
                 "position": "right-ring"
             },
             {
-                "id": "did:cardano:testnet:sample123#fingerprint-3",
+                "id": f"{did_id}#fingerprint-3",
                 "type": "BiometricVerificationMethod2024",
-                "controller": "did:cardano:testnet:sample123",
+                "controller": did_id,
                 "biometricType": "fingerprint",
                 "captureDevice": "ZKTeco ZK9500",
                 "templateFormat": "ISO/IEC 19794-2:2011",
@@ -115,10 +129,10 @@ def create_sample_did_document() -> Dict[str, Any]:
             }
         ],
         "authentication": [
-            "did:cardano:testnet:sample123#fingerprint-0",
-            "did:cardano:testnet:sample123#fingerprint-1",
-            "did:cardano:testnet:sample123#fingerprint-2",
-            "did:cardano:testnet:sample123#fingerprint-3"
+            f"{did_id}#fingerprint-0",
+            f"{did_id}#fingerprint-1",
+            f"{did_id}#fingerprint-2",
+            f"{did_id}#fingerprint-3"
         ],
         "created": "2025-10-14T00:00:00Z",
         "updated": "2025-10-14T00:00:00Z"

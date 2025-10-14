@@ -22,9 +22,34 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, List, Optional
+from datetime import datetime, timezone
 import hashlib
 import base64
 import os
+
+# Import deterministic DID generation
+from src.decentralized_did.did.generator import generate_deterministic_did
+
+# Import Blockfrost client for duplicate detection
+from src.decentralized_did.cardano.blockfrost import (
+    BlockfrostClient,
+    DIDAlreadyExistsError,
+)
+
+# Configuration
+BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
+CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "testnet")
+
+# Initialize Blockfrost client if API key is available
+blockfrost_client = None
+if BLOCKFROST_API_KEY:
+    blockfrost_client = BlockfrostClient(
+        api_key=BLOCKFROST_API_KEY,
+        network=CARDANO_NETWORK
+    )
+    print(f"✅ Blockfrost client initialized: {CARDANO_NETWORK}")
+else:
+    print("⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled")
 
 app = FastAPI(
     title="Biometric DID API (Mock)",
@@ -39,7 +64,7 @@ app.add_middleware(
         "http://localhost:3003",  # demo-wallet dev server
         "http://localhost:3000",
         "http://127.0.0.1:3003",
-        "http:127.0.0.1:3000",
+        "http://127.0.0.1:3000",
         "*",  # Allow all for development
     ],
     allow_credentials=True,
@@ -79,10 +104,14 @@ class HelperDataEntry(BaseModel):
 
 
 class CIP30MetadataInline(BaseModel):
-    """CIP-30 metadata structure"""
-    version: int
-    walletAddress: str
+    """CIP-30 metadata structure (v1.1 schema)"""
+    version: str  # Changed from int to str for "1.1"
+    walletAddress: str  # Legacy field, kept for backward compatibility
+    controllers: List[str]  # NEW: Multi-controller support
+    enrollmentTimestamp: str  # NEW: ISO 8601 timestamp
     biometric: Dict
+    revoked: bool = False  # NEW: Revocation status
+    revokedAt: Optional[str] = None  # NEW: Revocation timestamp
 
 
 class GenerateResponse(BaseModel):
@@ -175,27 +204,81 @@ async def generate_did(request: GenerateRequest):
         HTTPException: If generation fails
     """
     try:
-        # Generate mock ID hash
+        # Generate mock commitment from fingerprint data
+        # In production, this would be the real biometric commitment
+        commitment_data = request.wallet_address.encode('utf-8')
+        for finger in request.fingers:
+            commitment_data += finger.finger_id.encode('utf-8')
+            commitment_data += str(finger.minutiae).encode('utf-8')
+
+        # Hash to create 32-byte commitment
+        commitment = hashlib.sha256(commitment_data).digest()
+
+        # Generate mock ID hash for helper data compatibility
         id_hash = generate_mock_id_hash(
             request.wallet_address, request.fingers)
 
-        # Build DID
-        did = f"did:cardano:{request.wallet_address}#{id_hash}"
+        # Build DID using deterministic generation (SECURE format)
+        # Note: Using "testnet" for mock server development
+        did = generate_deterministic_did(commitment, network="testnet")
+
+        # Check for duplicate DID enrollment (Sybil attack prevention)
+        if blockfrost_client:
+            try:
+                existing = blockfrost_client.check_did_exists(did)
+                if existing:
+                    # DID already exists on blockchain
+                    raise HTTPException(
+                        status_code=409,
+                        detail={
+                            "error": "DID_ALREADY_EXISTS",
+                            "message": "This biometric identity has already been enrolled on the blockchain",
+                            "did": did,
+                            "tx_hash": existing.get("tx_hash"),
+                            "enrolled_at": existing.get("enrollment_timestamp"),
+                            "controllers": existing.get("controllers", []),
+                            "suggestion": "If you control this identity, you can add a new controller wallet instead of re-enrolling",
+                            "how_to": "Use the add-controller endpoint with your new wallet address"
+                        }
+                    )
+            except DIDAlreadyExistsError as e:
+                # Custom exception with enrollment data
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "DID_ALREADY_EXISTS",
+                        "message": str(e),
+                        "did": e.did,
+                        "tx_hash": e.tx_hash,
+                        "enrollment_data": e.enrollment_data
+                    }
+                )
+            except Exception as e:
+                # Log blockchain query errors but don't block enrollment
+                print(f"⚠️  Warning: Duplicate check failed: {e}")
+                print("   Continuing with enrollment (duplicate check skipped)")
+
+        # Get current enrollment timestamp
+        enrollment_timestamp = datetime.now(timezone.utc).isoformat()
 
         # Generate helper data for each finger
         helpers = {}
         for finger in request.fingers:
             helpers[finger.finger_id] = generate_mock_helper(finger.finger_id)
 
-        # Build CIP-30 metadata
+        # Build CIP-30 metadata with v1.1 schema
         cip30_metadata = CIP30MetadataInline(
-            version=1,
-            walletAddress=request.wallet_address,
+            version="1.1",  # Updated to v1.1
+            walletAddress=request.wallet_address,  # Legacy field, kept for compatibility
+            # NEW: Multi-controller support
+            controllers=[request.wallet_address],
+            enrollmentTimestamp=enrollment_timestamp,  # NEW: Enrollment time
             biometric={
                 "idHash": id_hash,
                 "helperStorage": request.storage,
                 "helperData": helpers if request.storage == "inline" else None,
-            }
+            },
+            revoked=False,  # NEW: Revocation status
         )
 
         return GenerateResponse(

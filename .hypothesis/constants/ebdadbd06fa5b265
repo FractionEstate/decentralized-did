@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/cardano/transaction.py
+# hypothesis_version: 6.140.3
+
+[0.0, 100, 150, 674, 16384, 155381, 1000000, '.', '0', '1.0', '1.1', 'No UTXOs available', 'ascii', 'biometric', 'controllers', 'did', 'dry-run-', 'enrollmentTimestamp', 'helperData', 'helperStorage', 'helperUri', 'idHash', 'ignore', 'inline', 'payment.skey', 'payment.vkey', 'r', 'revoked', 'revokedAt', 'utf-8', 'version', 'w', 'walletAddress']

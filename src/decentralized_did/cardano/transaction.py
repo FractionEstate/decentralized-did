@@ -8,9 +8,16 @@ Features:
 - UTXO selection (largest-first algorithm)
 - Fee estimation (155381 + 44 × size lovelace)
 - CIP-20 metadata construction (label 674)
+- Metadata schema v1.1 support (multi-controller, revocation, timestamps)
 - Blockfrost API integration
 - Dry-run mode for validation
 - Error handling and logging
+
+Metadata Schema v1.1:
+- Multi-controller support (multiple wallets per DID)
+- Enrollment timestamps (ISO 8601)
+- Revocation mechanism (revoked, revokedAt)
+- Backward compatible with v1.0
 
 License: Apache 2.0
 """
@@ -235,52 +242,147 @@ class CardanoTransactionBuilder:
 
         return fee
 
+    @staticmethod
+    def _chunk_string(s: str, chunk_size: int = 64) -> Any:
+        """
+        Split a string into chunks to comply with PyCardano's metadata size limits.
+
+        PyCardano enforces a 64-byte limit per metadata string item.
+        For strings exceeding this, return an array of chunks.
+
+        Args:
+            s: String to chunk
+            chunk_size: Maximum bytes per chunk (default: 64)
+
+        Returns:
+            Original string if ≤64 bytes, otherwise list of chunks
+        """
+        s_bytes = s.encode('utf-8')
+        if len(s_bytes) <= chunk_size:
+            return s
+
+        # Split into chunks
+        chunks = []
+        for i in range(0, len(s_bytes), chunk_size):
+            chunk = s_bytes[i:i+chunk_size].decode('utf-8', errors='ignore')
+            chunks.append(chunk)
+        return chunks
+
     def build_metadata(
         self,
-        did_document: Dict[str, Any],
+        did: str,
+        wallet_address: str,
+        digest: bytes,
+        helper_data: Optional[Dict[str, Any]] = None,
         helper_data_cid: Optional[str] = None,
         storage_format: str = "inline",
+        version: str = "1.1",
+        controllers: Optional[List[str]] = None,
+        enrollment_timestamp: Optional[str] = None,
+        revoked: bool = False,
+        revoked_at: Optional[str] = None,
     ) -> Tuple[AuxiliaryData, int]:
         """
-        Build CIP-20 metadata for biometric DID.
+        Build CIP-20 metadata for biometric DID (v1.1 schema).
 
-        Metadata structure (label 674):
+        Metadata structure (label 674, v1.1):
         {
-            "did": "did:cardano:testnet:...",
-            "document": { ... },  # W3C DID Document
-            "helper_data": "ipfs://Qm..." or { ... },  # Helper data reference or inline
-            "timestamp": 1234567890,
-            "format": "biometric-did-v1"
+            "version": "1.1",
+            "did": "did:cardano:mainnet:...",
+            "controllers": ["addr1...", "addr2..."],
+            "biometric": {
+                "idHash": "base58_encoded_digest",
+                "helperStorage": "inline" | "external",
+                "helperData": { ... } | null,
+                "helperUri": "ipfs://Qm..." | null
+            },
+            "enrollmentTimestamp": "2025-01-15T12:00:00Z",
+            "revoked": false,
+            "revokedAt": null
         }
 
         Args:
-            did_document: W3C DID Document
-            helper_data_cid: IPFS CID for helper data (optional)
+            did: DID identifier
+            wallet_address: Primary controller wallet address
+            digest: Biometric digest (32 bytes)
+            helper_data: Inline helper data dict (optional)
+            helper_data_cid: IPFS CID for external helper data (optional)
             storage_format: "inline" or "external" (IPFS)
+            version: Metadata schema version ("1.0" or "1.1", default "1.1")
+            controllers: List of controller wallet addresses (v1.1+)
+            enrollment_timestamp: ISO 8601 timestamp (v1.1+)
+            revoked: Whether DID is revoked (v1.1+)
+            revoked_at: Revocation timestamp (v1.1+)
 
         Returns:
             Tuple of (auxiliary_data, metadata_size_bytes)
 
         Raises:
             ValueError: If metadata exceeds 16 KB limit
-        """
-        import time
 
-        # Build metadata payload
-        metadata_payload = {
-            "did": did_document.get("id", ""),
-            "document": did_document,
-            "format": "biometric-did-v1",
-            "timestamp": int(time.time()),
+        Note:
+            Schema v1.1 is RECOMMENDED for new deployments. It supports:
+            - Multi-controller (multiple wallets controlling same DID)
+            - Enrollment timestamps
+            - Revocation mechanism
+        """
+        from datetime import datetime, timezone
+        import base58
+
+        # Build biometric section
+        id_hash_str = base58.b58encode(digest).decode('ascii')
+        biometric: Dict[str, Any] = {
+            "idHash": self._chunk_string(id_hash_str),
+            "helperStorage": storage_format,
         }
 
-        # Add helper data reference
+        # Add helper data (inline or external reference)
         if helper_data_cid:
-            metadata_payload["helper_data"] = f"ipfs://{helper_data_cid}"
-        elif storage_format == "inline":
-            # Helper data would be included inline (future enhancement)
-            # For now, omit the field rather than setting to None
-            pass
+            biometric["helperUri"] = f"ipfs://{helper_data_cid}"
+        elif helper_data and storage_format == "inline":
+            biometric["helperData"] = helper_data
+
+        # Build metadata payload based on schema version
+        if version == "1.0":
+            # Legacy v1.0 schema (single controller)
+            import warnings
+            warnings.warn(
+                "Metadata schema v1.0 is deprecated. Use v1.1 for multi-controller "
+                "support, revocation, and enrollment timestamps.",
+                DeprecationWarning,
+                stacklevel=2
+            )
+            metadata_payload = {
+                "version": 1,  # Numeric version for v1.0
+                "did": self._chunk_string(did),
+                "walletAddress": self._chunk_string(wallet_address),
+                "biometric": biometric,
+            }
+        else:
+            # v1.1 schema (RECOMMENDED)
+            # Chunk controllers (wallet addresses can be long)
+            chunked_controllers = [self._chunk_string(
+                c) for c in (controllers or [wallet_address])]
+
+            metadata_payload: Dict[str, Any] = {
+                "version": version,
+                "did": self._chunk_string(did),
+                "controllers": chunked_controllers,
+                "biometric": biometric,
+            }
+
+            # Add optional v1.1 fields
+            if enrollment_timestamp:
+                metadata_payload["enrollmentTimestamp"] = enrollment_timestamp
+            else:
+                # Auto-generate enrollment timestamp if not provided
+                metadata_payload["enrollmentTimestamp"] = datetime.now(
+                    timezone.utc).isoformat()
+
+            if revoked:
+                metadata_payload["revoked"] = revoked
+                if revoked_at:
+                    metadata_payload["revokedAt"] = revoked_at
 
         # Encode to CBOR to check size
         cbor_bytes = cbor2.dumps(metadata_payload)
@@ -304,7 +406,7 @@ class CardanoTransactionBuilder:
         )
 
         logger.info(
-            f"Built CIP-20 metadata: label={CIP20_LABEL}, "
+            f"Built CIP-20 metadata: label={CIP20_LABEL}, version={version}, "
             f"size={metadata_size} bytes, format={storage_format}"
         )
 
@@ -312,11 +414,19 @@ class CardanoTransactionBuilder:
 
     def build_enrollment_transaction(
         self,
-        did_document: Dict[str, Any],
+        did: str,
+        wallet_address: str,
+        digest: bytes,
+        helper_data: Optional[Dict[str, Any]] = None,
         helper_data_cid: Optional[str] = None,
         recipient_address: Optional[str] = None,
         available_utxos: Optional[List[UTXOInput]] = None,
         storage_format: str = "inline",
+        version: str = "1.1",
+        controllers: Optional[List[str]] = None,
+        enrollment_timestamp: Optional[str] = None,
+        revoked: bool = False,
+        revoked_at: Optional[str] = None,
     ) -> TransactionResult:
         """
         Build a transaction to deploy a biometric DID on Cardano.
@@ -324,15 +434,23 @@ class CardanoTransactionBuilder:
         Transaction structure:
         - Inputs: Selected UTXOs from sender
         - Outputs: Recipient address (or self) with min ADA
-        - Metadata: CIP-20 label 674 with DID document
+        - Metadata: CIP-20 label 674 with DID and biometric data
         - Fee: Calculated based on transaction size
 
         Args:
-            did_document: W3C DID Document to deploy
+            did: DID identifier
+            wallet_address: Primary controller wallet address
+            digest: Biometric digest (32 bytes)
+            helper_data: Inline helper data dict (optional)
             helper_data_cid: IPFS CID for helper data (optional)
             recipient_address: Recipient address (defaults to self)
             available_utxos: Available UTXOs for inputs (required if not dry_run)
             storage_format: "inline" or "external" storage
+            version: Metadata schema version ("1.0" or "1.1", default "1.1")
+            controllers: List of controller wallet addresses (v1.1+)
+            enrollment_timestamp: ISO 8601 timestamp (v1.1+)
+            revoked: Whether DID is revoked (v1.1+)
+            revoked_at: Revocation timestamp (v1.1+)
 
         Returns:
             TransactionResult with success status and details
@@ -355,9 +473,17 @@ class CardanoTransactionBuilder:
 
             # Build metadata
             auxiliary_data, metadata_size = self.build_metadata(
-                did_document=did_document,
+                did=did,
+                wallet_address=wallet_address,
+                digest=digest,
+                helper_data=helper_data,
                 helper_data_cid=helper_data_cid,
                 storage_format=storage_format,
+                version=version,
+                controllers=controllers,
+                enrollment_timestamp=enrollment_timestamp,
+                revoked=revoked,
+                revoked_at=revoked_at,
             )
 
             # Estimate fee (1 input, 1 output, 1 witness for initial estimate)

@@ -5,6 +5,7 @@ Tests cover:
 - UTXO querying
 - Transaction submission
 - Transaction status tracking
+- DID duplicate detection
 - Rate limit handling
 - Error handling
 - Network configuration
@@ -23,6 +24,7 @@ from decentralized_did.cardano.blockfrost import (
     BlockfrostError,
     BlockfrostRateLimitError,
     BlockfrostAPIError,
+    DIDAlreadyExistsError,
     convert_utxo_info_to_input,
     format_lovelace,
     BLOCKFROST_TESTNET_URL,
@@ -421,6 +423,140 @@ def test_full_transaction_flow(mock_post, mock_request, blockfrost_client, sampl
     mock_request.return_value = status_response
     status = blockfrost_client.get_transaction_status(tx_hash)
     assert status.confirmed is True
+
+
+# DID Duplicate Detection Tests
+
+@patch('requests.Session.request')
+def test_check_did_exists_found(mock_request, blockfrost_client, mock_response):
+    """Test checking for existing DID."""
+    # Mock metadata label query
+    metadata_txs_response = [{
+        "tx_hash": "a" * 64,
+        "tx_index": 0
+    }]
+
+    # Mock transaction metadata query
+    tx_metadata_response = [{
+        "label": "674",
+        "json_metadata": {
+            "did": "did:cardano:mainnet:zQm...",
+            "controllers": ["addr1..."],
+            "enrollment_timestamp": "2025-01-15T12:00:00Z",
+            "revoked": False,
+            "digest": "abcd1234..."
+        }
+    }]
+
+    # Set up mock to return different responses for different endpoints
+    def mock_request_side_effect(*args, **kwargs):
+        url = args[1] if len(args) > 1 else kwargs.get('url', '')
+
+        if '/metadata/txs/labels/674' in url:
+            mock_response.json.return_value = metadata_txs_response
+        elif '/metadata' in url:
+            mock_response.json.return_value = tx_metadata_response
+
+        return mock_response
+
+    mock_request.side_effect = mock_request_side_effect
+
+    # Check for DID
+    result = blockfrost_client.check_did_exists("did:cardano:mainnet:zQm...")
+
+    assert result is not None
+    assert result["tx_hash"] == "a" * 64
+    assert result["controllers"] == ["addr1..."]
+    assert result["enrollment_timestamp"] == "2025-01-15T12:00:00Z"
+    assert result["revoked"] is False
+
+
+@patch('requests.Session.request')
+def test_check_did_exists_not_found(mock_request, blockfrost_client, mock_response):
+    """Test checking for non-existent DID."""
+    # Mock empty response (no transactions with this label)
+    mock_response.json.return_value = []
+    mock_request.return_value = mock_response
+
+    result = blockfrost_client.check_did_exists(
+        "did:cardano:mainnet:zQmNonExistent...")
+
+    assert result is None
+
+
+@patch('requests.Session.request')
+def test_check_did_exists_v1_0_fallback(mock_request, blockfrost_client, mock_response):
+    """Test checking for DID with v1.0 metadata format (wallet_address instead of controllers)."""
+    # Mock metadata with v1.0 format
+    metadata_txs_response = [{
+        "tx_hash": "b" * 64,
+        "tx_index": 0
+    }]
+
+    tx_metadata_response = [{
+        "label": "674",
+        "json_metadata": {
+            "did": "did:cardano:mainnet:zQmLegacy...",
+            "wallet_address": "addr1legacy...",
+            "digest": "legacy1234..."
+        }
+    }]
+
+    def mock_request_side_effect(*args, **kwargs):
+        url = args[1] if len(args) > 1 else kwargs.get('url', '')
+
+        if '/metadata/txs/labels/674' in url:
+            mock_response.json.return_value = metadata_txs_response
+        elif '/metadata' in url:
+            mock_response.json.return_value = tx_metadata_response
+
+        return mock_response
+
+    mock_request.side_effect = mock_request_side_effect
+
+    result = blockfrost_client.check_did_exists(
+        "did:cardano:mainnet:zQmLegacy...")
+
+    assert result is not None
+    # Should convert to controllers format
+    assert result["controllers"] == ["addr1legacy..."]
+
+
+@patch('requests.Session.request')
+def test_check_did_exists_no_label_transactions(mock_request, blockfrost_client, mock_response):
+    """Test checking for DID when no transactions with label 674 exist."""
+    # Mock 404 response (label not found)
+    mock_response.status_code = 404
+    mock_response.json.return_value = {"message": "Not found"}
+    mock_request.return_value = mock_response
+
+    # Should catch 404 and return None instead of raising
+    result = blockfrost_client.check_did_exists(
+        "did:cardano:mainnet:zQmNew...")
+
+    assert result is None
+
+
+def test_did_already_exists_error():
+    """Test DIDAlreadyExistsError exception."""
+    from decentralized_did.cardano.blockfrost import DIDAlreadyExistsError
+
+    enrollment_data = {
+        "controllers": ["addr1..."],
+        "enrollment_timestamp": "2025-01-15T12:00:00Z"
+    }
+
+    error = DIDAlreadyExistsError(
+        did="did:cardano:mainnet:zQm...",
+        tx_hash="a" * 64,
+        enrollment_data=enrollment_data
+    )
+
+    assert error.did == "did:cardano:mainnet:zQm..."
+    assert error.tx_hash == "a" * 64
+    assert error.enrollment_data == enrollment_data
+    assert "DID already exists" in str(error)
+    assert "add a new controller wallet" in str(error)
 
 
 if __name__ == "__main__":

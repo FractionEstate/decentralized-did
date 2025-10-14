@@ -57,7 +57,7 @@ from decentralized_did import (
     Minutia,
     FingerTemplate,
     aggregate_finger_digests,
-    build_did,
+    generate_deterministic_did,
 )
 
 # 1. Create biometric template (from your fingerprint scanner)
@@ -81,10 +81,9 @@ digest, helper = extractor.generate(template)
 verified_digest = extractor.reproduce(template, helper)
 assert digest == verified_digest  # Reproducible!
 
-# 4. Generate DID
-wallet_address = "addr1qx2kd88c92..."
-did = build_did(wallet_address, digest)
-print(did)  # did:cardano:addr1qx2kd88c92...#base64digest
+# 4. Generate DID (deterministic, privacy-preserving)
+did = generate_deterministic_did(digest, network="mainnet")
+print(did)  # did:cardano:mainnet:zQmNhFJPjg3MqLzM7CzZGVvjV5fCDuWnQ5Lzg3FHKfNm4tS
 ```
 
 **📚 Full SDK documentation**: [`docs/SDK.md`](docs/SDK.md)
@@ -272,6 +271,10 @@ python3 scripts/deploy_testnet.py
 from pycardano import Network
 from decentralized_did.cardano.transaction import CardanoTransactionBuilder
 from decentralized_did.cardano.blockfrost import BlockfrostClient
+from decentralized_did import generate_deterministic_did
+
+# Generate deterministic DID
+did = generate_deterministic_did(digest, network="testnet")
 
 # Initialize builder
 builder = CardanoTransactionBuilder(
@@ -280,19 +283,26 @@ builder = CardanoTransactionBuilder(
     dry_run=False
 )
 
-# Build transaction with DID metadata
+# Build transaction with v1.1 metadata
 result = builder.build_enrollment_transaction(
-    did_document=did_doc,
-    utxos=utxos,
+    did=did,
+    wallet_address="addr_test1...",
+    digest=digest,
+    helper_data=helper_data,
     storage_format="inline",
-    recipient_address="addr_test1..."
+    recipient_address="addr_test1...",
+    version="1.1"  # Multi-controller support, timestamps, revocation
 )
 
-# Submit to blockchain
+# Check for duplicate DIDs before submission
 client = BlockfrostClient(api_key=api_key, network="testnet")
-tx_hash = client.submit_transaction(result.tx_cbor)
-
-print(f"Transaction: https://preprod.cardanoscan.io/transaction/{tx_hash}")
+existing = client.check_did_exists(did)
+if existing:
+    print(f"DID already enrolled at: {existing['enrollment_timestamp']}")
+else:
+    # Submit to blockchain
+    tx_hash = client.submit_transaction(result.tx_cbor)
+    print(f"Transaction: https://preprod.cardanoscan.io/transaction/{tx_hash}")
 ```
 
 **Documentation:**

@@ -1448,6 +1448,206 @@ Deep integration with Cardano blockchain, wallets, and smart contracts.
   - Create mainnet deployment checklist.
   - Deliverable: Enhanced `docs/cardano-integration.md`, deployment guides
 
+## Phase 4.5 - Tamper-Proof Identity Security (CRITICAL)
+**Status**: 🔄 IN PROGRESS (Week 2 Day 6/10 - 80% Complete)
+**Goal**: Align codebase with tamper-proof security architecture and eliminate Sybil attack vectors.
+**Timeline**: 2 weeks (October 14-25, 2025)
+**Priority**: BLOCKING for production deployment
+
+### Background
+Comprehensive codebase audit (October 14, 2025) revealed critical misalignments:
+- Current code uses wallet-based DID format (`did:cardano:{wallet}#{hash}`) - **Sybil vulnerable**
+- Deterministic DID generation exists but not used as default - **Security gap**
+- Metadata schema v1.0 lacks multi-controller support - **Limited functionality**
+- No duplicate DID detection - **Allows re-enrollment**
+- ~80% of codebase needs security updates
+
+**See**: `docs/AUDIT-REPORT.md`, `docs/MIGRATION-GUIDE.md`, `docs/PHASE-4.5-PROGRESS.md`
+
+### Tasks
+
+- [x] **task 1** - Update core DID generator to use deterministic generation by default
+  - **Status**: ✅ COMPLETE
+  - **Implementation**:
+    * Updated `build_did()` to accept `deterministic=True` parameter (default)
+    * Added deprecation warning for `deterministic=False` (legacy wallet-based format)
+    * Modified function to call `generate_deterministic_did()` by default
+    * Legacy format still works for backward compatibility
+  - **Files Changed**: `src/decentralized_did/did/generator.py`
+  - **Tests**: 25/25 passing (backward compatibility verified)
+  - **Deliverable**: Updated core generator with secure defaults
+
+- [x] **task 2** - Update metadata schema to v1.1
+  - **Status**: ✅ COMPLETE
+  - **Implementation**:
+    * Changed `version` parameter: `int = 1` → `str = "1.1"`
+    * Added `controllers: Optional[list[str]]` (multi-wallet support)
+    * Added `enrollment_timestamp: Optional[str]` (ISO 8601)
+    * Added `revoked: bool` and `revoked_at: Optional[str]` (revocation mechanism)
+    * Maintained backward compatibility with v1.0 (shows deprecation warning)
+  - **Files Changed**: `src/decentralized_did/did/generator.py`
+  - **Format**: JSON with controllers array, timestamps, revocation fields
+  - **Deliverable**: Metadata schema v1.1 with multi-controller support
+
+- [x] **task 3** - Update API servers to use deterministic DID generation
+  - **Status**: ✅ COMPLETE
+  - **Servers Updated**:
+    * `api_server_mock.py`: Mock server with test data
+    * `api_server.py`: Production server with real biometric processing
+    * `api_server_secure.py`: Secure server with rate limiting, JWT auth, audit logging
+  - **Changes**:
+    * Removed `build_did_from_master_key()` imports (wallet-based)
+    * Added `generate_deterministic_did()` imports (secure)
+    * Updated enrollment to generate `did:cardano:mainnet:{hash}` format
+    * Updated verification to use deterministic format (wallet-agnostic)
+    * Added enrollment timestamps (ISO 8601)
+    * Updated metadata models to support v1.1 schema
+  - **Files Changed**: 3 API server files (~80 lines total)
+  - **Security Impact**: All servers now generate Sybil-resistant DIDs
+  - **Deliverable**: All API servers using deterministic generation
+
+- [x] **task 4** - Implement duplicate DID detection
+  - **Status**: ✅ COMPLETE (Week 1 Day 3)
+  - **Implementation**:
+    * Added `DIDAlreadyExistsError` exception class to blockfrost.py
+      - Stores did, tx_hash, enrollment_data attributes
+      - User-friendly error message with re-enrollment guidance
+    * Implemented `check_did_exists(did: str)` method in BlockfrostClient
+      - Queries Blockfrost API for transactions with metadata label 674
+      - Searches transaction metadata for matching DIDs
+      - Returns enrollment data dict or None
+      - Supports both v1.1 (controllers) and v1.0 (wallet_address) metadata formats
+    * Updated module and class docstrings with duplicate detection capabilities
+  - **Files Changed**:
+    * `src/decentralized_did/cardano/blockfrost.py` (+142 lines)
+    * `tests/test_blockfrost.py` (+138 lines)
+  - **Tests**: 29/29 passing (5 new tests added)
+    * test_check_did_exists_found
+    * test_check_did_exists_not_found
+    * test_check_did_exists_v1_0_fallback
+    * test_check_did_exists_no_label_transactions
+    * test_did_already_exists_error
+  - **Security Impact**: Runtime duplicate detection prevents Sybil attacks at blockchain level
+  - **Deliverable**: Blockchain-based duplicate DID detection with comprehensive tests
+
+- [x] **task 4b** - Integrate duplicate detection into API servers
+  - **Status**: ✅ COMPLETE (Week 1 Day 3)
+  - **Implementation**:
+    * Added Blockfrost client initialization to all 3 API servers
+      - Configuration via BLOCKFROST_API_KEY environment variable
+      - Falls back gracefully if API key not provided
+      - Configurable network (testnet/mainnet)
+    * Added duplicate detection to enrollment endpoints
+      - Checks blockchain before enrollment
+      - Returns 409 Conflict if DID exists
+      - Provides user-friendly error with enrollment history
+      - Suggests "add controller" alternative
+    * Integrated with audit logging (secure server)
+      - Logs duplicate detection events
+      - Records blockchain query failures
+  - **Files Changed**:
+    * `api_server_mock.py` (+45 lines)
+    * `api_server.py` (+45 lines)
+    * `api_server_secure.py` (+58 lines)
+  - **Error Handling**:
+    * 409 Conflict: DID already exists
+    * Logs blockchain errors, continues enrollment if query fails
+    * Graceful degradation without API key
+  - **Security Impact**: All enrollment endpoints now check for duplicates
+  - **Deliverable**: Production-ready duplicate detection in all API servers
+
+- [x] **task 5** - Update transaction builder for metadata v1.1
+  - **Status**: ✅ COMPLETE (Week 1 Day 5)
+  - **Implementation**:
+    * Updated `CardanoTransactionBuilder.build_metadata()` method signature
+      - Changed from `did_document` parameter to component-based: `did`, `wallet_address`, `digest`
+      - Added v1.1 parameters: `controllers`, `enrollment_timestamp`, `revoked`, `revoked_at`
+      - Auto-generates enrollment timestamp if not provided
+      - Supports v1.0 with deprecation warning
+    * Updated `CardanoTransactionBuilder.build_enrollment_transaction()` signature
+      - Changed from `did_document` to component-based parameters
+      - Passes all v1.1 metadata parameters through
+    * Added `_chunk_string()` helper method
+      - Splits long strings (>64 bytes) into chunks for PyCardano compliance
+      - Applies to DIDs, wallet addresses, and other long metadata strings
+    * Updated module docstring to document v1.1 support
+  - **Files Changed**:
+    * `src/decentralized_did/cardano/transaction.py` (+30 lines, 2 methods rewritten)
+    * `tests/test_cardano_transaction.py` (+30 lines, 11 tests updated)
+  - **Tests**: 25/25 passing (all transaction builder tests updated)
+  - **Security Impact**: Transaction builder now creates v1.1 metadata with multi-controller support
+  - **Deliverable**: Transaction builder supporting metadata v1.1
+
+- [x] **task 6** - Update all documentation to show deterministic approach
+  - **Status**: ✅ COMPLETE (Week 2 Day 6)
+  - **Files Updated**:
+    * `README.md`: Updated SDK and transaction builder examples with `generate_deterministic_did()`
+    * `docs/SDK.md`: Updated Quick Start, deprecated `build_did`, added v1.1 metadata examples
+    * `docs/cardano-integration.md`: Updated metadata schema to show v1.1 format with controllers
+    * `docs/wallet-integration.md`: Already correct (no wallet-based DIDs)
+    * `examples/sdk_demo.py`: Updated to use deterministic generation
+    * `examples/sdk_quickstart.py`: Updated both DID generation examples
+    * `examples/sdk_quickstart_simple.py`: Updated and fixed template attribute access
+    * `src/decentralized_did/__init__.py`: Exported `generate_deterministic_did`
+  - **Implementation**:
+    * Replaced all `build_did(wallet_address, digest)` with `generate_deterministic_did(digest, network="mainnet")`
+    * Added deprecation notices for legacy wallet-based format
+    * Updated metadata examples to show v1.1 schema (controllers, timestamps, revocation)
+    * Fixed example code to use correct FingerTemplate API (`len(template)` instead of `template.minutiae`)
+  - **Testing**: All 3 example scripts run successfully
+  - **Deliverable**: Comprehensive documentation updates complete
+
+- [ ] **task 7** - Write integration tests for Phase 4.5 features
+  - **Status**: ⏳ PENDING (Week 2 Day 9)
+  - **Test Coverage**:
+    * Duplicate DID detection (blockchain query)
+    * Metadata v1.1 format (controllers, timestamps, revocation)
+    * Backward compatibility with v1.0 metadata
+    * API server deterministic generation (all 3 servers)
+    * Multi-controller support (add/remove controllers)
+    * Deprecation warnings (legacy format usage)
+  - **Files**: `tests/test_phase_4_5.py`, `tests/integration/`
+  - **Deliverable**: Comprehensive test suite for Phase 4.5
+
+- [ ] **task 8** - Deploy and test on Cardano testnet
+  - **Status**: ⏳ PENDING (Week 2 Day 10)
+  - **Deployment**:
+    * Deploy API servers to testnet environment
+    * Submit enrollment transaction with v1.1 metadata
+    * Verify DID format on blockchain explorer
+    * Test duplicate detection (attempt re-enrollment)
+    * Test multi-controller support
+  - **Validation**: Verify transactions on Cardano testnet explorer
+  - **Deliverable**: Testnet deployment validation report
+
+- [ ] **task 9** - Comprehensive testing and performance benchmarks
+  - **Status**: ⏳ PENDING (Week 2 Day 10)
+  - **Testing**:
+    * Run full test suite (`pytest`) - target 100% pass rate
+    * Verify all examples work with deterministic DIDs
+    * Check for deprecation warnings in logs
+    * Load test duplicate detection (blockchain query performance)
+    * Measure enrollment/verification performance
+  - **Performance**: Benchmark enrollment time, verification time, blockchain query time
+  - **Deliverable**: Test report and performance benchmarks
+
+- [ ] **task 10** - Phase 4.5 completion and documentation
+  - **Status**: ⏳ PENDING (Week 2 Day 10)
+  - **Completion Criteria**:
+    * ✅ All API servers use deterministic DID generation
+    * ✅ Duplicate enrollment blocked with user-friendly error
+    * ✅ Metadata schema v1.1 deployed
+    * ✅ All documentation updated and consistent
+    * ✅ 100% test pass rate
+    * ✅ Successfully deployed to testnet
+    * ✅ Zero deprecation warnings in new code
+  - **Git Operations**:
+    * Commit all Phase 4.5 changes with comprehensive message
+    * Update `.github/tasks.md` with completion status
+    * Create git tag: `v1.1.0-phase-4.5`
+    * Push to main branch
+  - **Deliverable**: Phase 4.5 completion report, git tag
+
 ## Phase 5 - Privacy, Security & Compliance
 Comprehensive security hardening, privacy analysis, and regulatory compliance.
 

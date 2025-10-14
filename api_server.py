@@ -16,18 +16,27 @@ from src.biometrics.fuzzy_extractor_v2 import (
     reproduce_key,
 )
 from src.did.generator_v2 import (
-    build_did_from_master_key,
     build_wallet_bundle,
     HelperDataEntry,
     HELPER_STORAGE_INLINE,
     HELPER_STORAGE_EXTERNAL,
     _encode_bytes,
 )
+# Import deterministic DID generation
+from src.decentralized_did.did.generator import generate_deterministic_did
+
+# Import Blockfrost client for duplicate detection
+from src.decentralized_did.cardano.blockfrost import (
+    BlockfrostClient,
+    DIDAlreadyExistsError,
+)
+
 from src.biometrics.aggregator_v2 import aggregate_finger_keys, FingerKey
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, List, Optional
+from datetime import datetime, timezone
 import sys
 import json
 import os
@@ -36,6 +45,20 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
+# Configuration
+BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
+CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "testnet")
+
+# Initialize Blockfrost client if API key is available
+blockfrost_client = None
+if BLOCKFROST_API_KEY:
+    blockfrost_client = BlockfrostClient(
+        api_key=BLOCKFROST_API_KEY,
+        network=CARDANO_NETWORK
+    )
+    print(f"✅ Blockfrost client initialized: {CARDANO_NETWORK}")
+else:
+    print("⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled")
 
 app = FastAPI(
     title="Biometric DID API",
@@ -201,8 +224,48 @@ async def generate_did(request: GenerateRequest):
         )
         master_key = aggregation_result.master_key
 
-        # Step 3: Build DID from master key
-        did = build_did_from_master_key(request.wallet_address, master_key)
+        # Step 3: Build DID from master key using deterministic generation
+        # Use master_key as the commitment (it's already 32 bytes from aggregation)
+        did = generate_deterministic_did(master_key, network="mainnet")
+
+        # Check for duplicate DID enrollment (Sybil attack prevention)
+        if blockfrost_client:
+            try:
+                existing = blockfrost_client.check_did_exists(did)
+                if existing:
+                    # DID already exists on blockchain
+                    raise HTTPException(
+                        status_code=409,
+                        detail={
+                            "error": "DID_ALREADY_EXISTS",
+                            "message": "This biometric identity has already been enrolled on the blockchain",
+                            "did": did,
+                            "tx_hash": existing.get("tx_hash"),
+                            "enrolled_at": existing.get("enrollment_timestamp"),
+                            "controllers": existing.get("controllers", []),
+                            "suggestion": "If you control this identity, you can add a new controller wallet instead of re-enrolling",
+                            "how_to": "Use the add-controller endpoint with your new wallet address"
+                        }
+                    )
+            except DIDAlreadyExistsError as e:
+                # Custom exception with enrollment data
+                raise HTTPException(
+                    status_code=409,
+                    detail={
+                        "error": "DID_ALREADY_EXISTS",
+                        "message": str(e),
+                        "did": e.did,
+                        "tx_hash": e.tx_hash,
+                        "enrollment_data": e.enrollment_data
+                    }
+                )
+            except Exception as e:
+                # Log blockchain query errors but don't block enrollment
+                print(f"⚠️  Warning: Duplicate check failed: {e}")
+                print("   Continuing with enrollment (duplicate check skipped)")
+
+        # Get enrollment timestamp
+        enrollment_timestamp = datetime.now(timezone.utc).isoformat()
 
         # Step 4: Build wallet bundle with metadata
         storage_mode = (
@@ -334,12 +397,11 @@ async def verify_did(request: VerifyRequest):
             )
             master_key = aggregation_result.master_key
 
-            # Step 3: Compute ID hash from master key
-            # Extract wallet address from first helper entry
-            wallet_address = "addr_test1_mock"  # Mock: should come from request
-            did = build_did_from_master_key(wallet_address, master_key)
-            computed_hash = str(did).split(
-                '#')[-1] if '#' in str(did) else str(did).split(':')[-1]
+            # Step 3: Compute DID from master key using deterministic generation
+            did = generate_deterministic_did(master_key, network="mainnet")
+
+            # Extract hash from DID (format: did:cardano:mainnet:HASH)
+            computed_hash = str(did).split(':')[-1]
 
             # Step 4: Compare with expected hash
             success = (computed_hash == request.expected_id_hash)

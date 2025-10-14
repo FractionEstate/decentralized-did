@@ -96,6 +96,38 @@ def transaction_builder() -> CardanoTransactionBuilder:
     )
 
 
+@pytest.fixture
+def sample_did() -> str:
+    """Sample DID for testing."""
+    return "did:cardano:testnet:zQmNhFJPjg3MqLzM7CzZGVvjV5fCDuWnQ5Lzg3FHKfNm4tS"
+
+
+@pytest.fixture
+def sample_wallet_address() -> str:
+    """Sample wallet address for testing."""
+    return "addr_test1qz2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3jcu5d8ps7zex2k2xt3uqxgjqnnj3q83nlwdvs3slnvs9xz"
+
+
+@pytest.fixture
+def sample_digest() -> bytes:
+    """Sample 32-byte biometric digest for testing."""
+    return b"0123456789abcdef" * 2  # 32 bytes
+
+
+@pytest.fixture
+def sample_helper_data() -> Dict[str, Any]:
+    """Sample biometric helper data for testing (compliant with PyCardano metadata types)."""
+    return {
+        "left_thumb": {
+            "salt_b64": "dGVzdF9zYWx0",  # "test_salt" in base64
+            "auth_b64": "dGVzdF9hdXRo",  # "test_auth" in base64
+            "angle_bins": 8,  # int is OK
+            # Changed from grid_size (float) to grid_divisions (int)
+            "grid_divisions": 16,
+        }
+    }
+
+
 # UTXO Selection Tests
 
 def test_select_utxos_largest_first(transaction_builder, sample_utxos):
@@ -206,12 +238,15 @@ def test_estimate_fee_large_metadata(transaction_builder):
 
 # Metadata Construction Tests
 
-def test_build_metadata_inline(transaction_builder, sample_did_document):
+def test_build_metadata_inline(transaction_builder, sample_did, sample_wallet_address, sample_digest, sample_helper_data):
     """Test CIP-20 metadata construction with inline storage."""
     auxiliary_data, metadata_size = transaction_builder.build_metadata(
-        did_document=sample_did_document,
-        helper_data_cid=None,
-        storage_format="inline"
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
+        helper_data=sample_helper_data,
+        storage_format="inline",
+        version="1.1"
     )
 
     assert auxiliary_data is not None
@@ -219,14 +254,17 @@ def test_build_metadata_inline(transaction_builder, sample_did_document):
     assert metadata_size < METADATA_LIMIT
 
 
-def test_build_metadata_external(transaction_builder, sample_did_document):
+def test_build_metadata_external(transaction_builder, sample_did, sample_wallet_address, sample_digest):
     """Test CIP-20 metadata construction with external (IPFS) storage."""
     helper_cid = "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
 
     auxiliary_data, metadata_size = transaction_builder.build_metadata(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid=helper_cid,
-        storage_format="external"
+        storage_format="external",
+        version="1.1"
     )
 
     assert auxiliary_data is not None
@@ -236,31 +274,41 @@ def test_build_metadata_external(transaction_builder, sample_did_document):
     # Note: Currently both are similar size, but validates structure
 
 
-def test_build_metadata_size_validation(transaction_builder):
+def test_build_metadata_size_validation(transaction_builder, sample_wallet_address, sample_digest):
     """Test metadata size limit validation."""
-    # Create oversized DID document (simulate large enrollment)
-    large_doc = {
-        "id": "did:cardano:testnet:abc123",
-        "verificationMethod": [{"id": f"key-{i}"} for i in range(1000)],
-        "largeData": "x" * 20000  # Exceeds 16 KB limit
+    # Create oversized helper data (simulate large enrollment)
+    large_helper_data = {
+        f"finger_{i}": {
+            "salt_b64": "x" * 1000,
+            "auth_b64": "y" * 1000,
+            "grid_size": 0.5,
+            "angle_bins": 8
+        }
+        for i in range(100)  # Many fingers with large data
     }
 
     with pytest.raises(ValueError, match="exceeds.*16 KB limit"):
         transaction_builder.build_metadata(
-            did_document=large_doc,
-            helper_data_cid=None,
-            storage_format="inline"
+            did="did:cardano:testnet:abc123",
+            wallet_address=sample_wallet_address,
+            digest=sample_digest,
+            helper_data=large_helper_data,
+            storage_format="inline",
+            version="1.1"
         )
 
 
-def test_build_metadata_structure(transaction_builder, sample_did_document):
+def test_build_metadata_structure(transaction_builder, sample_did, sample_wallet_address, sample_digest):
     """Test metadata has correct CIP-20 structure."""
     import cbor2
 
     auxiliary_data, _ = transaction_builder.build_metadata(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid="QmTest",
-        storage_format="external"
+        storage_format="external",
+        version="1.1"
     )
 
     # Extract metadata (implementation detail, but validates structure)
@@ -269,14 +317,17 @@ def test_build_metadata_structure(transaction_builder, sample_did_document):
 
 # Transaction Building Tests (Dry-Run Mode)
 
-def test_build_transaction_dry_run(transaction_builder, sample_did_document):
+def test_build_transaction_dry_run(transaction_builder, sample_did, sample_wallet_address, sample_digest):
     """Test transaction building in dry-run mode."""
     result = transaction_builder.build_enrollment_transaction(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid="QmTest",
         recipient_address="addr_test1...",
         available_utxos=None,  # Not required in dry-run
-        storage_format="external"
+        storage_format="external",
+        version="1.1"
     )
 
     assert result.success is True
@@ -288,13 +339,16 @@ def test_build_transaction_dry_run(transaction_builder, sample_did_document):
     assert result.outputs_count == 1
 
 
-def test_build_transaction_fee_calculation(transaction_builder, sample_did_document):
+def test_build_transaction_fee_calculation(transaction_builder, sample_did, sample_wallet_address, sample_digest):
     """Test that fee calculation is reasonable."""
     result = transaction_builder.build_enrollment_transaction(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid="QmTest",
         recipient_address="addr_test1...",
-        storage_format="external"
+        storage_format="external",
+        version="1.1"
     )
 
     assert result.success is True
@@ -307,23 +361,29 @@ def test_build_transaction_fee_calculation(transaction_builder, sample_did_docum
     assert result.fee_lovelace == expected_fee
 
 
-def test_build_transaction_without_recipient(transaction_builder, sample_did_document):
+def test_build_transaction_without_recipient(transaction_builder, sample_did, sample_wallet_address, sample_digest):
     """Test transaction building without explicit recipient (uses self)."""
     result = transaction_builder.build_enrollment_transaction(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid="QmTest",
+        version="1.1"
         # recipient_address omitted (should default to self)
     )
 
     assert result.success is True
 
 
-def test_build_transaction_no_signing_key_no_recipient():
+def test_build_transaction_no_signing_key_no_recipient(sample_did, sample_wallet_address, sample_digest):
     """Test transaction building fails without signing key or recipient."""
     builder = CardanoTransactionBuilder(dry_run=True)  # No signing key
 
     result = builder.build_enrollment_transaction(
-        did_document={"id": "did:test"},
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
+        version="1.1"
         # No recipient_address, no signing_key
     )
 
@@ -332,12 +392,16 @@ def test_build_transaction_no_signing_key_no_recipient():
     assert "recipient_address or signing_key required" in result.error
 
 
-def test_build_transaction_inline_storage(transaction_builder, sample_did_document):
+def test_build_transaction_inline_storage(transaction_builder, sample_did, sample_wallet_address, sample_digest, sample_helper_data):
     """Test transaction building with inline storage."""
     result = transaction_builder.build_enrollment_transaction(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
+        helper_data=sample_helper_data,
         helper_data_cid=None,
-        storage_format="inline"
+        storage_format="inline",
+        version="1.1"
     )
 
     assert result.success is True
@@ -347,7 +411,7 @@ def test_build_transaction_inline_storage(transaction_builder, sample_did_docume
 
 # Error Handling Tests
 
-def test_build_transaction_insufficient_utxos():
+def test_build_transaction_insufficient_utxos(sample_did, sample_wallet_address, sample_digest):
     """Test transaction building with insufficient UTXOs."""
     skey = PaymentSigningKey.generate()
     builder = CardanoTransactionBuilder(
@@ -366,9 +430,12 @@ def test_build_transaction_insufficient_utxos():
     ]
 
     result = builder.build_enrollment_transaction(
-        did_document={"id": "did:test"},
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         available_utxos=small_utxos,
-        recipient_address="addr_test1..."
+        recipient_address="addr_test1...",
+        version="1.1"
     )
 
     assert result.success is False
@@ -376,7 +443,7 @@ def test_build_transaction_insufficient_utxos():
     assert "Insufficient funds" in result.error
 
 
-def test_build_transaction_no_utxos_when_required():
+def test_build_transaction_no_utxos_when_required(sample_did, sample_wallet_address, sample_digest):
     """Test transaction building fails when UTXOs required but not provided."""
     skey = PaymentSigningKey.generate()
     builder = CardanoTransactionBuilder(
@@ -386,9 +453,12 @@ def test_build_transaction_no_utxos_when_required():
     )
 
     result = builder.build_enrollment_transaction(
-        did_document={"id": "did:test"},
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         available_utxos=None,  # Missing UTXOs
-        recipient_address="addr_test1..."
+        recipient_address="addr_test1...",
+        version="1.1"
     )
 
     assert result.success is False
@@ -461,7 +531,7 @@ def test_transaction_builder_without_signing_key():
 
 # Integration Tests
 
-def test_full_enrollment_flow_dry_run(sample_did_document):
+def test_full_enrollment_flow_dry_run(sample_did, sample_wallet_address, sample_digest):
     """Test complete enrollment flow in dry-run mode."""
     # 1. Generate keys
     skey, vkey, addr = create_payment_keys()
@@ -475,9 +545,12 @@ def test_full_enrollment_flow_dry_run(sample_did_document):
 
     # 3. Build transaction
     result = builder.build_enrollment_transaction(
-        did_document=sample_did_document,
+        did=sample_did,
+        wallet_address=sample_wallet_address,
+        digest=sample_digest,
         helper_data_cid="QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG",
-        storage_format="external"
+        storage_format="external",
+        version="1.1"
     )
 
     # 4. Validate result
@@ -488,32 +561,42 @@ def test_full_enrollment_flow_dry_run(sample_did_document):
     assert 0.15 <= result.fee_ada <= 0.8  # Reasonable fee range
 
 
-def test_metadata_size_scales_with_fingers(transaction_builder):
+def test_metadata_size_scales_with_fingers(transaction_builder, sample_wallet_address):
     """Test that metadata size scales with number of fingers."""
     # 1-finger enrollment
-    did_1f = {
-        "id": "did:cardano:testnet:1f",
-        "biometricMetadata": {"fingers": 1}
-    }
+    did_1f = "did:cardano:testnet:1f"
+    digest_1f = b"a" * 32
 
-    # 4-finger enrollment
-    did_4f = {
-        "id": "did:cardano:testnet:4f",
-        "biometricMetadata": {"fingers": 4},
-        "verificationMethod": [{"id": f"key-{i}"} for i in range(4)]
+    # 4-finger enrollment (simulate with larger helper data)
+    did_4f = "did:cardano:testnet:4f"
+    digest_4f = b"b" * 32
+    helper_4f = {
+        f"finger_{i}": {
+            "salt_b64": "x" * 16,
+            "auth_b64": "y" * 24,
+        }
+        for i in range(4)
     }
 
     _, size_1f = transaction_builder.build_metadata(
-        did_document=did_1f,
-        helper_data_cid="QmTest"
+        did=did_1f,
+        wallet_address=sample_wallet_address,
+        digest=digest_1f,
+        helper_data_cid="QmTest",
+        storage_format="external",
+        version="1.1"
     )
 
     _, size_4f = transaction_builder.build_metadata(
-        did_document=did_4f,
-        helper_data_cid="QmTest"
+        did=did_4f,
+        wallet_address=sample_wallet_address,
+        digest=digest_4f,
+        helper_data=helper_4f,
+        storage_format="inline",
+        version="1.1"
     )
 
-    # 4-finger should have larger metadata
+    # 4-finger (with inline helper data) should have larger metadata
     assert size_4f > size_1f
 
 

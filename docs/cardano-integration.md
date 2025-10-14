@@ -6,24 +6,50 @@
 - Highlight operational considerations for storing helper data externally (IPFS, Arweave, centralized vaults).
 
 ## Metadata Layout
+
+### Schema v1.1 (RECOMMENDED)
 ```json
 {
-  "1990": {
-    "version": 1,
-    "walletAddress": "addr1…",
+  "674": {
+    "version": "1.1",
+    "did": "did:cardano:mainnet:zQmNhFJPjg3MqLzM7CzZGVvjV5fCDuWnQ5Lzg3FHKfNm4tS",
+    "controllers": ["addr1qx...", "addr1qy..."],
     "biometric": {
-      "idHash": "<base64-url digest>",
+      "idHash": "<base58 encoded digest>",
       "helperStorage": "inline|external",
       "helperUri": "ipfs://… (optional)",
       "helperData": {
         "left_thumb": { "finger_id": "left_thumb", "salt_b64": "…", "auth_b64": "…" }
         // ... other fingers when helperStorage == "inline"
       }
+    },
+    "enrollmentTimestamp": "2025-10-14T12:00:00Z",
+    "revoked": false,
+    "revokedAt": null
+  }
+}
+```
+
+### Schema v1.0 (DEPRECATED)
+```json
+{
+  "674": {
+    "version": 1,
+    "walletAddress": "addr1…",
+    "biometric": {
+      "idHash": "<base64-url digest>",
+      "helperStorage": "inline|external",
+      "helperUri": "ipfs://…",
+      "helperData": { /* ... */ }
     }
   }
 }
 ```
-- Default label `1990` can be overridden when calling the CLI (`--label`).
+
+**Key Differences:**
+- **v1.1**: Uses deterministic DIDs, multi-controller support, enrollment timestamps, revocation mechanism
+- **v1.0**: Uses wallet-based DIDs (Sybil vulnerable), single controller only
+- **Label**: CIP-20 label `674` is used for biometric DID metadata
 - `helperStorage` communicates whether helper data is embedded or must be fetched externally.
 - `helperUri` can be an IPFS CID, HTTPS link, or custom URI recognized by verifiers.
 

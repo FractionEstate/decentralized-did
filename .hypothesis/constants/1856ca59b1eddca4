@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/storage/file.py
+# hypothesis_version: 6.140.3
+
+['%Y%m%d_%H%M%S', '.health_check', '.tmp', 'backup', 'backup_dir', 'backups', 'base_path', 'create_dirs', 'created', 'file', 'filename', 'health_check', 'pretty', 'r', 'size', 'utf-8', 'w', '~/.dec-did/storage']

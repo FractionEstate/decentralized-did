@@ -15,6 +15,8 @@ This repository combines a Python toolkit for biometric DID generation and a Jav
 
 ## 1. Planning First
 - Read `docs/roadmap.md` and `docs/wallet-integration.md` before tackling a task to align with the current sprint goals.
+- **Current Sprint**: Phase 4.5 - Tamper-Proof Identity Security (Week 1-2, Oct 14-25, 2025)
+- **Priority Tasks**: Duplicate DID detection, transaction builder updates, documentation updates
 - Confirm whether a change touches the Python toolkit, the demo wallet, or shared documentation. Note downstream impacts (tests, fixtures, docs) in your plan.
 - For demo wallet work, keep upstream Veridian files intact where possible; annotate substantial divergences in comments or documentation.
 - **Always write and update phases and tasks in `.github/tasks.md`** following these strict rules:
@@ -48,6 +50,58 @@ This repository combines a Python toolkit for biometric DID generation and a Jav
   3. `docs/cardano-integration.md` and `docs/wallet-integration.md`
 - Maintain compatibility with both `wallet` and `cip30` formats. Add regression tests when extending schemas.
 - For demo wallet integration, ensure helper data handling remains explicit (inline vs external) and audit log updates are documented.
+
+## 5.5. DID Generation Standards (Phase 4.5 - CRITICAL)
+**ALWAYS use deterministic DID generation. Wallet-based format is DEPRECATED.**
+
+### ✅ Correct DID Generation (DEFAULT)
+```python
+from src.decentralized_did.did.generator import generate_deterministic_did
+
+# Generate DID from biometric commitment (Sybil-resistant)
+did = generate_deterministic_did(commitment, network="mainnet")
+# Result: did:cardano:mainnet:zQmHash...
+
+# Build metadata with v1.1 schema
+metadata = build_metadata_payload(
+    wallet_address=wallet_address,
+    digest=commitment,
+    version="1.1",  # Always use v1.1
+    controllers=[wallet_address],  # Multi-controller support
+    enrollment_timestamp=datetime.now(timezone.utc).isoformat(),
+    revoked=False
+)
+```
+
+### ❌ Deprecated DID Generation (LEGACY)
+```python
+# DEPRECATED: Wallet-based format (Sybil vulnerable)
+did = build_did(wallet_address, digest, deterministic=False)  # Shows warning
+# Result: did:cardano:addr1...#hash (VULNERABLE)
+
+# DEPRECATED: Metadata v1.0 (single controller)
+metadata = build_metadata_payload(wallet_address, digest, version=1)  # Shows warning
+```
+
+### Security Principles
+1. **One Person = One DID**: Deterministic generation enforces this cryptographically
+2. **Privacy-Preserving**: No wallet address in DID identifier
+3. **Multi-Controller Support**: One identity can be controlled by multiple wallets
+4. **Revocable**: DIDs can be marked as revoked with timestamps
+5. **Auditable**: Enrollment timestamps enable compliance
+
+### When to Update Code
+- **New code**: ALWAYS use `generate_deterministic_did()` and metadata v1.1
+- **Existing code**: Update if touching DID generation logic
+- **API servers**: Use deterministic generation (completed in Phase 4.5)
+- **Tests**: Verify both deterministic (default) and legacy (with warnings) work
+- **Documentation**: Show deterministic examples, note legacy format is deprecated
+
+### Migration Path
+- Legacy format still works (with deprecation warning) for backward compatibility
+- All new enrollments should use deterministic format
+- See `docs/MIGRATION-GUIDE.md` for detailed migration instructions
+- Legacy format will be removed in v2.0
 
 ## 6. Review & Communication
 - Summaries should state *what* changed, *why*, tests run, and outstanding follow-ups.

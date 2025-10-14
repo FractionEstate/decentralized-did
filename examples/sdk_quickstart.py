@@ -24,7 +24,7 @@ from decentralized_did import (
     aggregate_finger_digests,
 
     # DID generation
-    build_did,
+    generate_deterministic_did,
     build_metadata_payload,
 
     # Storage
@@ -188,24 +188,22 @@ def example_did_generation():
     template = b"biometric_template_data_32_bytes_long_padding123"
     digest, helper = extractor.gen(template)
 
-    # Cardano wallet address (from user's wallet)
-    wallet_address = "addr1qx2kd88c92l6j5jhkjehfvjdj2gvfe5g8c4v7y4k3hl2p8jv2kd88c92l6"
-
     print("\n1. Input:")
-    print(f"   Wallet address: {wallet_address}")
     print(f"   Biometric digest: {digest.hex()[:32]}...")
 
-    # Build DID
-    did = build_did(wallet_address, digest)
+    # Build DID (deterministic)
+    did = generate_deterministic_did(digest, network="mainnet")
 
     print(f"\n2. Generated DID:")
     print(f"   {did}")
 
     # Build metadata payload
     metadata = build_metadata_payload(
-        did=did,
-        helper_storage={"type": "ipfs", "cid": "QmExampleCID123"},
-        timestamp="2025-10-14T12:00:00Z"
+        wallet_address="addr1qx2kd88c92...",
+        digest=digest,
+        version="1.1",
+        controllers=["addr1qx2kd88c92..."],
+        enrollment_timestamp="2025-10-14T12:00:00Z"
     )
 
     print(f"\n3. Metadata payload:")
@@ -309,10 +307,9 @@ async def example_complete_workflow():
     aggregated_digest = aggregate_finger_digests(finger_digests)
     print(f"   Combined digest: {aggregated_digest.hex()[:32]}...")
 
-    # Step 4: Generate DID
+    # Step 4: Generate DID (deterministic)
     print("\n🆔 Step 4: Generate Decentralized Identifier")
-    wallet_address = "addr1qx2kd88c92l6j5jhkjehfvjdj2gvfe5g8c4v7y4k3hl2p8jv2kd88c92l6"
-    did = build_did(wallet_address, aggregated_digest)
+    did = generate_deterministic_did(aggregated_digest, network="mainnet")
     print(f"   DID: {did}")
 
     # Step 5: Store helper data
