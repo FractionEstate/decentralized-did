@@ -46,6 +46,12 @@ pydantic==2.5.0
 # Audit trail and security monitoring
 structlog==23.2.0
 
+# API Security (Phase 4.6 Task 2)
+# JWT authentication, API key hashing, rate limiting
+PyJWT==2.8.0           # MIT license - JWT token generation/validation
+bcrypt==4.1.2          # Apache 2.0 - Password/API key hashing
+slowapi==0.1.9         # MIT license - Rate limiting for FastAPI
+
 # Testing Framework
 pytest==7.4.3
 
