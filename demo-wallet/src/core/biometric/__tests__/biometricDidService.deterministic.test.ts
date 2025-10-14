@@ -219,15 +219,6 @@ describe("Deterministic DID Generation", () => {
       expect(testnetDid).toMatch(didRegex);
     });
 
-    it("should NOT match legacy DID format (no wallet address)", () => {
-      const legacyDidRegex = /^did:cardano:addr[a-zA-Z0-9_]+#[a-zA-Z0-9]+$/;
-
-      const commitment = new Uint8Array(32).fill(200);
-      const did = generateDeterministicDID(commitment, "mainnet");
-
-      expect(did).not.toMatch(legacyDidRegex);
-    });
-
     it("should have proper DID structure (4 parts)", () => {
       const commitment = new Uint8Array(32).fill(175);
       const did = generateDeterministicDID(commitment, "mainnet");

@@ -224,10 +224,10 @@ const storedBiometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
 ];
 
 const storedBiometricMetadata: StoredBiometricMetadata = {
-  did: "did:cardano:addr#digest",
+  did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   label: 1990,
   walletAddress: "addr_test1qpl4w3u",
-  idHash: "abc123",
+  idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   helperStorage: "inline",
   metadata: storedBiometricMetadataEntries,
   createdAt: "2025-01-01T00:00:00.000Z",

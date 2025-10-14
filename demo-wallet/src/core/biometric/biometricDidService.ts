@@ -411,7 +411,7 @@ export class BiometricDidService {
     cliOutput: any,
     walletAddress: string
   ): BiometricGenerateResult {
-    // API already returns deterministic DID in Phase 4.5 format
+    // API returns deterministic DID in Phase 4.5+ format
     let did = cliOutput.did;
 
     // Fallback for development/mock mode: generate deterministic DID locally
@@ -421,7 +421,7 @@ export class BiometricDidService {
       if (commitment) {
         did = generateDeterministicDID(commitment, "mainnet");
       } else {
-        // Last resort: use id_hash (legacy compatibility)
+        // Use id_hash as fallback for mock mode
         const idHash = cliOutput.id_hash || cliOutput.idHash;
         console.warn("⚠️  No commitment found, using id_hash for mock DID");
         did = `did:cardano:mainnet:${idHash}`;
@@ -432,7 +432,7 @@ export class BiometricDidService {
       throw new Error("Failed to generate DID: No DID returned from API and no commitment available");
     }
 
-    // Extract id_hash for backward compatibility (not used in deterministic format)
+    // Extract id_hash for metadata (not used in DID identifier)
     const idHash = cliOutput.id_hash || cliOutput.idHash;
 
     return {

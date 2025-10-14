@@ -231,7 +231,7 @@ export function createApiClient(): ApiClient {
 export const biometricAssertions = {
   /**
    * Assert DID format is valid
-   * Supports both deterministic (did:cardano:{network}:{hash}) and legacy (did:cardano:{addr}#{hash}) formats
+   * Format: did:cardano:{network}:{hash}
    */
   assertValidDid(did: string): void {
     if (!did || !did.startsWith('did:cardano:')) {
@@ -240,14 +240,11 @@ export const biometricAssertions = {
 
     // Validate deterministic format: did:cardano:mainnet:zQmHash or did:cardano:testnet:zQmHash
     const deterministicPattern = /^did:cardano:(mainnet|testnet|preprod):[a-zA-Z0-9]+$/;
-    // Validate legacy format: did:cardano:addr...#hash (deprecated)
-    const legacyPattern = /^did:cardano:addr[a-z0-9_]+#[a-f0-9]+$/;
 
-    if (!deterministicPattern.test(did) && !legacyPattern.test(did)) {
+    if (!deterministicPattern.test(did)) {
       throw new Error(
         `Invalid DID structure: ${did}. ` +
-        `Expected deterministic format (did:cardano:{network}:{hash}) ` +
-        `or legacy format (did:cardano:{addr}#{hash})`
+        `Expected format: did:cardano:{network}:{hash}`
       );
     }
   },

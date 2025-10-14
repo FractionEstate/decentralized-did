@@ -126,14 +126,14 @@ describe("IdentityWalletConnect", () => {
 
   test("should store biometric metadata and emit event", async () => {
     const metadataEnvelope: Cip30MetadataEnvelope = {
-      did: "did:cardano:addr#digest",
+      did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
       metadata: [
         [
           1990,
           {
             walletAddress: "addr_test1qpl4w3u",
             biometric: {
-              idHash: "abc123",
+              idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
               helperStorage: "inline",
               helperData: { left_thumb: { salt_b64: "salt" } },
             },
@@ -178,14 +178,14 @@ describe("IdentityWalletConnect", () => {
 
   test("should throw when storing metadata without connection", async () => {
     const metadataEnvelope: Cip30MetadataEnvelope = {
-      did: "did:cardano:addr#digest",
+      did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
       metadata: [
         [
           1990,
           {
             walletAddress: "addr_test1qpl4w3u",
             biometric: {
-              idHash: "abc123",
+              idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
               helperStorage: "inline",
             },
           },

@@ -102,20 +102,12 @@ export const BiometricVerification = ({
       }
 
       // Extract ID hash from DID
-      // Deterministic format: did:cardano:{network}:{base58_hash}
-      // Legacy format: did:cardano:{wallet}#{hash}
-      let idHash: string;
-      if (did.includes("#")) {
-        // Legacy format: extract hash after #
-        idHash = did.split("#")[1];
-      } else {
-        // Deterministic format: extract base58 hash (last component)
-        const parts = did.split(":");
-        idHash = parts[parts.length - 1];
-      }
+      // Format: did:cardano:{network}:{base58_hash}
+      const parts = did.split(":");
+      const idHash = parts[parts.length - 1];
 
-      if (!idHash) {
-        throw new Error("Invalid DID format");
+      if (!idHash || parts.length !== 4) {
+        throw new Error("Invalid DID format. Expected: did:cardano:{network}:{hash}");
       }
 
       // Verify against stored helper data

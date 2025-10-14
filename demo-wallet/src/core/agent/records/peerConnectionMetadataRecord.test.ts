@@ -11,10 +11,10 @@ const mockData: PeerConnectionMetadataRecordProps = {
   iconB64: "icon",
   selectedAid: "aid",
   biometricMetadata: {
-    did: "did:cardano:addr#commitment",
+    did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
     label: 1990,
     walletAddress: "addr_test1qpl4w3u",
-    idHash: "abc123",
+    idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
     helperStorage: "inline",
     metadata: [[1990, { dummy: true }]] as StoredBiometricMetadata["metadata"],
     createdAt: new Date().toISOString(),
