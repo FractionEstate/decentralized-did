@@ -136,7 +136,7 @@
     "ts-json-schema-generator": "^2.3.0",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
-    "typescript": "^5.7.2",
+    "typescript": "^5.9.3",
     "webpack": "5",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^5.2.2",
