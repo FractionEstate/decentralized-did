@@ -110,14 +110,14 @@ Start with the most critical fix:
 # File: src/decentralized_did/did/generator.py
 
 def build_did(
-    wallet_address: str, 
+    wallet_address: str,
     digest: bytes,
     deterministic: bool = True,
     network: str = "mainnet"
 ) -> str:
     """
     Generate DID (supports both old and new formats).
-    
+
     Args:
         deterministic: If True (default), uses new deterministic format.
                       If False, uses old wallet-based format (DEPRECATED).
@@ -132,7 +132,7 @@ def build_did(
         # Old format (DEPRECATED)
         fingerprint = _encode_digest(digest)
         return f"did:cardano:{wallet_address}#{fingerprint}"
-    
+
     # New format (RECOMMENDED) - Use deterministic generation
     commitment = digest  # Use digest as commitment for now
     return generate_deterministic_did(commitment, network)
@@ -197,6 +197,6 @@ You'll know you're done when:
 
 ---
 
-**Audit Date**: October 14, 2025  
-**Next Review**: After Week 1 completion (October 21, 2025)  
+**Audit Date**: October 14, 2025
+**Next Review**: After Week 1 completion (October 21, 2025)
 **Target Completion**: October 28, 2025 (2 weeks)
