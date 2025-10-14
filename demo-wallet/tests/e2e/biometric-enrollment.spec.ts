@@ -8,8 +8,8 @@
  * - Helper data storage (inline and external modes)
  */
 
-import { test, expect, biometricAssertions } from '../fixtures/biometric-fixtures';
-import { createMockFingerData, createMockEnrollmentRequest } from '../utils/api-client';
+import { test, expect } from '../fixtures/biometric-fixtures';
+import { createMockFingerData, createMockEnrollmentRequest, biometricAssertions } from '../utils/api-client';
 
 test.describe('Biometric Enrollment Flow', () => {
   test.beforeEach(async ({ apiClient }) => {
@@ -29,7 +29,8 @@ test.describe('Biometric Enrollment Flow', () => {
     // Assert
     biometricAssertions.assertValidDid(response.did);
     biometricAssertions.assertValidWalletBundle(response.wallet_bundle);
-    biometricAssertions.assertValidHelperData(response.helpers, [
+    expect(response.helpers).toBeDefined();
+    biometricAssertions.assertValidHelpers(response.helpers!, [
       'finger_1',
       'finger_2',
       'finger_3',
@@ -39,7 +40,7 @@ test.describe('Biometric Enrollment Flow', () => {
     expect(response.did).toContain('did:cardano:');
 
     // Verify helper data for each finger
-    expect(Object.keys(response.helpers)).toHaveLength(3);
+    expect(Object.keys(response.helpers!)).toHaveLength(3);
   });
 
   test('should enroll 5 fingers successfully', async ({ apiClient }) => {
@@ -52,7 +53,8 @@ test.describe('Biometric Enrollment Flow', () => {
 
     // Assert
     biometricAssertions.assertValidDid(response.did);
-    expect(Object.keys(response.helpers)).toHaveLength(5);
+    expect(response.helpers).toBeDefined();
+    expect(Object.keys(response.helpers!)).toHaveLength(5);
   });
 
   test('should support inline helper storage mode', async ({ apiClient }) => {
@@ -64,8 +66,9 @@ test.describe('Biometric Enrollment Flow', () => {
     const response = await apiClient.generate(request);
 
     // Assert
-    expect(response.wallet_bundle).toHaveProperty('helper_data');
-    expect(response.wallet_bundle.helper_data).toBeTruthy();
+    expect(response.wallet_bundle).toBeDefined();
+    expect(response.wallet_bundle!).toHaveProperty('helper_data');
+    expect(response.wallet_bundle!.helper_data).toBeTruthy();
   });
 
   test('should support external helper storage mode', async ({ apiClient }) => {
@@ -80,7 +83,7 @@ test.describe('Biometric Enrollment Flow', () => {
     // In external mode, helper data should be in response.helpers
     // but not embedded in wallet_bundle
     expect(response.helpers).toBeTruthy();
-    expect(Object.keys(response.helpers)).toHaveLength(3);
+    expect(Object.keys(response.helpers!)).toHaveLength(3);
   });
 
   test('should reject enrollment with insufficient fingers', async ({ apiClient }) => {
@@ -111,8 +114,10 @@ test.describe('Biometric Enrollment Flow', () => {
 
     // Assert
     expect(response1.did).not.toBe(response2.did);
-    expect(response1.wallet_bundle.payment_addr).not.toBe(
-      response2.wallet_bundle.payment_addr
+    expect(response1.wallet_bundle).toBeDefined();
+    expect(response2.wallet_bundle).toBeDefined();
+    expect(response1.wallet_bundle!.payment_addr).not.toBe(
+      response2.wallet_bundle!.payment_addr
     );
   });
 
@@ -125,7 +130,8 @@ test.describe('Biometric Enrollment Flow', () => {
     const response = await apiClient.generate(request);
 
     // Assert
-    for (const [fingerId, helper] of Object.entries(response.helpers)) {
+    expect(response.helpers).toBeDefined();
+    for (const [fingerId, helper] of Object.entries(response.helpers!)) {
       // Required fields
       expect(helper).toHaveProperty('salt_b64');
       expect(helper).toHaveProperty('auth_b64');
@@ -154,9 +160,95 @@ test.describe('Biometric Enrollment Flow', () => {
     expect(response.did.length).toBeGreaterThan(20);
     expect(response.did.length).toBeLessThan(200);
   });
-});
 
-test.describe('Biometric Enrollment Performance', () => {
+  test('should generate deterministic DID (Sybil-resistant)', async ({ apiClient }) => {
+    // Arrange - Same biometric data, different wallet addresses
+    const walletAddress1 = 'addr_test1qz' + 'x'.repeat(56);
+    const walletAddress2 = 'addr_test1qz' + 'y'.repeat(56);
+
+    // Create identical biometric data (simulating same person)
+    const sameBiometricData = createMockFingerData(0); // Use finger index 0
+    const request1 = {
+      ...createMockEnrollmentRequest(walletAddress1, 1, 'inline'),
+      fingers: [sameBiometricData],
+    };
+    const request2 = {
+      ...createMockEnrollmentRequest(walletAddress2, 1, 'inline'),
+      fingers: [sameBiometricData],
+    };    // Act
+    const response1 = await apiClient.generate(request1);
+    const response2 = await apiClient.generate(request2);
+
+    // Assert - DIDs should be identical (Sybil resistance)
+    // Same person = same DID, regardless of wallet address
+    expect(response1.did).toBe(response2.did);
+
+    // Verify DID does NOT contain wallet address (privacy)
+    expect(response1.did).not.toContain('addr');
+    expect(response1.did).not.toContain(walletAddress1);
+    expect(response2.did).not.toContain(walletAddress2);
+
+    console.log('✅ Sybil resistance verified: Same biometric → Same DID');
+  });
+
+  test('should use deterministic DID format (did:cardano:{network}:{hash})', async ({ apiClient }) => {
+    // Arrange
+    const walletAddress = 'addr_test1qz' + 'z'.repeat(56);
+    const request = createMockEnrollmentRequest(walletAddress, 3, 'inline');
+
+    // Act
+    const response = await apiClient.generate(request);
+
+    // Assert - Validate deterministic format
+    const deterministicPattern = /^did:cardano:(mainnet|testnet|preprod):[a-zA-Z0-9]+$/;
+    expect(response.did).toMatch(deterministicPattern);
+
+    // Extract parts
+    const parts = response.did.split(':');
+    expect(parts).toHaveLength(4);
+    expect(parts[0]).toBe('did');
+    expect(parts[1]).toBe('cardano');
+    expect(['mainnet', 'testnet', 'preprod']).toContain(parts[2]);
+
+    // Hash should be Base58 encoded (no special characters except alphanumeric)
+    const hash = parts[3];
+    expect(hash).toMatch(/^[a-zA-Z0-9]+$/);
+    expect(hash.length).toBeGreaterThan(20); // Base58 hash should be substantial
+
+    console.log(`✅ Deterministic DID format verified: ${response.did}`);
+  });
+
+  test('should include metadata v1.1 fields', async ({ apiClient }) => {
+    // Arrange
+    const walletAddress = 'addr_test1qz' + 'v1'.repeat(28);
+    const request = createMockEnrollmentRequest(walletAddress, 3, 'inline');
+
+    // Act
+    const response = await apiClient.generate(request);
+
+    // Assert - Check metadata v1.1 structure
+    expect(response.wallet_bundle).toBeDefined();
+    biometricAssertions.assertValidWalletBundle(response.wallet_bundle);
+
+    const metadata = response.wallet_bundle!;
+    expect(metadata.version).toBe(1.1);
+
+    // Multi-controller support
+    expect(Array.isArray(metadata.controllers)).toBe(true);
+    expect(metadata.controllers).toContain(walletAddress);
+
+    // Timestamp
+    expect(metadata.enrollmentTimestamp).toBeDefined();
+    const timestamp = new Date(metadata.enrollmentTimestamp!);
+    expect(timestamp.getTime()).toBeLessThanOrEqual(Date.now());
+
+    // Revocation status
+    expect(typeof metadata.revoked).toBe('boolean');
+    expect(metadata.revoked).toBe(false); // New enrollments should not be revoked
+
+    console.log('✅ Metadata v1.1 structure validated');
+  });
+}); test.describe('Biometric Enrollment Performance', () => {
   test('should complete enrollment within performance threshold', async ({ apiClient }) => {
     // Arrange
     const walletAddress = 'addr_test1qz' + 'h'.repeat(56);

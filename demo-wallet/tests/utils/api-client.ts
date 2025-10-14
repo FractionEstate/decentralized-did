@@ -26,6 +26,25 @@ export interface DidResponse {
   helper_data: string | null;
   helper_cid: string | null;
   audit_log: any[];
+  // New fields for deterministic DID support
+  helpers?: Record<string, {
+    finger_id: string;
+    salt_b64: string;
+    auth_b64: string;
+    grid_size?: number;
+    angle_bins?: number;
+  }>;
+  wallet_bundle?: {
+    version: number;
+    controllers?: string[];
+    enrollmentTimestamp?: string;
+    revoked?: boolean;
+    payment_addr?: string;
+    helper_data?: any;
+    [key: string]: any;
+  };
+  metadata_cip30_inline?: any;
+  metadata_cip30_external?: any;
 }
 
 export class ApiClient {
@@ -212,10 +231,24 @@ export function createApiClient(): ApiClient {
 export const biometricAssertions = {
   /**
    * Assert DID format is valid
+   * Supports both deterministic (did:cardano:{network}:{hash}) and legacy (did:cardano:{addr}#{hash}) formats
    */
   assertValidDid(did: string): void {
-    if (!did || !did.startsWith('did:key:')) {
-      throw new Error(`Invalid DID format: ${did}`);
+    if (!did || !did.startsWith('did:cardano:')) {
+      throw new Error(`Invalid DID format: ${did}. Expected did:cardano:*`);
+    }
+
+    // Validate deterministic format: did:cardano:mainnet:zQmHash or did:cardano:testnet:zQmHash
+    const deterministicPattern = /^did:cardano:(mainnet|testnet|preprod):[a-zA-Z0-9]+$/;
+    // Validate legacy format: did:cardano:addr...#hash (deprecated)
+    const legacyPattern = /^did:cardano:addr[a-z0-9_]+#[a-f0-9]+$/;
+
+    if (!deterministicPattern.test(did) && !legacyPattern.test(did)) {
+      throw new Error(
+        `Invalid DID structure: ${did}. ` +
+        `Expected deterministic format (did:cardano:{network}:{hash}) ` +
+        `or legacy format (did:cardano:{addr}#{hash})`
+      );
     }
   },
 
@@ -230,6 +263,92 @@ export const biometricAssertions = {
     } else {
       if (helperData) {
         throw new Error('Helper data should be null in external mode');
+      }
+    }
+  },
+
+  /**
+   * Assert wallet bundle structure (metadata v1.1)
+   */
+  assertValidWalletBundle(bundle: any): void {
+    if (!bundle) {
+      throw new Error('Wallet bundle should be present');
+    }
+
+    // Check metadata v1.1 structure
+    if (bundle.version !== 1.1 && bundle.version !== 1) {
+      throw new Error(`Unexpected metadata version: ${bundle.version}`);
+    }
+
+    // For v1.1, check new fields
+    if (bundle.version === 1.1) {
+      if (!Array.isArray(bundle.controllers)) {
+        throw new Error('Metadata v1.1 should have controllers array');
+      }
+      if (!bundle.enrollmentTimestamp) {
+        throw new Error('Metadata v1.1 should have enrollmentTimestamp');
+      }
+      if (typeof bundle.revoked !== 'boolean') {
+        throw new Error('Metadata v1.1 should have revoked boolean field');
+      }
+    }
+  },
+
+  /**
+   * Assert helper data per finger
+   */
+  assertValidHelpers(helpers: Record<string, any>, expectedFingers: string[]): void {
+    if (!helpers || typeof helpers !== 'object') {
+      throw new Error('Helpers should be an object');
+    }
+
+    const actualFingers = Object.keys(helpers);
+    if (actualFingers.length !== expectedFingers.length) {
+      throw new Error(
+        `Expected ${expectedFingers.length} fingers, got ${actualFingers.length}`
+      );
+    }
+
+    for (const finger of expectedFingers) {
+      if (!helpers[finger]) {
+        throw new Error(`Missing helper data for finger: ${finger}`);
+      }
+
+      const helper = helpers[finger];
+      if (!helper.salt_b64 || !helper.auth_b64) {
+        throw new Error(`Invalid helper data structure for ${finger}`);
+      }
+    }
+  },
+
+  /**
+   * Assert verification response
+   */
+  assertValidVerification(
+    response: any,
+    expectedSuccess: boolean,
+    minMatchedFingers: number = 2
+  ): void {
+    if (typeof response.success !== 'boolean') {
+      throw new Error('Verification response should have success boolean');
+    }
+
+    if (response.success !== expectedSuccess) {
+      throw new Error(
+        `Expected verification success=${expectedSuccess}, got ${response.success}`
+      );
+    }
+
+    if (expectedSuccess) {
+      if (!Array.isArray(response.matched_fingers)) {
+        throw new Error('Successful verification should have matched_fingers array');
+      }
+
+      if (response.matched_fingers.length < minMatchedFingers) {
+        throw new Error(
+          `Expected at least ${minMatchedFingers} matched fingers, ` +
+          `got ${response.matched_fingers.length}`
+        );
       }
     }
   },
