@@ -1814,17 +1814,18 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
   - **Dependencies**: Hardware acquisition, driver setup
   - **Deliverable**: Real fingerprint sensor working end-to-end
 
-- [ ] **task 3** - API server security hardening (⚡ IN PROGRESS - 71% complete)
+- [ ] **task 3** - API server security hardening (⚡ IN PROGRESS - 79% complete)
   - **Priority**: HIGH (required for production)
-  - **Status**: Phase 1-4 complete (100%), Phase 5-7 in progress
+  - **Status**: Phase 1-5 complete (100%), Phase 6-7 in progress
   - **Time Tracking**:
     * Session start: October 14, 2025 (after Task 1 reached 90%)
     * Phase 1 complete: 6 hours (Rate Limiting) ✅
     * Phase 2 complete: 12 hours (Authentication) ✅
     * Phase 3 complete: 4 hours (Input Validation & Sanitization) ✅
     * Phase 4 complete: 3 hours (Security Headers & HTTPS) ✅
-    * Total so far: 25 hours of 35 hours estimated
-    * Phase 5-7 remaining: ~10 hours
+    * Phase 5 complete: 3 hours (Enhanced Audit Logging) ✅
+    * Total so far: 28 hours of 35 hours estimated
+    * Phase 6-7 remaining: ~7 hours
   - **Scope**:
     * ✅ Phase 1: Rate Limiting (COMPLETE - 6 hours)
       - InMemoryBackend (sliding window, thread-safe)
@@ -1910,18 +1911,39 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
         * Feature policy control (disable sensors)
         * HTTPS redirect for production
       - **Total Phase 4**: 33 tests, 1,014 lines (430 module + 584 tests), 3 hours
-    * ⏳ Phase 5: Enhanced Audit Logging (TODO - 4-6 hours)
-      - Security headers middleware
-      - HSTS, CSP, X-Frame-Options, etc.
-      - CORS configuration
-      - HTTPS enforcement
-      - 15 tests planned
-    * ⏳ Phase 5: Enhanced Audit Logging (TODO - 4-6 hours)
-      - Structured JSON logging
-      - Request/response middleware
-      - Performance timing
-      - Log sanitization
-      - 20 tests planned
+    * ✅ Phase 5: Enhanced Audit Logging (COMPLETE - 3 hours, commit 9b8be75)
+      - **Audit Logging Module** (audit_logging.py, 660+ lines):
+        * PIISanitizer (mask PII in logs)
+          - Email masking (preserve domain)
+          - Phone number masking
+          - Credit card masking
+          - SSN masking
+          - IP address masking (optional)
+          - API key masking (preserve prefix)
+          - JWT token masking
+          - Biometric data masking (long hashes)
+          - Sensitive field detection (password, api_key, etc.)
+          - Recursive dict/list sanitization
+        * JSONFormatter (structured JSON logs)
+          - ISO 8601 timestamps
+          - Log levels (INFO, WARNING, ERROR)
+          - Context data with sanitization
+          - Exception formatting
+        * AuditLoggerConfig (production/development presets)
+          - Production: 50MB files, 20 backups, PII sanitization
+          - Development: 10MB files, 5 backups, no sanitization
+          - Configurable log levels, rotation, console output
+        * AuditLoggingMiddleware (FastAPI middleware)
+          - Request logging (method, path, IP, user agent)
+          - Response logging (status, duration)
+          - Correlation IDs (X-Request-ID header)
+          - Performance tracking (duration_ms)
+          - Slow request detection (configurable threshold)
+          - Exception logging with stack traces
+        * Setup functions:
+          - setup_audit_logger() - Configure logger with rotation
+          - setup_audit_logging() - Add middleware to FastAPI app
+      - **Total Phase 5**: 27 tests, 1,250 lines (660 module + 590 tests), 3 hours
     * ⏳ Phase 6: Secure Error Handling (TODO - 3-4 hours)
       - Error response formatter
       - Production/dev modes
@@ -1935,27 +1957,27 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
       - Security test report
       - 20 tests planned
   - **Progress Summary**:
-    * Phases complete: 4/7 (Phase 1, Phase 2, Phase 3, Phase 4)
-    * Tests written: 242/295 (82%)
-    * Tests passing: 242/242 (100%)
-    * Lines of code: ~5,680 (rate limiting, auth, validation, security headers)
-    * Commits: 5 (87fec60, ea01af9, bd3eaaf, ad5dcbd, 4f5a440, 7071422)
+    * Phases complete: 5/7 (Phase 1, Phase 2, Phase 3, Phase 4, Phase 5)
+    * Tests written: 269/295 (91%)
+    * Tests passing: 269/269 (100%)
+    * Lines of code: ~6,930 (rate limiting, auth, validation, security headers, audit logging)
+    * Commits: 7 (87fec60, ea01af9, bd3eaaf, ad5dcbd, 4f5a440, 7071422, 9b8be75)
   - **Next Steps**:
-    * Start Phase 5: Enhanced Audit Logging
-    * Create structured JSON logging module
-    * Add request/response middleware
-    * Implement performance timing
-    * Add PII sanitization in logs
+    * Start Phase 6: Secure Error Handling
+    * Create error response formatter
+    * Add production/development error modes
+    * Implement request ID tracking in errors
+    * Create error code taxonomy
   - **Documentation**:
     * TASK-2-API-SECURITY-PLAN.md (586 lines) - Complete implementation plan
   - **Servers**: Update api_server.py and api_server_secure.py
   - **Testing**: Security penetration testing, load testing (Phase 7)
   - **Success Criteria**:
-    * ⏳ 295 total tests passing (242/295 so far - 82%)
+    * ⏳ 295 total tests passing (269/295 so far - 91%)
     * ⏳ OWASP ZAP scan: 0 high/critical vulnerabilities
     * ⏳ Load test: 1000 concurrent users, <1s p95 latency
     * ⏳ Performance: <150ms enrollment, <75ms verification
-  - **Deliverable**: Production-hardened API servers (71% complete)
+  - **Deliverable**: Production-hardened API servers (79% complete)
 
 - [ ] **task 4** - Performance optimization
   - **Priority**: MEDIUM
