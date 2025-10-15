@@ -162,7 +162,8 @@ def test_login_invalid_wallet_address(client):
     response = client.post(
         "/auth/login",
         json={
-            "wallet_address": "invalid_address_but_long_enough_for_validation",  # 47 chars, passes Pydantic
+            # 47 chars, passes Pydantic
+            "wallet_address": "invalid_address_but_long_enough_for_validation",
             "message": "Login message that is long enough for validation",  # 44 chars
             "signature": "abcdef1234567890" * 4  # 64 chars, passes Pydantic
         }
