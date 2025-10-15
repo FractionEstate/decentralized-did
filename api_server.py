@@ -10,32 +10,37 @@ Endpoints:
 - GET /health - Health check
 """
 
+# Fuzzy extractor functions
 from src.biometrics.fuzzy_extractor_v2 import (
-    FuzzyExtractor,
-    extract_key,
-    reproduce_key,
+    fuzzy_extract_gen,
+    fuzzy_extract_rep,
+    HelperData as FuzzyHelperData,
 )
+
+# DID generator functions and classes
 from src.did.generator_v2 import (
     build_wallet_bundle,
-    HelperDataEntry,
+    HelperDataEntry as DIDHelperDataEntry,
     HELPER_STORAGE_INLINE,
     HELPER_STORAGE_EXTERNAL,
     _encode_bytes,
 )
-# Import deterministic DID generation
+
+# Deterministic DID generation
 from src.decentralized_did.did.generator import generate_deterministic_did
 
-# Import Blockfrost client for duplicate detection
+# Blockfrost client for duplicate detection
 from src.decentralized_did.cardano.blockfrost import (
     BlockfrostClient,
     DIDAlreadyExistsError,
 )
 
+# Biometric aggregation
 from src.biometrics.aggregator_v2 import aggregate_finger_keys, FingerKey
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 from datetime import datetime, timezone
 import sys
 import json
@@ -116,7 +121,7 @@ class CIP30MetadataInline(BaseModel):
     """CIP-30 metadata structure"""
     version: int
     walletAddress: str
-    biometric: Dict[str, any]
+    biometric: Dict[str, Any]
 
 
 class GenerateResponse(BaseModel):
@@ -185,20 +190,23 @@ async def generate_did(request: GenerateRequest):
         HTTPException: If generation fails
     """
     try:
+        import numpy as np
+
         # Step 1: Convert minutiae to FingerKey objects via fuzzy extraction
         enrolled_keys = []
         helper_entries = []
+        fuzzy_helpers = []
 
         for finger in request.fingers:
-            # Convert minutiae list to bytes (mock implementation)
+            # Convert minutiae list to 64-bit biometric (mock implementation)
             # In production, this would use actual minutiae quantization
-            minutiae_bytes = os.urandom(32)  # Mock: 32 random bytes per finger
+            # For now, generate 64 random bits per finger
+            biometric_bits = np.random.randint(0, 2, size=64, dtype=np.uint8)
 
             # Extract key using fuzzy extractor
-            key, salt, syndrome, hmac = extract_key(
-                minutiae_bytes,
-                user_id=request.wallet_address,
-                finger_id=finger.finger_id
+            key, helper_data = fuzzy_extract_gen(
+                biometric_bitstring=biometric_bits,
+                user_id=request.wallet_address
             )
 
             # Create FingerKey for aggregation
@@ -207,15 +215,15 @@ async def generate_did(request: GenerateRequest):
                 key=key
             ))
 
-            # Create helper data entry
-            helper_entries.append(HelperDataEntry(
+            # Store fuzzy helper data for later use
+            fuzzy_helpers.append((finger.finger_id, helper_data))
+
+            # Create DID helper data entry
+            did_helper = DIDHelperDataEntry.from_fuzzy_helper_data(
                 finger_id=finger.finger_id,
-                version=1,
-                salt=_encode_bytes(salt),
-                personalization=_encode_bytes(os.urandom(16)),  # Mock
-                bch_syndrome=_encode_bytes(syndrome),
-                hmac=_encode_bytes(hmac),
-            ))
+                helper_data=helper_data
+            )
+            helper_entries.append(did_helper)
 
         # Step 2: Aggregate finger keys into master key
         aggregation_result = aggregate_finger_keys(
@@ -341,6 +349,9 @@ async def verify_did(request: VerifyRequest):
         HTTPException: If verification fails
     """
     try:
+        import numpy as np
+        import base64
+
         matched_fingers = []
         unmatched_fingers = []
 
@@ -356,24 +367,32 @@ async def verify_did(request: VerifyRequest):
                 continue
 
             try:
-                # Convert minutiae to bytes (mock implementation)
-                minutiae_bytes = os.urandom(32)  # Mock
+                # Convert minutiae list to 64-bit biometric (mock implementation)
+                # In production, this would use actual minutiae quantization
+                biometric_bits = np.random.randint(
+                    0, 2, size=64, dtype=np.uint8)
 
                 helper = request.helpers[finger_id]
 
-                # Decode helper data from base64
-                import base64
-                salt = base64.b64decode(helper.salt_b64)
-                # Using auth as syndrome mock
-                syndrome = base64.b64decode(helper.auth_b64)
+                # Reconstruct FuzzyHelperData from API helper data
+                # NOTE: The API's HelperDataEntry schema doesn't match fuzzy extractor's HelperData
+                # This is a simplified mock implementation
+                salt_bytes = base64.b64decode(helper.salt_b64)
+
+                # Create mock helper data (won't actually verify correctly with random biometrics)
+                # TODO: Update API schema to properly store fuzzy extractor helper data fields
+                helper_data = FuzzyHelperData(
+                    version=1,
+                    salt=salt_bytes,
+                    personalization=b'\x00' * 32,  # Mock
+                    bch_syndrome=b'\x00' * 16,  # Mock
+                    hmac=b'\x00' * 32  # Mock
+                )
 
                 # Reproduce key using fuzzy extractor
-                reproduced_key = reproduce_key(
-                    minutiae_bytes,
-                    salt=salt,
-                    syndrome=syndrome,
-                    user_id="",  # Mock
-                    finger_id=finger_id
+                reproduced_key = fuzzy_extract_rep(
+                    biometric_bitstring=biometric_bits,
+                    helper_data=helper_data
                 )
 
                 if reproduced_key:
