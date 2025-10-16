@@ -47,5 +47,9 @@ export default {
     "\\.yaml$": "jest-transform-yaml",
   },
   setupFilesAfterEnv: ["jest-canvas-mock", "<rootDir>/src/setupTests.ts"],
-  setupFiles: ["<rootDir>/src/ui/__mocks__/swiper.tsx"],
+  setupFiles: [
+    "<rootDir>/tests/setupFetchPolyfill.ts",
+    "<rootDir>/tests/setupEnv.ts",
+    "<rootDir>/src/ui/__mocks__/swiper.tsx"
+  ],
 };

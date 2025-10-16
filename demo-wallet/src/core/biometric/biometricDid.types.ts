@@ -25,7 +25,7 @@ export interface BiometricGenerateResult {
   wallet_address: string; // Kept in metadata only, not in DID identifier
   helpers: Record<string, HelperDataEntry>;
   metadata_cip30_inline: {
-    version: number; // 1.1 for deterministic DIDs with multi-controller support
+    version: number | string; // 1.1 (string) for deterministic DIDs with multi-controller support
     walletAddress?: string; // Deprecated: use controllers array instead
     controllers?: string[]; // Multi-controller support (metadata v1.1)
     biometric: {

@@ -1,0 +1,37 @@
+{
+  "wallet_address": "addr_test1qpz8j0xfwhm652z0mk7cd5q2tqkvhx5a6h7fr4x6s2c6tw4kz5q03xmysyz",
+  "storage": "inline",
+  "format": "json",
+  "fingers": [
+    {
+      "finger_id": "left_thumb",
+      "minutiae": [
+        [
+          100.5,
+          200.3,
+          45.0
+        ],
+        [
+          150.2,
+          180.9,
+          90.5
+        ]
+      ]
+    },
+    {
+      "finger_id": "left_index",
+      "minutiae": [
+        [
+          110.2,
+          210.5,
+          50.0
+        ],
+        [
+          160.5,
+          190.2,
+          95.5
+        ]
+      ]
+    }
+  ]
+}

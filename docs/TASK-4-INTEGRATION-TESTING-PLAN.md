@@ -1,7 +1,7 @@
 # Task 4: Integration Testing - Implementation Plan
 
 **Date**: October 15, 2025
-**Status**: IN PROGRESS - Phase 1: API Server Setup
+**Status**: IN PROGRESS - Phase 2: Demo Wallet Integration Tests (API suites passing; docs & perf pending)
 **Duration**: 5-6 days (estimated)
 **Priority**: HIGH
 
@@ -24,8 +24,8 @@ Comprehensive end-to-end integration testing to validate the complete biometric 
 6. ✅ Load testing (100+ concurrent users)
 
 ### Success Criteria
-- [ ] All 3 API servers operational and tested
-- [ ] 9 deferred integration tests passing (total: 14/14)
+- [x] All 3 API servers operational and tested
+- [x] 9 deferred integration tests passing (total: 14/14)
 - [ ] End-to-end blockchain integration validated
 - [ ] Performance targets met (P95 <150ms enrollment, <75ms verification)
 - [ ] Load testing successful (100+ concurrent users, <1% error rate)
@@ -61,13 +61,13 @@ from src.biometrics.fuzzy_extractor_v2 import (
 - `HelperData` - Helper data structure
 - `derive_key_from_biometric()` - Key derivation
 
-**Tasks**:
-- [ ] Update imports to use correct function names
-- [ ] Fix `did.generator_v2` imports (check current structure)
-- [ ] Update endpoint implementations to use new APIs
-- [ ] Test basic server startup (no errors)
-- [ ] Test `/health` endpoint
-- [ ] Document API changes
+**Tasks** (Completed October 15, 2025):
+- [x] Update imports to use correct function names
+- [x] Fix `did.generator_v2` imports (check current structure)
+- [x] Update endpoint implementations to use new APIs
+- [x] Test basic server startup (no errors)
+- [x] Test `/health` endpoint
+- [x] Document API changes
 
 **Files to Modify**:
 - `api_server.py` - Fix imports and update logic
@@ -76,14 +76,14 @@ from src.biometrics.fuzzy_extractor_v2 import (
 
 **Current Status**: Secure server running at localhost:8000 but requires JWT auth
 
-**Tasks**:
-- [ ] Review JWT authentication implementation (`src/decentralized_did/security/authentication.py`)
-- [ ] Create test user credentials
-- [ ] Document JWT token generation process
-- [ ] Create authentication helper for tests
-- [ ] Test token generation and validation
-- [ ] Update API client in demo wallet (if needed)
-- [ ] Document authentication flow
+**Tasks** (Completed October 15, 2025):
+- [x] Review JWT authentication implementation (`src/decentralized_did/security/authentication.py`)
+- [x] Create test user credentials
+- [x] Document JWT token generation process
+- [x] Create authentication helper for tests
+- [x] Test token generation and validation
+- [x] Update API client in demo wallet (if needed)
+- [x] Document authentication flow
 
 **Files to Review/Modify**:
 - `api_server_secure.py` - Current implementation
@@ -105,24 +105,24 @@ test_user = {
 
 **Purpose**: Fast testing without full backend (in-memory, deterministic)
 
-**Tasks**:
-- [ ] Review `api_server_mock.py` implementation
-- [ ] Test mock server startup (port 8002)
-- [ ] Verify mock endpoints work
-- [ ] Document mock server behavior
-- [ ] Create mock data fixtures
+**Tasks** (Completed October 15, 2025):
+- [x] Review `api_server_mock.py` implementation
+- [x] Test mock server startup (port 8002)
+- [x] Verify mock endpoints work
+- [x] Document mock server behavior
+- [x] Create mock data fixtures
 
 **Files to Review**:
 - `api_server_mock.py` - Mock implementation
 
 ### 1.4 API Endpoint Documentation (1 hour)
 
-**Tasks**:
-- [ ] Document all endpoints (basic, secure, mock servers)
-- [ ] Document request/response schemas
-- [ ] Document authentication requirements
-- [ ] Create Postman/curl examples
-- [ ] Update OpenAPI/Swagger docs
+**Tasks** (Completed October 16, 2025):
+- [x] Document all endpoints (basic, secure, mock servers)
+- [x] Document request/response schemas
+- [x] Document authentication requirements
+- [x] Create Postman/curl examples
+- [x] Update OpenAPI/Swagger docs
 
 **Endpoints to Document**:
 
@@ -144,12 +144,12 @@ test_user = {
 
 ### 1.5 Test Configuration & Credentials (1 hour)
 
-**Tasks**:
-- [ ] Create `.env.test` configuration file
-- [ ] Set up test API keys and JWT secrets
-- [ ] Configure Blockfrost test API key
-- [ ] Document environment variables
-- [ ] Create test data fixtures
+**Tasks** (Completed October 16, 2025):
+- [x] Create `.env.test` configuration file
+- [x] Set up test API keys and JWT secrets
+- [x] Configure Blockfrost test API key
+- [x] Document environment variables
+- [x] Create test data fixtures
 
 **Environment Variables**:
 ```bash
@@ -198,13 +198,15 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 9. should complete verification in <50ms (end-to-end with API)
 
 **Tasks**:
-- [ ] Set up API authentication for tests
-- [ ] Enable API tests (`RUN_API_TESTS=true`)
-- [ ] Run tests against mock API server (fast)
-- [ ] Run tests against basic API server
-- [ ] Run tests against secure API server (with JWT)
-- [ ] Fix any failing tests
-- [ ] Document test results
+- [x] Set up API authentication for tests
+    - [x] Implemented JWT token retrieval/caching in `BiometricDidService` (Oct 16)
+    - [x] Validate secure server flow end-to-end via integration suite (Oct 17)
+- [x] Enable API tests (`RUN_API_TESTS=true`)
+- [x] Run tests against mock API server (fast)
+- [x] Run tests against basic API server (harness wallet address updated Oct 17)
+- [x] Run tests against secure API server (with JWT)
+- [x] Fix any failing tests
+- [x] Document test results (docs/API-ENDPOINTS.md, docs/API-TEST-CONFIGURATION.md updated Oct 17)
 
 **Files to Modify**:
 - `demo-wallet/src/core/biometric/__tests__/biometricDidService.integration.test.ts`

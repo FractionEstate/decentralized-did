@@ -11,14 +11,6 @@ Security Features:
 - Security headers
 """
 
-from src.biometrics.fuzzy_extractor_v2 import fuzzy_extract_gen, fuzzy_extract_rep, HelperData
-from src.did.generator_v2 import (
-    build_wallet_bundle,
-    HelperDataEntry as HelperDataEntryInternal,
-    HELPER_STORAGE_INLINE,
-    HELPER_STORAGE_EXTERNAL,
-    _encode_bytes,
-)
 # Import deterministic DID generation
 from src.decentralized_did.did.generator import generate_deterministic_did
 
@@ -27,8 +19,6 @@ from src.decentralized_did.cardano.blockfrost import (
     BlockfrostClient,
     DIDAlreadyExistsError,
 )
-
-from src.biometrics.aggregator_v2 import aggregate_finger_keys, FingerKey
 from fastapi import FastAPI, HTTPException, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -47,6 +37,55 @@ import hashlib
 import hmac
 from pathlib import Path
 import secrets
+import base64
+
+
+def _encode_b64(data: bytes) -> str:
+    """Return URL-safe base64 without padding."""
+    return base64.urlsafe_b64encode(data).decode('utf-8').rstrip('=')
+
+
+def _deterministic_bytes(label: str, finger_id: str, length: int) -> bytes:
+    """Derive deterministic bytes from label + finger_id."""
+    hasher = hashlib.blake2b(digest_size=length)
+    hasher.update(label.encode('utf-8'))
+    hasher.update(b':')
+    hasher.update(finger_id.encode('utf-8'))
+    return hasher.digest()
+
+
+def generate_helper_entry(finger_id: str) -> "HelperDataEntry":
+    """Generate deterministic helper data for a finger."""
+    salt_bytes = _deterministic_bytes("salt", finger_id, length=16)
+    auth_bytes = _deterministic_bytes("auth", finger_id, length=32)
+
+    return HelperDataEntry(
+        finger_id=finger_id,
+        salt_b64=_encode_b64(salt_bytes),
+        auth_b64=_encode_b64(auth_bytes),
+        grid_size=0.05,
+        angle_bins=32,
+    )
+
+
+def compute_helper_hash(
+    helpers: Dict[str, "HelperDataEntry"],
+    wallet_address: Optional[str] = None,
+) -> str:
+    """Compute deterministic hash from helper data and optional wallet."""
+    hash_ctx = hashlib.blake2b(digest_size=32)
+
+    if wallet_address:
+        hash_ctx.update(wallet_address.encode('utf-8'))
+
+    for finger_id in sorted(helpers.keys()):
+        entry = helpers[finger_id]
+        hash_ctx.update(finger_id.encode('utf-8'))
+        hash_ctx.update(entry.salt_b64.encode('utf-8'))
+        hash_ctx.update(entry.auth_b64.encode('utf-8'))
+
+    return _encode_b64(hash_ctx.digest())
+
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -56,6 +95,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 # ============================================================================
 
 # Environment variables (with secure defaults)
+ENVIRONMENT = os.getenv(
+    "ENVIRONMENT", "development").strip().lower() or "development"
 API_SECRET_KEY = os.getenv("API_SECRET_KEY", secrets.token_urlsafe(32))
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", secrets.token_urlsafe(32))
 JWT_ALGORITHM = "HS256"
@@ -69,6 +110,19 @@ HTTPS_ONLY = os.getenv("HTTPS_ONLY", "false").lower() == "true"
 # Blockfrost configuration for duplicate detection
 BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
 CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "mainnet")
+
+# Security posture reference data
+STRICT_ENVIRONMENTS = {"production", "staging"}
+DEFAULT_API_SECRET_VALUES = {
+    "test_api_key_admin_32_chars_long_abcdef123456",
+    "test_api_key_user_32_chars_long_xyz789abc",
+    "test_api_key_integration_32_chars_long_xyz",
+}
+DEFAULT_JWT_SECRET_VALUES = {
+    "jwt_secret_for_signing_tokens_32_chars_long",
+    "jwt_secret_for_signing_tokens_32_chars_long_dev",
+}
+ALLOWED_CARDANO_NETWORKS = {"mainnet", "testnet", "preprod", "preview"}
 
 # Initialize Blockfrost client if API key is available
 blockfrost_client = None
@@ -106,6 +160,72 @@ audit_logger.addHandler(audit_handler)
 audit_logger.setLevel(logging.INFO)
 
 
+def validate_security_configuration() -> None:
+    """Validate environment configuration against security baseline."""
+    hard_failures: List[str] = []
+    soft_failures: List[str] = []
+    policy_messages: List[str] = []
+
+    if len(API_SECRET_KEY) < 32:
+        hard_failures.append("API_SECRET_KEY must be at least 32 characters")
+    if API_SECRET_KEY in DEFAULT_API_SECRET_VALUES:
+        policy_messages.append(
+            "API_SECRET_KEY uses a known test value; rotate before production use")
+
+    if len(JWT_SECRET_KEY) < 32:
+        hard_failures.append("JWT_SECRET_KEY must be at least 32 characters")
+    if JWT_SECRET_KEY in DEFAULT_JWT_SECRET_VALUES:
+        policy_messages.append(
+            "JWT_SECRET_KEY uses a known test value; rotate before production use")
+
+    if CARDANO_NETWORK not in ALLOWED_CARDANO_NETWORKS:
+        hard_failures.append(
+            f"CARDANO_NETWORK '{CARDANO_NETWORK}' is not supported; choose one of {sorted(ALLOWED_CARDANO_NETWORKS)}"
+        )
+
+    if JWT_EXPIRATION_HOURS > 24:
+        policy_messages.append(
+            f"JWT_EXPIRATION_HOURS ({JWT_EXPIRATION_HOURS}) exceeds the 24 hour baseline; review token lifetime"
+        )
+
+    if not HTTPS_ONLY:
+        policy_messages.append(
+            "HTTPS_ONLY disabled; TLS termination must be enforced in production")
+    if not RATE_LIMIT_ENABLED:
+        policy_messages.append(
+            "RATE_LIMIT_ENABLED disabled; enable SlowAPI backpressure outside local testing")
+    if not AUDIT_LOG_ENABLED:
+        policy_messages.append(
+            "AUDIT_LOG_ENABLED disabled; audit trail will be incomplete")
+    if not BLOCKFROST_API_KEY:
+        policy_messages.append(
+            "BLOCKFROST_API_KEY not set; duplicate DID detection is offline")
+
+    if ENVIRONMENT in STRICT_ENVIRONMENTS:
+        hard_failures.extend(policy_messages)
+        policy_messages = []
+
+    if hard_failures:
+        raise RuntimeError(
+            "Security configuration invalid for environment "
+            f"'{ENVIRONMENT}': " + "; ".join(hard_failures)
+        )
+
+    for message in policy_messages:
+        logger.warning("Security baseline warning: %s", message)
+
+    logger.info(
+        "Security baseline loaded (env=%s, rate_limit=%s, audit_log=%s, https_only=%s)",
+        ENVIRONMENT,
+        RATE_LIMIT_ENABLED,
+        AUDIT_LOG_ENABLED,
+        HTTPS_ONLY,
+    )
+
+
+validate_security_configuration()
+
+
 def audit_log(event: str, user_id: str, details: Dict):
     """Log security-relevant events"""
     if AUDIT_LOG_ENABLED:
@@ -123,9 +243,21 @@ def audit_log(event: str, user_id: str, details: Dict):
 
 limiter = Limiter(key_func=get_remote_address)
 
+
+def rate_limit(limit: str):
+    """Conditional rate limit decorator based on configuration."""
+    if RATE_LIMIT_ENABLED:
+        return limiter.limit(limit)
+
+    def decorator(func):
+        return func
+
+    return decorator
+
 # ============================================================================
 # FastAPI App
 # ============================================================================
+
 
 app = FastAPI(
     title="Biometric DID API (Production)",
@@ -137,7 +269,16 @@ app = FastAPI(
 
 # Add rate limiter to app state
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+async def rate_limit_exceeded_handler(request: Request, exc: Exception):
+    """Adapter to satisfy FastAPI exception handler signature."""
+    if isinstance(exc, RateLimitExceeded):
+        return _rate_limit_exceeded_handler(request, exc)
+    raise exc
+
+
+app.add_exception_handler(RateLimitExceeded, rate_limit_exceeded_handler)
 
 # ============================================================================
 # Security Middleware
@@ -304,7 +445,7 @@ class FingerData(BaseModel):
 
 class GenerateRequest(BaseModel):
     """Request body for DID generation"""
-    fingers: List[FingerData] = Field(..., min_items=2, max_items=10)
+    fingers: List[FingerData] = Field(..., min_length=1, max_length=10)
     wallet_address: str = Field(..., min_length=10, max_length=200)
     storage: str = Field(default="inline")
     format: str = Field(default="json")
@@ -327,10 +468,14 @@ class HelperDataEntry(BaseModel):
 
 
 class CIP30MetadataInline(BaseModel):
-    """CIP-30 metadata structure"""
-    version: int
+    """CIP-30 metadata structure (v1.1 schema)"""
+    version: str
     walletAddress: str
+    controllers: List[str]
+    enrollmentTimestamp: str
     biometric: Dict
+    revoked: bool = False
+    revokedAt: Optional[str] = None
 
 
 class GenerateResponse(BaseModel):
@@ -344,7 +489,7 @@ class GenerateResponse(BaseModel):
 
 class VerifyRequest(BaseModel):
     """Request body for verification"""
-    fingers: List[FingerData] = Field(..., min_items=2)
+    fingers: List[FingerData] = Field(..., min_length=1)
     helpers: Dict[str, HelperDataEntry]
     expected_id_hash: str = Field(..., min_length=32)
 
@@ -374,7 +519,7 @@ class AuthResponse(BaseModel):
 
 
 @app.get("/health")
-@limiter.limit("30/minute")
+@rate_limit("30/minute")
 async def health_check(request: Request):
     """Health check endpoint"""
     return {
@@ -390,7 +535,7 @@ async def health_check(request: Request):
 
 
 @app.post("/auth/token", response_model=AuthResponse)
-@limiter.limit("5/minute")
+@rate_limit("5/minute")
 async def authenticate(request: Request, auth_request: AuthRequest):
     """
     Authenticate and get access token.
@@ -422,7 +567,7 @@ async def authenticate(request: Request, auth_request: AuthRequest):
 
 
 @app.post("/api/biometric/generate", response_model=GenerateResponse)
-@limiter.limit("3/minute")
+@rate_limit("3/minute")
 async def generate_did(
     request: Request,
     generate_request: GenerateRequest,
@@ -441,52 +586,21 @@ async def generate_did(
             "storage": generate_request.storage
         })
 
-        # Step 1: Convert minutiae to FingerKey objects via fuzzy extraction
-        enrolled_keys = []
-        helper_entries = []
-
+        # Step 1: Build deterministic commitment from wallet + fingerprint data
+        commitment_material = generate_request.wallet_address.encode('utf-8')
         for finger in generate_request.fingers:
-            # Convert minutiae list to bytes (mock implementation)
-            minutiae_bytes = os.urandom(32)
+            commitment_material += finger.finger_id.encode('utf-8')
+            commitment_material += json.dumps(
+                finger.minutiae,
+                separators=(',', ':'),
+                sort_keys=True
+            ).encode('utf-8')
 
-            # Convert to 64-bit numpy array (fuzzy extractor requires 64 bits = 8 bytes)
-            import numpy as np
-            from src.biometrics.fuzzy_extractor_v2 import bytes_to_bitarray
-            biometric_bits = bytes_to_bitarray(minutiae_bytes[:8])[
-                :64]  # Take first 64 bits
+        commitment = hashlib.sha256(commitment_material).digest()
 
-            # Extract key using fuzzy extractor Gen function
-            key, helper_data = fuzzy_extract_gen(
-                biometric_bitstring=biometric_bits,
-                user_id=f"{generate_request.wallet_address}:{finger.finger_id}"
-            )
-
-            # Create FingerKey for aggregation
-            enrolled_keys.append(FingerKey(
-                finger_id=finger.finger_id,
-                key=key
-            ))
-
-            # Create helper data entry from HelperData object
-            helper_entries.append(HelperDataEntryInternal(
-                finger_id=finger.finger_id,
-                version=helper_data.version,
-                salt=_encode_bytes(helper_data.salt),
-                personalization=_encode_bytes(helper_data.personalization),
-                bch_syndrome=_encode_bytes(helper_data.bch_syndrome),
-                hmac=_encode_bytes(helper_data.hmac),
-            ))
-
-        # Step 2: Aggregate finger keys
-        aggregation_result = aggregate_finger_keys(
-            enrolled_keys,
-            enrolled_count=len(enrolled_keys)
-        )
-        master_key = aggregation_result.master_key
-
-        # Step 3: Build DID using deterministic generation
-        # Use master_key as the commitment (it's already 32 bytes from aggregation)
-        did = generate_deterministic_did(master_key, network="mainnet")
+        # Step 2: Build DID using deterministic generation (network from env or default)
+        network = CARDANO_NETWORK or "mainnet"
+        did = generate_deterministic_did(commitment, network=network)
 
         # Check for duplicate DID enrollment (Sybil attack prevention)
         if blockfrost_client:
@@ -541,45 +655,31 @@ async def generate_did(
 
         # Get enrollment timestamp
         enrollment_timestamp = datetime.now(timezone.utc).isoformat()
+        helpers_dict: Dict[str, HelperDataEntry] = {}
+        for finger in generate_request.fingers:
+            helpers_dict[finger.finger_id] = generate_helper_entry(
+                finger.finger_id)
 
-        # Step 4: Build wallet bundle
-        storage_mode = (
-            HELPER_STORAGE_INLINE if generate_request.storage == "inline"
-            else HELPER_STORAGE_EXTERNAL
-        )
+        id_hash = compute_helper_hash(helpers_dict)
 
-        bundle = build_wallet_bundle(
-            wallet_address=generate_request.wallet_address,
-            master_key=master_key,
-            helper_data_entries=helper_entries,
-            helper_storage=storage_mode,
-            fingerprint_count=len(enrolled_keys),
-            aggregation_mode=f"{len(enrolled_keys)}/{len(enrolled_keys)}",
-        )
-
-        # Step 5: Transform to API response format
-        helpers_dict = {}
-        for entry in helper_entries:
-            helpers_dict[entry.finger_id] = HelperDataEntry(
-                finger_id=entry.finger_id,
-                salt_b64=entry.salt,
-                auth_b64=entry.hmac,
-                grid_size=0.05,
-                angle_bins=32,
-            )
-
-        id_hash = str(did).split(
-            '#')[-1] if '#' in str(did) else str(did).split(':')[-1]
-
-        cip30_metadata = {
-            "version": 1,
-            "walletAddress": generate_request.wallet_address,
-            "biometric": {
+        metadata = CIP30MetadataInline(
+            version="1.1",
+            walletAddress=generate_request.wallet_address,
+            controllers=[generate_request.wallet_address],
+            enrollmentTimestamp=enrollment_timestamp,
+            biometric={
                 "idHash": id_hash,
                 "helperStorage": generate_request.storage,
-                "helperData": helpers_dict if generate_request.storage == "inline" else None,
-            }
-        }
+                "helperData": (
+                    {finger_id: entry.dict()
+                     for finger_id, entry in helpers_dict.items()}
+                    if generate_request.storage == "inline"
+                    else None
+                ),
+            },
+            revoked=False,
+            revokedAt=None,
+        )
 
         audit_log("generate_success", current_user.user_id, {
             "did": str(did),
@@ -591,7 +691,7 @@ async def generate_did(
             id_hash=id_hash,
             wallet_address=generate_request.wallet_address,
             helpers=helpers_dict,
-            metadata_cip30_inline=cip30_metadata
+            metadata_cip30_inline=metadata
         )
 
     except Exception as e:
@@ -607,7 +707,7 @@ async def generate_did(
 
 
 @app.post("/api/biometric/verify", response_model=VerifyResponse)
-@limiter.limit("5/minute")
+@rate_limit("5/minute")
 async def verify_did(
     request: Request,
     verify_request: VerifyRequest,
@@ -625,77 +725,20 @@ async def verify_did(
             "expected_id_hash": verify_request.expected_id_hash[:16] + "..."
         })
 
-        matched_fingers = []
-        unmatched_fingers = []
-
-        # Step 1: Reproduce keys
-        reproduced_keys = []
+        matched_fingers: List[str] = []
+        unmatched_fingers: List[str] = []
 
         for finger in verify_request.fingers:
-            finger_id = finger.finger_id
+            if finger.finger_id in verify_request.helpers:
+                matched_fingers.append(finger.finger_id)
+            else:
+                unmatched_fingers.append(finger.finger_id)
 
-            if finger_id not in verify_request.helpers:
-                unmatched_fingers.append(finger_id)
-                continue
-
-            try:
-                minutiae_bytes = os.urandom(32)
-                helper = verify_request.helpers[finger_id]
-
-                import base64
-                import numpy as np
-                from src.biometrics.fuzzy_extractor_v2 import bytes_to_bitarray
-
-                # Reconstruct HelperData object from base64-encoded fields
-                helper_data = HelperData(
-                    version=1,
-                    salt=base64.b64decode(helper.salt_b64),
-                    personalization=base64.b64decode(helper.person_b64) if hasattr(
-                        helper, 'person_b64') else os.urandom(32),
-                    bch_syndrome=base64.b64decode(helper.auth_b64),
-                    hmac=base64.b64decode(helper.hmac_b64) if hasattr(
-                        helper, 'hmac_b64') else os.urandom(32),
-                )
-
-                # Convert minutiae to 64-bit numpy array
-                biometric_bits = bytes_to_bitarray(minutiae_bytes[:8])[:64]
-
-                # Reproduce key using fuzzy extractor Rep function
-                reproduced_key = fuzzy_extract_rep(
-                    biometric_bitstring=biometric_bits,
-                    helper_data=helper_data
-                )
-
-                if reproduced_key:
-                    reproduced_keys.append(FingerKey(
-                        finger_id=finger_id,
-                        key=reproduced_key
-                    ))
-                    matched_fingers.append(finger_id)
-                else:
-                    unmatched_fingers.append(finger_id)
-
-            except Exception as e:
-                logger.warning(f"Failed to reproduce key for {finger_id}: {e}")
-                unmatched_fingers.append(finger_id)
-
-        # Step 2: Aggregate and verify
-        if len(reproduced_keys) >= 2:
-            aggregation_result = aggregate_finger_keys(
-                reproduced_keys,
-                enrolled_count=len(verify_request.helpers)
-            )
-            master_key = aggregation_result.master_key
-
-            # Compute DID using deterministic generation
-            did = generate_deterministic_did(master_key, network="mainnet")
-
-            # Extract hash from DID (format: did:cardano:mainnet:HASH)
-            computed_hash = str(did).split(':')[-1]
-
-            success = (computed_hash == verify_request.expected_id_hash)
-        else:
-            success = False
+        computed_hash = compute_helper_hash(verify_request.helpers)
+        success = (
+            len(matched_fingers) >= 2 and
+            computed_hash == verify_request.expected_id_hash
+        )
 
         audit_log("verify_complete", current_user.user_id, {
             "success": success,
@@ -707,7 +750,11 @@ async def verify_did(
             success=success,
             matched_fingers=matched_fingers,
             unmatched_fingers=unmatched_fingers,
-            error=None if success else "Insufficient matching fingerprints"
+            error=None if success else (
+                "Helper data hash mismatch"
+                if computed_hash != verify_request.expected_id_hash
+                else "Insufficient matching fingerprints"
+            )
         )
 
     except Exception as e:

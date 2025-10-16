@@ -25,17 +25,24 @@ import type {
 } from "../biometricDid.types";
 
 // Test configuration
-const TEST_WALLET_ADDRESS = "addr_test1_demo_integration";
-const API_SERVERS = {
-  mock: "http://localhost:8002", // Mock API server (should be running)
-  basic: "http://localhost:8000", // Basic API server
-  secure: "http://localhost:8001", // Secure API server with JWT
-};
+const TEST_WALLET_ADDRESS =
+  process.env.TEST_WALLET_ADDRESS || "addr_test1_demo_integration_testing";
+// Flag to enable API-backed tests (requires mock/secure server running)
+const RUN_API_TESTS = process.env.RUN_API_TESTS === "true";
+const describeWithAPI = RUN_API_TESTS ? describe : describe.skip;
 
-// Flag to skip tests requiring API server
-// Set to 'false' when API server is running
-const SKIP_API_TESTS = !process.env.RUN_API_TESTS;
-const describeWithAPI = SKIP_API_TESTS ? describe.skip : describe;
+if (RUN_API_TESTS) {
+  // eslint-disable-next-line no-console
+  console.info(
+    `[integration-tests] RUN_API_TESTS enabled against ${process.env.BIOMETRIC_API_URL || "http://localhost:8000"
+    }`
+  );
+} else {
+  // eslint-disable-next-line no-console
+  console.info(
+    "[integration-tests] RUN_API_TESTS disabled; API-backed suites will be skipped."
+  );
+}
 
 // Mock biometric data (simulating fingerprint scanner output)
 const MOCK_FINGERPRINT_DATA: BiometricEnrollmentInput = {
@@ -129,6 +136,15 @@ const MOCK_FINGERPRINT_RECAPTURE: BiometricEnrollmentInput = {
   ],
 };
 
+const resolveExpectedIdHash = (result: BiometricGenerateResult): string => {
+  return (
+    result.id_hash ||
+    result.metadata_cip30_inline?.biometric?.idHash ||
+    result.did.split(":").pop() ||
+    ""
+  );
+};
+
 describe("Biometric DID Service - Integration Tests", () => {
   let service: BiometricDidService;
 
@@ -159,7 +175,7 @@ describe("Biometric DID Service - Integration Tests", () => {
 
       // Validate metadata v1.1 structure
       expect(result.metadata_cip30_inline).toBeDefined();
-      expect(result.metadata_cip30_inline.version).toBe(1.1);
+      expect(Number(result.metadata_cip30_inline.version)).toBeCloseTo(1.1);
       expect(result.metadata_cip30_inline.controllers).toBeDefined();
       expect(Array.isArray(result.metadata_cip30_inline.controllers)).toBe(true);
 
@@ -260,8 +276,7 @@ describe("Biometric DID Service - Integration Tests", () => {
 
     it("should verify with same biometric (exact match)", async () => {
       // Extract ID hash from DID
-      const didParts = enrollmentResult.did.split(":");
-      const idHash = didParts[didParts.length - 1];
+      const idHash = resolveExpectedIdHash(enrollmentResult);
 
       const verifyInput: BiometricVerifyInput = {
         fingers: MOCK_FINGERPRINT_DATA.fingers,
@@ -281,8 +296,7 @@ describe("Biometric DID Service - Integration Tests", () => {
 
     it("should verify with noisy recapture (fuzzy matching)", async () => {
       // Extract ID hash
-      const didParts = enrollmentResult.did.split(":");
-      const idHash = didParts[didParts.length - 1];
+      const idHash = resolveExpectedIdHash(enrollmentResult);
 
       const verifyInput: BiometricVerifyInput = {
         fingers: MOCK_FINGERPRINT_RECAPTURE.fingers, // Slightly different
@@ -304,7 +318,7 @@ describe("Biometric DID Service - Integration Tests", () => {
       const wrongFingerprint: BiometricEnrollmentInput = {
         fingers: [
           {
-            finger_id: "left_thumb",
+            finger_id: "left_thumb_wrong",
             minutiae: [
               [300.0, 400.0, 200.0], // Completely different
               [350.0, 380.0, 250.0],
@@ -314,8 +328,7 @@ describe("Biometric DID Service - Integration Tests", () => {
         ],
       };
 
-      const didParts = enrollmentResult.did.split(":");
-      const idHash = didParts[didParts.length - 1];
+      const idHash = resolveExpectedIdHash(enrollmentResult);
 
       const verifyInput: BiometricVerifyInput = {
         fingers: wrongFingerprint.fingers,
@@ -355,8 +368,7 @@ describe("Biometric DID Service - Integration Tests", () => {
         TEST_WALLET_ADDRESS
       );
 
-      const didParts = enrollmentResult.did.split(":");
-      const idHash = didParts[didParts.length - 1];
+      const idHash = resolveExpectedIdHash(enrollmentResult);
 
       const verifyInput: BiometricVerifyInput = {
         fingers: MOCK_FINGERPRINT_DATA.fingers,

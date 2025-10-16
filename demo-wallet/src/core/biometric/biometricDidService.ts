@@ -62,6 +62,8 @@ function generateDeterministicDID(commitment: Uint8Array | string, network: stri
 export class BiometricDidService {
   private static instance: BiometricDidService;
   private pythonCliPath: string;
+  private authState: { token: string; expiresAt: number } | null = null;
+  private pendingAuthRequest: Promise<string | null> | null = null;
 
   private constructor() {
     // In production, this would be the path to the bundled Python CLI
@@ -146,6 +148,9 @@ export class BiometricDidService {
     walletAddress: string
   ): Promise<BiometricGenerateResult> {
     try {
+      if (!input.fingers || input.fingers.length === 0) {
+        throw new Error("Biometric enrollment requires at least one finger template");
+      }
       // Convert input to JSON for CLI
       const inputJson = JSON.stringify(input);
 
@@ -173,6 +178,12 @@ export class BiometricDidService {
    */
   async verify(input: BiometricVerifyInput): Promise<BiometricVerifyResult> {
     try {
+      if (!input.fingers || input.fingers.length === 0) {
+        throw new Error("Biometric verification requires at least one finger template");
+      }
+      if (!input.helpers || Object.keys(input.helpers).length === 0) {
+        throw new Error("Biometric verification requires helper data from enrollment");
+      }
       // Convert inputs to JSON
       const fingersJson = JSON.stringify({ fingers: input.fingers });
       const helpersJson = JSON.stringify(input.helpers);
@@ -225,6 +236,213 @@ export class BiometricDidService {
       return this.executeNativeCommand(command, stdinData);
     } else {
       return this.executeWebCommand(command, stdinData);
+    }
+  }
+
+  private resolveApiBaseUrl(): string {
+    return (
+      process.env.BIOMETRIC_API_URL ||
+      process.env.SECURE_API_URL ||
+      process.env.MOCK_API_URL ||
+      "http://localhost:8000"
+    );
+  }
+
+  private resolveAuthBaseUrl(): string {
+    return (
+      process.env.BIOMETRIC_AUTH_URL ||
+      process.env.SECURE_API_URL ||
+      this.resolveApiBaseUrl()
+    );
+  }
+
+  private resolveApiKey(): string | undefined {
+    const baseUrl = this.resolveApiBaseUrl().replace(/\/$/, "");
+    const mockUrl = (process.env.MOCK_API_URL || "").replace(/\/$/, "");
+
+    if (mockUrl && mockUrl.length > 0 && baseUrl === mockUrl) {
+      return undefined;
+    }
+
+    const key =
+      process.env.BIOMETRIC_API_KEY ||
+      process.env.API_KEY ||
+      process.env.API_SECRET_KEY;
+    return key ? key.trim() || undefined : undefined;
+  }
+
+  private invalidateAuthToken(): void {
+    this.authState = null;
+  }
+
+  private async getApiToken(forceRefresh = false): Promise<string | null> {
+    const apiKey = this.resolveApiKey();
+    if (!apiKey) {
+      return null; // Mock server or unauthenticated setup
+    }
+
+    if (!forceRefresh && this.authState && Date.now() < this.authState.expiresAt) {
+      return this.authState.token;
+    }
+
+    if (!forceRefresh && this.pendingAuthRequest) {
+      return this.pendingAuthRequest;
+    }
+
+    const authPromise = this.requestAuthToken(apiKey)
+      .catch(error => {
+        this.invalidateAuthToken();
+        throw error;
+      })
+      .finally(() => {
+        this.pendingAuthRequest = null;
+      });
+
+    this.pendingAuthRequest = authPromise;
+    return authPromise;
+  }
+
+  private async requestAuthToken(apiKey: string): Promise<string | null> {
+    const authBase = this.resolveAuthBaseUrl();
+    const authEndpoint = `${authBase.replace(/\/$/, "")}/auth/token`;
+
+    try {
+      const response = await fetch(authEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ api_key: apiKey }),
+      });
+
+      if (!response.ok) {
+        const message = await this.extractErrorMessage(response);
+        throw new Error(`Authentication failed: ${message}`);
+      }
+
+      const data = (await response.json()) as {
+        access_token?: string;
+        expires_in?: number;
+      };
+
+      if (!data.access_token) {
+        throw new Error("Authentication response missing access_token");
+      }
+
+      const expiresInSeconds = Math.max(0, (data.expires_in ?? 3600) - 5);
+      this.authState = {
+        token: data.access_token,
+        expiresAt: Date.now() + expiresInSeconds * 1000,
+      };
+
+      return data.access_token;
+    } catch (error) {
+      if (this.isNetworkError(error)) {
+        throw new Error(
+          `Authentication server unavailable at ${authBase}. Ensure the secure API server is running and BIOMETRIC_AUTH_URL is correct.`
+        );
+      }
+      throw error;
+    }
+  }
+
+  private isNetworkError(error: unknown): boolean {
+    return (
+      error instanceof TypeError &&
+      (error.message.includes("fetch failed") ||
+        error.message.includes("network") ||
+        error.message.includes("request") ||
+        error.message.includes("connect"))
+    );
+  }
+
+  private async extractErrorMessage(response: Response): Promise<string> {
+    const statusInfo = `${response.status} ${response.statusText}`.trim();
+
+    try {
+      const text = await response.text();
+      if (!text) {
+        return statusInfo;
+      }
+
+      try {
+        const json = JSON.parse(text);
+        if (typeof json === "string") {
+          return `${statusInfo}: ${json}`;
+        }
+
+        if (json && typeof json === "object") {
+          const detail = json.detail || json.error || json.message;
+          if (detail) {
+            return `${statusInfo}: ${detail}`;
+          }
+          return `${statusInfo}: ${JSON.stringify(json)}`;
+        }
+      } catch {
+        // Fall through if body is not JSON
+      }
+
+      return `${statusInfo}: ${text}`;
+    } catch {
+      return statusInfo;
+    }
+  }
+
+  private async performApiRequest<T>(
+    path: string,
+    init: RequestInit,
+    allowRetry: boolean = true
+  ): Promise<T> {
+    const baseUrl = this.resolveApiBaseUrl().replace(/\/$/, "");
+    const url = `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+
+    if (init.headers) {
+      Object.assign(headers, init.headers as Record<string, string>);
+    }
+
+    let token: string | null = null;
+    try {
+      token = await this.getApiToken();
+    } catch (authError) {
+      if (this.resolveApiKey()) {
+        throw authError;
+      }
+    }
+
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const requestInit: RequestInit = {
+      ...init,
+      headers,
+    };
+
+    try {
+      const response = await fetch(url, requestInit);
+
+      if (response.status === 401 && allowRetry && token) {
+        this.invalidateAuthToken();
+        return this.performApiRequest<T>(path, init, false);
+      }
+
+      if (!response.ok) {
+        const message = await this.extractErrorMessage(response);
+        throw new Error(message);
+      }
+
+      return (await response.json()) as T;
+    } catch (error) {
+      if (this.isNetworkError(error)) {
+        throw new Error(
+          `Backend API unavailable at ${baseUrl}. Ensure the server is running and BIOMETRIC_API_URL is correct.`
+        );
+      }
+      throw error;
     }
   }
 
@@ -318,9 +536,6 @@ export class BiometricDidService {
     command: string,
     stdinData?: string
   ): Promise<string> {
-    // Backend API implementation
-    const API_BASE_URL = process.env.BIOMETRIC_API_URL || "http://localhost:8000";
-
     try {
       if (command.includes("generate")) {
         // Parse input data
@@ -335,25 +550,22 @@ export class BiometricDidService {
         const storage = storageMatch ? storageMatch[1] : "inline";
 
         // Call API endpoint
-        const response = await fetch(`${API_BASE_URL}/api/biometric/generate`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fingers: input.fingers || [],
-            wallet_address: walletAddress,
-            storage: storage,
-            format: "json",
-          }),
-        });
+        const payload = {
+          fingers: input.fingers || [],
+          wallet_address: walletAddress,
+          storage: storage,
+          format: "json",
+        };
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.detail || "API request failed");
-        }
+        const apiResponse = await this.performApiRequest<any>(
+          "/api/biometric/generate",
+          {
+            method: "POST",
+            body: JSON.stringify(payload),
+          }
+        );
 
-        return JSON.stringify(await response.json());
+        return JSON.stringify(apiResponse);
 
       } else if (command.includes("verify")) {
         // Parse input data
@@ -364,38 +576,30 @@ export class BiometricDidService {
         const expectedHash = hashMatch ? hashMatch[1] : "";
 
         // Call API endpoint
-        const response = await fetch(`${API_BASE_URL}/api/biometric/verify`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            fingers: input.fingers || [],
-            helpers: input.helpers || {},
-            expected_id_hash: expectedHash,
-          }),
-        });
+        const payload = {
+          fingers: input.fingers || [],
+          helpers: input.helpers || {},
+          expected_id_hash: expectedHash,
+        };
 
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.detail || "API request failed");
-        }
+        const apiResponse = await this.performApiRequest<any>(
+          "/api/biometric/verify",
+          {
+            method: "POST",
+            body: JSON.stringify(payload),
+          }
+        );
 
-        return JSON.stringify(await response.json());
+        return JSON.stringify(apiResponse);
       }
 
       throw new Error(`Unknown command: ${command}`);
 
     } catch (error) {
-      if (error instanceof Error && error.message.includes("fetch")) {
+      if (error instanceof Error &&
+        (error.message.includes("API unavailable") || error.message.includes("Ensure the server is running"))) {
         throw new Error(
-          `Backend API unavailable. Please ensure API server is running at ${API_BASE_URL}.
-
-          To start the API server:
-          1. cd /path/to/decentralized-did
-          2. python api_server_mock.py
-
-          Or set BIOMETRIC_API_URL environment variable to your API endpoint.
+          `${error.message}
 
           Command: ${command}`
         );
@@ -434,21 +638,58 @@ export class BiometricDidService {
 
     // Extract id_hash for metadata (not used in DID identifier)
     const idHash = cliOutput.id_hash || cliOutput.idHash;
+    const helpers = cliOutput.helpers || {};
+
+    // Prefer server-provided metadata, fallback to synthesized structure
+    const rawMetadata = cliOutput.metadata_cip30_inline || cliOutput.metadata;
+    const metadata = rawMetadata ? { ...rawMetadata } : {};
+
+    if (!metadata.version) {
+      metadata.version = "1.1";
+    }
+
+    if (!metadata.walletAddress) {
+      metadata.walletAddress = walletAddress;
+    }
+
+    if (!Array.isArray(metadata.controllers) || metadata.controllers.length === 0) {
+      metadata.controllers = [walletAddress];
+    }
+
+    if (!metadata.enrollmentTimestamp) {
+      metadata.enrollmentTimestamp = new Date().toISOString();
+    }
+
+    if (typeof metadata.revoked !== "boolean") {
+      metadata.revoked = false;
+    }
+
+    if (!metadata.biometric) {
+      metadata.biometric = {
+        idHash: idHash,
+        helperStorage: "inline",
+        helperData: helpers,
+      };
+    } else {
+      if (idHash && !metadata.biometric.idHash) {
+        metadata.biometric.idHash = idHash;
+      }
+
+      if (!metadata.biometric.helperStorage) {
+        metadata.biometric.helperStorage = "inline";
+      }
+
+      if (metadata.biometric.helperStorage === "inline" && !metadata.biometric.helperData) {
+        metadata.biometric.helperData = helpers;
+      }
+    }
 
     return {
       did,
       id_hash: idHash,
       wallet_address: walletAddress, // Kept in metadata, not in DID identifier
-      helpers: cliOutput.helpers || {},
-      metadata_cip30_inline: {
-        version: 1,
-        walletAddress: walletAddress,
-        biometric: {
-          idHash: idHash,
-          helperStorage: "inline",
-          helperData: cliOutput.helpers || {},
-        },
-      },
+      helpers,
+      metadata_cip30_inline: metadata,
     };
   }
 

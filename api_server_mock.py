@@ -13,9 +13,9 @@ Endpoints:
 - GET /health - Health check
 
 Usage:
-    python api_server_mock.py
+    MOCK_API_PORT=8002 python api_server_mock.py
 
-Then configure demo-wallet to use: http://localhost:8000
+Then configure demo-wallet to use: http://localhost:8002
 """
 
 from fastapi import FastAPI, HTTPException
@@ -39,6 +39,9 @@ from src.decentralized_did.cardano.blockfrost import (
 # Configuration
 BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
 CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "testnet")
+MOCK_API_HOST = os.environ.get("MOCK_API_HOST", "0.0.0.0")
+MOCK_API_PORT = int(os.environ.get("MOCK_API_PORT", "8002"))
+MOCK_API_RELOAD = os.environ.get("MOCK_API_RELOAD", "false").lower() == "true"
 
 # Initialize Blockfrost client if API key is available
 blockfrost_client = None
@@ -155,26 +158,47 @@ class VerifyResponse(BaseModel):
 
 
 # Helper functions
-def generate_mock_id_hash(wallet_address: str, fingers: List[FingerData]) -> str:
-    """Generate a deterministic mock ID hash from inputs"""
-    # Create a deterministic hash from wallet address and finger IDs
-    data = wallet_address + "".join(sorted([f.finger_id for f in fingers]))
-    hash_bytes = hashlib.sha256(data.encode()).digest()
-    return base64.b64encode(hash_bytes)[:16].decode('utf-8').replace('/', '_').replace('+', '-')
+def _encode_b64(data: bytes) -> str:
+    """Return URL-safe base64 without padding."""
+    return base64.urlsafe_b64encode(data).decode('utf-8').rstrip('=')
+
+
+def _deterministic_bytes(label: str, finger_id: str, length: int) -> bytes:
+    """Derive deterministic bytes from label + finger_id."""
+    hasher = hashlib.blake2b(digest_size=length)
+    hasher.update(label.encode('utf-8'))
+    hasher.update(b':')
+    hasher.update(finger_id.encode('utf-8'))
+    return hasher.digest()
 
 
 def generate_mock_helper(finger_id: str) -> HelperDataEntry:
-    """Generate mock helper data for a finger"""
-    # Use finger_id as seed for deterministic mock data
-    seed = hashlib.md5(finger_id.encode()).digest()
+    """Generate deterministic mock helper data for a finger."""
+    salt_bytes = _deterministic_bytes("salt", finger_id, length=16)
+    auth_bytes = _deterministic_bytes("auth", finger_id, length=32)
 
     return HelperDataEntry(
         finger_id=finger_id,
-        salt_b64=base64.b64encode(seed[:16]).decode('utf-8'),
-        auth_b64=base64.b64encode(seed[16:] + os.urandom(16)).decode('utf-8'),
+        salt_b64=_encode_b64(salt_bytes),
+        auth_b64=_encode_b64(auth_bytes),
         grid_size=0.05,
         angle_bins=32,
     )
+
+
+def compute_helper_hash(helpers: Dict[str, HelperDataEntry], wallet_address: Optional[str] = None) -> str:
+    """Compute deterministic hash from helper data (and optional wallet)."""
+    hash_ctx = hashlib.blake2b(digest_size=32)
+    if wallet_address:
+        hash_ctx.update(wallet_address.encode('utf-8'))
+
+    for finger_id in sorted(helpers.keys()):
+        entry = helpers[finger_id]
+        hash_ctx.update(finger_id.encode('utf-8'))
+        hash_ctx.update(entry.salt_b64.encode('utf-8'))
+        hash_ctx.update(entry.auth_b64.encode('utf-8'))
+
+    return _encode_b64(hash_ctx.digest())
 
 
 # API Endpoints
@@ -213,10 +237,6 @@ async def generate_did(request: GenerateRequest):
 
         # Hash to create 32-byte commitment
         commitment = hashlib.sha256(commitment_data).digest()
-
-        # Generate mock ID hash for helper data compatibility
-        id_hash = generate_mock_id_hash(
-            request.wallet_address, request.fingers)
 
         # Build DID using deterministic generation (SECURE format)
         # Note: Using "testnet" for mock server development
@@ -266,6 +286,14 @@ async def generate_did(request: GenerateRequest):
         for finger in request.fingers:
             helpers[finger.finger_id] = generate_mock_helper(finger.finger_id)
 
+        # Generate mock ID hash from helper data (wallet optional)
+        id_hash = compute_helper_hash(helpers)
+
+        helpers_dict = {
+            finger_id: entry.dict()
+            for finger_id, entry in helpers.items()
+        }
+
         # Build CIP-30 metadata with v1.1 schema
         cip30_metadata = CIP30MetadataInline(
             version="1.1",  # Updated to v1.1
@@ -276,7 +304,7 @@ async def generate_did(request: GenerateRequest):
             biometric={
                 "idHash": id_hash,
                 "helperStorage": request.storage,
-                "helperData": helpers if request.storage == "inline" else None,
+                "helperData": helpers_dict if request.storage == "inline" else None,
             },
             revoked=False,  # NEW: Revocation status
         )
@@ -323,14 +351,22 @@ async def verify_did(request: VerifyRequest):
             else:
                 unmatched_fingers.append(finger.finger_id)
 
-        # Mock: Success if we matched at least 2 fingers
-        success = len(matched_fingers) >= 2
+        computed_hash = compute_helper_hash(request.helpers)
+        hash_matches = computed_hash == request.expected_id_hash
+
+        success = len(matched_fingers) >= 2 and hash_matches
+
+        error_message = None
+        if not hash_matches:
+            error_message = "Helper data hash mismatch"
+        elif not success:
+            error_message = "Insufficient matching fingerprints"
 
         return VerifyResponse(
             success=success,
             matched_fingers=matched_fingers,
             unmatched_fingers=unmatched_fingers,
-            error=None if success else "Insufficient matching fingerprints"
+            error=error_message
         )
 
     except Exception as e:
@@ -349,9 +385,9 @@ if __name__ == "__main__":
     print("=" * 60)
     print("🔐 Biometric DID API Server (MOCK)")
     print("=" * 60)
-    print("Starting server at: http://localhost:8000")
-    print("API docs at: http://localhost:8000/docs")
-    print("Health check: http://localhost:8000/health")
+    print(f"Starting server at: http://{MOCK_API_HOST}:{MOCK_API_PORT}")
+    print(f"API docs at: http://{MOCK_API_HOST}:{MOCK_API_PORT}/docs")
+    print(f"Health check: http://{MOCK_API_HOST}:{MOCK_API_PORT}/health")
     print()
     print("⚠️  This is a MOCK server for development.")
     print("   Real biometric operations will be added in production.")
@@ -360,8 +396,8 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "api_server_mock:app",
-        host="0.0.0.0",
-        port=8000,
-        reload=True,
+        host=MOCK_API_HOST,
+        port=MOCK_API_PORT,
+        reload=MOCK_API_RELOAD,
         log_level="info"
     )

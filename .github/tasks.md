@@ -2108,6 +2108,11 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * Security testing (OWASP Top 10)
     * Accessibility testing (WCAG 2.1)
   - **Tools**: Playwright, k6, OWASP ZAP
+  - **Progress (2025-10-16)**:
+    * Added `.env.test` with canonical integration-test secrets and URLs
+    * Created `tests/fixtures/api/` helpers for deterministic mock requests
+    * Updated `test_api_auth.sh` to auto-load `${ENV_FILE:-.env.test}` overrides
+    * Wired demo-wallet Jest setup (`tests/setupEnv.ts`) to consume shared env defaults
   - **Deliverable**: Comprehensive test report
 
 - [ ] **task 7** - Documentation updates for Phase 4.6
@@ -2119,6 +2124,8 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * Create performance tuning guide
     * Update deployment documentation
     * Add troubleshooting guide
+  - **Progress (2025-10-16)**:
+    * Added `docs/API-ENDPOINTS.md` (Task 4 Phase 1.4 deliverable with full endpoint reference)
   - **Deliverable**: Updated documentation suite
 
 - [ ] **task 8** - Optional testnet deployment (from Phase 4.5)

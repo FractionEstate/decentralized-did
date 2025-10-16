@@ -1,0 +1,51 @@
+{
+  "fingers": [
+    {
+      "finger_id": "left_thumb",
+      "minutiae": [
+        [
+          100.5,
+          200.3,
+          45.0
+        ],
+        [
+          150.2,
+          180.9,
+          90.5
+        ]
+      ]
+    },
+    {
+      "finger_id": "left_index",
+      "minutiae": [
+        [
+          110.2,
+          210.5,
+          50.0
+        ],
+        [
+          160.5,
+          190.2,
+          95.5
+        ]
+      ]
+    }
+  ],
+  "helpers": {
+    "left_thumb": {
+      "finger_id": "left_thumb",
+      "salt_b64": "10pZSiM_wmwXXv4m8JmScQ",
+      "auth_b64": "4HKw3bRWHyyipbkkB81l5z2E2LYLMUJTLKPlUVB3Dr0",
+      "grid_size": 0.05,
+      "angle_bins": 32
+    },
+    "left_index": {
+      "finger_id": "left_index",
+      "salt_b64": "mD0iQkcFys7ul-rMLCyaRg",
+      "auth_b64": "HgboLlwxRZZgYUlkjWNbb7WaHSAuPuSgIa8Nc80kloM",
+      "grid_size": 0.05,
+      "angle_bins": 32
+    }
+  },
+  "expected_id_hash": "BLmcF7aSnhgrjn_QYo0ampN-VTBovkQBfPi_937HY9c"
+}
