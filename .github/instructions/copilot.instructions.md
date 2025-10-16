@@ -1,3 +1,6 @@
+---
+applyTo: '**'
+---
 # Copilot Working Agreement
 
 This repository combines a Python toolkit for biometric DID generation and a JavaScript demo wallet (`demo-wallet/`, based on Cardano Foundation's Veridian wallet). Follow these instructions whenever you contribute new code or documentation with Copilot assistance.

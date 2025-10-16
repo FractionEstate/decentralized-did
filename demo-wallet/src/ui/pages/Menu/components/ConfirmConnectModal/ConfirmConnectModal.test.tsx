@@ -53,12 +53,15 @@ const biometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
   [
     1990,
     {
-      walletAddress: "addr_test1demo123",
+      version: "1.1",
+      controllers: ["addr_test1demo123"],
       biometric: {
-        idHash: "abc123",
+        idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
         helperStorage: "external",
         helperUri: "https://example.com/helpers.json",
       },
+      enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
+      revoked: false,
     },
   ],
 ];
@@ -66,12 +69,16 @@ const biometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
 const biometricMetadata: StoredBiometricMetadata = {
   did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   label: 1990,
+  version: "1.1",
+  controllers: ["addr_test1demo123"],
   walletAddress: "addr_test1demo123",
   idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   helperStorage: "external",
   helperUri: "https://example.com/helpers.json",
   metadata: biometricMetadataEntries,
   createdAt: "2025-01-01T00:00:00.000Z",
+  enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
+  revoked: false,
 };
 
 describe("Confirm connect modal", () => {

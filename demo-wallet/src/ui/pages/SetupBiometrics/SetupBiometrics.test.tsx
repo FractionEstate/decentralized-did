@@ -1,5 +1,6 @@
 const verifySecretMock = jest.fn();
 const storeSecretMock = jest.fn();
+const ionRouterPushMock = jest.fn();
 
 import { BiometryType } from "@aparajita/capacitor-biometric-auth/dist/esm/definitions";
 import { IonReactMemoryRouter } from "@ionic/react-router";
@@ -10,9 +11,6 @@ import configureStore from "redux-mock-store";
 import { AuthService } from "../../../core/agent/services";
 import EN_TRANSLATIONS from "../../../locales/en/en.json";
 import { RoutePath } from "../../../routes/paths";
-import { setEnableBiometricsCache } from "../../../store/reducers/biometricsCache";
-import { setToastMsg } from "../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../globals/types";
 import { SetupBiometrics } from "./SetupBiometrics";
 
 jest.mock("../../utils/passcodeChecker", () => ({
@@ -66,6 +64,13 @@ jest.mock("../../hooks/privacyScreenHook", () => ({
   usePrivacyScreen: () => ({
     enablePrivacy: jest.fn(),
     disablePrivacy: jest.fn(),
+  }),
+}));
+
+jest.mock("../../hooks", () => ({
+  ...jest.requireActual("../../hooks"),
+  useAppIonRouter: () => ({
+    push: ionRouterPushMock,
   }),
 }));
 
@@ -123,11 +128,11 @@ describe("SetPasscode Page", () => {
     verifySecretMock.mockRejectedValue(
       new Error(AuthService.SECRET_NOT_STORED)
     );
+    ionRouterPushMock.mockClear();
   });
 
-  const history = createMemoryHistory();
-
   test("Renders", async () => {
+    const history = createMemoryHistory();
     const { getByText, getAllByText } = render(
       <IonReactMemoryRouter
         history={history}
@@ -150,6 +155,7 @@ describe("SetPasscode Page", () => {
   });
 
   test("Click on skip", async () => {
+    const history = createMemoryHistory();
     const { getByText } = render(
       <IonReactMemoryRouter
         history={history}
@@ -172,6 +178,7 @@ describe("SetPasscode Page", () => {
 
   test("Click on setup", async () => {
     require("@ionic/react");
+    const history = createMemoryHistory();
     const { getByTestId } = render(
       <IonReactMemoryRouter
         history={history}
@@ -186,18 +193,14 @@ describe("SetPasscode Page", () => {
     fireEvent.click(getByTestId("primary-button"));
 
     await waitFor(() => {
-      expect(handleBiometricAuthMock).toBeCalled();
+      expect(ionRouterPushMock).toHaveBeenCalledWith(
+        RoutePath.BIOMETRIC_ENROLLMENT,
+        "forward",
+        "push"
+      );
     });
 
-    expect(dispatchMock).toBeCalledWith(setEnableBiometricsCache(true));
-    expect(dispatchMock).toBeCalledWith(
-      setToastMsg(ToastMsgType.SETUP_BIOMETRIC_AUTHENTICATION_SUCCESS)
-    );
-
-    await waitFor(() => {
-      expect(saveItem).toBeCalled();
-    });
-
-    expect(dispatchMock).toBeCalled();
+    expect(saveItem).not.toHaveBeenCalled();
+    expect(dispatchMock).not.toHaveBeenCalledWith(expect.anything());
   });
 });

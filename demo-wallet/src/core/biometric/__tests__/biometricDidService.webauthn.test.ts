@@ -4,10 +4,10 @@
  */
 
 import { biometricDidService } from '../biometricDidService';
-import { SecureStorage } from '../../storage/secureStorage';
+import { SecureStorage } from '../../storage/secureStorage/secureStorage';
 
 // Mock SecureStorage
-jest.mock('../../storage/secureStorage', () => ({
+jest.mock('../../storage/secureStorage/secureStorage', () => ({
   SecureStorage: {
     set: jest.fn(),
     get: jest.fn(),
@@ -260,7 +260,7 @@ describe('BiometricDidService - WebAuthn Credential Storage', () => {
 
       await expect(
         biometricDidService.deleteWebAuthnCredential()
-      ).rejects.toThrow('Storage unavailable');
+      ).rejects.toThrow('Failed to delete WebAuthn credential: Storage unavailable');
     });
   });
 

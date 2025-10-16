@@ -93,7 +93,7 @@ export class BiometricDidService {
       console.log('✅ WebAuthn credential saved');
     } catch (error) {
       console.error('Failed to save WebAuthn credential:', error);
-      throw new Error(`Failed to save WebAuthn credential: ${(error as Error).message}`);
+      throw (error instanceof Error ? error : new Error(String(error)));
     }
   }
 
@@ -109,6 +109,14 @@ export class BiometricDidService {
       }
 
       const parsed = JSON.parse(credentialData);
+      if (
+        !parsed ||
+        typeof parsed.credentialId !== "string" ||
+        typeof parsed.publicKey !== "string"
+      ) {
+        return null;
+      }
+
       return {
         credentialId: parsed.credentialId,
         publicKey: parsed.publicKey,

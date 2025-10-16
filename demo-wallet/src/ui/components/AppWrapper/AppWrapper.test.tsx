@@ -213,12 +213,14 @@ const storedBiometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
   [
     1990,
     {
-      walletAddress: "addr_test1qpl4w3u",
+      version: "1.1",
+      controllers: ["addr_test1qpl4w3u"],
       biometric: {
-        idHash: "abc123",
+        idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
         helperStorage: "inline",
         helperData: { left_thumb: { salt_b64: "salt" } },
       },
+      enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
     },
   ],
 ];
@@ -226,11 +228,14 @@ const storedBiometricMetadataEntries: StoredBiometricMetadata["metadata"] = [
 const storedBiometricMetadata: StoredBiometricMetadata = {
   did: "did:cardano:testnet:zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   label: 1990,
+  version: "1.1",
+  controllers: ["addr_test1qpl4w3u"],
   walletAddress: "addr_test1qpl4w3u",
   idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
   helperStorage: "inline",
   metadata: storedBiometricMetadataEntries,
   createdAt: "2025-01-01T00:00:00.000Z",
+  enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
 };
 
 const peerBiometricMetadataEvent: PeerBiometricMetadataEvent = {

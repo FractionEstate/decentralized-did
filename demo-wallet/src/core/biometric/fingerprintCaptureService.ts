@@ -41,14 +41,15 @@ export class FingerprintCaptureService {
 
       if (this.webAuthnAvailable) {
         // Try to detect the biometric type
-        if (navigator.userAgent.includes('Mac')) {
-          this.webAuthnBiometricType = 'Touch ID';
-        } else if (navigator.userAgent.includes('Windows')) {
-          this.webAuthnBiometricType = 'Windows Hello';
-        } else if (navigator.userAgent.includes('Android')) {
-          this.webAuthnBiometricType = 'Fingerprint';
-        } else if (navigator.userAgent.includes('iOS')) {
+        const userAgent = navigator.userAgent || '';
+        if (/(iPhone|iPad|iPod)/i.test(userAgent) || userAgent.includes('iOS')) {
           this.webAuthnBiometricType = 'Touch ID / Face ID';
+        } else if (userAgent.includes('Android')) {
+          this.webAuthnBiometricType = 'Fingerprint';
+        } else if (userAgent.includes('Windows')) {
+          this.webAuthnBiometricType = 'Windows Hello';
+        } else if (userAgent.includes('Mac')) {
+          this.webAuthnBiometricType = 'Touch ID';
         } else {
           this.webAuthnBiometricType = 'Biometric';
         }
@@ -130,7 +131,7 @@ export class FingerprintCaptureService {
         },
         user: {
           id: userIdBytes,
-          name: userName,
+          name: userId,
           displayName: userName,
         },
         pubKeyCredParams: [
@@ -158,7 +159,13 @@ export class FingerprintCaptureService {
       // Extract credential data
       const credentialId = this.arrayBufferToBase64(credential.rawId);
       const response = credential.response as AuthenticatorAttestationResponse;
-      const publicKey = this.arrayBufferToBase64(response.getPublicKey()!);
+      const publicKeyBuffer = response.getPublicKey ? response.getPublicKey() : null;
+
+      if (!publicKeyBuffer) {
+        throw new Error('Failed to obtain WebAuthn public key');
+      }
+
+      const publicKey = this.arrayBufferToBase64(publicKeyBuffer);
 
       console.log('✅ WebAuthn enrollment successful');
 

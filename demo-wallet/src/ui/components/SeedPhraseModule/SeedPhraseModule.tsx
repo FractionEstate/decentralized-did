@@ -31,7 +31,7 @@ const SeedPhraseModule = forwardRef<SeedPhraseModuleRef, SeedPhraseModuleProps>(
     },
     ref
   ) => {
-    const seedInputs = useRef<(HTMLElement | null)[]>([]);
+    const seedInputs = useRef<(Element | null)[]>([]);
     const { hideKeyboard } = useHideKeyboard();
 
     useImperativeHandle(ref, () => ({
@@ -57,9 +57,8 @@ const SeedPhraseModule = forwardRef<SeedPhraseModuleRef, SeedPhraseModuleProps>(
     return (
       <div
         data-testid="seed-phrase-module"
-        className={`seed-phrase-module ${
-          hideSeedPhrase ? "seed-phrase-hidden" : "seed-phrase-visible"
-        }`}
+        className={`seed-phrase-module ${hideSeedPhrase ? "seed-phrase-hidden" : "seed-phrase-visible"
+          }`}
       >
         <div
           data-testid="seed-phrase-privacy-overlay"

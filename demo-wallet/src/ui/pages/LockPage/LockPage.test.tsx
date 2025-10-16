@@ -23,6 +23,7 @@ import { SetPasscode } from "../SetPasscode";
 import { LockPage } from "./LockPage";
 import { KeyStoreKeys } from "../../../core/storage";
 import { MiscRecordId } from "../../../core/agent/agent.types";
+import { AuthService } from "../../../core/agent/services";
 
 const deleteSecureStorageMock = jest.fn();
 jest.mock("../../../core/storage", () => ({
@@ -166,7 +167,9 @@ describe("Lock Page", () => {
   test("Renders Lock modal with title and description", () => {
     const { getByText } = render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
     expect(getByText(EN_TRANSLATIONS.lockpage.title)).toBeInTheDocument();
@@ -176,7 +179,9 @@ describe("Lock Page", () => {
   test("The user can add and remove digits from the passcode", () => {
     const { getByText, getByTestId } = render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
     fireEvent.click(getByText(/1/));
@@ -194,7 +199,9 @@ describe("Lock Page", () => {
 
     render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -315,7 +322,9 @@ describe("Lock Page", () => {
 
     const { getByText, queryByTestId, getByTestId } = render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -331,6 +340,28 @@ describe("Lock Page", () => {
     await waitFor(() => {
       expect(queryByTestId("lock-page")).not.toBeInTheDocument();
     });
+  });
+
+  test("Prompts recovery flow when passcode secret is missing", async () => {
+    verifySecretMock.mockRejectedValueOnce(
+      new Error(
+        `${AuthService.SECRET_NOT_STORED} [${KeyStoreKeys.APP_PASSCODE}]`
+      )
+    );
+
+    const { getByText, getByTestId, findByText } = render(
+      <Provider store={storeMocked(initialState)}>
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    await passcodeFiller(getByText, getByTestId, "193212");
+
+    expect(
+      await findByText(EN_TRANSLATIONS.lockpage.alert.text.verify)
+    ).toBeVisible();
   });
 
   test("Login using biometrics", async () => {
@@ -350,7 +381,9 @@ describe("Lock Page", () => {
 
     const { queryByTestId } = render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -378,7 +411,9 @@ describe("Lock Page", () => {
 
     const { queryByTestId, getByTestId } = render(
       <Provider store={storeMocked(initialState)}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -448,7 +483,9 @@ describe("Lock Page: Max login attempt", () => {
 
     const { getByText, getByTestId } = render(
       <Provider store={storeMocked}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -479,7 +516,9 @@ describe("Lock Page: Max login attempt", () => {
 
     const { getByText } = render(
       <Provider store={storeMocked}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 
@@ -499,7 +538,9 @@ describe("Lock Page: Max login attempt", () => {
 
     const { getByText, getByTestId } = render(
       <Provider store={storeMocked}>
-        <LockPage />
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
       </Provider>
     );
 

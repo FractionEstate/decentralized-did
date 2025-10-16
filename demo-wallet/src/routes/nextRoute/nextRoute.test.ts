@@ -130,7 +130,7 @@ describe("NextRoute", () => {
     const result = getNextOnboardingRoute(data as DataProps);
 
     expect(result).toEqual({
-      pathname: RoutePath.SET_PASSCODE,
+      pathname: RoutePath.SIMPLIFIED_ONBOARDING,
     });
   });
 
@@ -237,7 +237,7 @@ describe("NextRoute", () => {
     const result = getNextOnboardingRoute(data as DataProps);
 
     expect(result).toEqual({
-      pathname: RoutePath.SSI_AGENT,
+      pathname: RoutePath.TABS_MENU,
     });
   });
 
@@ -276,7 +276,7 @@ describe("NextRoute", () => {
     const result = getNextVerifySeedPhraseRoute();
 
     expect(result).toEqual({
-      pathname: RoutePath.SSI_AGENT,
+      pathname: RoutePath.TABS_MENU,
     });
   });
 
@@ -385,7 +385,7 @@ describe("getNextRoute", () => {
       payload,
     });
 
-    expect(result.nextPath).toEqual({ pathname: RoutePath.SET_PASSCODE });
+    expect(result.nextPath).toEqual({ pathname: RoutePath.SIMPLIFIED_ONBOARDING });
   });
 
   test("getNextSetPasscodeRoute should return the correct next path when seed phrase is set", () => {
@@ -396,7 +396,7 @@ describe("getNextRoute", () => {
 
     const result = getNextSetPasscodeRoute(storeMock);
     expect(result).toEqual({
-      pathname: RoutePath.SSI_AGENT,
+      pathname: RoutePath.TABS_MENU,
     });
   });
 

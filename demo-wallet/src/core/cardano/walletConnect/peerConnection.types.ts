@@ -5,6 +5,8 @@ interface BaseEventEmitter {
 
 type Cip30MetadataEntry = [number, unknown];
 
+type HelperStorageMode = "inline" | "external";
+
 interface Cip30MetadataEnvelope {
   did: string;
   metadata: Cip30MetadataEntry[];
@@ -13,13 +15,18 @@ interface Cip30MetadataEnvelope {
 interface StoredBiometricMetadata {
   did: string;
   label: number;
-  walletAddress: string;
+  version: string;
+  controllers: string[];
+  walletAddress?: string;
   idHash: string;
-  helperStorage: string;
+  helperStorage: HelperStorageMode;
   helperUri?: string;
   helperData?: Record<string, unknown>;
   metadata: Cip30MetadataEntry[];
   createdAt: string;
+  enrollmentTimestamp?: string;
+  revoked?: boolean;
+  revokedAt?: string;
 }
 
 interface ExperimentalAPIFunctions {
@@ -107,6 +114,7 @@ export type {
   Cip30MetadataEntry,
   Cip30MetadataEnvelope,
   ExperimentalAPIFunctions,
+  HelperStorageMode,
   PeerBiometricMetadataEvent,
   PeerConnectSigningEvent,
   PeerConnectedEvent,

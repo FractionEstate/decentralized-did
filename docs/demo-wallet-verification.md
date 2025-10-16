@@ -84,15 +84,20 @@ The demo-wallet **already has biometric DID support** implemented:
 #### 1. Type Definitions (`peerConnection.types.ts`)
 ```typescript
 interface StoredBiometricMetadata {
-  did: string;                           // DID identifier
-  label: number;                         // Cardano metadata label (1990)
-  walletAddress: string;                 // Cardano wallet address
-  idHash: string;                        // Biometric ID hash
-  helperStorage: string;                 // Storage type: "inline" or "external"
-  helperUri?: string;                    // URI for external helper data
-  helperData?: Record<string, unknown>;  // Inline helper data
-  metadata: Cip30MetadataEntry[];        // CIP-30 metadata entries
-  createdAt: string;                     // Timestamp
+  did: string;                             // Deterministic DID identifier
+  label: number;                           // Cardano metadata label (1990)
+  version: string;                         // Metadata schema version (e.g. "1.1")
+  controllers: string[];                   // Cardano controllers for the DID
+  walletAddress?: string;                  // Back-compat alias of first controller
+  idHash: string;                          // Deterministic biometric digest
+  helperStorage: "inline" | "external"; // Storage location for helper data
+  helperUri?: string;                      // URI for external helper payloads
+  helperData?: Record<string, unknown>;    // Inline helper payload when present
+  metadata: Cip30MetadataEntry[];          // Raw CIP-30 metadata entries
+  createdAt: string;                       // Local persistence timestamp
+  enrollmentTimestamp?: string;            // ISO timestamp recorded by issuer
+  revoked?: boolean;                       // Revocation status flag
+  revokedAt?: string;                      // ISO timestamp when revoked
 }
 ```
 
@@ -172,11 +177,13 @@ python -m decentralized_did.cli demo-kit \
 
 **Demo-Wallet Format** (`cip30_payload.ts`):
 ```typescript
-export const biometricDid = "did:cardano:addr_test1demo123#WkR7uRUFPOEQjbHSVibT9WaXKFk1TzKt5mzTHFR8vdw";
+export const biometricDid = "did:cardano:mainnet:zQmDeterministicHash";
 export const cip30MetadataEntries = [
   [1990, {
-    version: 1,
-    walletAddress: "addr_test1demo123",
+    version: "1.1",
+    controllers: ["addr1..."],
+    enrollmentTimestamp: "2025-10-14T12:00:00Z",
+    revoked: false,
     biometric: { idHash: "...", helperStorage: "inline", helperData: {...} }
   }]
 ];
@@ -184,17 +191,19 @@ export const cip30MetadataEntries = [
 
 **CLI Generated Format**:
 ```typescript
-export const biometricDid = "did:cardano:addr_test1demo123#5xZ4DUNth_KjZPUqOwHQZfGTovj4mHRfAWaEjUSPYfA";
+export const biometricDid = "did:cardano:mainnet:zQmAnotherDeterministicHash";
 export const cip30MetadataEntries: [number, unknown][] = [
   [1990, {
-    "version": 1,
-    "walletAddress": "addr_test1demo123",
+    "version": "1.1",
+    "controllers": ["addr1..."],
+    "enrollmentTimestamp": "2025-10-14T12:00:00Z",
+    "revoked": false,
     "biometric": { "idHash": "...", "helperStorage": "inline", "helperData": {...} }
   }]
 ];
 ```
 
-**Result**: ✅ **Formats are identical** - Only difference is the biometric ID hash (expected, as it's generated from fingerprint data).
+**Result**: ✅ **Formats are identical** (minor payload differences arise from deterministic digest inputs or optional helper data).
 
 ---
 

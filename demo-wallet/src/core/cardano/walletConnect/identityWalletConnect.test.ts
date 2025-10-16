@@ -131,12 +131,14 @@ describe("IdentityWalletConnect", () => {
         [
           1990,
           {
-            walletAddress: "addr_test1qpl4w3u",
+            version: "1.1",
+            controllers: ["addr_test1qpl4w3u"],
             biometric: {
               idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
               helperStorage: "inline",
               helperData: { left_thumb: { salt_b64: "salt" } },
             },
+            enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
           },
         ],
       ],
@@ -157,12 +159,15 @@ describe("IdentityWalletConnect", () => {
     ).toHaveBeenCalledWith(dAppAddress, {
       biometricMetadata: expect.objectContaining({
         did: metadataEnvelope.did,
+        version: "1.1",
+        controllers: ["addr_test1qpl4w3u"],
         label: 1990,
         walletAddress: "addr_test1qpl4w3u",
-        idHash: "abc123",
+        idHash: "zQmXyZ1a2B3c4D5e6F7g8H9i0J",
         helperStorage: "inline",
         metadata: metadataEnvelope.metadata,
         createdAt: expect.any(String),
+        enrollmentTimestamp: "2025-01-01T00:00:00.000Z",
       }),
     });
     expect(eventServiceMock.emit).toHaveBeenCalledWith({

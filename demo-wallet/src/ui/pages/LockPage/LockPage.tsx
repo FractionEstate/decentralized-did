@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { Agent } from "../../../core/agent/agent";
+import { AuthService } from "../../../core/agent/services";
 import { MiscRecordId } from "../../../core/agent/agent.types";
 import { KeyStoreKeys, SecureStorage } from "../../../core/storage";
 import { i18n } from "../../../i18n";
@@ -134,23 +135,36 @@ const LockPageContainer = () => {
     if (updatedPasscode.length <= 6) setPasscode(updatedPasscode);
 
     if (updatedPasscode.length === 6) {
-      const verified = await Agent.agent.auth.verifySecret(
-        KeyStoreKeys.APP_PASSCODE,
-        updatedPasscode
-      );
+      try {
+        const verified = await Agent.agent.auth.verifySecret(
+          KeyStoreKeys.APP_PASSCODE,
+          updatedPasscode
+        );
 
-      if (verified) {
-        await resetLoginAttempt();
-        dispatch(login());
-        dispatch(setFirstAppLaunchComplete());
-        handleClearState();
+        if (verified) {
+          await resetLoginAttempt();
+          dispatch(login());
+          dispatch(setFirstAppLaunchComplete());
+          handleClearState();
 
-        // Explicit navigation after successful login
-        // Fixes issue where LockPage conditional rendering doesn't trigger re-navigation
-        router.push(TabsRoutePath.IDENTIFIERS);
-      } else {
-        await incrementLoginAttempt();
-        setPasscodeIncorrect(true);
+          // Explicit navigation after successful login
+          // Fixes issue where LockPage conditional rendering doesn't trigger re-navigation
+          router.push(TabsRoutePath.IDENTIFIERS);
+        } else {
+          await incrementLoginAttempt();
+          setPasscodeIncorrect(true);
+        }
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.startsWith(AuthService.SECRET_NOT_STORED)
+        ) {
+          await handleRecoveryButtonClick();
+        } else {
+          showError("Unable to verify app passcode", error, dispatch);
+        }
+
+        setPasscode("");
       }
     }
   };
