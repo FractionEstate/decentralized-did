@@ -53,8 +53,8 @@ class MockMinutiaeExtractor:
         minutiae_list = []
         for i in range(num_minutiae):
             minutiae_list.append({
-                "x": random.randint(50, 450),
-                "y": random.randint(50, 450),
+                "x": random.uniform(0.1, 0.9),
+                "y": random.uniform(0.1, 0.9),
                 "angle": random.uniform(0, 2 * 3.14159),
                 "quality": random.uniform(0.9, 1.0),
                 "type": random.choice([1, 2]),
@@ -62,19 +62,12 @@ class MockMinutiaeExtractor:
 
         # Introduce very slight, deterministic noise based on the specific file
         random.seed(file_path)
-        # Drop a single point, maybe
-        if random.random() > 0.5 and minutiae_list:
-            minutiae_list.pop(random.randint(0, len(minutiae_list) - 1))
-
-        # Add a single noisy point, maybe
-        if random.random() > 0.5:
-            minutiae_list.append({
-                "x": random.randint(50, 450),
-                "y": random.randint(50, 450),
-                "angle": random.uniform(0, 2 * 3.14159),
-                "quality": random.uniform(0.7, 0.8),  # Lower quality for noise
-                "type": random.choice([1, 2]),
-            })
+        noise_factor = 0.005  # Reduced noise factor
+        for minutia in minutiae_list:
+            if random.random() > 0.8:  # Apply noise less often
+                minutia["x"] += random.uniform(-noise_factor, noise_factor)
+                minutia["y"] += random.uniform(-noise_factor, noise_factor)
+                minutia["angle"] += random.uniform(-noise_factor, noise_factor)
 
         return minutiae_list
 
@@ -135,12 +128,12 @@ def run_accuracy_test(dataset_path: str):
                 minutiae2_dicts = mock_extractor.extract_from_file(img2_path)
 
                 template1 = FingerTemplate(
-                    f"{subject}_{finger}", minutiae_from_dicts(minutiae1_dicts))
+                    f"{subject}_{finger}", minutiae_from_dicts(minutiae1_dicts), grid_size=0.1)
                 commitment1, helper_data = fuzzy_extractor.generate(template1)
                 did = generate_deterministic_did(commitment1)
 
                 template2 = FingerTemplate(
-                    f"{subject}_{finger}", minutiae_from_dicts(minutiae2_dicts))
+                    f"{subject}_{finger}", minutiae_from_dicts(minutiae2_dicts), grid_size=0.1)
                 recreated_commitment = fuzzy_extractor.reproduce(
                     template2, helper_data)
                 recreated_did = generate_deterministic_did(
@@ -172,12 +165,12 @@ def run_accuracy_test(dataset_path: str):
             minutiae2_dicts = mock_extractor.extract_from_file(img2_path)
 
             template1 = FingerTemplate(
-                f"{subject1}_{finger1}", minutiae_from_dicts(minutiae1_dicts))
+                f"{subject1}_{finger1}", minutiae_from_dicts(minutiae1_dicts), grid_size=0.1)
             commitment1, helper_data = fuzzy_extractor.generate(template1)
             did = generate_deterministic_did(commitment1)
 
             template2 = FingerTemplate(
-                f"{subject1}_{finger1}", minutiae_from_dicts(minutiae2_dicts))
+                f"{subject1}_{finger1}", minutiae_from_dicts(minutiae2_dicts), grid_size=0.1)
             try:
                 recreated_commitment = fuzzy_extractor.reproduce(
                     template2, helper_data)

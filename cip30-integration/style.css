@@ -1,0 +1,42 @@
+body {
+  font-family: sans-serif;
+  margin: 2em;
+}
+
+#wallet-info,
+#actions,
+#output {
+  margin-bottom: 2em;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+h1,
+h2 {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 0.5em;
+}
+
+button {
+  margin-right: 1em;
+  margin-bottom: 1em;
+  padding: 0.5em 1em;
+  border: 1px solid #007bff;
+  background-color: #007bff;
+  color: white;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+pre {
+  background-color: #f4f4f4;
+  padding: 1em;
+  border-radius: 3px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}

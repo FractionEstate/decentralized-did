@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIP-30 dApp</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>CIP-30 dApp</h1>
+    <div id="wallet-info">
+        <h2>Wallet Information</h2>
+        <p><strong>Name:</strong> <span id="wallet-name"></span></p>
+        <p><strong>Icon:</strong> <img id="wallet-icon" src="" alt="Wallet Icon" width="32"></p>
+        <p><strong>API Version:</strong> <span id="api-version"></span></p>
+        <p><strong>Network ID:</strong> <span id="network-id"></span></p>
+        <p><strong>Balance:</strong> <span id="balance"></span></p>
+    </div>
+    <div id="actions">
+        <h2>Actions</h2>
+        <button id="connect-wallet">Connect Wallet</button>
+        <button id="get-used-addresses">Get Used Addresses</button>
+        <button id="get-unused-addresses">Get Unused Addresses</button>
+        <button id="get-change-address">Get Change Address</button>
+        <button id="get-reward-addresses">Get Reward Addresses</button>
+    </div>
+    <div id="output">
+        <h2>Output</h2>
+        <pre id="output-pre"></pre>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

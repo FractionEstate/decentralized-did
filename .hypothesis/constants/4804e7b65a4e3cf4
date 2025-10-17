@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/middleware.py
+# hypothesis_version: 6.140.3
+
+[1.0, 'API key not found', 'Authorization', 'Bearer', 'WWW-Authenticate', 'X-API-Key', 'access', 'admin', 'api_client', 'api_key', 'auth', 'error', 'jwt', 'message', 'roles', 'status', 'sub', 'user', 'wallet']

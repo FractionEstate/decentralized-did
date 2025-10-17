@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/rate_limiter.py
+# hypothesis_version: 6.140.3
+
+[100, 500, 3600, 'RATE_LIMIT_EXCEEDED', 'Rate limit exceeded', 'current_count', 'error', 'error_code', 'global_limit', 'global_window', 'limit', 'message', 'per_ip_limit', 'per_ip_window', 'per_wallet_limit', 'per_wallet_window', 'retry_after', 'retry_after_seconds', 'window_seconds']

@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/validators.py
+# hypothesis_version: 6.140.3
+
+[100, 110, 200, 1000, 1024, 10000, '1.0', '1.1', 'Input must be a list', '^[0-9a-fA-F]+$', '^[0-9a-fA-F]{128}$', '^[0-9a-fA-F]{64}$', '^stake1[a-z0-9]{53}$', 'addr_test1', 'controllers', 'did:cardano:', 'digest', 'enrollment_timestamp', 'mainnet', 'testnet', 'utf-8', 'version']

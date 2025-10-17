@@ -516,9 +516,75 @@ class BlockfrostClient:
 
         return data
 
+    def get_transactions_by_metadata_label(
+        self,
+        label: int,
+        count: int = 100,
+        page: int = 1,
+        order: str = "desc",
+    ) -> List[Dict[str, Any]]:
+        """
+        Get transactions containing metadata with a specific label.
+
+        Args:
+            label: Metadata label (e.g., 674)
+            count: Number of results per page
+            page: Page number
+            order: "asc" or "desc"
+
+        Returns:
+            List of transaction metadata objects
+        """
+        endpoint = f"/metadata/txs/labels/{label}"
+        params = {"count": count, "page": page, "order": order}
+
+        logger.debug(f"Querying transactions with metadata label: {label}")
+
+        try:
+            data = self._request("GET", endpoint, params=params)
+            if not isinstance(data, list):
+                raise BlockfrostAPIError(
+                    f"Unexpected response format: {type(data)}")
+            return data
+        except BlockfrostAPIError as e:
+            if "404" in str(e):
+                logger.info(
+                    f"No transactions found with metadata label {label}")
+                return []
+            raise
+
+    def get_transaction_metadata(
+        self,
+        tx_hash: str,
+    ) -> List[Dict[str, Any]]:
+        """
+        Get metadata for a specific transaction.
+
+        Args:
+            tx_hash: Transaction hash
+
+        Returns:
+            List of metadata objects, each with 'label' and 'json_metadata'
+        """
+        endpoint = f"/txs/{tx_hash}/metadata"
+
+        logger.debug(f"Querying metadata for transaction: {tx_hash}")
+
+        try:
+            data = self._request("GET", endpoint)
+            if not isinstance(data, list):
+                raise BlockfrostAPIError(
+                    f"Unexpected response format: {type(data)}")
+            return data
+        except BlockfrostAPIError as e:
+            if "404" in str(e):
+                logger.info(f"No metadata found for transaction {tx_hash}")
+                return []
+            raise
+
     def check_did_exists(self, did: str) -> Optional[Dict[str, Any]]:
         """
-        Check if DID exists on blockchain by querying metadata.
+        Check if a DID exists on the blockchain by searching transaction metadata.
 
         This method queries the blockchain for transactions with metadata label 674
         (biometric DID standard) and searches for the specified DID. This enables

@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/sanitizers.py
+# hypothesis_version: 6.140.3
+
+[128, 1000, ' {', ' {2,}', ',}', '...', '/', '<[^>]+>', 'NFC', 'NFD', 'NFKC', 'NFKD', '\\', '\\.\\./|\\.\\.\\\\', 'a-zA-Z0-9._-', '\u200b', '\u200c', '\u200d', '\ufeff']

@@ -64,10 +64,34 @@
 - Use inline datum or reference scripts so dApps can reference the biometric commitment without scanning transaction history.
 - Consider off-chain governance to handle rotations (new biometrics -> update CIP-68 mutable fields).
 
-## Plutus / On-Chain Consumption
-- Off-chain code performs biometric verification and produces the digest.
-- Script expects `idHash` argument; ensures it matches on-chain value before allowing action (e.g., unlocking identity-gated resource).
-- For privacy, use proof-of-knowledge protocols (future work) so scripts evaluate zero-knowledge attestations instead of raw digests.
+## Plutus Validator for On-Chain Verification
+To enable trustless on-chain verification, we use a Plutus V3 validator script.
+
+### Validator Logic
+The validator script, located at `plutus/validator.py`, uses a signature-based verification model:
+-   **Datum**: The datum locked with a UTXO at the script address contains the public key derived from the user's biometrics.
+-   **Redeemer**: To spend the UTXO, the user must provide a redeemer containing a message and a valid signature over that message.
+-   **Verification**: The validator uses the `verify_ed25519_signature` function to check if the signature in the redeemer was created by the private key corresponding to the public key in the datum.
+
+### Off-Chain Code
+The `opshin` tool compiles the Python-based validator into a Plutus script. The off-chain code then uses PyCardano to build a transaction that includes the script, datum, and redeemer.
+
+### Compiling the Validator
+To compile the validator, run the following command from the root of the repository:
+```bash
+/workspaces/decentralized-did/.venv/bin/python -m opshin build plutus/validator.py
+```
+This will create the compiled Plutus script in the `build/validator/` directory.
+
+## Blockchain Query Layer
+The `CardanoQuery` class in `src/decentralized_did/cardano/query.py` provides a high-level API for querying DID information from the blockchain. It uses the `BlockfrostClient` to interact with the Cardano network.
+
+### DID Resolution
+The `resolve_did` method checks for the existence of a DID by querying the Blockfrost API for transactions with the metadata label `674` and searching for a match. This is useful for preventing duplicate enrollments and for verifying that a DID has been anchored on-chain.
+
+### Enrollment History
+The `get_enrollment_history` method retrieves all metadata updates for a given DID, providing a full audit trail of the identity's on-chain history.
+
 
 ## External Helper Storage
 ### IPFS/IPNS

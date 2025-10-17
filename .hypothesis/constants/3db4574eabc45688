@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/auth.py
+# hypothesis_version: 6.140.3
+
+[1.0, 900, 'API key has expired', 'Bearer', 'HS256', 'Invalid API key', 'Token has expired', 'access', 'addr1', 'addr_test1', 'admin', 'api_client', 'bearer', 'did_prod_', 'exp', 'iat', 'jti', 'refresh', 'roles', 'sub', 'type', 'user', 'wallet']

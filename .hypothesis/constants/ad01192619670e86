@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/src/decentralized_did/api/security_headers.py
+# hypothesis_version: 6.140.3
+
+[301, 443, 600, 31536000, "'self'", "'unsafe-eval'", "'unsafe-inline'", '()', '*', ', ', '1; mode=block', '; ', '; includeSubDomains', '; preload', 'Authorization', 'CORSConfig', 'Content-Type', 'DELETE', 'DENY', 'GET', 'Location', 'OPTIONS', 'POST', 'PUT', 'Permissions-Policy', 'Referrer-Policy', 'SAMEORIGIN', 'X-API-Key', 'X-Frame-Options', 'X-XSS-Protection', 'camera', 'data:', 'geolocation', 'http:', 'https', 'https:', 'microphone', 'nosniff', 'production']
