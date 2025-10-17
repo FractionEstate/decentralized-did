@@ -25,3 +25,9 @@ demos/helper_data/
 notebooks/.ipynb_checkpoints/
 notebooks/*-checkpoint.ipynb
 testnet-keys/
+
+# Environment files
+.env
+.env.*
+!.env.example
+!.env.test
