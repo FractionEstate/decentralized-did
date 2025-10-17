@@ -38,14 +38,23 @@ const SimplifiedOnboarding = () => {
   });
 
   const handleStart = () => {
-    console.log("Onboarding started");
-    // Track analytics: onboarding_started
     setState({ ...state, step: 1, startTime: Date.now() });
   };
 
+  const fingersToScan = [
+    "right-thumb",
+    "right-index",
+    "right-middle",
+    "right-ring",
+    "right-pinky",
+    "left-thumb",
+    "left-index",
+    "left-middle",
+    "left-ring",
+    "left-pinky",
+  ];
+
   const handleBiometricComplete = (biometricData: string[]) => {
-    console.log("Biometric capture complete:", biometricData.length, "fingers");
-    // Track analytics: step_1_biometric_completed
 
     // Generate seed phrase (12 words from BIP39 wordlist)
     const seedPhrase = generateSeedPhrase(12);
@@ -59,14 +68,10 @@ const SimplifiedOnboarding = () => {
   };
 
   const handleSeedConfirm = () => {
-    console.log("Seed phrase confirmed");
-    // Track analytics: step_2_seed_confirmed
     setState({ ...state, step: 3 });
   };
 
   const handleVerificationSuccess = async () => {
-    console.log("Verification successful");
-    // Track analytics: step_3_verification_success
 
     // Show loading state
     showToast({
@@ -97,12 +102,8 @@ const SimplifiedOnboarding = () => {
         walletAddress,
       });
 
-      // Track analytics: onboarding_completed
-      const duration = Date.now() - state.startTime;
-      console.log("Onboarding completed in", duration, "ms");
+      // Track analytics: onboarding_completed (duration available if needed)
     } catch (error) {
-      console.error("Wallet creation failed:", error);
-
       // Show user-friendly error message
       showErrorToast(error, showToast, "wallet_creation");
 
@@ -114,14 +115,10 @@ const SimplifiedOnboarding = () => {
   };
 
   const handleComplete = () => {
-    console.log("User clicked Start Using Wallet");
-    // Navigate to main wallet screen
     history.push(TabsRoutePath.CREDENTIALS); // Main credentials screen
   };
 
   const handleRestore = () => {
-    console.log("User wants to restore existing wallet");
-    // Navigate to restore flow
     history.push(RoutePath.GENERATE_SEED_PHRASE); // Or restore route
   };
 
@@ -137,11 +134,9 @@ const SimplifiedOnboarding = () => {
 
       {state.step === 1 && (
         <BiometricScanScreen
-          fingersToScan={["right-index", "right-middle", "right-thumb"]}
+          fingersToScan={fingersToScan}
           onComplete={handleBiometricComplete}
           onError={(error) => {
-            console.error("Biometric capture failed:", error);
-
             // Show user-friendly error message
             showErrorToast(error, showToast, "biometric_capture");
 

@@ -176,6 +176,29 @@ describe("Lock Page", () => {
     expect(getByText(EN_TRANSLATIONS.lockpage.description)).toBeInTheDocument();
   });
 
+  test("Does not render lock page when passcode is not set", () => {
+    const stateWithoutPasscode: StoreMockedProps = {
+      ...initialState,
+      stateCache: {
+        ...initialState.stateCache,
+        authentication: {
+          ...initialState.stateCache.authentication,
+          passcodeIsSet: false,
+        },
+      },
+    };
+
+    const { queryByText } = render(
+      <Provider store={storeMocked(stateWithoutPasscode)}>
+        <MemoryRouter initialEntries={[RoutePath.ROOT]}>
+          <LockPage />
+        </MemoryRouter>
+      </Provider>
+    );
+
+    expect(queryByText(EN_TRANSLATIONS.lockpage.title)).not.toBeInTheDocument();
+  });
+
   test("The user can add and remove digits from the passcode", () => {
     const { getByText, getByTestId } = render(
       <Provider store={storeMocked(initialState)}>

@@ -1,12 +1,29 @@
-import { useState, useEffect } from "react";
-import { IonButton, IonContent, IonPage, IonProgressBar } from "@ionic/react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { IonButton, IonIcon, IonProgressBar } from "@ionic/react";
+import { fingerPrintSharp, refreshOutline } from "ionicons/icons";
 import "./BiometricScanScreen.scss";
 
 interface BiometricScanScreenProps {
-  fingersToScan: string[]; // e.g., ["right-index", "right-middle", "right-thumb"]
+  fingersToScan: string[];
   onComplete: (biometricData: string[]) => void;
   onError: (error: string) => void;
 }
+
+const displayNameMap: Record<string, string> = {
+  "right-thumb": "RIGHT THUMB",
+  "right-index": "RIGHT INDEX",
+  "right-middle": "RIGHT MIDDLE",
+  "right-ring": "RIGHT RING",
+  "right-pinky": "RIGHT PINKY",
+  "left-thumb": "LEFT THUMB",
+  "left-index": "LEFT INDEX",
+  "left-middle": "LEFT MIDDLE",
+  "left-ring": "LEFT RING",
+  "left-pinky": "LEFT PINKY",
+};
+
+const formatFingerName = (finger: string) =>
+  displayNameMap[finger] ?? finger.replace(/-/g, " ").toUpperCase();
 
 const BiometricScanScreen = ({
   fingersToScan,
@@ -19,129 +36,159 @@ const BiometricScanScreen = ({
   const [scanSuccess, setScanSuccess] = useState(false);
 
   const currentFinger = fingersToScan[currentFingerIndex];
-  const progress = (currentFingerIndex + 1) / fingersToScan.length;
+  const totalFingers = fingersToScan.length;
+  const progress = useMemo(() => {
+    const denominator = Math.max(totalFingers, 1);
+    return (currentFingerIndex + 1) / denominator;
+  }, [currentFingerIndex, totalFingers]);
 
-  const fingerDisplayNames: Record<string, string> = {
-    "right-index": "RIGHT INDEX",
-    "right-middle": "RIGHT MIDDLE",
-    "right-thumb": "RIGHT THUMB",
-    "left-index": "LEFT INDEX",
-    "left-middle": "LEFT MIDDLE",
-    "left-thumb": "LEFT THUMB",
-  };
+  const captureFinger = useCallback(async () => {
+    if (!currentFinger) {
+      return;
+    }
 
-  const captureFinger = async () => {
     setScanning(true);
     setScanSuccess(false);
 
     try {
-      // Simulate biometric capture
-      // In production, call WebAuthn or backend API
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1800));
 
-      // Mock biometric data (base64 encoded minutiae)
       const mockData = btoa(`fingerprint-${currentFinger}-${Date.now()}`);
+      const nextData = [...capturedData, mockData];
 
-      const newCapturedData = [...capturedData, mockData];
-      setCapturedData(newCapturedData);
-
+      setCapturedData(nextData);
       setScanning(false);
       setScanSuccess(true);
 
-      // Auto-advance after 1 second
       setTimeout(() => {
         if (currentFingerIndex < fingersToScan.length - 1) {
-          setCurrentFingerIndex(currentFingerIndex + 1);
+          setCurrentFingerIndex((prev) => prev + 1);
           setScanSuccess(false);
         } else {
-          // All fingers captured
-          onComplete(newCapturedData);
+          onComplete(nextData);
         }
-      }, 1000);
+      }, 800);
     } catch (error) {
       setScanning(false);
       onError("Fingerprint capture failed. Please try again.");
     }
-  };
+  }, [
+    capturedData,
+    currentFinger,
+    currentFingerIndex,
+    totalFingers,
+    onComplete,
+    onError,
+  ]);
 
-  // Auto-start capture for first finger
   useEffect(() => {
-    if (currentFingerIndex === 0 && capturedData.length === 0 && !scanning) {
-      setTimeout(() => captureFinger(), 500);
+    if (!currentFinger || scanning || scanSuccess) {
+      return undefined;
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    if (capturedData.length === currentFingerIndex) {
+      const delay = currentFingerIndex === 0 ? 400 : 600;
+      const timer = setTimeout(() => {
+        captureFinger();
+      }, delay);
+
+      return () => clearTimeout(timer);
+    }
+
+    return undefined;
+  }, [
+    captureFinger,
+    capturedData.length,
+    currentFinger,
+    currentFingerIndex,
+    scanSuccess,
+    scanning,
+  ]);
 
   return (
-    <IonPage className="biometric-scan-screen">
-      <IonContent className="scan-content">
-        <div className="scan-container">
-          <h1>📸 Scan Your Fingerprints</h1>
+    <div className="simplified-onboarding__panel biometric-scan-screen">
+      <div className="scan-heading">
+        <IonIcon icon={fingerPrintSharp} className="scan-heading__icon" />
+        <h1>Scan your fingerprints</h1>
+        <p>
+          Capture each finger once. Maintain even pressure on the sensor for a
+          clean biometric commitment.
+        </p>
+      </div>
 
-          <div className="fingerprint-visual">
-            {scanning ? (
-              <div className="scanning-animation">
-                <div className="fingerprint-icon">👆</div>
-                <div className="scan-line"></div>
-              </div>
-            ) : scanSuccess ? (
-              <div className="success-icon">✓</div>
-            ) : (
-              <div className="fingerprint-icon">👆</div>
-            )}
+      <div className="fingerprint-visual" aria-live="polite">
+        {scanning ? (
+          <div className="scanning-animation">
+            <IonIcon icon={fingerPrintSharp} className="fingerprint-icon" />
+            <div className="scan-line" />
           </div>
-
-          <div className="instruction">
-            <h2>
-              {scanning
-                ? "Scanning..."
-                : scanSuccess
-                  ? "Success!"
-                  : `Place your ${fingerDisplayNames[currentFinger]} finger`}
-            </h2>
+        ) : scanSuccess ? (
+          <div className="success-icon" role="status">
+            ✓
           </div>
+        ) : (
+          <IonIcon icon={fingerPrintSharp} className="fingerprint-icon" />
+        )}
+      </div>
 
-          <div className="progress-section">
-            <IonProgressBar value={progress} className="scan-progress-bar" />
-            <p className="progress-text">
-              Scanning {currentFingerIndex + 1} of {fingersToScan.length} fingers
-            </p>
-          </div>
+      <div className="instruction">
+        <h2>
+          {scanning
+            ? "Scanning..."
+            : scanSuccess
+              ? "Captured"
+              : currentFinger
+                ? `Place your ${formatFingerName(currentFinger)} finger`
+                : "All fingers captured"}
+        </h2>
+      </div>
 
-          <div className="finger-checklist">
-            <h3>Fingers to scan:</h3>
-            {fingersToScan.map((finger, index) => (
-              <div key={finger} className="finger-item">
-                <span className="checkbox">
-                  {index < currentFingerIndex
-                    ? "✅"
-                    : index === currentFingerIndex
-                      ? scanning
-                        ? "●"
-                        : "○"
-                      : "○"}
-                </span>
-                <span className="finger-name">
-                  {fingerDisplayNames[finger]}
-                  {index < currentFingerIndex && " (done)"}
-                  {index === currentFingerIndex && scanning && " (scanning...)"}
-                  {index > currentFingerIndex && " (next)"}
-                </span>
-              </div>
-            ))}
-          </div>
+      <div className="progress-section">
+        <IonProgressBar value={progress} className="scan-progress-bar" />
+        <p className="progress-text">
+          Finger {Math.min(currentFingerIndex + 1, totalFingers)} of {totalFingers}
+        </p>
+      </div>
 
-          <div className="tip">
-            <p>💡 Tip: Press firmly but gently</p>
-          </div>
+      <div className="finger-checklist">
+        <h3>Fingers remaining</h3>
+        {fingersToScan.map((finger, index) => {
+          const status =
+            index < currentFingerIndex
+              ? "done"
+              : index === currentFingerIndex
+                ? "active"
+                : "pending";
 
-          {!scanning && !scanSuccess && currentFingerIndex > 0 && (
-            <IonButton fill="outline" onClick={captureFinger}>
-              Retry Scan
-            </IonButton>
-          )}
-        </div>
-      </IonContent>
-    </IonPage>
+          return (
+            <div key={finger} className={`finger-item finger-item--${status}`}>
+              <span className="finger-item__status">
+                {status === "done" && "✓"}
+                {status === "active" && "•"}
+              </span>
+              <span className="finger-item__name">
+                {formatFingerName(finger)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="tip">
+        <p>Tip: Keep each finger steady and aligned with the sensor.</p>
+      </div>
+
+      {!scanning && !scanSuccess && currentFinger && (
+        <IonButton
+          fill="outline"
+          onClick={captureFinger}
+          className="retry-button"
+        >
+          <IonIcon icon={refreshOutline} slot="start" />
+          Retry
+        </IonButton>
+      )}
+    </div>
   );
 };
 

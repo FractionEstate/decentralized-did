@@ -28,7 +28,7 @@ const SuccessScreen = ({ walletAddress, onContinue }: SuccessScreenProps) => {
           <div className="completion-checklist">
             <div className="checklist-item">
               <span className="icon">✅</span>
-              <span>Fingerprints registered (3 fingers)</span>
+              <span>Fingerprints registered (10 fingers)</span>
             </div>
             <div className="checklist-item">
               <span className="icon">✅</span>

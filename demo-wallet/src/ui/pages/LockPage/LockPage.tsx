@@ -119,7 +119,7 @@ const LockPageContainer = () => {
       const did = await biometricDidService.getCurrentDid();
       setBiometricDid(did);
     } catch (error) {
-      console.error("Failed to load biometric DID:", error);
+      // Non-fatal: ignore biometric DID load issues on lock screen
     }
   };
 
@@ -212,9 +212,8 @@ const LockPageContainer = () => {
     router.push(TabsRoutePath.IDENTIFIERS);
   };
 
-  const handleBiometricVerificationFailure = (error: string) => {
-    console.error("Biometric verification failed:", error);
-    // Keep the verification UI open for retry
+  const handleBiometricVerificationFailure = (_error: string) => {
+    // Keep the verification UI open for retry; error is surfaced in the component
   };
 
   const handleBiometricVerificationCancel = () => {
@@ -393,7 +392,11 @@ const LockPage = () => {
 
   const isPublicPage = PublicRoutes.includes(currentRoute?.path as RoutePath);
 
-  if (isPublicPage || authentication.loggedIn) {
+  if (
+    isPublicPage ||
+    authentication.loggedIn ||
+    !authentication.passcodeIsSet
+  ) {
     return null;
   }
 
