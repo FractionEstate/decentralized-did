@@ -13,6 +13,7 @@ import os
 import shutil
 import tempfile
 from pathlib import Path
+from typing import Any, Dict
 from unittest.mock import Mock, patch, MagicMock
 
 import pytest
@@ -68,6 +69,7 @@ def test_storage_reference_creation():
 
     assert ref.backend == "file"
     assert ref.uri == "/path/to/file.json"
+    assert ref.metadata is not None
     assert ref.metadata["size"] == 1024
 
 
@@ -322,6 +324,8 @@ def test_ipfs_storage_available():
         assert backend is not None
     except ImportError:
         pytest.skip("ipfshttpclient not available")
+    except StorageError as e:
+        pytest.skip(f"IPFS node not running: {e}")
 
 
 @pytest.mark.skipif(
@@ -507,19 +511,19 @@ def test_get_backend_info_unknown():
 def test_register_backend():
     """Test registering custom backend."""
     class CustomStorage(StorageBackend):
-        def store(self, helper_data):
-            pass
+        def store(self, helper_data: Dict[str, Any]) -> StorageReference:
+            return StorageReference(backend="custom", uri="custom://test")
 
-        def retrieve(self, reference):
-            pass
+        def retrieve(self, reference: StorageReference) -> Dict[str, Any]:
+            return {}
 
-        def delete(self, reference):
-            pass
-
-        def health_check(self):
+        def delete(self, reference: StorageReference) -> bool:
             return True
 
-        def get_backend_type(self):
+        def health_check(self) -> bool:
+            return True
+
+        def get_backend_type(self) -> str:
             return "custom"
 
     register_backend("custom", CustomStorage)

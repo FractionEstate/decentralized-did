@@ -110,7 +110,9 @@ class TestFingerprintValidation:
         }
         with pytest.raises(ValidationError) as exc_info:
             validate_fingerprint_input(data)
-        assert "finger_id" in exc_info.value.field_path or "finger_id" in exc_info.value.message.lower()
+        assert (
+            exc_info.value.field_path and "finger_id" in exc_info.value.field_path
+        ) or "finger_id" in exc_info.value.message.lower()
 
     def test_too_few_minutiae(self):
         """Test validation fails with < 10 minutiae points."""
@@ -333,8 +335,9 @@ class TestConfigValidation:
         }
         with pytest.raises(ValidationError) as exc_info:
             validate_config(data)
+        # Check that the error mentions either the field name or that it's not one of the allowed values
         assert "verbosity" in exc_info.value.message.lower(
-        ) or "enum" in exc_info.value.message.lower()
+        ) or "not one of" in exc_info.value.message.lower()
 
     def test_invalid_quality_threshold(self):
         """Test validation fails with out-of-range quality threshold."""
@@ -351,12 +354,12 @@ class TestConfigValidation:
         """Test validation fails with invalid storage backend."""
         data = {
             "storage": {
-                "backend": "invalid_backend"
+                "defaultBackend": "invalid_backend"
             }
         }
         with pytest.raises(ValidationError) as exc_info:
             validate_config(data)
-        assert "backend" in exc_info.value.message.lower(
+        assert "not one of" in exc_info.value.message.lower(
         ) or "enum" in exc_info.value.message.lower()
 
 
@@ -432,8 +435,8 @@ class TestSchemaVersioning:
         }
         with pytest.raises(ValidationError) as exc_info:
             validate_fingerprint_input(data)
-        assert "version" in exc_info.value.message.lower(
-        ) or "const" in exc_info.value.message.lower()
+        assert "expected" in exc_info.value.message.lower(
+        ) or "'1.0'" in exc_info.value.message.lower()
 
     def test_helper_data_version_enforcement(self):
         """Test that helper data schema enforces version 1.0."""
@@ -453,8 +456,8 @@ class TestSchemaVersioning:
         }
         with pytest.raises(ValidationError) as exc_info:
             validate_helper_data(data)
-        assert "version" in exc_info.value.message.lower(
-        ) or "const" in exc_info.value.message.lower()
+        assert "expected" in exc_info.value.message.lower(
+        ) or "'1.0'" in exc_info.value.message.lower()
 
 
 if __name__ == "__main__":
