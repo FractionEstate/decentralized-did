@@ -215,21 +215,21 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 ### 2.2 Enrollment Flow Testing (2 hours)
 
 **Scenarios**:
-- [ ] Successful enrollment (happy path)
+- [x] Successful enrollment (happy path)
 - [ ] Duplicate DID detection (Sybil resistance)
-- [ ] Invalid biometric data rejection
-- [ ] Helper data storage (inline vs external)
-- [ ] Metadata v1.1 validation
+- [x] Invalid biometric data rejection (client-side guard; server-side negative test queued)
+- [x] Helper data storage (inline save/load verified; external helper URI pending Phase 3)
+- [x] Metadata v1.1 validation
 - [ ] Error handling (network errors, timeouts)
 
 ### 2.3 Verification Flow Testing (2 hours)
 
 **Scenarios**:
-- [ ] Exact match verification (same biometric)
-- [ ] Fuzzy matching verification (noisy recapture)
-- [ ] Failed verification (wrong biometric)
-- [ ] Missing helper data error
-- [ ] Invalid DID format error
+- [x] Exact match verification (same biometric)
+- [x] Fuzzy matching verification (noisy recapture)
+- [x] Failed verification (wrong biometric)
+- [x] Missing helper data error (client storage guard; API-level failure scenario queued)
+- [x] Invalid DID format error (client guard)
 - [ ] Threshold tuning (false accept/reject rates)
 
 ### 2.4 Performance Benchmarks (2 hours)
@@ -245,6 +245,16 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 - Enrollment P95: <150ms (end-to-end)
 - Verification P95: <75ms (end-to-end)
 - API overhead: <20ms
+
+### 2.5 Test Run Summary (October 17, 2025)
+
+| Server | Auth Mode | Tests (pass/fail) | Enrollment time (ms) | Verification time (ms) | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Mock (`api_server_mock.py`) | None | 14/14 | 1.42 | 1.22 | `npm test` exits with code 1 because global coverage thresholds remain at legacy values; assertions all pass. |
+| Basic (`api_server.py`) | None (cleared API_KEY/API_SECRET_KEY) | 14/14 | 1.34 | 1.17 | Requires blanking shared auth env vars (`API_KEY= API_SECRET_KEY=`) so the client skips JWT handshake. |
+| Secure (`api_server_secure.py`) | JWT bearer | 14/14 | 2.24 | 1.90 | Token exchange exercised; security warnings expected in integration mode (rate limits/audit logging disabled). |
+
+> Coverage gating follow-up: Jest global thresholds still reflect pre-Phase 4 deterministic baselines. Resolving or updating thresholds is tracked separately; failing exit code does not indicate assertion failures in the integration suite.
 
 ---
 

@@ -1,0 +1,245 @@
+{
+  "unimplemented": [
+    {
+      "file": "src/decentralized_did/api/rate_limiter.py",
+      "line": 38,
+      "code": "raise NotImplementedError"
+    },
+    {
+      "file": "src/decentralized_did/api/rate_limiter.py",
+      "line": 42,
+      "code": "raise NotImplementedError"
+    },
+    {
+      "file": "src/decentralized_did/api/rate_limiter.py",
+      "line": 46,
+      "code": "raise NotImplementedError"
+    }
+  ],
+  "todo_comments": [
+    {
+      "file": "src/decentralized_did/api/auth.py",
+      "line": 422,
+      "comment": "# TODO: Implement actual CIP-8 signature verification"
+    }
+  ],
+  "placeholder_code": [
+    {
+      "file": "src/did/generator_v2.py",
+      "reason": "Contains mock/placeholder implementation"
+    },
+    {
+      "file": "src/decentralized_did/cli.py",
+      "reason": "Contains mock/placeholder implementation"
+    },
+    {
+      "file": "src/decentralized_did/api/auth.py",
+      "reason": "Contains mock/placeholder implementation"
+    }
+  ],
+  "console_statements": [
+    {
+      "file": "demo-wallet/src/utils/userFriendlyErrors.ts",
+      "line": 220,
+      "code": "console.error(`[Error${context ? ` in ${context}` : ''}]:`, error);"
+    },
+    {
+      "file": "demo-wallet/src/utils/userFriendlyErrors.ts",
+      "line": 222,
+      "code": "console.error('Stack trace:', error.stack);"
+    },
+    {
+      "file": "demo-wallet/src/core/agent/agent.ts",
+      "line": 250,
+      "code": "console.error(e);"
+    },
+    {
+      "file": "demo-wallet/src/core/agent/agent.ts",
+      "line": 263,
+      "code": "console.warn("
+    },
+    {
+      "file": "demo-wallet/src/core/agent/services/keriaNotificationService.ts",
+      "line": 125,
+      "code": "console.error(\"Error at pollNotifications\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/agent/services/keriaNotificationService.ts",
+      "line": 220,
+      "code": "console.error(`Error when processing notification ${notif.i}`, error);"
+    },
+    {
+      "file": "demo-wallet/src/core/agent/services/keriaNotificationService.ts",
+      "line": 412,
+      "code": "console.warn("
+    },
+    {
+      "file": "demo-wallet/src/core/agent/services/keriaNotificationService.ts",
+      "line": 1057,
+      "code": "console.error(\"Error at pollLongOperations\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/agent/services/keriaNotificationService.ts",
+      "line": 1080,
+      "code": "console.error(\"Error when process a operation\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/fingerprintCaptureService.ts",
+      "line": 58,
+      "code": "console.warn('WebAuthn availability check failed:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/fingerprintCaptureService.ts",
+      "line": 170,
+      "code": "console.log('\u2705 WebAuthn enrollment successful');"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/fingerprintCaptureService.ts",
+      "line": 178,
+      "code": "console.error('WebAuthn enrollment failed:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/fingerprintCaptureService.ts",
+      "line": 221,
+      "code": "console.log('\u2705 WebAuthn verification successful');"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/fingerprintCaptureService.ts",
+      "line": 224,
+      "code": "console.error('WebAuthn verification failed:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 93,
+      "code": "console.log('\u2705 WebAuthn credential saved');"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 95,
+      "code": "console.error('Failed to save WebAuthn credential:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 125,
+      "code": "console.error('Failed to load WebAuthn credential:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 144,
+      "code": "console.log('\u2705 WebAuthn credential deleted');"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 146,
+      "code": "console.error('Failed to delete WebAuthn credential:', error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 464,
+      "code": "console.log(\"[BiometricDidService] Mock command:\", command);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 465,
+      "code": "console.log(\"[BiometricDidService] Mock stdin:\", stdinData?.substring(0, 100));"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 638,
+      "code": "console.warn(\"\u26a0\ufe0f  No commitment found, using id_hash for mock DID\");"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 715,
+      "code": "console.error(\"Failed to load helper data:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 744,
+      "code": "console.warn(\"Failed to delete helper data:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 778,
+      "code": "console.error(\"Failed to get current DID:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/core/biometric/biometricDidService.ts",
+      "line": 790,
+      "code": "console.warn(\"Failed to delete current DID:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/ui/utils/error.ts",
+      "line": 14,
+      "code": "console.error(`${message}:`, error);"
+    },
+    {
+      "file": "demo-wallet/src/ui/components/CreateGroupIdentifier/components/Summary.tsx",
+      "line": 36,
+      "code": "console.warn("
+    },
+    {
+      "file": "demo-wallet/src/ui/pages/BiometricEnrollment/BiometricEnrollment.tsx",
+      "line": 131,
+      "code": "console.error('WebAuthn enrollment error:', error);"
+    },
+    {
+      "file": "demo-wallet/src/ui/pages/BiometricEnrollment/BiometricEnrollment.tsx",
+      "line": 219,
+      "code": "console.error(\"Biometric enrollment error:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/ui/pages/IncomingRequest/components/SignRequest.tsx",
+      "line": 45,
+      "code": "console.error(\"Failed to load biometric DID:\", error);"
+    },
+    {
+      "file": "demo-wallet/src/ui/pages/IncomingRequest/components/SignRequest.tsx",
+      "line": 82,
+      "code": "console.error(\"Biometric verification failed:\", error);"
+    }
+  ],
+  "skipped_tests": [
+    {
+      "file": "demo-wallet/src/core/biometric/__tests__/biometricDidService.integration.test.ts"
+    }
+  ],
+  "untested_modules": [
+    "src/cli.py",
+    "src/did/generator.py",
+    "src/biometrics/feature_extractor.py",
+    "src/biometrics/aggregator.py",
+    "src/biometrics/fuzzy_extractor.py",
+    "src/decentralized_did/cli_progress.py",
+    "src/decentralized_did/cli.py",
+    "src/decentralized_did/validator.py",
+    "src/decentralized_did/cli_enhanced.py",
+    "src/decentralized_did/cli_logging.py",
+    "src/decentralized_did/capture/libfprint_capture.py",
+    "src/decentralized_did/did/generator.py",
+    "src/decentralized_did/storage/base.py",
+    "src/decentralized_did/storage/factory.py",
+    "src/decentralized_did/storage/inline.py",
+    "src/decentralized_did/storage/file.py",
+    "src/decentralized_did/storage/ipfs.py",
+    "src/decentralized_did/biometrics/feature_extractor.py",
+    "src/decentralized_did/biometrics/aggregator.py",
+    "src/decentralized_did/biometrics/fuzzy_extractor.py"
+  ],
+  "hardcoded_api_key": [
+    {
+      "file": "src/decentralized_did/cardano/transaction.py",
+      "match": "api_key=\"your_blockfrost_key\""
+    },
+    {
+      "file": "src/decentralized_did/cardano/blockfrost.py",
+      "match": "api_key=\"your_blockfrost_key\""
+    }
+  ],
+  "hardcoded_token": [
+    {
+      "file": "src/decentralized_did/api/error_handling.py",
+      "match": "TOKEN = \"AUTH_MISSING_TOKEN\""
+    }
+  ]
+}

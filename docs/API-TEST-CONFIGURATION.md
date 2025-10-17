@@ -18,8 +18,10 @@ This guide provides test credentials, environment configuration, and authenticat
 - **Port**: 8000
 - **Authentication**: None (open access)
 - **Rate Limiting**: No
-- **Use Case**: Development and quick testing
-- **Status**: ✅ OPERATIONAL
+- **Use Case**: Development and deterministic smoke testing
+- **Status**: ✅ OPERATIONAL (deterministic helper hashing, CIP-30 v1.1 metadata)
+
+> Demo wallet default env files assume the secure server handles authentication. When targeting the basic server, clear `BIOMETRIC_AUTH_URL`, `BIOMETRIC_API_KEY`, **and** the shared `API_KEY`/`API_SECRET_KEY` values (for example: `BIOMETRIC_AUTH_URL= BIOMETRIC_API_KEY= API_KEY= API_SECRET_KEY=`) so Jest skips the JWT exchange.
 
 ### Secure API Server (`api_server_secure.py`)
 - **Port**: 8001 (recommended; pass `--port 8001` to uvicorn to avoid basic-server conflict)

@@ -2,7 +2,7 @@
 
 **Task 4 Phase 1.4** — API endpoint documentation for the biometric DID servers
 
-_Last updated: October 16, 2025_
+_Last updated: October 17, 2025_
 
 ---
 
@@ -12,7 +12,7 @@ Three FastAPI services are available during integration testing:
 
 | Server | Module | Default Port | Authentication | Primary Use |
 | --- | --- | --- | --- | --- |
-| Basic API | `api_server.py` | `8000` | None | Local development, quick smoke tests |
+| Basic API | `api_server.py` | `8000` | None | Local development, deterministic smoke tests |
 | Secure API | `api_server_secure.py` | `8001` (recommended) | JWT bearer token (API key exchange) | Production-hardening, auth/rate-limit validation |
 | Mock API | `api_server_mock.py` | `8002` | None | Deterministic CI runs, fast demo-wallet tests |
 
@@ -100,8 +100,8 @@ Unless otherwise noted, all JSON payloads use `application/json` with UTF-8 enco
   "expected_id_hash": "..."
 }
 ```
-- Secure/Mock servers require `expected_id_hash` to match the stored helper data hash
-- Basic server currently reconstructs mock helper data; match success is probabilistic
+- All deployments require `expected_id_hash` to match the stored helper-data digest
+- Success additionally requires the submitted helper map to reference the enrolled fingers (minimum two by default)
 
 ### VerifyResponse
 ```json
@@ -121,16 +121,16 @@ Unless otherwise noted, all JSON payloads use `application/json` with UTF-8 enco
 | Method | Path | Auth | Notes |
 | --- | --- | --- | --- |
 | `GET` | `/health` | None | Returns status/version JSON |
-| `POST` | `/api/biometric/generate` | None | Mock minutiae quantization; duplicate detection via Blockfrost if configured |
-| `POST` | `/api/biometric/verify` | None | Uses random bitstrings; verification success is not deterministic |
+| `POST` | `/api/biometric/generate` | None | Deterministic commitment (wallet + minutiae); duplicate detection via Blockfrost when configured |
+| `POST` | `/api/biometric/verify` | None | Recomputes helper hash; requires matching helper set and expected hash |
 
 ### `/health`
 **200 OK**
 ```json
 {
   "status": "healthy",
-  "service": "biometric-did-api",
-  "version": "1.0.0"
+  "service": "biometric-did-api-basic",
+  "version": "1.1.0"
 }
 ```
 
@@ -157,7 +157,7 @@ curl -X POST http://localhost:8000/api/biometric/generate \
 - **200 OK** — returns `VerifyResponse`
 - **500 Internal Server Error** — verification failure (mock helper schema mismatch)
 
-> **Note**: Because the basic server still uses random biometric bitstrings, `success` will fluctuate and should not be used for deterministic assertions.
+> **Note**: Helper data is derived deterministically from each `finger_id`. Verification succeeds when at least two enrolled fingers are supplied and the `expected_id_hash` matches the enrolled helper digest.
 
 ---
 
