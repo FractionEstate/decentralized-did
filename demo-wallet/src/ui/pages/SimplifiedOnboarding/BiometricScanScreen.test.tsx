@@ -22,7 +22,11 @@ describe("BiometricScanScreen", () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
+    act(() => {
+      while (jest.getTimerCount() > 0) {
+        jest.runOnlyPendingTimers();
+      }
+    });
     jest.useRealTimers();
     jest.clearAllMocks();
   });
@@ -38,6 +42,47 @@ describe("BiometricScanScreen", () => {
       });
     }
   };
+
+  test("renders full finger checklist with formatted names", () => {
+    render(
+      <BiometricScanScreen
+        fingersToScan={[
+          "right-thumb",
+          "right-index",
+          "right-middle",
+          "right-ring",
+          "right-pinky",
+          "left-thumb",
+          "left-index",
+          "left-middle",
+          "left-ring",
+          "left-pinky",
+        ]}
+        onComplete={jest.fn()}
+        onError={jest.fn()}
+      />
+    );
+
+    const fingerNames = screen.getAllByTestId("finger-item-name");
+    expect(fingerNames).toHaveLength(10);
+    expect(fingerNames.map((node) => node.textContent)).toEqual([
+      "RIGHT THUMB",
+      "RIGHT INDEX",
+      "RIGHT MIDDLE",
+      "RIGHT RING",
+      "RIGHT PINKY",
+      "LEFT THUMB",
+      "LEFT INDEX",
+      "LEFT MIDDLE",
+      "LEFT RING",
+      "LEFT PINKY",
+    ]);
+
+    expect(screen.getByTestId("finger-item-status-0").textContent).toBe("•");
+    expect(screen.getByTestId("finger-item-status-1").textContent).toBe("");
+
+    jest.clearAllTimers();
+  });
 
   test("auto captures each finger sequentially and notifies completion", async () => {
     const onComplete = jest.fn();

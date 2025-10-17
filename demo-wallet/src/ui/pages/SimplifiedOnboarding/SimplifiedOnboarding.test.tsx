@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { act } from "react";
+import React, { act } from "react";
 import { createMemoryHistory } from "history";
 import { Router } from "react-router-dom";
 import { TabsRoutePath } from "../../../routes/paths";
@@ -16,7 +16,6 @@ jest.mock("@ionic/react", () => {
 });
 
 jest.mock("./BiometricScanScreen", () => {
-  const React = require("react");
   return {
     BiometricScanScreen: ({ fingersToScan, onComplete }: any) => (
       <div data-testid="biometric-scan-mock">
@@ -37,7 +36,6 @@ jest.mock("./BiometricScanScreen", () => {
 });
 
 jest.mock("./SeedPhraseScreen", () => {
-  const React = require("react");
   return {
     SeedPhraseScreen: ({ words, onConfirm }: any) => (
       <div data-testid="seed-screen-mock">
@@ -51,7 +49,6 @@ jest.mock("./SeedPhraseScreen", () => {
 });
 
 jest.mock("./VerificationScreen", () => {
-  const React = require("react");
   return {
     VerificationScreen: ({ seedPhrase, wordsToVerify, onSuccess }: any) => (
       <div data-testid="verification-screen-mock">
@@ -66,7 +63,6 @@ jest.mock("./VerificationScreen", () => {
 });
 
 jest.mock("./SuccessScreen", () => {
-  const React = require("react");
   return {
     SuccessScreen: ({ walletAddress, onContinue }: any) => (
       <div data-testid="success-screen-mock">
@@ -114,10 +110,12 @@ describe("SimplifiedOnboarding", () => {
 
       fireEvent.click(screen.getByText("Complete Scan"));
 
+      expect(await screen.findByText("Step 2 of 3")).toBeInTheDocument();
       expect(await screen.findByTestId("seed-count")).toHaveTextContent("12");
 
       fireEvent.click(screen.getByText("Confirm Seed"));
 
+      expect(await screen.findByText("Step 3 of 3")).toBeInTheDocument();
       expect(await screen.findByTestId("verification-seed-count")).toHaveTextContent("12");
       expect(screen.getByTestId("words-to-verify")).toHaveTextContent("2,6,11");
 
@@ -134,6 +132,7 @@ describe("SimplifiedOnboarding", () => {
       );
       expect(presentToastMock).toHaveBeenCalledTimes(2);
 
+      expect(screen.queryByText("Step 3 of 3")).not.toBeInTheDocument();
       fireEvent.click(screen.getByText("Continue to Credentials"));
 
       expect(history.location.pathname).toBe(TabsRoutePath.CREDENTIALS);

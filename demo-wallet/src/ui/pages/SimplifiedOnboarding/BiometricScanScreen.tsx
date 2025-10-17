@@ -150,7 +150,7 @@ const BiometricScanScreen = ({
         </p>
       </div>
 
-      <div className="finger-checklist">
+      <div className="finger-checklist" data-testid="finger-checklist">
         <h3>Fingers remaining</h3>
         {fingersToScan.map((finger, index) => {
           const status =
@@ -161,12 +161,22 @@ const BiometricScanScreen = ({
                 : "pending";
 
           return (
-            <div key={finger} className={`finger-item finger-item--${status}`}>
-              <span className="finger-item__status">
+            <div
+              key={finger}
+              className={`finger-item finger-item--${status}`}
+              data-testid="finger-item"
+            >
+              <span
+                className="finger-item__status"
+                data-testid={`finger-item-status-${index}`}
+              >
                 {status === "done" && "✓"}
                 {status === "active" && "•"}
               </span>
-              <span className="finger-item__name">
+              <span
+                className="finger-item__name"
+                data-testid="finger-item-name"
+              >
                 {formatFingerName(finger)}
               </span>
             </div>
