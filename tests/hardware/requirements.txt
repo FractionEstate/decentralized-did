@@ -1,0 +1,5 @@
+# Additional dependencies for hardware tests
+# This file may be empty if no extra libraries are needed beyond the main requirements.
+
+# Example for a specific sensor library:
+# pyfingerprint==1.5
