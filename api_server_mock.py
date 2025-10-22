@@ -213,6 +213,27 @@ async def health_check():
     }
 
 
+@app.get("/metrics/blockfrost")
+async def blockfrost_metrics():
+    """Return Blockfrost instrumentation counters when available."""
+
+    if not blockfrost_client:
+        raise HTTPException(
+            status_code=503,
+            detail="Blockfrost client not configured",
+        )
+
+    snapshot = blockfrost_client.metrics_snapshot()
+
+    return {
+        "network": CARDANO_NETWORK,
+        "cache_enabled": bool(blockfrost_client.cache),
+        "timeout_seconds": blockfrost_client.timeout,
+        "max_retries": blockfrost_client.max_retries,
+        "metrics": snapshot,
+    }
+
+
 @app.post("/api/biometric/generate", response_model=GenerateResponse)
 async def generate_did(request: GenerateRequest):
     """
@@ -245,7 +266,7 @@ async def generate_did(request: GenerateRequest):
         # Check for duplicate DID enrollment (Sybil attack prevention)
         if blockfrost_client:
             try:
-                existing = blockfrost_client.check_did_exists(did)
+                existing = await blockfrost_client.check_did_exists(did)
                 if existing:
                     # DID already exists on blockchain
                     raise HTTPException(

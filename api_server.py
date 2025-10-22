@@ -68,22 +68,31 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
+@app.on_event("shutdown")
+async def shutdown_blockfrost_client() -> None:
+    if blockfrost_client:
+        await blockfrost_client.close()
+
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
 
 
 class FingerData(BaseModel):
-    finger_id: str = Field(..., description="Finger identifier (e.g., 'left_thumb')")
+    finger_id: str = Field(...,
+                           description="Finger identifier (e.g., 'left_thumb')")
     minutiae: List[List[float]] = Field(
         ..., description="List of minutiae points [x, y, angle]"
     )
 
 
 class GenerateRequest(BaseModel):
-    fingers: List[FingerData] = Field(..., description="List of fingerprint data")
+    fingers: List[FingerData] = Field(...,
+                                      description="List of fingerprint data")
     wallet_address: str = Field(..., description="Cardano wallet address")
-    storage: str = Field(default="inline", description="Helper data storage method")
+    storage: str = Field(
+        default="inline", description="Helper data storage method")
     format: str = Field(default="json", description="Output format")
 
 
@@ -114,11 +123,13 @@ class GenerateResponse(BaseModel):
 
 
 class VerifyRequest(BaseModel):
-    fingers: List[FingerData] = Field(..., description="Fingerprints to verify")
+    fingers: List[FingerData] = Field(...,
+                                      description="Fingerprints to verify")
     helpers: Dict[str, HelperDataEntry] = Field(
         ..., description="Helper data from enrollment"
     )
-    expected_id_hash: str = Field(..., description="Expected helper hash to match")
+    expected_id_hash: str = Field(...,
+                                  description="Expected helper hash to match")
 
 
 class VerifyResponse(BaseModel):
@@ -186,6 +197,27 @@ async def health_check() -> Dict[str, Any]:
     }
 
 
+@app.get("/metrics/blockfrost")
+async def blockfrost_metrics() -> Dict[str, Any]:
+    """Expose Blockfrost client performance counters for monitoring."""
+
+    if not blockfrost_client:
+        raise HTTPException(
+            status_code=503,
+            detail="Blockfrost client not configured",
+        )
+
+    snapshot = blockfrost_client.metrics_snapshot()
+
+    return {
+        "network": CARDANO_NETWORK,
+        "cache_enabled": bool(blockfrost_client.cache),
+        "timeout_seconds": blockfrost_client.timeout,
+        "max_retries": blockfrost_client.max_retries,
+        "metrics": snapshot,
+    }
+
+
 @app.post("/api/biometric/generate", response_model=GenerateResponse)
 async def generate_did(request: GenerateRequest) -> GenerateResponse:
     try:
@@ -210,7 +242,7 @@ async def generate_did(request: GenerateRequest) -> GenerateResponse:
 
         if blockfrost_client:
             try:
-                existing = blockfrost_client.check_did_exists(did)
+                existing = await blockfrost_client.check_did_exists(did)
                 if existing:
                     raise HTTPException(
                         status_code=409,

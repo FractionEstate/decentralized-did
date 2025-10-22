@@ -1,0 +1,1005 @@
+{
+  "config": {
+    "configFile": "/workspaces/decentralized-did/demo-wallet/playwright.config.ts",
+    "rootDir": "/workspaces/decentralized-did/demo-wallet/tests/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 900000,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "test-results/junit.xml"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "/workspaces/decentralized-did/demo-wallet/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/workspaces/decentralized-did/demo-wallet/tests/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.spec.ts"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.0",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3003",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "biometric-enrollment.spec.ts",
+      "file": "biometric-enrollment.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Biometric Enrollment Flow",
+          "file": "biometric-enrollment.spec.ts",
+          "line": 16,
+          "column": 6,
+          "specs": [
+            {
+              "title": "enrolls three fingers with inline helper data",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 39,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:54.821Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-575c5625f5c0e44db948",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "supports external helper storage",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 40,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:55.553Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-9e3f1aeb23cf0ffd3a43",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 30,
+              "column": 3
+            },
+            {
+              "title": "returns deterministic DID for identical payloads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:56.264Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-6fdeae065772c91605d5",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "produces unique DIDs for different wallets",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:56.972Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-ecb1e13476fdc88d54b7",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 52,
+              "column": 3
+            },
+            {
+              "title": "exposes CIP-30 v1.1 metadata fields",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 39,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:57.657Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-6f83c1ca6816d0346b0d",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 60,
+              "column": 3
+            },
+            {
+              "title": "includes helper data per enrolled finger",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 36,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:58.342Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-2ddb56fdec4cb596b26a",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 72,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Biometric Enrollment Performance",
+          "file": "biometric-enrollment.spec.ts",
+          "line": 83,
+          "column": 6,
+          "specs": [
+            {
+              "title": "completes single enrollment within five seconds",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 39,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:59.020Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-9a634fec544e4005a311",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 84,
+              "column": 3
+            },
+            {
+              "title": "handles concurrent enrollments",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 36,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:42:59.700Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "31d9e6225c7a75f87f5e-f277da91d4334320cd76",
+              "file": "biometric-enrollment.spec.ts",
+              "line": 95,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "biometric-verification.spec.ts",
+      "file": "biometric-verification.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Biometric Verification Flow",
+          "file": "biometric-verification.spec.ts",
+          "line": 18,
+          "column": 6,
+          "specs": [
+            {
+              "title": "verifies when two fingers match",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:00.369Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-a88be12f64bf22798edd",
+              "file": "biometric-verification.spec.ts",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "fails when helper hash mismatches",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 35,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:01.038Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-dc1a2e4a720f54ea657f",
+              "file": "biometric-verification.spec.ts",
+              "line": 48,
+              "column": 3
+            },
+            {
+              "title": "reports unmatched fingers",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 37,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:01.716Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-d0862c185fbb9f411770",
+              "file": "biometric-verification.spec.ts",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "requires at least two matching fingers",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 32,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:02.411Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-77c774d6ff08a3630ae7",
+              "file": "biometric-verification.spec.ts",
+              "line": 89,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Biometric Verification Performance",
+          "file": "biometric-verification.spec.ts",
+          "line": 107,
+          "column": 6,
+          "specs": [
+            {
+              "title": "completes verification within three seconds",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 42,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:03.097Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-370848495e5538866b0d",
+              "file": "biometric-verification.spec.ts",
+              "line": 108,
+              "column": 3
+            },
+            {
+              "title": "handles concurrent verifications",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 33,
+                      "error": {
+                        "message": "Error: API Error 404: {\"detail\":\"Not Found\"}",
+                        "stack": "Error: API Error 404: {\"detail\":\"Not Found\"}\n    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\n    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)",
+                        "location": {
+                          "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                          "column": 13,
+                          "line": 84
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                            "column": 13,
+                            "line": 84
+                          },
+                          "message": "Error: API Error 404: {\"detail\":\"Not Found\"}\n\n\u001b[90m   at \u001b[39m../utils/api-client.ts:84\n\n\u001b[0m \u001b[90m 82 |\u001b[39m     \u001b[36mif\u001b[39m (\u001b[33m!\u001b[39mresponse\u001b[33m.\u001b[39mok) {\n \u001b[90m 83 |\u001b[39m       \u001b[36mconst\u001b[39m error \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mtext()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 84 |\u001b[39m       \u001b[36mthrow\u001b[39m \u001b[36mnew\u001b[39m \u001b[33mError\u001b[39m(\u001b[32m`API Error ${response.status}: ${error}`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 85 |\u001b[39m     }\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m     \u001b[36mreturn\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)\u001b[22m\n\u001b[2m    at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [
+                        {
+                          "text": "API health check failed. Is the backend running?\n"
+                        }
+                      ],
+                      "retry": 0,
+                      "startTime": "2025-10-21T00:43:03.805Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts",
+                        "column": 13,
+                        "line": 84
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "defd69edd9e7b18971bb-ae8be25e77cf9b6f940a",
+              "file": "biometric-verification.spec.ts",
+              "line": 132,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-10-21T00:42:24.717Z",
+    "duration": 39311.732,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 14,
+    "flaky": 0
+  }
+}

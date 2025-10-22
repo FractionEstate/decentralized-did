@@ -64,14 +64,29 @@ export const biometricAssertions = {
   },
 
   /**
-   * Assert wallet bundle structure is valid
+   * Assert metadata structure is valid (CIP-30 v1.1 mock)
    */
-  assertValidWalletBundle(bundle: any) {
-    expect(bundle).toHaveProperty('payment_addr');
-    expect(bundle).toHaveProperty('stake_addr');
-    expect(bundle).toHaveProperty('keys');
-    expect(bundle.keys).toHaveProperty('payment');
-    expect(bundle.keys).toHaveProperty('stake');
+  assertValidMetadata(metadata: any, expectedStorage: 'inline' | 'external') {
+    expect(metadata).toBeDefined();
+    expect(metadata).toHaveProperty('version');
+    expect(metadata.version).toBe('1.1');
+    expect(Array.isArray(metadata.controllers)).toBe(true);
+    expect(metadata.controllers.length).toBeGreaterThan(0);
+    expect(metadata).toHaveProperty('enrollmentTimestamp');
+    expect(metadata).toHaveProperty('walletAddress');
+    expect(metadata).toHaveProperty('biometric');
+
+    const biometric = metadata.biometric;
+    expect(biometric).toHaveProperty('idHash');
+    expect(typeof biometric.idHash).toBe('string');
+    expect(biometric).toHaveProperty('helperStorage');
+    expect(biometric.helperStorage).toBe(expectedStorage);
+
+    if (expectedStorage === 'inline') {
+      expect(biometric.helperData).toBeTruthy();
+    } else {
+      expect(biometric.helperData).toBeNull();
+    }
   },
 
   /**
@@ -96,12 +111,11 @@ export const biometricAssertions = {
     expectedVerified: boolean,
     expectedMatchedCount: number
   ) {
-    expect(response.verified).toBe(expectedVerified);
+    expect(response.success).toBe(expectedVerified);
     expect(response.matched_fingers).toHaveLength(expectedMatchedCount);
 
     if (expectedVerified) {
-      expect(response).toHaveProperty('did');
-      biometricAssertions.assertValidDid(response.did);
+      expect(response.error ?? null).toBeFalsy();
     }
   },
 };

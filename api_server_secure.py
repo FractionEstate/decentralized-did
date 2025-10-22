@@ -267,6 +267,12 @@ app = FastAPI(
     redoc_url="/redoc" if not HTTPS_ONLY else None,
 )
 
+
+@app.on_event("shutdown")
+async def shutdown_blockfrost_client() -> None:
+    if blockfrost_client:
+        await blockfrost_client.close()
+
 # Add rate limiter to app state
 app.state.limiter = limiter
 
@@ -534,6 +540,41 @@ async def health_check(request: Request):
     }
 
 
+@app.get("/metrics/blockfrost")
+@rate_limit("10/minute")
+async def get_blockfrost_metrics(
+    request: Request,
+    current_user: TokenData = Depends(get_current_user),
+):
+    """Return Blockfrost performance metrics for observability dashboards."""
+
+    if not blockfrost_client:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Blockfrost client not configured",
+        )
+
+    snapshot = blockfrost_client.metrics_snapshot()
+    audit_log(
+        "blockfrost_metrics",
+        current_user.user_id,
+        {
+            "network": CARDANO_NETWORK,
+            "total_requests": snapshot["total_requests"],
+            "error_rate": snapshot["error_rate"],
+        },
+    )
+
+    return {
+        "network": CARDANO_NETWORK,
+        "cache_enabled": bool(blockfrost_client.cache),
+        "timeout_seconds": blockfrost_client.timeout,
+        "max_retries": blockfrost_client.max_retries,
+        "metrics": snapshot,
+        "requested_by": current_user.user_id,
+    }
+
+
 @app.post("/auth/token", response_model=AuthResponse)
 @rate_limit("5/minute")
 async def authenticate(request: Request, auth_request: AuthRequest):
@@ -605,7 +646,7 @@ async def generate_did(
         # Check for duplicate DID enrollment (Sybil attack prevention)
         if blockfrost_client:
             try:
-                existing = blockfrost_client.check_did_exists(did)
+                existing = await blockfrost_client.check_did_exists(did)
                 if existing:
                     # DID already exists on blockchain
                     audit_log("duplicate_did_detected", current_user.user_id, {

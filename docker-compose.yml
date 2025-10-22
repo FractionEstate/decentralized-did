@@ -1,15 +1,16 @@
 version: '3.8'
 
 services:
-  # Backend API
-  backend-api:
+  # Backend API - Secure (Production)
+  backend-api-secure:
     build:
       context: .
       dockerfile: Dockerfile.backend
-    container_name: biometric-did-api
+      target: secure
+    container_name: biometric-did-api-secure
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8001:8000"
     environment:
       - API_SECRET_KEY=${API_SECRET_KEY}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
@@ -18,6 +19,8 @@ services:
       - RATE_LIMIT_ENABLED=true
       - AUDIT_LOG_ENABLED=true
       - HTTPS_ONLY=${HTTPS_ONLY:-false}
+      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
     volumes:
       - ./logs:/app/logs
       - ./data:/app/data
@@ -29,6 +32,59 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    profiles:
+      - production
+
+  # Backend API - Basic (Development/Testing)
+  backend-api-basic:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: basic
+    container_name: biometric-did-api-basic
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - CORS_ORIGINS=${CORS_ORIGINS}
+      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-testnet}
+    volumes:
+      - ./logs:/app/logs
+      - ./data:/app/data
+    networks:
+      - biometric-did-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - development
+
+  # Backend API - Mock (Testing/Demo)
+  backend-api-mock:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+      target: mock
+    container_name: biometric-did-api-mock
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    environment:
+      - CORS_ORIGINS=${CORS_ORIGINS}
+    networks:
+      - biometric-did-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - testing
 
   # Demo Wallet (Frontend)
   demo-wallet:
@@ -40,13 +96,21 @@ services:
     ports:
       - "3003:80"
     environment:
-      - VITE_API_URL=${API_URL:-https://api.biometric-did.example.com}
+      - VITE_API_URL=${API_URL:-http://localhost:8000}
     networks:
       - biometric-did-network
     depends_on:
-      - backend-api
+      backend-api-basic:
+        condition: service_healthy
+        profiles: ["development"]
+      backend-api-secure:
+        condition: service_healthy
+        profiles: ["production"]
+      backend-api-mock:
+        condition: service_healthy
+        profiles: ["testing"]
 
-  # Nginx Reverse Proxy (optional, for production SSL/TLS)
+  # Nginx Reverse Proxy (Production SSL/TLS)
   nginx:
     image: nginx:alpine
     container_name: biometric-did-nginx
@@ -59,13 +123,28 @@ services:
       - ./nginx/conf.d:/etc/nginx/conf.d:ro
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./nginx/logs:/var/log/nginx
+      - ./nginx/acme:/var/www/certbot
     networks:
       - biometric-did-network
     depends_on:
-      - backend-api
-      - demo-wallet
+      backend-api-secure:
+        condition: service_healthy
+        profiles: ["production"]
+      demo-wallet:
+        condition: service_healthy
     profiles:
-      - production  # Only start in production mode
+      - production
+
+  # Certbot for SSL certificates
+  certbot:
+    image: certbot/certbot:latest
+    container_name: biometric-did-certbot
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - ./nginx/acme:/var/www/certbot
+    command: certonly --webroot --webroot-path=/var/www/certbot --email ${SSL_EMAIL} --agree-tos --no-eff-email -d ${DOMAIN} -d api.${DOMAIN}
+    profiles:
+      - production
 
 networks:
   biometric-did-network:

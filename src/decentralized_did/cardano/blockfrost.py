@@ -19,11 +19,13 @@ License: Apache 2.0
 
 import logging
 import time
+import asyncio
 from dataclasses import dataclass
 from typing import List, Optional, Dict, Any
-import requests
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
+import httpx
+from urllib.parse import urlencode
+
+from .cache import TTLCache
 
 logger = logging.getLogger(__name__)
 
@@ -33,6 +35,53 @@ BLOCKFROST_TESTNET_URL = "https://cardano-preprod.blockfrost.io/api/v0"
 BLOCKFROST_MAINNET_URL = "https://cardano-mainnet.blockfrost.io/api/v0"
 DEFAULT_TIMEOUT = 30  # seconds
 MAX_RETRIES = 3
+
+
+@dataclass
+class BlockfrostMetrics:
+    """Lightweight performance counters for Blockfrost requests."""
+
+    total_requests: int = 0
+    cache_hits: int = 0
+    cache_misses: int = 0
+    network_requests: int = 0
+    network_errors: int = 0
+    total_network_latency: float = 0.0
+    max_network_latency: float = 0.0
+
+    def record_cache_hit(self) -> None:
+        self.total_requests += 1
+        self.cache_hits += 1
+
+    def record_cache_miss(self) -> None:
+        self.total_requests += 1
+        self.cache_misses += 1
+
+    def record_direct_request(self) -> None:
+        self.total_requests += 1
+
+    def record_network_attempt(self, duration: float, *, success: bool) -> None:
+        self.network_requests += 1
+        self.total_network_latency += duration
+        if duration > self.max_network_latency:
+            self.max_network_latency = duration
+        if not success:
+            self.network_errors += 1
+
+    @property
+    def average_network_latency(self) -> float:
+        if not self.network_requests:
+            return 0.0
+        return self.total_network_latency / self.network_requests
+
+    def reset(self) -> None:
+        self.total_requests = 0
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self.network_requests = 0
+        self.network_errors = 0
+        self.total_network_latency = 0.0
+        self.max_network_latency = 0.0
 
 
 @dataclass
@@ -110,16 +159,16 @@ class BlockfrostClient:
         ...     network="testnet"
         ... )
         >>> # Query UTXOs
-        >>> utxos = client.get_address_utxos("addr_test1...")
+    >>> utxos = await client.get_address_utxos("addr_test1...")
         >>>
         >>> # Check for duplicate DID before enrollment
-        >>> existing = client.check_did_exists("did:cardano:mainnet:zQm...")
+    >>> existing = await client.check_did_exists("did:cardano:mainnet:zQm...")
         >>> if existing:
         ...     print(f"DID already enrolled at: {existing['enrollment_timestamp']}")
         >>>
         >>> # Submit transaction
-        >>> tx_hash = client.submit_transaction(tx_cbor)
-        >>> status = client.get_transaction_status(tx_hash)
+    >>> tx_hash = await client.submit_transaction(tx_cbor)
+    >>> status = await client.get_transaction_status(tx_hash)
     """
 
     def __init__(
@@ -128,6 +177,8 @@ class BlockfrostClient:
         network: str = "testnet",
         timeout: int = DEFAULT_TIMEOUT,
         max_retries: int = MAX_RETRIES,
+        cache: Optional[TTLCache] = None,
+        metrics: Optional[BlockfrostMetrics] = None,
     ):
         """
         Initialize Blockfrost client.
@@ -137,10 +188,14 @@ class BlockfrostClient:
             network: "testnet" or "mainnet"
             timeout: Request timeout in seconds
             max_retries: Maximum number of retries for failed requests
+            cache: Optional TTLCache instance for caching results
+            metrics: Optional BlockfrostMetrics instance for instrumentation
         """
         self.api_key = api_key
         self.network = network
         self.timeout = timeout
+        self.cache = cache
+        self.metrics = metrics or BlockfrostMetrics()
 
         # Set base URL based on network
         if network == "testnet":
@@ -151,27 +206,102 @@ class BlockfrostClient:
             raise ValueError(
                 f"Invalid network: {network}. Use 'testnet' or 'mainnet'")
 
-        # Setup session with retries
-        self.session = requests.Session()
-        retry_strategy = Retry(
-            total=max_retries,
-            backoff_factor=1,
-            status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=["GET", "POST"]
+        # Setup session
+        self.session = httpx.AsyncClient(
+            headers={
+                "project_id": api_key,
+                "Content-Type": "application/json"
+            },
+            timeout=self.timeout,
         )
-        adapter = HTTPAdapter(max_retries=retry_strategy)
-        self.session.mount("https://", adapter)
-        self.session.mount("http://", adapter)
+        self.max_retries = max_retries
 
-        # Set headers
-        self.session.headers.update({
-            "project_id": api_key,
-            "Content-Type": "application/json"
-        })
+        logger.info(
+            f"BlockfrostClient initialized: network={network}, cache={'enabled' if cache else 'disabled'}")
 
-        logger.info(f"BlockfrostClient initialized: network={network}")
+    async def close(self):
+        """Close the underlying HTTP client session."""
+        await self.session.aclose()
 
-    def _request(
+    def metrics_snapshot(self) -> Dict[str, Any]:
+        """Return a point-in-time snapshot of client performance metrics."""
+
+        cache_lookups = self.metrics.cache_hits + self.metrics.cache_misses
+        cache_hit_ratio = (
+            self.metrics.cache_hits / cache_lookups if cache_lookups else 0.0
+        )
+
+        error_rate = (
+            self.metrics.network_errors / self.metrics.network_requests
+            if self.metrics.network_requests
+            else 0.0
+        )
+
+        return {
+            "timestamp": time.time(),
+            "total_requests": self.metrics.total_requests,
+            "cache_hits": self.metrics.cache_hits,
+            "cache_misses": self.metrics.cache_misses,
+            "cache_hit_ratio": cache_hit_ratio,
+            "network_requests": self.metrics.network_requests,
+            "network_errors": self.metrics.network_errors,
+            "error_rate": error_rate,
+            "total_network_latency": self.metrics.total_network_latency,
+            "average_network_latency": self.metrics.average_network_latency,
+            "max_network_latency": self.metrics.max_network_latency,
+        }
+
+    def reset_metrics(self) -> None:
+        """Reset all collected metrics counters back to zero."""
+
+        self.metrics.reset()
+
+    async def _request(
+        self,
+        method: str,
+        endpoint: str,
+        **kwargs
+    ) -> Any:
+        """
+        Make HTTP request to Blockfrost API, with caching support for GET requests.
+
+        Args:
+            method: HTTP method (GET, POST, etc.)
+            endpoint: API endpoint (e.g., "/addresses/{address}/utxos")
+            **kwargs: Additional arguments for requests
+
+        Returns:
+            Response JSON data
+        """
+        method_upper = method.upper()
+
+        # Only cache GET requests
+        if self.cache and method_upper == "GET":
+            # Create a unique cache key from the endpoint and query parameters
+            params = kwargs.get("params", {})
+            # Sort params for consistent key generation
+            sorted_params = sorted(params.items())
+            cache_key = f"{endpoint}?{urlencode(sorted_params)}"
+
+            cached_data = self.cache.get(cache_key)
+            if cached_data is not None:
+                logger.debug(f"Cache HIT for {cache_key}")
+                self.metrics.record_cache_hit()
+                return cached_data
+
+            logger.debug(f"Cache MISS for {cache_key}")
+            self.metrics.record_cache_miss()
+            # If not in cache, make the actual HTTP request
+            data = await self._http_request(method, endpoint, **kwargs)
+            # Store the successful result in the cache
+            self.cache.set(cache_key, data)
+            return data
+
+        # For non-GET requests or if cache is disabled, make a direct request
+        self.metrics.record_direct_request()
+        return await self._http_request(method, endpoint, **kwargs)
+
+    async def _http_request(
         self,
         method: str,
         endpoint: str,
@@ -195,49 +325,135 @@ class BlockfrostClient:
         """
         url = f"{self.base_url}{endpoint}"
 
-        try:
-            response = self.session.request(
-                method=method,
-                url=url,
-                timeout=self.timeout,
-                **kwargs
-            )
+        attempt = 0
+        last_error: Optional[Exception] = None
 
-            # Handle rate limiting
-            if response.status_code == 429:
-                retry_after = int(response.headers.get("Retry-After", 60))
-                logger.warning(
-                    f"Rate limit exceeded, retry after {retry_after}s")
-                raise BlockfrostRateLimitError(
-                    f"Rate limit exceeded. Retry after {retry_after} seconds."
+        while attempt <= self.max_retries:
+            attempt_start = time.perf_counter()
+            try:
+                response = await self.session.request(
+                    method=method,
+                    url=url,
+                    timeout=self.timeout,
+                    **kwargs
                 )
+                duration = time.perf_counter() - attempt_start
 
-            # Handle errors
-            if response.status_code >= 400:
-                error_msg = response.text
+                if response.status_code == 429:
+                    retry_after_raw = response.headers.get("Retry-After")
+                    retry_after = int(
+                        retry_after_raw) if retry_after_raw else 60
+                    message = (
+                        "Rate limit exceeded. Retry after "
+                        f"{retry_after} seconds."
+                    )
+                    if attempt < self.max_retries:
+                        logger.warning(
+                            "Rate limited by Blockfrost, retrying in %ss",
+                            retry_after,
+                        )
+                        self.metrics.record_network_attempt(
+                            duration, success=False)
+                        await asyncio.sleep(retry_after)
+                        attempt += 1
+                        continue
+                    self.metrics.record_network_attempt(
+                        duration, success=False)
+                    raise BlockfrostRateLimitError(message)
+
+                if response.status_code >= 400:
+                    error_msg = response.text
+                    try:
+                        error_data = response.json()
+                        if isinstance(error_data, dict):
+                            error_msg = error_data.get("message", error_msg)
+                    except Exception:  # pragma: no cover - fallback when JSON parsing fails
+                        pass
+
+                    logger.error(
+                        "Blockfrost API error (%s): %s", response.status_code, error_msg
+                    )
+
+                    if response.status_code >= 500 and attempt < self.max_retries:
+                        backoff = 2 ** attempt
+                        logger.warning(
+                            "Server error from Blockfrost, retrying in %ss", backoff
+                        )
+                        self.metrics.record_network_attempt(
+                            duration, success=False)
+                        await asyncio.sleep(backoff)
+                        attempt += 1
+                        continue
+
+                    self.metrics.record_network_attempt(
+                        duration, success=False)
+                    raise BlockfrostAPIError(
+                        f"API error ({response.status_code}): {error_msg}"
+                    )
+
                 try:
-                    error_data = response.json()
-                    error_msg = error_data.get("message", error_msg)
-                except:
-                    pass
+                    data = response.json()
+                except ValueError as exc:  # pragma: no cover - unexpected non-JSON payload
+                    logger.error(
+                        "Invalid JSON response from Blockfrost: %s", exc)
+                    self.metrics.record_network_attempt(
+                        duration, success=False)
+                    raise BlockfrostError(
+                        "Invalid JSON response from Blockfrost") from exc
 
-                logger.error(
-                    f"Blockfrost API error ({response.status_code}): {error_msg}")
-                raise BlockfrostAPIError(
-                    f"API error ({response.status_code}): {error_msg}"
-                )
+                self.metrics.record_network_attempt(duration, success=True)
+                return data
 
-            return response.json()
+            except httpx.TimeoutException as exc:
+                duration = time.perf_counter() - attempt_start
+                last_error = exc
+                if attempt < self.max_retries:
+                    backoff = 2 ** attempt
+                    logger.warning(
+                        "Blockfrost request timed out (%s); retrying in %ss",
+                        url,
+                        backoff,
+                    )
+                    self.metrics.record_network_attempt(
+                        duration, success=False)
+                    await asyncio.sleep(backoff)
+                    attempt += 1
+                    continue
 
-        except requests.exceptions.Timeout:
-            logger.error(f"Request timeout: {url}")
-            raise BlockfrostError(f"Request timeout after {self.timeout}s")
+                logger.error("Request timeout: %s", url)
+                self.metrics.record_network_attempt(duration, success=False)
+                raise BlockfrostError(
+                    f"Request timeout after {self.timeout}s") from exc
 
-        except requests.exceptions.RequestException as e:
-            logger.error(f"Request failed: {e}")
-            raise BlockfrostError(f"Request failed: {e}")
+            except httpx.RequestError as exc:
+                duration = time.perf_counter() - attempt_start
+                last_error = exc
+                if attempt < self.max_retries:
+                    backoff = 2 ** attempt
+                    logger.warning(
+                        "Blockfrost request error (%s); retrying in %ss",
+                        exc,
+                        backoff,
+                    )
+                    self.metrics.record_network_attempt(
+                        duration, success=False)
+                    await asyncio.sleep(backoff)
+                    attempt += 1
+                    continue
 
-    def get_address_utxos(
+                logger.error("Request failed: %s", exc)
+                self.metrics.record_network_attempt(duration, success=False)
+                raise BlockfrostError(f"Request failed: {exc}") from exc
+
+        if last_error:
+            raise BlockfrostError(
+                f"Request failed after {self.max_retries + 1} attempts: {last_error}")
+
+        raise BlockfrostError(
+            f"Request failed after {self.max_retries + 1} attempts: {method} {endpoint}"
+        )
+
+    async def get_address_utxos(
         self,
         address: str,
         count: int = 100,
@@ -255,7 +471,7 @@ class BlockfrostClient:
             List of UTXOInfo objects
 
         Example:
-            >>> utxos = client.get_address_utxos("addr_test1...")
+            >>> utxos = await client.get_address_utxos("addr_test1...")
             >>> for utxo in utxos:
             ...     print(f"{utxo.tx_hash}#{utxo.tx_index}: {utxo.amount}")
         """
@@ -265,7 +481,7 @@ class BlockfrostClient:
         logger.debug(f"Querying UTXOs for address: {address}")
 
         try:
-            data = self._request("GET", endpoint, params=params)
+            data = await self._request("GET", endpoint, params=params)
 
             # Type assertion: data is a list of dictionaries
             if not isinstance(data, list):
@@ -299,7 +515,7 @@ class BlockfrostClient:
                 return []
             raise
 
-    def get_address_balance(self, address: str) -> int:
+    async def get_address_balance(self, address: str) -> int:
         """
         Get total lovelace balance for an address.
 
@@ -309,7 +525,7 @@ class BlockfrostClient:
         Returns:
             Total balance in lovelace
         """
-        utxos = self.get_address_utxos(address)
+        utxos = await self.get_address_utxos(address)
 
         total_lovelace = 0
         for utxo in utxos:
@@ -324,7 +540,7 @@ class BlockfrostClient:
 
         return total_lovelace
 
-    def submit_transaction(self, tx_cbor: str) -> str:
+    async def submit_transaction(self, tx_cbor: str) -> str:
         """
         Submit a transaction to the blockchain.
 
@@ -338,7 +554,7 @@ class BlockfrostClient:
             BlockfrostAPIError: If submission fails
 
         Example:
-            >>> tx_hash = client.submit_transaction(tx.to_cbor().hex())
+            >>> tx_hash = await client.submit_transaction(tx.to_cbor().hex())
             >>> print(f"Transaction submitted: {tx_hash}")
         """
         endpoint = "/tx/submit"
@@ -351,27 +567,14 @@ class BlockfrostClient:
         try:
             # Convert hex to bytes
             tx_bytes = bytes.fromhex(tx_cbor)
-
-            response = self.session.post(
-                f"{self.base_url}{endpoint}",
-                data=tx_bytes,
-                headers={**self.session.headers, **headers},
-                timeout=self.timeout,
+            result = await self._request(
+                "POST",
+                endpoint,
+                content=tx_bytes,
+                headers=headers,
             )
 
-            if response.status_code >= 400:
-                error_msg = response.text
-                try:
-                    error_data = response.json()
-                    error_msg = error_data.get("message", error_msg)
-                except:
-                    pass
-
-                logger.error(f"Transaction submission failed: {error_msg}")
-                raise BlockfrostAPIError(
-                    f"Transaction submission failed: {error_msg}")
-
-            tx_hash = response.json()
+            tx_hash = str(result)
 
             logger.info(f"Transaction submitted successfully: {tx_hash}")
             return tx_hash
@@ -380,7 +583,7 @@ class BlockfrostClient:
             logger.error(f"Invalid CBOR hex: {e}")
             raise BlockfrostError(f"Invalid CBOR hex: {e}")
 
-    def get_transaction_status(self, tx_hash: str) -> TransactionStatus:
+    async def get_transaction_status(self, tx_hash: str) -> TransactionStatus:
         """
         Get transaction status and confirmation details.
 
@@ -391,7 +594,7 @@ class BlockfrostClient:
             TransactionStatus object
 
         Example:
-            >>> status = client.get_transaction_status(tx_hash)
+            >>> status = await client.get_transaction_status(tx_hash)
             >>> if status.confirmed:
             ...     print(f"Confirmed in block {status.block_height}")
             ... else:
@@ -402,7 +605,7 @@ class BlockfrostClient:
         logger.debug(f"Checking transaction status: {tx_hash}")
 
         try:
-            data = self._request("GET", endpoint)
+            data = await self._request("GET", endpoint)
 
             confirmed = data.get("block") is not None
 
@@ -435,7 +638,7 @@ class BlockfrostClient:
                 )
             raise
 
-    def wait_for_confirmation(
+    async def wait_for_confirmation(
         self,
         tx_hash: str,
         max_wait: int = 300,
@@ -456,7 +659,7 @@ class BlockfrostClient:
             BlockfrostError: If transaction not confirmed within max_wait
 
         Example:
-            >>> status = client.wait_for_confirmation(tx_hash, max_wait=600)
+            >>> status = await client.wait_for_confirmation(tx_hash, max_wait=600)
             >>> print(f"Confirmed in block {status.block_height}")
         """
         logger.info(f"Waiting for transaction confirmation: {tx_hash}")
@@ -464,7 +667,7 @@ class BlockfrostClient:
         start_time = time.time()
 
         while time.time() - start_time < max_wait:
-            status = self.get_transaction_status(tx_hash)
+            status = await self.get_transaction_status(tx_hash)
 
             if status.confirmed:
                 elapsed = time.time() - start_time
@@ -472,13 +675,13 @@ class BlockfrostClient:
                 return status
 
             logger.debug(f"Transaction pending, waiting {poll_interval}s...")
-            time.sleep(poll_interval)
+            await asyncio.sleep(poll_interval)
 
         raise BlockfrostError(
             f"Transaction not confirmed within {max_wait}s"
         )
 
-    def get_latest_block(self) -> Dict[str, Any]:
+    async def get_latest_block(self) -> Dict[str, Any]:
         """
         Get information about the latest block.
 
@@ -489,7 +692,7 @@ class BlockfrostClient:
 
         logger.debug("Fetching latest block info")
 
-        data = self._request("GET", endpoint)
+        data = await self._request("GET", endpoint)
 
         logger.info(
             f"Latest block: height={data.get('height')}, "
@@ -498,7 +701,7 @@ class BlockfrostClient:
 
         return data
 
-    def get_network_info(self) -> Dict[str, Any]:
+    async def get_network_info(self) -> Dict[str, Any]:
         """
         Get network information.
 
@@ -509,14 +712,14 @@ class BlockfrostClient:
 
         logger.debug("Fetching network info")
 
-        data = self._request("GET", endpoint)
+        data = await self._request("GET", endpoint)
 
         logger.info(
             f"Network info: supply={data.get('supply')}, stake={data.get('stake')}")
 
         return data
 
-    def get_transactions_by_metadata_label(
+    async def get_transactions_by_metadata_label(
         self,
         label: int,
         count: int = 100,
@@ -541,7 +744,7 @@ class BlockfrostClient:
         logger.debug(f"Querying transactions with metadata label: {label}")
 
         try:
-            data = self._request("GET", endpoint, params=params)
+            data = await self._request("GET", endpoint, params=params)
             if not isinstance(data, list):
                 raise BlockfrostAPIError(
                     f"Unexpected response format: {type(data)}")
@@ -553,7 +756,7 @@ class BlockfrostClient:
                 return []
             raise
 
-    def get_transaction_metadata(
+    async def get_transaction_metadata(
         self,
         tx_hash: str,
     ) -> List[Dict[str, Any]]:
@@ -571,7 +774,7 @@ class BlockfrostClient:
         logger.debug(f"Querying metadata for transaction: {tx_hash}")
 
         try:
-            data = self._request("GET", endpoint)
+            data = await self._request("GET", endpoint)
             if not isinstance(data, list):
                 raise BlockfrostAPIError(
                     f"Unexpected response format: {type(data)}")
@@ -582,7 +785,7 @@ class BlockfrostClient:
                 return []
             raise
 
-    def check_did_exists(self, did: str) -> Optional[Dict[str, Any]]:
+    async def check_did_exists(self, did: str) -> Optional[Dict[str, Any]]:
         """
         Check if a DID exists on the blockchain by searching transaction metadata.
 
@@ -607,7 +810,7 @@ class BlockfrostClient:
             BlockfrostRateLimitError: Rate limit exceeded
 
         Example:
-            >>> existing = client.check_did_exists("did:cardano:mainnet:zQm...")
+            >>> existing = await client.check_did_exists("did:cardano:mainnet:zQm...")
             >>> if existing:
             ...     print(f"DID enrolled at: {existing['enrollment_timestamp']}")
             ...     print(f"Controllers: {existing['controllers']}")
@@ -626,7 +829,7 @@ class BlockfrostClient:
 
             while page <= max_pages:
                 params = {"page": page, "count": 100, "order": "desc"}
-                data = self._request("GET", endpoint, params=params)
+                data = await self._request("GET", endpoint, params=params)
 
                 if not isinstance(data, list) or len(data) == 0:
                     # No more results
@@ -634,6 +837,8 @@ class BlockfrostClient:
 
                 # Search through transactions for matching DID
                 for tx_metadata in data:
+                    if not isinstance(tx_metadata, dict):
+                        continue
                     tx_hash = tx_metadata.get("tx_hash")
                     if not tx_hash:
                         continue
@@ -641,15 +846,19 @@ class BlockfrostClient:
                     # Get transaction metadata details
                     try:
                         tx_detail_endpoint = f"/txs/{tx_hash}/metadata"
-                        tx_details = self._request("GET", tx_detail_endpoint)
+                        tx_details = await self._request("GET", tx_detail_endpoint)
 
                         # Search for our metadata label
                         for metadata_entry in tx_details:
+                            if not isinstance(metadata_entry, dict):
+                                continue
                             if metadata_entry.get("label") != "674":
                                 continue
 
                             json_metadata = metadata_entry.get(
                                 "json_metadata", {})
+                            if not isinstance(json_metadata, dict):
+                                continue
 
                             # Check if this metadata contains our DID
                             metadata_did = json_metadata.get("did")

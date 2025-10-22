@@ -5,6 +5,41 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * See https://playwright.dev/docs/test-configuration
  */
+const availableProjects = [
+  {
+    name: 'chromium',
+    use: { ...devices['Desktop Chrome'] },
+  },
+  {
+    name: 'firefox',
+    use: { ...devices['Desktop Firefox'] },
+  },
+  {
+    name: 'webkit',
+    use: { ...devices['Desktop Safari'] },
+  },
+];
+
+const parseBrowserSelection = () => {
+  const selection = process.env.PLAYWRIGHT_BROWSERS;
+  if (!selection) {
+    return availableProjects;
+  }
+
+  const tokens = selection
+    .split(',')
+    .map(token => token.trim().toLowerCase())
+    .filter(Boolean);
+
+  const filtered = availableProjects.filter(project => tokens.includes(project.name.toLowerCase()));
+
+  if (filtered.length === 0) {
+    return availableProjects.filter(project => project.name === 'chromium');
+  }
+
+  return filtered;
+};
+
 export default defineConfig({
   // Test directory
   testDir: './tests/e2e',
@@ -64,32 +99,7 @@ export default defineConfig({
   },
 
   // Configure projects for major browsers
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-    },
-
-    // Uncomment to test on Firefox and WebKit
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    // Mobile viewports
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-  ],
+  projects: parseBrowserSelection(),
 
   // Development server configuration
   webServer: {

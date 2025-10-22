@@ -1,0 +1,342 @@
+<testsuites id="" name="" tests="14" failures="14" skipped="0" errors="0" time="39.311732000000006">
+<testsuite name="biometric-enrollment.spec.ts" timestamp="2025-10-21T00:42:54.096Z" hostname="chromium" tests="8" failures="8" skipped="0" time="0.303" errors="0">
+<testcase name="Biometric Enrollment Flow › enrolls three fingers with inline helper data" classname="biometric-enrollment.spec.ts" time="0.039">
+<failure message="biometric-enrollment.spec.ts:17:3 enrolls three fingers with inline helper data" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:17:3 › Biometric Enrollment Flow › enrolls three fingers with inline helper data 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Flow › supports external helper storage" classname="biometric-enrollment.spec.ts" time="0.04">
+<failure message="biometric-enrollment.spec.ts:30:3 supports external helper storage" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:30:3 › Biometric Enrollment Flow › supports external helper storage 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Flow › returns deterministic DID for identical payloads" classname="biometric-enrollment.spec.ts" time="0.037">
+<failure message="biometric-enrollment.spec.ts:42:3 returns deterministic DID for identical payloads" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:42:3 › Biometric Enrollment Flow › returns deterministic DID for identical payloads 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Flow › produces unique DIDs for different wallets" classname="biometric-enrollment.spec.ts" time="0.037">
+<failure message="biometric-enrollment.spec.ts:52:3 produces unique DIDs for different wallets" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:52:3 › Biometric Enrollment Flow › produces unique DIDs for different wallets 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Flow › exposes CIP-30 v1.1 metadata fields" classname="biometric-enrollment.spec.ts" time="0.039">
+<failure message="biometric-enrollment.spec.ts:60:3 exposes CIP-30 v1.1 metadata fields" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:60:3 › Biometric Enrollment Flow › exposes CIP-30 v1.1 metadata fields 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Flow › includes helper data per enrolled finger" classname="biometric-enrollment.spec.ts" time="0.036">
+<failure message="biometric-enrollment.spec.ts:72:3 includes helper data per enrolled finger" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:72:3 › Biometric Enrollment Flow › includes helper data per enrolled finger 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Performance › completes single enrollment within five seconds" classname="biometric-enrollment.spec.ts" time="0.039">
+<failure message="biometric-enrollment.spec.ts:84:3 completes single enrollment within five seconds" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:84:3 › Biometric Enrollment Performance › completes single enrollment within five seconds 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Enrollment Performance › handles concurrent enrollments" classname="biometric-enrollment.spec.ts" time="0.036">
+<failure message="biometric-enrollment.spec.ts:95:3 handles concurrent enrollments" type="FAILURE">
+<![CDATA[  [chromium] › biometric-enrollment.spec.ts:95:3 › Biometric Enrollment Performance › handles concurrent enrollments 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+</testsuite>
+<testsuite name="biometric-verification.spec.ts" timestamp="2025-10-21T00:42:54.096Z" hostname="chromium" tests="6" failures="6" skipped="0" time="0.212" errors="0">
+<testcase name="Biometric Verification Flow › verifies when two fingers match" classname="biometric-verification.spec.ts" time="0.033">
+<failure message="biometric-verification.spec.ts:29:3 verifies when two fingers match" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:29:3 › Biometric Verification Flow › verifies when two fingers match 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Verification Flow › fails when helper hash mismatches" classname="biometric-verification.spec.ts" time="0.035">
+<failure message="biometric-verification.spec.ts:48:3 fails when helper hash mismatches" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:48:3 › Biometric Verification Flow › fails when helper hash mismatches 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Verification Flow › reports unmatched fingers" classname="biometric-verification.spec.ts" time="0.037">
+<failure message="biometric-verification.spec.ts:69:3 reports unmatched fingers" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:69:3 › Biometric Verification Flow › reports unmatched fingers 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Verification Flow › requires at least two matching fingers" classname="biometric-verification.spec.ts" time="0.032">
+<failure message="biometric-verification.spec.ts:89:3 requires at least two matching fingers" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:89:3 › Biometric Verification Flow › requires at least two matching fingers 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Verification Performance › completes verification within three seconds" classname="biometric-verification.spec.ts" time="0.042">
+<failure message="biometric-verification.spec.ts:108:3 completes verification within three seconds" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:108:3 › Biometric Verification Performance › completes verification within three seconds 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+<testcase name="Biometric Verification Performance › handles concurrent verifications" classname="biometric-verification.spec.ts" time="0.033">
+<failure message="biometric-verification.spec.ts:132:3 handles concurrent verifications" type="FAILURE">
+<![CDATA[  [chromium] › biometric-verification.spec.ts:132:3 › Biometric Verification Performance › handles concurrent verifications 
+
+    Error: API Error 404: {"detail":"Not Found"}
+
+       at ../utils/api-client.ts:84
+
+      82 |     if (!response.ok) {
+      83 |       const error = await response.text();
+    > 84 |       throw new Error(`API Error ${response.status}: ${error}`);
+         |             ^
+      85 |     }
+      86 |
+      87 |     return response.json();
+        at ApiClient.request (/workspaces/decentralized-did/demo-wallet/tests/utils/api-client.ts:84:13)
+        at Object.apiClient (/workspaces/decentralized-did/demo-wallet/tests/fixtures/biometric-fixtures.ts:33:7)
+]]>
+</failure>
+<system-err>
+<![CDATA[API health check failed. Is the backend running?
+]]>
+</system-err>
+</testcase>
+</testsuite>
+</testsuites>

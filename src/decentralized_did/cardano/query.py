@@ -10,16 +10,16 @@ class CardanoQuery:
     def __init__(self, blockfrost_client: BlockfrostClient):
         self.blockfrost_client = blockfrost_client
 
-    def resolve_did(self, did: str) -> Optional[Dict[str, Any]]:
+    async def resolve_did(self, did: str) -> Optional[Dict[str, Any]]:
         """
         Resolves a DID by querying the blockchain for its latest metadata.
 
         :param did: The DID to resolve.
         :return: The latest metadata document for the DID, or None if not found.
         """
-        return self.blockfrost_client.check_did_exists(did)
+        return await self.blockfrost_client.check_did_exists(did)
 
-    def get_enrollment_history(self, did: str) -> list[Dict[str, Any]]:
+    async def get_enrollment_history(self, did: str) -> list[Dict[str, Any]]:
         """
         Retrieves the entire on-chain history of a DID.
 
@@ -28,7 +28,7 @@ class CardanoQuery:
         """
         # This is a simplified implementation. A real implementation would need
         # to handle pagination and potentially multiple transactions in the same slot.
-        transactions = self.blockfrost_client.get_transactions_by_metadata_label(
+        transactions = await self.blockfrost_client.get_transactions_by_metadata_label(
             674
         )
         history = []
@@ -37,7 +37,7 @@ class CardanoQuery:
             if not tx_hash:
                 continue
 
-            metadata_list = self.blockfrost_client.get_transaction_metadata(
+            metadata_list = await self.blockfrost_client.get_transaction_metadata(
                 tx_hash)
             for metadata_entry in metadata_list:
                 if metadata_entry.get("label") == "674":

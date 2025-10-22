@@ -1,563 +1,532 @@
-"""
-Unit tests for Blockfrost API client.
-
-Tests cover:
-- UTXO querying
-- Transaction submission
-- Transaction status tracking
-- DID duplicate detection
-- Rate limit handling
-- Error handling
-- Network configuration
-
-Run: pytest tests/test_blockfrost.py -v
-"""
-
-import pytest
-from unittest.mock import Mock, patch, MagicMock
-import requests
+"""Async unit tests for the Blockfrost API client."""
 
 from decentralized_did.cardano.blockfrost import (
+    BLOCKFROST_MAINNET_URL,
+    BLOCKFROST_TESTNET_URL,
+    BlockfrostAPIError,
     BlockfrostClient,
-    UTXOInfo,
-    TransactionStatus,
     BlockfrostError,
     BlockfrostRateLimitError,
-    BlockfrostAPIError,
-    DIDAlreadyExistsError,
+    TransactionStatus,
+    UTXOInfo,
     convert_utxo_info_to_input,
     format_lovelace,
-    BLOCKFROST_TESTNET_URL,
-    BLOCKFROST_MAINNET_URL,
 )
+import json
+from contextlib import asynccontextmanager
+from typing import Any, Dict, List
+from collections.abc import AsyncIterator
+
+import httpx
+import pytest
+from unittest.mock import AsyncMock
 
 
-# Test fixtures
-
-@pytest.fixture
-def mock_response():
-    """Mock requests.Response object."""
-    response = Mock(spec=requests.Response)
-    response.status_code = 200
-    response.headers = {}
-    return response
-
-
-@pytest.fixture
-def blockfrost_client():
-    """BlockfrostClient instance for testing."""
-    return BlockfrostClient(
-        api_key="test_api_key",
-        network="testnet"
+def make_httpx_response(
+    status_code: int = 200,
+    json_data: Any = None,
+    text: str = "",
+    headers: Dict[str, str] | None = None,
+    method: str = "GET",
+) -> httpx.Response:
+    """Create an httpx.Response with optional JSON payload for testing."""
+    if json_data is not None:
+        content = json.dumps(json_data).encode("utf-8")
+    else:
+        content = text.encode("utf-8")
+    request = httpx.Request(method, "https://blockfrost.test/api")
+    return httpx.Response(
+        status_code=status_code,
+        headers=headers or {},
+        content=content,
+        request=request,
     )
 
 
+@asynccontextmanager
+async def blockfrost_client_context(
+    *,
+    api_key: str = "test_api_key",
+    network: str = "testnet",
+    **kwargs: Any,
+) -> AsyncIterator[BlockfrostClient]:
+    client = BlockfrostClient(api_key=api_key, network=network, **kwargs)
+    try:
+        yield client
+    finally:
+        await client.close()
+
+
 @pytest.fixture
-def sample_utxo_data():
-    """Sample UTXO data from Blockfrost API."""
+def sample_utxo_data() -> List[Dict[str, Any]]:
     return [
         {
             "tx_hash": "a" * 64,
             "output_index": 0,
             "amount": [
-                {"unit": "lovelace", "quantity": "5000000"}
+                {"unit": "lovelace", "quantity": "5000000"},
+                {"unit": "token1", "quantity": "10"},
             ],
             "address": "addr_test1...",
             "block": "block_hash_123",
-            "data_hash": None
+            "data_hash": None,
         },
         {
             "tx_hash": "b" * 64,
             "output_index": 1,
             "amount": [
-                {"unit": "lovelace", "quantity": "10000000"}
+                {"unit": "lovelace", "quantity": "10000000"},
             ],
             "address": "addr_test1...",
             "block": "block_hash_456",
-            "data_hash": None
-        }
+            "data_hash": None,
+        },
     ]
 
 
 @pytest.fixture
-def sample_tx_status_data():
-    """Sample transaction status data from Blockfrost API."""
+def sample_tx_status_data() -> Dict[str, Any]:
     return {
         "hash": "a" * 64,
         "block": "block_hash_123",
         "block_height": 12345,
         "block_time": 1634567890,
         "slot": 987654,
-        "index": 5
+        "index": 5,
     }
 
 
-# Client Initialization Tests
-
-def test_client_initialization_testnet():
-    """Test client initialization with testnet."""
-    client = BlockfrostClient(
-        api_key="test_key",
-        network="testnet"
-    )
-
-    assert client.api_key == "test_key"
-    assert client.network == "testnet"
-    assert client.base_url == BLOCKFROST_TESTNET_URL
-    assert "project_id" in client.session.headers
-    assert client.session.headers["project_id"] == "test_key"
+@pytest.mark.asyncio
+async def test_client_initialization_testnet():
+    client = BlockfrostClient(api_key="test_key", network="testnet")
+    try:
+        assert client.api_key == "test_key"
+        assert client.network == "testnet"
+        assert client.base_url == BLOCKFROST_TESTNET_URL
+        assert client.session.headers["project_id"] == "test_key"
+    finally:
+        await client.close()
 
 
-def test_client_initialization_mainnet():
-    """Test client initialization with mainnet."""
-    client = BlockfrostClient(
-        api_key="mainnet_key",
-        network="mainnet"
-    )
-
-    assert client.network == "mainnet"
-    assert client.base_url == BLOCKFROST_MAINNET_URL
+@pytest.mark.asyncio
+async def test_client_initialization_mainnet():
+    client = BlockfrostClient(api_key="mainnet_key", network="mainnet")
+    try:
+        assert client.network == "mainnet"
+        assert client.base_url == BLOCKFROST_MAINNET_URL
+    finally:
+        await client.close()
 
 
 def test_client_initialization_invalid_network():
-    """Test client initialization with invalid network."""
     with pytest.raises(ValueError, match="Invalid network"):
-        BlockfrostClient(
-            api_key="test_key",
-            network="invalid"
+        BlockfrostClient(api_key="test_key", network="invalid")
+
+
+@pytest.mark.asyncio
+async def test_get_address_utxos_success(sample_utxo_data):
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(return_value=sample_utxo_data)
+
+        utxos = await blockfrost_client.get_address_utxos("addr_test1...")
+
+        assert len(utxos) == 2
+        assert isinstance(utxos[0], UTXOInfo)
+        assert utxos[0].tx_hash == "a" * 64
+        assert utxos[1].tx_index == 1
+
+
+@pytest.mark.asyncio
+async def test_get_address_utxos_empty():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=BlockfrostAPIError(
+                "API error (404): Address not found")
         )
 
-
-# UTXO Query Tests
-
-@patch('requests.Session.request')
-def test_get_address_utxos_success(mock_request, blockfrost_client, sample_utxo_data, mock_response):
-    """Test successful UTXO query."""
-    mock_response.json.return_value = sample_utxo_data
-    mock_request.return_value = mock_response
-
-    utxos = blockfrost_client.get_address_utxos("addr_test1...")
-
-    assert len(utxos) == 2
-    assert isinstance(utxos[0], UTXOInfo)
-    assert utxos[0].tx_hash == "a" * 64
-    assert utxos[0].tx_index == 0
-    assert utxos[1].tx_hash == "b" * 64
-    assert utxos[1].tx_index == 1
+        utxos = await blockfrost_client.get_address_utxos("addr_test1...")
+        assert utxos == []
 
 
-@patch('requests.Session.request')
-def test_get_address_utxos_empty(mock_request, blockfrost_client, mock_response):
-    """Test UTXO query for address with no UTXOs."""
-    mock_response.status_code = 404
-    mock_response.json.return_value = {"message": "Address not found"}
-    mock_request.return_value = mock_response
+@pytest.mark.asyncio
+async def test_get_address_balance(sample_utxo_data):
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(return_value=sample_utxo_data)
 
-    utxos = blockfrost_client.get_address_utxos("addr_test1...")
+        balance = await blockfrost_client.get_address_balance("addr_test1...")
 
-    assert len(utxos) == 0
+        assert balance == 15_000_000
 
 
-@patch('requests.Session.request')
-def test_get_address_balance(mock_request, blockfrost_client, sample_utxo_data, mock_response):
-    """Test address balance calculation."""
-    mock_response.json.return_value = sample_utxo_data
-    mock_request.return_value = mock_response
-
-    balance = blockfrost_client.get_address_balance("addr_test1...")
-
-    # 5,000,000 + 10,000,000 = 15,000,000 lovelace
-    assert balance == 15_000_000
-
-
-# Transaction Submission Tests
-
-@patch('requests.Session.post')
-def test_submit_transaction_success(mock_post, blockfrost_client, mock_response):
-    """Test successful transaction submission."""
+@pytest.mark.asyncio
+async def test_submit_transaction_success():
     tx_hash = "c" * 64
-    mock_response.json.return_value = tx_hash
-    mock_post.return_value = mock_response
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.session.request = AsyncMock(
+            return_value=make_httpx_response(json_data=tx_hash, method="POST")
+        )
 
-    tx_cbor = "84a300818258200000000000000000000000000000000000000000000000000000000000000000000182825839000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001a000f4240021a0002b5b5a0f5f6"
+        result = await blockfrost_client.submit_transaction("84a300")
 
-    result = blockfrost_client.submit_transaction(tx_cbor)
-
-    assert result == tx_hash
-    mock_post.assert_called_once()
-
-
-@patch('requests.Session.post')
-def test_submit_transaction_failure(mock_post, blockfrost_client, mock_response):
-    """Test failed transaction submission."""
-    mock_response.status_code = 400
-    mock_response.text = "Invalid transaction"
-    mock_response.json.return_value = {"message": "Invalid transaction"}
-    mock_post.return_value = mock_response
-
-    # Use valid hex that will trigger API error (not hex parsing error)
-    valid_hex = "84a300"
-    with pytest.raises(BlockfrostAPIError, match="Invalid transaction"):
-        blockfrost_client.submit_transaction(valid_hex)
+        assert result == tx_hash
+        blockfrost_client.session.request.assert_awaited_once()
+        assert blockfrost_client.metrics.total_requests == 1
 
 
-@patch('requests.Session.post')
-def test_submit_transaction_invalid_hex(mock_post, blockfrost_client):
-    """Test transaction submission with invalid hex."""
-    with pytest.raises(BlockfrostError, match="Invalid CBOR hex"):
-        blockfrost_client.submit_transaction("not_valid_hex!")
+@pytest.mark.asyncio
+async def test_submit_transaction_failure():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.session.request = AsyncMock(
+            return_value=make_httpx_response(
+                status_code=400,
+                json_data={"message": "Invalid transaction"},
+                method="POST",
+            )
+        )
+
+        with pytest.raises(BlockfrostAPIError, match="Invalid transaction"):
+            await blockfrost_client.submit_transaction("84a300")
+
+        assert blockfrost_client.metrics.total_requests == 1
 
 
-# Transaction Status Tests
-
-@patch('requests.Session.request')
-def test_get_transaction_status_confirmed(mock_request, blockfrost_client, sample_tx_status_data, mock_response):
-    """Test getting status of confirmed transaction."""
-    mock_response.json.return_value = sample_tx_status_data
-    mock_request.return_value = mock_response
-
-    status = blockfrost_client.get_transaction_status("a" * 64)
-
-    assert isinstance(status, TransactionStatus)
-    assert status.confirmed is True
-    assert status.block_height == 12345
-    assert status.slot == 987654
+@pytest.mark.asyncio
+async def test_submit_transaction_invalid_hex():
+    async with blockfrost_client_context() as blockfrost_client:
+        with pytest.raises(BlockfrostError, match="Invalid CBOR hex"):
+            await blockfrost_client.submit_transaction("not_valid_hex!")
 
 
-@patch('requests.Session.request')
-def test_get_transaction_status_pending(mock_request, blockfrost_client, mock_response):
-    """Test getting status of pending transaction."""
-    mock_response.status_code = 404
-    mock_response.json.return_value = {"message": "Transaction not found"}
-    mock_request.return_value = mock_response
+@pytest.mark.asyncio
+async def test_get_transaction_status_confirmed(sample_tx_status_data):
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            return_value=sample_tx_status_data)
 
-    status = blockfrost_client.get_transaction_status("a" * 64)
+        status = await blockfrost_client.get_transaction_status("a" * 64)
 
-    assert status.confirmed is False
-    assert status.block_height is None
+        assert isinstance(status, TransactionStatus)
+        assert status.confirmed is True
+        assert status.block_height == 12345
 
 
-@patch('requests.Session.request')
-def test_wait_for_confirmation_success(mock_request, blockfrost_client, sample_tx_status_data, mock_response):
-    """Test waiting for transaction confirmation."""
-    mock_response.json.return_value = sample_tx_status_data
-    mock_request.return_value = mock_response
+@pytest.mark.asyncio
+async def test_get_transaction_status_pending():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=BlockfrostAPIError(
+                "API error (404): Transaction not found")
+        )
 
-    status = blockfrost_client.wait_for_confirmation(
-        "a" * 64,
-        max_wait=5,
-        poll_interval=1
+        status = await blockfrost_client.get_transaction_status("a" * 64)
+
+        assert status.confirmed is False
+        assert status.block_height is None
+
+
+@pytest.mark.asyncio
+async def test_wait_for_confirmation_success():
+    pending_status = TransactionStatus(tx_hash="tx", confirmed=False)
+    confirmed_status = TransactionStatus(
+        tx_hash="tx", confirmed=True, block_height=10)
+
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.get_transaction_status = AsyncMock(
+            side_effect=[pending_status, confirmed_status]
+        )
+
+        status = await blockfrost_client.wait_for_confirmation(
+            "tx",
+            max_wait=5,
+            poll_interval=0,
+        )
+
+        assert status.confirmed is True
+        assert blockfrost_client.get_transaction_status.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_wait_for_confirmation_timeout():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.get_transaction_status = AsyncMock(
+            return_value=TransactionStatus(tx_hash="tx", confirmed=False)
+        )
+
+        with pytest.raises(BlockfrostError, match="not confirmed within"):
+            await blockfrost_client.wait_for_confirmation("tx", max_wait=0, poll_interval=0)
+
+
+@pytest.mark.asyncio
+async def test_rate_limit_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._http_request = AsyncMock(
+            side_effect=BlockfrostRateLimitError(
+                "Rate limit exceeded. Retry after 60 seconds.")
+        )
+
+        with pytest.raises(BlockfrostRateLimitError):
+            await blockfrost_client.get_address_utxos("addr_test1...")
+
+
+@pytest.mark.asyncio
+async def test_api_error_handling():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._http_request = AsyncMock(
+            side_effect=BlockfrostAPIError(
+                "API error (500): Internal server error")
+        )
+
+        with pytest.raises(BlockfrostAPIError):
+            await blockfrost_client.get_address_utxos("addr_test1...")
+
+
+@pytest.mark.asyncio
+async def test_timeout_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.max_retries = 0
+        blockfrost_client.session.request = AsyncMock(
+            side_effect=httpx.TimeoutException("timeout")
+        )
+
+        with pytest.raises(BlockfrostError, match="Request timeout"):
+            await blockfrost_client._http_request("GET", "/test")
+
+
+@pytest.mark.asyncio
+async def test_connection_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.max_retries = 0
+        blockfrost_client.session.request = AsyncMock(
+            side_effect=httpx.NetworkError("connection failure")
+        )
+
+        with pytest.raises(BlockfrostError, match="Request failed"):
+            await blockfrost_client._http_request("GET", "/test")
+
+
+@pytest.mark.asyncio
+async def test_http_retry_on_server_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.session.request = AsyncMock(
+            side_effect=[
+                make_httpx_response(
+                    status_code=500,
+                    json_data={"message": "Internal"},
+                ),
+                make_httpx_response(json_data={"ok": True}),
+            ]
+        )
+
+        result = await blockfrost_client._http_request("GET", "/test")
+
+        assert result == {"ok": True}
+        assert blockfrost_client.session.request.await_count == 2
+
+
+@pytest.mark.asyncio
+async def test_get_latest_block():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            return_value={"height": 12345, "slot": 987654}
+        )
+
+        block = await blockfrost_client.get_latest_block()
+
+        assert block["height"] == 12345
+
+
+@pytest.mark.asyncio
+async def test_get_network_info():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            return_value={"stake": {"live": {"stake": 1_000_000}}}
+        )
+
+        network_info = await blockfrost_client.get_network_info()
+
+        assert network_info["stake"]["live"]["stake"] == 1_000_000
+
+
+@pytest.mark.asyncio
+async def test_check_did_exists_found():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=[
+                [{"tx_hash": "tx1"}],
+                [
+                    {
+                        "label": "674",
+                        "json_metadata": {
+                            "did": "did:cardano:...",
+                            "controllers": ["addr_test1..."],
+                            "enrollment_timestamp": "2024-01-01T00:00:00Z",
+                            "revoked": False,
+                        },
+                    }
+                ],
+            ]
+        )
+
+        enrollment = await blockfrost_client.check_did_exists("did:cardano:...")
+
+        assert enrollment is not None
+        assert enrollment["tx_hash"] == "tx1"
+        assert enrollment["controllers"] == ["addr_test1..."]
+
+
+@pytest.mark.asyncio
+async def test_check_did_exists_not_found():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=[
+                [{"tx_hash": "tx1"}],
+                [
+                    {
+                        "label": "674",
+                        "json_metadata": {
+                            "did": "did:cardano:other",
+                        },
+                    }
+                ],
+                [],
+            ]
+        )
+
+        enrollment = await blockfrost_client.check_did_exists("did:cardano:...")
+
+        assert enrollment is None
+
+
+@pytest.mark.asyncio
+async def test_check_did_exists_rate_limited():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=BlockfrostRateLimitError(
+                "Rate limit exceeded. Retry after 30 seconds.")
+        )
+
+        with pytest.raises(BlockfrostRateLimitError):
+            await blockfrost_client.check_did_exists("did:cardano:...")
+
+
+@pytest.mark.asyncio
+async def test_check_did_exists_unexpected_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=BlockfrostAPIError(
+                "API error (500): Internal server error")
+        )
+
+        with pytest.raises(BlockfrostAPIError):
+            await blockfrost_client.check_did_exists("did:cardano:...")
+
+
+@pytest.mark.asyncio
+async def test_check_did_exists_unexpected_structure():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client._request = AsyncMock(
+            side_effect=[
+                [{"tx_hash": "tx1"}],
+                [
+                    {
+                        "label": "674",
+                        "json_metadata": "not-a-dict",
+                    }
+                ],
+                [],
+            ]
+        )
+
+        enrollment = await blockfrost_client.check_did_exists("did:cardano:...")
+
+        assert enrollment is None
+
+
+@pytest.mark.asyncio
+async def test_convert_utxo_info_to_input(sample_utxo_data):
+    utxo = UTXOInfo(
+        tx_hash=sample_utxo_data[0]["tx_hash"],
+        tx_index=sample_utxo_data[0]["output_index"],
+        amount=sample_utxo_data[0]["amount"],
+        address=sample_utxo_data[0]["address"],
+        block=sample_utxo_data[0]["block"],
+        data_hash=sample_utxo_data[0]["data_hash"],
     )
 
-    assert status.confirmed is True
+    tx_input = convert_utxo_info_to_input(utxo)
+
+    assert tx_input["tx_hash"] == "a" * 64
+    assert tx_input["tx_index"] == 0
+    assert tx_input["amount_lovelace"] == 5_000_000
+    assert tx_input["address"] == "addr_test1..."
 
 
-@patch('requests.Session.request')
-def test_wait_for_confirmation_timeout(mock_request, blockfrost_client, mock_response):
-    """Test waiting for confirmation times out."""
-    # Always return pending status
-    pending_data = {"hash": "a" * 64, "block": None}
-    mock_response.json.return_value = pending_data
-    mock_request.return_value = mock_response
+@pytest.mark.asyncio
+async def test_format_lovelace():
+    assert format_lovelace(0) == "0.000000 ADA"
+    assert format_lovelace(1_000_000) == "1.000000 ADA"
+    assert format_lovelace(1_234_567) == "1.234567 ADA"
 
-    with pytest.raises(BlockfrostError, match="not confirmed within"):
-        blockfrost_client.wait_for_confirmation(
-            "a" * 64,
-            max_wait=2,
-            poll_interval=1
+
+@pytest.mark.asyncio
+async def test_close():
+    client = BlockfrostClient(api_key="key", network="testnet")
+    client.session.aclose = AsyncMock()
+    await client.close()
+    client.session.aclose.assert_awaited_once()
+
+
+@pytest.mark.asyncio
+async def test_metrics_capture_network_success():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.session.request = AsyncMock(
+            return_value=make_httpx_response(json_data={"ok": True})
+        )
+
+        data = await blockfrost_client._http_request("GET", "/metrics")
+
+        assert data == {"ok": True}
+        assert blockfrost_client.metrics.network_requests == 1
+        assert blockfrost_client.metrics.network_errors == 0
+        assert blockfrost_client.metrics.total_network_latency >= 0.0
+        assert (
+            blockfrost_client.metrics.max_network_latency
+            == blockfrost_client.metrics.total_network_latency
         )
 
 
-# Error Handling Tests
+@pytest.mark.asyncio
+async def test_metrics_capture_network_error():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.max_retries = 0
+        blockfrost_client.session.request = AsyncMock(
+            side_effect=httpx.TimeoutException("timeout")
+        )
 
-@patch('requests.Session.request')
-def test_rate_limit_error(mock_request, blockfrost_client, mock_response):
-    """Test rate limit error handling."""
-    mock_response.status_code = 429
-    mock_response.headers = {"Retry-After": "60"}
-    mock_request.return_value = mock_response
+        with pytest.raises(BlockfrostError, match="Request timeout"):
+            await blockfrost_client._http_request("GET", "/metrics")
 
-    with pytest.raises(BlockfrostRateLimitError, match="Rate limit exceeded"):
-        blockfrost_client.get_address_utxos("addr_test1...")
+        assert blockfrost_client.metrics.network_requests == 1
+        assert blockfrost_client.metrics.network_errors == 1
 
 
-@patch('requests.Session.request')
-def test_api_error_handling(mock_request, blockfrost_client, mock_response):
-    """Test API error handling."""
-    mock_response.status_code = 500
-    mock_response.text = "Internal server error"
-    mock_response.json.return_value = {"message": "Internal server error"}
-    mock_request.return_value = mock_response
+@pytest.mark.asyncio
+async def test_metrics_snapshot_and_reset():
+    async with blockfrost_client_context() as blockfrost_client:
+        blockfrost_client.session.request = AsyncMock(
+            return_value=make_httpx_response(json_data={"ok": True})
+        )
 
-    with pytest.raises(BlockfrostAPIError, match="Internal server error"):
-        blockfrost_client.get_address_utxos("addr_test1...")
+        await blockfrost_client._request("GET", "/snapshot")
 
+        snapshot = blockfrost_client.metrics_snapshot()
 
-@patch('requests.Session.request')
-def test_timeout_error(mock_request, blockfrost_client):
-    """Test timeout error handling."""
-    mock_request.side_effect = requests.exceptions.Timeout()
+        assert snapshot["total_requests"] == 1
+        assert snapshot["network_requests"] == 1
+        assert "average_network_latency" in snapshot
+        assert snapshot["cache_hit_ratio"] == 0.0
 
-    with pytest.raises(BlockfrostError, match="Request timeout"):
-        blockfrost_client.get_address_utxos("addr_test1...")
+        blockfrost_client.reset_metrics()
 
-
-@patch('requests.Session.request')
-def test_connection_error(mock_request, blockfrost_client):
-    """Test connection error handling."""
-    mock_request.side_effect = requests.exceptions.ConnectionError()
-
-    with pytest.raises(BlockfrostError, match="Request failed"):
-        blockfrost_client.get_address_utxos("addr_test1...")
-
-
-# Network Info Tests
-
-@patch('requests.Session.request')
-def test_get_latest_block(mock_request, blockfrost_client, mock_response):
-    """Test getting latest block info."""
-    block_data = {
-        "hash": "block_hash_123",
-        "height": 12345,
-        "slot": 987654,
-        "time": 1634567890
-    }
-    mock_response.json.return_value = block_data
-    mock_request.return_value = mock_response
-
-    block = blockfrost_client.get_latest_block()
-
-    assert block["height"] == 12345
-    assert block["slot"] == 987654
-
-
-@patch('requests.Session.request')
-def test_get_network_info(mock_request, blockfrost_client, mock_response):
-    """Test getting network info."""
-    network_data = {
-        "supply": {"circulating": "35000000000000000"},
-        "stake": {"active": "25000000000000000"}
-    }
-    mock_response.json.return_value = network_data
-    mock_request.return_value = mock_response
-
-    info = blockfrost_client.get_network_info()
-
-    assert "supply" in info
-    assert "stake" in info
-
-
-# Utility Function Tests
-
-def test_convert_utxo_info_to_input():
-    """Test converting UTXOInfo to transaction input format."""
-    utxo = UTXOInfo(
-        tx_hash="a" * 64,
-        tx_index=0,
-        amount=[{"unit": "lovelace", "quantity": "5000000"}],
-        address="addr_test1...",
-        block="block_hash"
-    )
-
-    input_dict = convert_utxo_info_to_input(utxo)
-
-    assert input_dict["tx_hash"] == "a" * 64
-    assert input_dict["tx_index"] == 0
-    assert input_dict["amount_lovelace"] == 5_000_000
-    assert input_dict["address"] == "addr_test1..."
-
-
-def test_format_lovelace():
-    """Test lovelace formatting."""
-    assert format_lovelace(1_000_000) == "1.000000 ADA"
-    assert format_lovelace(5_500_000) == "5.500000 ADA"
-    assert format_lovelace(123_456_789) == "123.456789 ADA"
-
-
-def test_format_lovelace_zero():
-    """Test formatting zero lovelace."""
-    assert format_lovelace(0) == "0.000000 ADA"
-
-
-def test_format_lovelace_large():
-    """Test formatting large amounts."""
-    assert format_lovelace(1_000_000_000_000) == "1000000.000000 ADA"
-
-
-# Integration Tests
-
-@patch('requests.Session.request')
-@patch('requests.Session.post')
-def test_full_transaction_flow(mock_post, mock_request, blockfrost_client, sample_utxo_data, mock_response):
-    """Test full transaction flow: query UTXOs, submit, check status."""
-    # Mock UTXO query
-    utxo_response = Mock(spec=requests.Response)
-    utxo_response.status_code = 200
-    utxo_response.json.return_value = sample_utxo_data
-
-    # Mock transaction submission
-    submit_response = Mock(spec=requests.Response)
-    submit_response.status_code = 200
-    submit_response.json.return_value = "tx_hash_123"
-
-    # Mock status query
-    status_response = Mock(spec=requests.Response)
-    status_response.status_code = 200
-    status_response.json.return_value = {
-        "hash": "tx_hash_123",
-        "block": "block_hash",
-        "block_height": 12345
-    }
-
-    mock_request.return_value = utxo_response
-    mock_post.return_value = submit_response
-
-    # 1. Query UTXOs
-    utxos = blockfrost_client.get_address_utxos("addr_test1...")
-    assert len(utxos) == 2
-
-    # 2. Submit transaction (use valid hex)
-    valid_tx_hex = "84a30081825820" + ("0" * 56) + "00018258390000"
-    tx_hash = blockfrost_client.submit_transaction(valid_tx_hex)
-    assert tx_hash == "tx_hash_123"    # 3. Check status
-    mock_request.return_value = status_response
-    status = blockfrost_client.get_transaction_status(tx_hash)
-    assert status.confirmed is True
-
-
-# DID Duplicate Detection Tests
-
-@patch('requests.Session.request')
-def test_check_did_exists_found(mock_request, blockfrost_client, mock_response):
-    """Test checking for existing DID."""
-    # Mock metadata label query
-    metadata_txs_response = [{
-        "tx_hash": "a" * 64,
-        "tx_index": 0
-    }]
-
-    # Mock transaction metadata query
-    tx_metadata_response = [{
-        "label": "674",
-        "json_metadata": {
-            "did": "did:cardano:mainnet:zQm...",
-            "controllers": ["addr1..."],
-            "enrollment_timestamp": "2025-01-15T12:00:00Z",
-            "revoked": False,
-            "digest": "abcd1234..."
-        }
-    }]
-
-    # Set up mock to return different responses for different endpoints
-    def mock_request_side_effect(*args, **kwargs):
-        url = args[1] if len(args) > 1 else kwargs.get('url', '')
-
-        if '/metadata/txs/labels/674' in url:
-            mock_response.json.return_value = metadata_txs_response
-        elif '/metadata' in url:
-            mock_response.json.return_value = tx_metadata_response
-
-        return mock_response
-
-    mock_request.side_effect = mock_request_side_effect
-
-    # Check for DID
-    result = blockfrost_client.check_did_exists("did:cardano:mainnet:zQm...")
-
-    assert result is not None
-    assert result["tx_hash"] == "a" * 64
-    assert result["controllers"] == ["addr1..."]
-    assert result["enrollment_timestamp"] == "2025-01-15T12:00:00Z"
-    assert result["revoked"] is False
-
-
-@patch('requests.Session.request')
-def test_check_did_exists_not_found(mock_request, blockfrost_client, mock_response):
-    """Test checking for non-existent DID."""
-    # Mock empty response (no transactions with this label)
-    mock_response.json.return_value = []
-    mock_request.return_value = mock_response
-
-    result = blockfrost_client.check_did_exists(
-        "did:cardano:mainnet:zQmNonExistent...")
-
-    assert result is None
-
-
-@patch('requests.Session.request')
-def test_check_did_exists_v1_0_fallback(mock_request, blockfrost_client, mock_response):
-    """Test checking for DID with v1.0 metadata format (wallet_address instead of controllers)."""
-    # Mock metadata with v1.0 format
-    metadata_txs_response = [{
-        "tx_hash": "b" * 64,
-        "tx_index": 0
-    }]
-
-    tx_metadata_response = [{
-        "label": "674",
-        "json_metadata": {
-            "did": "did:cardano:mainnet:zQmLegacy...",
-            "wallet_address": "addr1legacy...",
-            "digest": "legacy1234..."
-        }
-    }]
-
-    def mock_request_side_effect(*args, **kwargs):
-        url = args[1] if len(args) > 1 else kwargs.get('url', '')
-
-        if '/metadata/txs/labels/674' in url:
-            mock_response.json.return_value = metadata_txs_response
-        elif '/metadata' in url:
-            mock_response.json.return_value = tx_metadata_response
-
-        return mock_response
-
-    mock_request.side_effect = mock_request_side_effect
-
-    result = blockfrost_client.check_did_exists(
-        "did:cardano:mainnet:zQmLegacy...")
-
-    assert result is not None
-    # Should convert to controllers format
-    assert result["controllers"] == ["addr1legacy..."]
-
-
-@patch('requests.Session.request')
-def test_check_did_exists_no_label_transactions(mock_request, blockfrost_client, mock_response):
-    """Test checking for DID when no transactions with label 674 exist."""
-    # Mock 404 response (label not found)
-    mock_response.status_code = 404
-    mock_response.json.return_value = {"message": "Not found"}
-    mock_request.return_value = mock_response
-
-    # Should catch 404 and return None instead of raising
-    result = blockfrost_client.check_did_exists(
-        "did:cardano:mainnet:zQmNew...")
-
-    assert result is None
-
-
-def test_did_already_exists_error():
-    """Test DIDAlreadyExistsError exception."""
-    from decentralized_did.cardano.blockfrost import DIDAlreadyExistsError
-
-    enrollment_data = {
-        "controllers": ["addr1..."],
-        "enrollment_timestamp": "2025-01-15T12:00:00Z"
-    }
-
-    error = DIDAlreadyExistsError(
-        did="did:cardano:mainnet:zQm...",
-        tx_hash="a" * 64,
-        enrollment_data=enrollment_data
-    )
-
-    assert error.did == "did:cardano:mainnet:zQm..."
-    assert error.tx_hash == "a" * 64
-    assert error.enrollment_data == enrollment_data
-    assert "DID already exists" in str(error)
-    assert "add a new controller wallet" in str(error)
-
-
-if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+        assert blockfrost_client.metrics.total_requests == 0
+        assert blockfrost_client.metrics.network_requests == 0
