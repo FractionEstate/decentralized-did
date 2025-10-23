@@ -53,8 +53,8 @@
 10. ✅ **Final Verification** - Production deployment checklist prepared
 
 **Deployment Status**: 🚀 **APPROVED FOR PRODUCTION**
-- See: `DEPLOYMENT_READINESS.md` for full audit report
-- See: `POST_DEPLOYMENT_ACTIONS.md` for optional improvements
+- See: `reports/DEPLOYMENT_READINESS.md` for full audit report
+- See: `reports/POST_DEPLOYMENT_ACTIONS.md` for optional improvements
 - See: `docs/DEPLOYMENT-QUICKSTART.md` for 5-minute setup guide
 
 ### 📚 Key Documentation
@@ -78,6 +78,37 @@ With passport-level security (NIST IAL3/AAL3), this system is now ready for:
 - 📱 Social Media Verification
 - 🚗 Driver's Licenses
 - 🎓 Educational Credentials
+
+
+## 🚧 Phase 4.6: Production Readiness & Demo Wallet Update (IN PROGRESS)
+
+**Status**: 6/9 tasks complete (Tasks 1, 3, 4, 5, 6). Remaining focus: Task 2 (hardware integration), Task 7 (integration validation), Task 8 (documentation updates), Task 9 (optional testnet deployment).
+**Timeline**: October 14 - November 4, 2025 (target)
+**Objective**: Operationalize deterministic biometric DIDs with production-ready infrastructure.
+
+### ✅ Completed Milestones
+
+- **Task 1 - Demo Wallet Deterministic DIDs**: Demo wallet now derives deterministic IDs by default, with updated UI flows, fixtures, and 37 automated checks. See `demo-wallet/DETERMINISTIC-DID-IMPLEMENTATION.md`.
+- **Task 3 - API Security Hardening**: Seven-phase security program completed (rate limiting, auth, validation, headers, audit logging, error handling, testing). 307 security tests passing.
+- **Task 4 - Deployment Readiness Audit**: Comprehensive 63-point audit approved production release; optional follow-ups tracked separately.
+- **Task 5 - Performance Optimization**: Blockfrost client caching + metrics shipped. Benchmarks achieved mean enrollment 2.5 ms / P95 9.7 ms and mean verification 1.1 ms / P95 1.2 ms.
+- **Task 6 - Production Deployment Guide**: Deployment toolchain delivered with Docker images, profile-aware `docker-compose.yml`, automation scripts (`deploy-production.sh`, `deploy-development.sh`, `renew-ssl.sh`, `backup.sh`), environment templates, and `docs/PRODUCTION_DEPLOYMENT_GUIDE.md`.
+
+### 🔜 Upcoming Focus
+
+1. **Task 2 - Hardware Integration**: Resume Eikon Touch 700 USB sensor work once hardware is provisioned.
+2. **Task 7 - Integration Testing & Validation**: Execute cross-environment API + wallet suites (Playwright, Jest, k6, OWASP ZAP) using new deployment assets.
+3. **Task 8 - Documentation Updates**: Consolidate Phase 4.6 deliverables into public docs (performance tuning, troubleshooting, hardware guide).
+4. **Task 9 - Optional Testnet Deployment**: Publish validation report if testnet rollout is exercised.
+
+### 📄 Key Artifacts
+
+- `docs/PRODUCTION_DEPLOYMENT_GUIDE.md` - End-to-end deployment playbook.
+- `.env.development`, `.env.production` - Environment baselines with required secrets annotated.
+- `deploy-production.sh` / `deploy-development.sh` - Automation scripts for production and local environments.
+- `renew-ssl.sh` - Automated Let's Encrypt renewal and nginx reload helper.
+- `backup.sh` - Data, configuration, and certificate backup utility with retention policy.
+- `benchmark_api.py` - Performance harness validating latency targets.
 
 ---
 

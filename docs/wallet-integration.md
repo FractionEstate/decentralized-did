@@ -10,7 +10,7 @@ Use the CLI or Python API to produce a `WalletMetadataBundle`, which encapsulate
 
 ```bash
 python -m decentralized_did.cli generate \
-  --input examples/sample_fingerprints.json \
+  --input sdk/examples/sample_fingerprints.json \
   --output metadata.json \
   --helpers-output helpers.json \
   --format cip30
@@ -25,12 +25,11 @@ For demos or user-testing sessions, the CLI can emit a complete bundle of inline
 
 ```bash
 python -m decentralized_did.cli demo-kit \
-  --input examples/sample_fingerprints.json \
+  --input sdk/examples/sample_fingerprints.json \
   --wallet addr_test1demo123 \
   --output-dir demo-kit \
   --zip demo-kit.zip
 ```
-
 - Produces `metadata_*` files for both `wallet` and `cip30` formats with inline and external helper modes.
 - Writes `helpers.json` so wallets or backend services can stage the external helper payloads.
 - Generates `demo_summary.txt` and `demo_summary.json` capturing the DID, helper URI, and wallet address for presenters and automation.
@@ -44,6 +43,7 @@ python -m decentralized_did.cli demo-kit \
 
 ```python
 from pathlib import Path
+
 from decentralized_did.cardano.wallet_integration import build_wallet_metadata_bundle
 
 bundle = build_wallet_metadata_bundle(
@@ -87,7 +87,7 @@ Wallets can reuse the CLI to verify a new biometric scan against stored metadata
 ```bash
 python -m decentralized_did.cli verify \
   --metadata metadata.json \
-  --input examples/sample_fingerprints.json \
+  --input sdk/examples/sample_fingerprints.json \
   --helpers helpers.json  # only required when helperStorage is external
 ```
 
@@ -119,6 +119,6 @@ The repository includes `demo-wallet/`, a copy of the Cardano Foundation's Verid
 
 5. **Automate the round-trip**
   - Add Jest/unit coverage alongside `identityWalletConnect.test.ts` to exercise the parsing logic.
-  - Capture at least one WebDriverIO or integration test that drives the UI with a bundle produced by `examples/sample_fingerprints.json`.
+  - Capture at least one WebDriverIO or integration test that drives the UI with a bundle produced by `sdk/examples/sample_fingerprints.json`.
 
 > Track progress against this checklist in `docs/roadmap.md`. When a step lands, update both the roadmap and this guide to reflect the new baseline.

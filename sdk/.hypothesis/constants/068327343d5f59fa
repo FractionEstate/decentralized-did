@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cardano/blockfrost.py
+# hypothesis_version: 6.140.3
+
+[0.0, 100, 300, 400, 429, 500, 1000000, '/blocks/latest', '/network', '/tx/submit', '404', '674', 'Content-Type', 'GET', 'POST', 'Request failed: %s', 'Request timeout: %s', 'Retry-After', 'address', 'amount', 'amount_lovelace', 'application/cbor', 'application/json', 'block', 'block_height', 'block_time', 'cache_hit_ratio', 'cache_hits', 'cache_misses', 'controllers', 'count', 'data_hash', 'desc', 'did', 'enrollment_timestamp', 'error_rate', 'index', 'json_metadata', 'label', 'lovelace', 'mainnet', 'max_network_latency', 'message', 'metadata', 'network_errors', 'network_requests', 'order', 'output_index', 'page', 'params', 'project_id', 'quantity', 'revoked', 'slot', 'testnet', 'timestamp', 'total_requests', 'tx_hash', 'tx_index', 'unit', 'unknown', 'wallet_address']

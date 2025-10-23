@@ -7,7 +7,10 @@ set -e
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+CORE_DIR="${PROJECT_DIR}/core"
 ENV_FILE="${PROJECT_DIR}/.env.production"
+COMPOSE_FILE="${CORE_DIR}/docker-compose.yml"
+COMPOSE_CMD="docker-compose"
 
 # Colors for output
 RED='\033[0;31m'
@@ -31,6 +34,14 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
+}
+
+set_compose_cmd() {
+    if docker compose version &> /dev/null; then
+        COMPOSE_CMD="docker compose"
+    elif command -v docker-compose &> /dev/null; then
+        COMPOSE_CMD="docker-compose"
+    fi
 }
 
 # Check if running as root (not recommended for production)
@@ -102,10 +113,10 @@ create_directories() {
     sudo mkdir -p /var/www/certbot
 
     # Set proper permissions
-    sudo chown -R $USER:$USER "$PROJECT_DIR/logs" 2>/dev/null || true
-    sudo chown -R $USER:$USER "$PROJECT_DIR/data" 2>/dev/null || true
-    sudo chown -R $USER:$USER "$PROJECT_DIR/nginx/ssl" 2>/dev/null || true
-    sudo chown -R $USER:$USER "$PROJECT_DIR/nginx/logs" 2>/dev/null || true
+    sudo chown -R $USER:$USER "$CORE_DIR/logs" 2>/dev/null || true
+    sudo chown -R $USER:$USER "$CORE_DIR/data" 2>/dev/null || true
+    sudo chown -R $USER:$USER "$CORE_DIR/nginx/ssl" 2>/dev/null || true
+    sudo chown -R $USER:$USER "$CORE_DIR/nginx/logs" 2>/dev/null || true
 
     log_success "Directories created and permissions set."
 }
@@ -115,12 +126,12 @@ setup_ssl() {
     log_info "Setting up SSL certificates..."
 
     # Stop nginx if running to free port 80
-    cd "$PROJECT_DIR"
-    docker-compose --profile production down nginx 2>/dev/null || true
+    cd "$CORE_DIR"
+    $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production down nginx 2>/dev/null || true
 
     # Start certbot to get certificates
     log_info "Obtaining SSL certificates from Let's Encrypt..."
-    docker-compose --profile production run --rm certbot
+    $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production run --rm certbot
 
     if [[ $? -eq 0 ]]; then
         log_success "SSL certificates obtained successfully."
@@ -135,26 +146,26 @@ setup_ssl() {
 deploy_app() {
     log_info "Deploying Biometric DID application..."
 
-    cd "$PROJECT_DIR"
+    cd "$CORE_DIR"
 
     # Pull latest images
-    docker-compose --profile production pull
+    $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production pull
 
     # Build and start services
-    docker-compose --profile production up -d --build
+    $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production up -d --build
 
     # Wait for services to be healthy
     log_info "Waiting for services to start..."
     sleep 30
 
     # Check service health
-    if docker-compose --profile production ps | grep -q "Up"; then
+    if $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production ps | grep -q "Up"; then
         log_success "Application deployed successfully!"
         log_info "Services running:"
-        docker-compose --profile production ps
+        $COMPOSE_CMD -f "$COMPOSE_FILE" --profile production ps
     else
         log_error "Some services failed to start."
-        log_info "Check logs with: docker-compose --profile production logs"
+        log_info "Check logs with: $COMPOSE_CMD -f $COMPOSE_FILE --profile production logs"
         exit 1
     fi
 }
@@ -178,6 +189,7 @@ main() {
 
     validate_env
     install_docker
+    set_compose_cmd
     create_directories
     setup_ssl
     deploy_app
@@ -189,14 +201,14 @@ main() {
     echo "  1. Verify your domain DNS points to this server"
     echo "  2. Test the application: https://$DOMAIN"
     echo "  3. Test the API: https://api.$DOMAIN/health"
-    echo "  4. Monitor logs: docker-compose --profile production logs -f"
+    echo "  4. Monitor logs: $COMPOSE_CMD -f $COMPOSE_FILE --profile production logs -f"
     echo "  5. Setup automated backups (see documentation)"
     echo
     log_info "Useful commands:"
-    echo "  Start:  docker-compose --profile production up -d"
-    echo "  Stop:   docker-compose --profile production down"
-    echo "  Logs:   docker-compose --profile production logs -f"
-    echo "  Update: docker-compose --profile production pull && docker-compose --profile production up -d --build"
+    echo "  Start:  $COMPOSE_CMD -f $COMPOSE_FILE --profile production up -d"
+    echo "  Stop:   $COMPOSE_CMD -f $COMPOSE_FILE --profile production down"
+    echo "  Logs:   $COMPOSE_CMD -f $COMPOSE_FILE --profile production logs -f"
+    echo "  Update: $COMPOSE_CMD -f $COMPOSE_FILE --profile production pull && $COMPOSE_CMD -f $COMPOSE_FILE --profile production up -d --build"
 }
 
 # Run main function

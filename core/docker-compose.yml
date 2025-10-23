@@ -4,8 +4,8 @@ services:
   # Backend API - Secure (Production)
   backend-api-secure:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ..
+      dockerfile: core/Dockerfile.backend
       target: secure
     container_name: biometric-did-api-secure
     restart: unless-stopped
@@ -38,8 +38,8 @@ services:
   # Backend API - Basic (Development/Testing)
   backend-api-basic:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ..
+      dockerfile: core/Dockerfile.backend
       target: basic
     container_name: biometric-did-api-basic
     restart: unless-stopped
@@ -66,8 +66,8 @@ services:
   # Backend API - Mock (Testing/Demo)
   backend-api-mock:
     build:
-      context: .
-      dockerfile: Dockerfile.backend
+      context: ..
+      dockerfile: core/Dockerfile.backend
       target: mock
     container_name: biometric-did-api-mock
     restart: unless-stopped
@@ -89,7 +89,7 @@ services:
   # Demo Wallet (Frontend)
   demo-wallet:
     build:
-      context: ./demo-wallet
+      context: ../demo-wallet
       dockerfile: Dockerfile
     container_name: biometric-did-wallet
     restart: unless-stopped

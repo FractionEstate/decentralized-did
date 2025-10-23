@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/biometrics/__init__.py
+# hypothesis_version: 6.140.3
+
+['FingerTemplate', 'FuzzyExtractor', 'HelperData', 'Minutia', 'helpers_to_dict', 'minutiae_from_dicts']

@@ -1,459 +1,139 @@
 # Decentralized Biometric DID for Cardano
 
-**Production-ready Python toolkit and demo wallet** for generating decentralized identifiers (DIDs) from biometric fingerprint data, anchored to Cardano blockchain.
+Deterministic biometric identifiers for Cardano, powered by an open-source Python toolkit, CLI, and a reference demo wallet. Phase 4.6 prioritises reproducible DID generation from fingerprint minutiae, v1.1 metadata packaging, and production-ready deployment automation.
 
-## Why it Matters
-- **Privacy-first**: Bind humans to wallets without revealing personal data or relying on centralized issuers
-- **Non-invertible**: Quantized minutiae hashed into irreversible digests — templates can't be reconstructed
-- **Production-ready**: Comprehensive SDK, CLI tools, and working demo wallet integration
-- **Open-source**: Apache 2.0 license, built from scratch with no proprietary dependencies
+> **Transparency First** – BCH-backed error correction, liveness detection, and mobile capture remain under active development. The public SDK currently ships with a salted-hash fuzzy extractor and BLAKE2b aggregation. See `docs/audit-validation-2025-10-22.md` for live gap tracking.
 
-## 🎯 Key Features
+---
 
-### Biometric Processing
-- ✅ **Multi-finger aggregation**: 4-finger enrollment with 256-bit entropy
-- ✅ **Fuzzy extractor**: BCH error correction (10-bit capacity) for noisy recaptures
-- ✅ **Fast performance**: 41ms enrollment, 43ms verification (23 ops/sec sustained)
-- ✅ **Helper data**: 105-byte compact storage with cryptographic integrity
-- ✅ **Mobile-first**: QR code enrollment using phone's built-in fingerprint scanner (no hardware needed!)
+## Project Highlights
+- **Deterministic DIDs** – `generate_deterministic_did(commitment, network)` returns `did:cardano:{network}:{base58_hash}` without exposing wallet addresses.
+- **Biometric Pipeline** – `FingerTemplate` quantises minutiae (grid `0.05`, 32 angle bins); `FuzzyExtractor` salts and HMACs each finger to produce reproducible digests.
+- **Aggregation** – `aggregate_finger_digests` hashes sorted `(finger_id, digest)` pairs with BLAKE2b to derive the master commitment.
+- **Metadata Schema v1.1** – `build_metadata_payload` emits multi-controller payloads with enrollment timestamps and revocation flags.
+- **CLI Workflow** – `dec-did` supports enrollment, verification, helper storage selection, and deterministic DID inspection.
+- **Demo Wallet** – Veridian-based Ionic/React wallet updated in Phase 4.6 to consume deterministic DIDs (`demo-wallet/TASK-1-MANUAL-TESTING-STATUS.md`).
+- **Deployment Tooling** – Docker assets, profile-aware Compose files, SSL automation, and runbooks in `docs/PRODUCTION_DEPLOYMENT_GUIDE.md`.
+- **Performance Harness** – `benchmark_api.py` records enrollment/verification latency; latest snapshots live in `docs/reports/benchmark_results.json`.
 
-### DID Generation
-- ✅ **W3C compliant**: Standard `did:cardano:` format
-- ✅ **Cardano integration**: Transaction metadata (CIP-20), wallet bundles
-- ✅ **Storage backends**: Inline, file system, IPFS, or custom implementations
+---
 
-### Developer Experience
-- ✅ **Python SDK**: Clean importable API with type hints and docstrings
-- ✅ **CLI tools**: `dec-did` command for enrollment, verification, demo kits
-- ✅ **Working examples**: Tested code samples and complete workflows
-- ✅ **Comprehensive docs**: 1,000+ lines of API reference and guides
-- ✅ **Mobile enrollment**: QR code bridge for phone-based fingerprint capture
-
-### Demo Wallet
-- ✅ **Production-ready**: Simplified 3-step onboarding (85% fewer steps)
-- ✅ **Professional UX**: Loading states, user-friendly errors, clean navigation
-- ✅ **Fast builds**: 19-second webpack compilation with zero errors
-- ✅ **Mobile support**: Scan QR code, enroll with phone, complete on desktop
-
-## 🚀 Quick Start
-
-### Installation
-
-```bash
-# Install from source
-git clone https://github.com/FractionEstate/decentralized-did
-cd decentralized-did
-pip install -e .[dev]
-
-# Run tests
-pytest
-```
-
-### Using the Python SDK
-
-```python
-from decentralized_did import (
-    FuzzyExtractor,
-    Minutia,
-    FingerTemplate,
-    aggregate_finger_digests,
-    generate_deterministic_did,
-)
-
-# 1. Create biometric template (from your fingerprint scanner)
-minutiae = [
-    Minutia(x=100.5, y=200.3, angle=45.0),
-    Minutia(x=150.2, y=180.9, angle=90.5),
-    # ... more minutiae points
-]
-template = FingerTemplate(
-    finger_id="thumb",
-    minutiae=minutiae,
-    grid_size=10.0,
-    angle_bins=8
-)
-
-# 2. Generate digest (enrollment)
-extractor = FuzzyExtractor()
-digest, helper = extractor.generate(template)
-
-# 3. Verify (reproduce digest from noisy recapture)
-verified_digest = extractor.reproduce(template, helper)
-assert digest == verified_digest  # Reproducible!
-
-# 4. Generate DID (deterministic, privacy-preserving)
-did = generate_deterministic_did(digest, network="mainnet")
-print(did)  # did:cardano:mainnet:zQmNhFJPjg3MqLzM7CzZGVvjV5fCDuWnQ5Lzg3FHKfNm4tS
-```
-
-**📚 Full SDK documentation**: [`docs/SDK.md`](docs/SDK.md)
-
-**🎓 Complete examples**: [`examples/sdk_demo.py`](examples/sdk_demo.py)
-
-### Using the CLI
-
-```bash
-# Generate DID metadata from sample dataset
-dec-did generate \
-    --input examples/sample_fingerprints.json \
-    --output metadata.json
-
-# Store helper data separately with IPFS reference
-dec-did generate \
-    --input examples/sample_fingerprints.json \
-    --output metadata_external.json \
-    --exclude-helpers \
-    --helpers-output helpers.json \
-    --helper-uri ipfs://cid-demo
-
-# Verify new scan
-dec-did verify \
-    --metadata metadata.json \
-    --input examples/sample_fingerprints.json
-
-# Build complete demo kit for wallet integration
-dec-did demo-kit \
-    --input examples/sample_fingerprints.json \
-    --wallet addr_test1demo123 \
-    --output-dir demo-kit
-```
-
-**Result**: Generates `wallet` and `cip30` metadata JSON, helper data files, TypeScript exports for dApp integration
-
-## � Mobile Enrollment (No Hardware Needed!)
-
-**Most users don't have fingerprint readers on their computers, but 90%+ of smartphones have built-in fingerprint sensors.** Use the mobile-first QR code enrollment flow:
-
-### Desktop → Phone → Desktop Flow
-
-```
-1. Desktop dApp shows QR code
-2. User scans QR with phone camera
-3. Phone captures fingerprints (built-in sensor)
-4. Phone sends encrypted DID to desktop
-5. Desktop wallet signs transaction
-6. Done! (30-60 seconds total)
-```
-
-### Why Mobile-First?
-
-| Device | Fingerprint Availability | Cost |
-|--------|------------------------|------|
-| Desktop | <5% (USB readers) | $50-200 |
-| Laptop | ~30% (Windows Hello/TouchID) | Built-in |
-| **Smartphone** | **>90% (built-in sensor)** | **$0 (already owned)** |
-
-### Supported Platforms
-
-- ✅ **iOS**: Touch ID / Face ID (iPhone 5s+, most iPads)
-- ✅ **Android**: BiometricPrompt API (Android 9+, most devices)
-- ✅ **PWA**: WebAuthn API (Chrome, Safari mobile)
-
-**Complete guide**: [`docs/mobile-enrollment-architecture.md`](docs/mobile-enrollment-architecture.md)
-
-## �📦 Repository Structure
-
+## Repository Layout
 ```
 decentralized-did/
-├── src/decentralized_did/       # Python toolkit
-│   ├── biometrics/               # Fuzzy extractor, aggregation
-│   ├── did/                      # DID generation utilities
-│   ├── cardano/                  # Cardano integration helpers
-│   ├── storage/                  # Helper data storage backends
-│   └── cli.py                    # Command-line interface
-├── demo-wallet/                  # Cardano Veridian wallet (reference)
-├── examples/                     # SDK usage examples & sample data
-│   ├── sdk_demo.py              # ✅ Working SDK demonstration
-│   ├── sdk_quickstart.py        # Comprehensive usage guide
-│   └── sample_fingerprints.json # Synthetic test data
-├── docs/                         # Comprehensive documentation
-│   ├── SDK.md                   # API reference (1,000+ lines)
-│   ├── proposal.md              # Project vision
-│   ├── architecture.md          # System design
-│   ├── privacy-security.md      # Threat model
-│   ├── roadmap.md               # Development milestones
-│   └── wallet-integration.md    # Wallet integration guide
-└── tests/                        # pytest test suite (97%+ coverage)
+├── core/              # Docker Compose stack, deployment scripts, backend API servers
+├── demo-wallet/       # Veridian-based demo wallet (deterministic DID flows)
+├── docs/              # Architecture notes, audits, deployment guides
+└── sdk/               # Python SDK, CLI, tests, examples, notebooks
+  ├── src/decentralized_did/   # Installable Python package
+  ├── tests/                   # pytest suite
+  ├── examples/                # Sample minutiae payloads & SDK demos
+  └── benchmark_api.py         # API latency harness
 ```
 
-## 🏗️ Architecture
+---
 
-### Biometric Pipeline
-
-```
-Fingerprint Scan
-      ↓
-Minutiae Extraction (x, y, angle)
-      ↓
-Quantization (grid-based normalization)
-      ↓
-Fuzzy Extractor (BCH error correction)
-      ↓
-BLAKE2b-512 Digest (32 bytes)
-      ↓
-Multi-finger Aggregation (XOR-based)
-      ↓
-DID Generation (did:cardano:...)
-```
-
-### Key Components
-
-**1. Fuzzy Extractor**
-- Input: Quantized biometric template
-- Output: Reproducible 32-byte digest + 105-byte helper data
-- Algorithm: BCH(127,64,10) + BLAKE2b + HMAC-SHA256
-- Performance: 43ms median reproduction time
-
-**2. Multi-finger Aggregation**
-- Combines 2-4 finger digests via XOR
-- Quality-weighted fallback (3/4 fingers @≥70%, 2/4 @≥85%)
-- Finger rotation: O(1) single finger replacement
-- Total entropy: 64 bits/finger × 4 = 256 bits
-
-**3. Storage Backends**
-- **Inline**: Embed in Cardano metadata (< 16 KB)
-- **File**: Local filesystem with atomic writes
-- **IPFS**: Decentralized content-addressed storage
-- **Custom**: Extensible via abstract base class
-
-## 🔒 Security & Privacy
-
-### Cryptographic Properties
-- ✅ **Entropy**: 256 bits (4-finger aggregation)
-- ✅ **Error Correction**: BCH(127,64,10) — tolerates 10-bit errors
-- ✅ **Template Protection**: ISO/IEC 24745 compliant
-- ✅ **Authentication Level**: NIST AAL2 compatible
-- ✅ **Unlinkability**: Cryptographically independent enrollments
-
-### Attack Resistance
-- ✅ **Template reconstruction**: 0.09 avg correlation (secure)
-- ✅ **Brute-force**: 0% success (0/10,000 attempts)
-- ✅ **Replay attacks**: 100% unique salts prevent reuse
-- ✅ **Timing attacks**: <1% variance (constant-time operations)
-
-### Privacy Guarantees
-- **No PII storage**: Only non-invertible digests on-chain
-- **Helper data privacy**: 7.99 bits/byte entropy (perfect randomness)
-- **GDPR compliance**: Right to erasure via helper data deletion
-- **Decentralized**: No central authority or biometric database
-
-**Full analysis**: [`docs/testing/security-test-report.md`](docs/testing/security-test-report.md)
-
-## 🔗 Cardano Integration
-
-### Deploy to Testnet
-
+## Install & Test
 ```bash
-# Get free Blockfrost API key: https://blockfrost.io
-export BLOCKFROST_API_KEY="preprodXXXXXXXX"
-
-# Deploy sample biometric DID to testnet
-python3 scripts/deploy_testnet.py
-
-# Verify on explorer
-# https://preprod.cardanoscan.io/transaction/YOUR_TX_HASH
+git clone https://github.com/FractionEstate/decentralized-did
+cd decentralized-did
+pip install -r sdk/requirements.txt
+pip install -e sdk
+cd sdk
+pytest
+cd ..
 ```
 
-**Features:**
-- ✅ PyCardano transaction builder
-- ✅ CIP-20 metadata (label 674)
-- ✅ UTXO selection and fee estimation
-- ✅ Blockfrost API integration
-- ✅ Automatic confirmation tracking
+Optional: for the demo wallet, install Node.js 18+ and run `npm test` inside `demo-wallet/`.
 
-**Cost:** ~0.19-0.25 ADA per enrollment (~$0.08 USD @ $0.40/ADA)
+---
 
-**Complete guide:** [`docs/testnet-deployment-guide.md`](docs/testnet-deployment-guide.md)
-
-### Transaction Builder
-
-```python
-from pycardano import Network
-from decentralized_did.cardano.transaction import CardanoTransactionBuilder
-from decentralized_did.cardano.blockfrost import BlockfrostClient
-from decentralized_did import generate_deterministic_did
-
-# Generate deterministic DID
-did = generate_deterministic_did(digest, network="testnet")
-
-# Initialize builder
-builder = CardanoTransactionBuilder(
-    network=Network.TESTNET,
-    signing_key=your_signing_key,
-    dry_run=False
-)
-
-# Build transaction with v1.1 metadata
-result = builder.build_enrollment_transaction(
-    did=did,
-    wallet_address="addr_test1...",
-    digest=digest,
-    helper_data=helper_data,
-    storage_format="inline",
-    recipient_address="addr_test1...",
-    version="1.1"  # Multi-controller support, timestamps, revocation
-)
-
-# Check for duplicate DIDs before submission
-client = BlockfrostClient(api_key=api_key, network="testnet")
-existing = client.check_did_exists(did)
-if existing:
-    print(f"DID already enrolled at: {existing['enrollment_timestamp']}")
-else:
-    # Submit to blockchain
-    tx_hash = client.submit_transaction(result.tx_cbor)
-    print(f"Transaction: https://preprod.cardanoscan.io/transaction/{tx_hash}")
+## CLI Quickstart
+Generate metadata with inline helper data:
+```bash
+dec-did generate \
+  --input sdk/examples/sample_fingerprints.json \
+  --output metadata.json
 ```
 
-**Documentation:**
-- [`docs/cardano-integration.md`](docs/cardano-integration.md) - Metadata schema and integration patterns
-- [`docs/wallet-integration.md`](docs/wallet-integration.md) - Wallet integration guide
-- [`docs/research/meshjs-vs-pycardano.md`](docs/research/meshjs-vs-pycardano.md) - Technology comparison
+Store helper data externally (file/IPFS) for smaller on-chain payloads:
+```bash
+dec-did generate \
+  --input sdk/examples/sample_fingerprints.json \
+  --exclude-helpers \
+  --helpers-output helpers.json \
+  --helper-uri ipfs://example-cid \
+  --output metadata_external.json
+```
 
-## Documentation Highlights
-- `docs/proposal.md`: project vision, scope, success criteria.
-- `docs/architecture.md`: system architecture and data flow.
-- `docs/privacy-security.md`: threat model and mitigation plan.
-- `docs/governance.md`: decentralized decision-making process.
-- `docs/roadmap.md`: milestones and current focus areas (kept in sync with the active sprint plan).
-- `docs/cardano-integration.md`: metadata schema and wallet/CIP integration guidance.
-- `docs/wallet-integration.md`: step-by-step instructions for bundling metadata and wiring it into wallets (including the bundled demo wallet).
-- `docs/pitch-outline.md`: storyteller's guide for demos and judging.
-- `docs/hackathon-playbook.md`: role assignments and event-day checklist.
+Verify a follow-up scan:
+```bash
+dec-did verify \
+  --metadata metadata.json \
+  --input sdk/examples/sample_fingerprints.json
+```
 
-## 📱 Demo Wallet Integration
+Defaults: metadata label `1990`, deterministic DID generation, inline helper storage unless excluded.
 
-The included **Ionic/React/TypeScript wallet** ([`demo-wallet/`](demo-wallet/)) demonstrates production-ready integration:
+---
 
-### ✅ Completed (Phase 2)
-- **Simplified Onboarding**: 3 steps (down from 20), 90 seconds (down from 10+ minutes)
-- **Professional UX**: Loading states, user-friendly errors, inline guidance
-- **Fast Builds**: 19-second Webpack compilation with zero errors
-- **Clean Navigation**: Explicit routing after PIN/biometric authentication
-- **Desktop Testing**: Ready at `http://localhost:3003/`
-
-### 🔧 Development Commands
+## Demo Wallet
 ```bash
 cd demo-wallet
 npm install
-npm run start:local  # Dev server on port 3003
-npm test             # Jest unit tests
-npm run build:local  # Production build
+npm run start:local   # http://localhost:3003
+npm test              # Jest unit/integration suites
+npm run build:local   # Production bundle
 ```
-
-### 📋 Next Steps
-- **Mobile Testing**: Capacitor infrastructure ready (requires manual device setup)
-- **Phase 3 Enhancements**: Smart hints, performance profiling, accessibility audit
-- **CIP-30 Integration**: DID presentation via dApp connector
-
-**Full guide**: [`docs/wallet-integration.md`](docs/wallet-integration.md)
+Key references:
+- `demo-wallet/TASK-1-MANUAL-TESTING-STATUS.md`
+- `demo-wallet/tests/e2e/biometric-enrollment.spec.ts`
+- `demo-wallet/scripts/did-performance.cjs`
 
 ---
 
-## 🤝 Contributing
+## Performance & Monitoring
+- `benchmark_api.py` exercises enrollment and verification endpoints; export summaries with `--output`.
+- Blockfrost instrumentation (`BlockfrostMetrics`) exposes `/metrics/blockfrost` for latency, cache hit ratio, and error counts.
+- Targets: enrollment <100 ms, verification <50 ms. Latest figures are logged in `docs/reports/benchmark_results.json`.
 
-We follow a **planning-first approach** aligned with our [Copilot Working Agreement](`.github/copilot-instructions.md`):
-
-### Development Workflow
-1. **Check Roadmap**: Review [`docs/roadmap.md`](docs/roadmap.md) and [`.github/tasks.md`](.github/tasks.md)
-2. **Plan Changes**: Understand downstream impacts (tests, docs, examples)
-3. **Write Tests**: Add test cases before implementation
-4. **Run Test Suite**: `pytest` (Python) or `npm test` (demo wallet)
-5. **Update Docs**: Keep README, SDK.md, and inline docstrings synchronized
-6. **Document Tasks**: Update `.github/tasks.md` following **strict task numbering rules**
-
-### Task Numbering Convention
-**Critical**: Each phase MUST restart task numbering at 1.
-
-✅ **Correct**:
-```markdown
-## Phase 0 - Research
-- [ ] **task 1** - First research task
-- [ ] **task 2** - Second research task
-
-## Phase 1 - Design
-- [ ] **task 1** - First design task  ← Restarts at 1
-- [ ] **task 2** - Second design task
-```
-
-❌ **Incorrect**:
-```markdown
-## Phase 0
-- [ ] **task 1** - ...
-- [ ] **task 2** - ...
-
-## Phase 1
-- [ ] **task 3** - ...  ← WRONG! Should be task 1
-```
-
-**Verify with**:
+Run a local benchmark:
 ```bash
-python3 << 'EOF'
-import re
-with open('.github/tasks.md') as f:
-    phases = re.split(r'^## Phase (\d+)', f.read(), flags=re.MULTILINE)
-    for i in range(1, len(phases), 2):
-        tasks = [int(t) for t in re.findall(r'task (\d+)', phases[i+1])]
-        if tasks: print(f"Phase {phases[i]}: {len(tasks)} tasks (1-{max(tasks)})")
-EOF
+python benchmark_api.py --server http://localhost:8002 --iterations 5 --output docs/reports/benchmark_results.json
 ```
 
-### Coding Standards
-- **Python**: PEP 8, type hints, comprehensive docstrings
-- **JavaScript**: ESLint + Prettier (existing config)
-- **Testing**: Maintain 95%+ coverage (`pytest --cov`)
-- **ASCII**: Prefer ASCII unless Unicode is essential
+---
 
-### Open-Source Constraint
-**CRITICAL**: This project uses **NO PAID SERVICES OR COMMERCIAL SOFTWARE**.
-- All code: Open-source licenses (Apache 2.0, MIT, BSD, GPL, LGPL)
-- All tools: Free and self-hostable
-- Hardware: Commodity components with open drivers
-- When researching: Explicitly exclude proprietary options
+## Current Limitations
+- BCH decoding, adaptive minutiae pruning, and weighted multi-finger fusion live in `src/biometrics/` but are not exported.
+- No liveness or spoofing detection; deployments must integrate external countermeasures.
+- CLI expects minutiae JSON; mobile capture and QR bridge flows are pending.
+- Single Blockfrost provider with TTL cache; multi-provider failover is on the roadmap.
+- Helper data should be treated as a secret; no encrypted storage backend ships by default.
 
-**Rationale**: Ensures transparency, auditability, and community ownership for decentralized identity systems.
+Tracked in `.github/tasks.md` and `docs/audit-validation-2025-10-22.md`.
 
 ---
 
-## 🚀 Roadmap
-
-### Phase 3 (Completed) - Refinement & Production Readiness
-- ✅ **CLI Architecture**: Modular commands, dry-run mode, enhanced logging
-- ✅ **Storage Integration**: Inline, file system, and IPFS backends
-- ✅ **Developer SDK**: Clean public API with comprehensive documentation
-- ✅ **Documentation**: Enhanced README, API reference, examples
-- ✅ **Production Testing**: 49 unit tests, 100% passing
-
-### Phase 4 (Current) - Cardano Integration
-- ✅ **Transaction Builder**: PyCardano integration with UTXO selection and fee estimation
-- ✅ **Blockfrost Client**: REST API integration with rate limiting and error handling
-- ✅ **Testnet Deployment**: Complete deployment script and guide ([docs/testnet-deployment-guide.md](docs/testnet-deployment-guide.md))
-- ⏳ **Wallet Integration**: CIP-30 connector for browser wallets (next)
-- ⏳ **CIP Draft**: DID method specification submission
-- ⏳ **Smart Contracts**: Optional on-chain verification (future)
-
-### Future Research
-- **Hardware Integration**: Fingerprint scanner drivers (open-source only)
-- **Zero-Knowledge Proofs**: Age verification without revealing DOB
-- **Decentralized Governance**: Community-driven credential schemas
-- **Cross-Chain Portability**: DID resolution across blockchains
-
-**Detailed roadmap**: [`docs/roadmap.md`](docs/roadmap.md)
+## Documentation Map
+- `docs/roadmap.md` – Sprint focus and milestone tracking.
+- `docs/PRODUCTION_DEPLOYMENT_GUIDE.md` – Docker, nginx, SSL renewal, backups.
+- `docs/cardano-integration.md` – Metadata schema and transaction builder workflow.
+- `docs/wallet-integration.md` – Wallet wiring and deterministic DID handling.
+- `docs/reports/` – Audits, benchmarks, deployment readiness artefacts.
 
 ---
 
-## 📄 License
+## Contributing
+1. Review `.github/instructions/copilot.instructions.md`, `docs/roadmap.md`, and `.github/tasks.md` before starting work.
+2. Update `.github/tasks.md` as tasks are created or completed (task numbers restart at 1 per phase).
+3. Add and run targeted tests (`pytest`, `npm test`, benchmarks`) for code changes.
+4. Keep documentation synchronised with behaviour changes (README, `docs/`, examples).
+5. Use only open-source tooling, libraries, and infrastructure.
 
-Apache 2.0 — See [LICENSE](LICENSE) for details.
-
-## 🙋 Support
-
-- **Documentation**: [`docs/SDK.md`](docs/SDK.md) | [`docs/architecture.md`](docs/architecture.md)
-- **Issues**: [GitHub Issues](https://github.com/yourusername/decentralized-did/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/decentralized-did/discussions)
-- **Security**: See [`SECURITY.md`](SECURITY.md) for vulnerability reporting
+Major features (BCH migration, liveness, hardware integration) require a planning issue linked to the relevant roadmap tasks.
 
 ---
 
-**Built for the Cardano Summit Hackathon** 🎉
-*Decentralized identity without compromising privacy.*
+## License
+Apache License 2.0 – see [`LICENSE`](LICENSE).

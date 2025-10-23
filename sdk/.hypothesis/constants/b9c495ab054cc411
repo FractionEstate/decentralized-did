@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/cardano/metadata_validator.py
+# hypothesis_version: 6.140.3
+
+['$schema', 'METADATA_SCHEMA', 'ValidationError', '^\\d+$', 'additionalProperties', 'allOf', 'angle_bins', 'auth_b64', 'biometric', 'const', 'enum', 'exclusiveMinimum', 'external', 'finger_id', 'grid_size', 'helperData', 'helperStorage', 'helperUri', 'idHash', 'if', 'inline', 'integer', 'minLength', 'minProperties', 'minimum', 'not', 'number', 'object', 'patternProperties', 'properties', 'required', 'salt_b64', 'string', 'then', 'type', 'validate_metadata', 'version', 'walletAddress']

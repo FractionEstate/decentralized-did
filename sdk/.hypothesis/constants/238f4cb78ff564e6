@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/storage/__init__.py
+# hypothesis_version: 6.140.3
+
+['FileStorage', 'IPFSStorage', 'InlineStorage', 'StorageBackend', 'StorageError', 'StorageReference', 'get_backend_info', 'register_backend']

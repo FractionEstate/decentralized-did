@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/storage/base.py
+# hypothesis_version: 6.140.3
+
+['Storage', 'backend', 'metadata', 'uri']

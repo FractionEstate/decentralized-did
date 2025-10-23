@@ -7,7 +7,9 @@ set -e
 # Configuration
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+CORE_DIR="${PROJECT_DIR}/core"
 ENV_FILE="${PROJECT_DIR}/.env.development"
+COMPOSE_FILE="${CORE_DIR}/docker-compose.yml"
 
 # Colors for output
 RED='\033[0;31m'
@@ -62,8 +64,8 @@ install_docker() {
 # Create required directories
 create_directories() {
     log_info "Creating required directories..."
-    mkdir -p "$PROJECT_DIR/logs"
-    mkdir -p "$PROJECT_DIR/data"
+    mkdir -p "$CORE_DIR/logs"
+    mkdir -p "$CORE_DIR/data"
     log_success "Directories created."
 }
 
@@ -85,24 +87,24 @@ check_docker_compose() {
 deploy_dev() {
     log_info "Deploying Biometric DID development environment..."
 
-    cd "$PROJECT_DIR"
+    cd "$CORE_DIR"
 
     # Check Docker Compose command
     check_docker_compose
 
     # Build and start development services
-    $COMPOSE_CMD --profile development up -d --build
+    $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development up -d --build
 
     # Wait for services to start
     log_info "Waiting for services to start..."
     sleep 15
 
     # Check service health
-    if $COMPOSE_CMD --profile development ps | grep -q "Up"; then
+    if $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development ps | grep -q "Up"; then
         log_success "Development environment deployed successfully!"
         echo
         log_info "Services running:"
-        $COMPOSE_CMD --profile development ps
+        $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development ps
         echo
         log_info "Access your application:"
         echo "  Frontend: http://localhost:3003"
@@ -111,7 +113,7 @@ deploy_dev() {
         echo "  Health:   http://localhost:8000/health"
     else
         log_error "Some services failed to start."
-        log_info "Check logs with: $COMPOSE_CMD --profile development logs"
+        log_info "Check logs with: $COMPOSE_CMD -f $COMPOSE_FILE --profile development logs"
         exit 1
     fi
 }
@@ -148,9 +150,9 @@ main() {
             ;;
         stop)
             log_info "Stopping development environment..."
-            cd "$PROJECT_DIR"
+            cd "$CORE_DIR"
             check_docker_compose
-            $COMPOSE_CMD --profile development down
+            $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development down
             log_success "Development environment stopped."
             ;;
         restart)
@@ -161,15 +163,15 @@ main() {
             ;;
         logs)
             log_info "Showing development environment logs..."
-            cd "$PROJECT_DIR"
+            cd "$CORE_DIR"
             check_docker_compose
-            $COMPOSE_CMD --profile development logs -f
+            $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development logs -f
             ;;
         status)
             log_info "Development environment status:"
-            cd "$PROJECT_DIR"
+            cd "$CORE_DIR"
             check_docker_compose
-            $COMPOSE_CMD --profile development ps
+            $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development ps
             ;;
         clean)
             log_warning "This will stop and remove all containers, networks, and volumes."
@@ -177,9 +179,9 @@ main() {
             echo
             if [[ $REPLY =~ ^[Yy]$ ]]; then
                 log_info "Cleaning development environment..."
-                cd "$PROJECT_DIR"
+                cd "$CORE_DIR"
                 check_docker_compose
-                $COMPOSE_CMD --profile development down -v --remove-orphans
+                $COMPOSE_CMD -f "$COMPOSE_FILE" --profile development down -v --remove-orphans
                 log_success "Development environment cleaned."
             fi
             ;;

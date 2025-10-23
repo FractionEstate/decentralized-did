@@ -23,14 +23,16 @@ RUN useradd -m -u 1000 appuser && \
 
 WORKDIR /app
 
-# Copy requirements and install Python dependencies
-COPY requirements.txt .
+# Copy dependency definitions and install Python dependencies
+COPY sdk/requirements.txt /tmp/sdk-requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-  pip install --no-cache-dir -r requirements.txt
+  pip install --no-cache-dir -r /tmp/sdk-requirements.txt
+
+# Copy SDK source code for runtime imports
+COPY sdk/src/ ./src/
 
 # Copy application code
-COPY src/ ./src/
-COPY api_server.py api_server_secure.py api_server_mock.py ./
+COPY core/api/ ./
 
 USER appuser
 

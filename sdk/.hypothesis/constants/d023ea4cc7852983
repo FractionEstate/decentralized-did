@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cli_enhanced.py
+# hypothesis_version: 6.140.3
+
+[130, '\nInterrupted by user', '%(prog)s 0.1.0', '--debug', '--dry-run', '--ipfs-api', '--ipfs-gateway', '--ipfs-pin', '--json-output', '--no-color', '--quiet', '--storage-backend', '--storage-backup', '--storage-config', '--storage-path', '--verbose', '--version', '-q', '-v', '2025-10-12T00:00:00Z', 'Available commands', 'Data mismatch!', 'Delete failed', 'Deleted successfully', 'Deleting test data', 'Retrieving test data', 'Storing test data', '__main__', 'api_url', 'available', 'backend', 'backends', 'backup', 'base_path', 'command', 'commands', 'content', 'data', 'debug', 'dec-did', 'file', 'gateway', 'inline', 'ipfs', 'pin', 'storage-info', 'storage-test', 'store_true', 'test', 'timestamp', 'uri_length', 'version', '✓', '✗']

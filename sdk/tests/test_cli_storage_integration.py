@@ -19,7 +19,11 @@ def run_cli(*args: str) -> subprocess.CompletedProcess[str]:
     """Run CLI command with proper Python path."""
     import os
     env = os.environ.copy()
-    env["PYTHONPATH"] = str(ROOT)
+    src_paths = [str(ROOT / "src"), str(ROOT)]
+    existing = env.get("PYTHONPATH")
+    if existing:
+        src_paths.append(existing)
+    env["PYTHONPATH"] = os.pathsep.join(src_paths)
     cmd = [sys.executable, "-m", "decentralized_did.cli", *args]
     return subprocess.run(cmd, capture_output=True, text=True, env=env)
 

@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cli_progress.py
+# hypothesis_version: 6.140.3
+
+['Complete', 'Interrupted', 'Processing', 'Processing...', '█', '░', '⠇', '⠋', '⠏', '⠙', '⠦', '⠧', '⠴', '⠸', '⠹', '⠼']

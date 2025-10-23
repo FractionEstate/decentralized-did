@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/biometrics/fuzzy_extractor_v2.py
+# hypothesis_version: 6.140.3
+
+[b'helper-data-hmac', 105, 127, 'HelperData', '__main__', 'addr1q9xy...abc123', 'bch_syndrome', 'big', 'hmac', 'personalization', 'salt', 'utf-8', 'version']

@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/__init__.py
+# hypothesis_version: 6.140.3
+
+['0.1.0', 'FileStorage', 'FingerTemplate', 'FuzzyExtractor', 'HelperData', 'IPFSStorage', 'InlineStorage', 'Minutia', 'StorageBackend', 'StorageError', 'StorageReference', '__version__', 'build_did', 'cli_main', 'helpers_to_dict', 'minutiae_from_dicts']

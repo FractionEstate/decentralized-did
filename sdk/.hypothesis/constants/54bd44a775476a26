@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cli_logging.py
+# hypothesis_version: 6.140.3
+
+['\x1b[0m', '\x1b[1m', '\x1b[2m', '\x1b[31m', '\x1b[32m', '\x1b[33m', '\x1b[34m', '\x1b[35m', '\x1b[36m', '\x1b[37m', '%H:%M:%S', 'DEBUG', 'ERROR', 'INFO', 'OK', 'VERBOSE', 'WARN', 'blue', 'bold', 'cyan', 'data', 'dim', 'green', 'level', 'magenta', 'message', 'red', 'reset', 'timestamp', 'white', 'yellow', '▶']
