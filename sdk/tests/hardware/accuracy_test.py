@@ -32,6 +32,7 @@ import argparse
 import itertools
 import random
 from typing import List, Dict, Any, Tuple
+from pathlib import Path
 
 # This is a placeholder for a real minutiae extraction library
 # You would replace this with a library that can process image files
@@ -201,7 +202,9 @@ def test_run_accuracy_test():
     """
     Runs the FAR and FRR accuracy tests.
     """
-    run_accuracy_test("tests/fixtures/mock_fingerprint_data")
+    dataset_root = Path(__file__).resolve(
+    ).parents[1] / "fixtures" / "mock_fingerprint_data"
+    run_accuracy_test(str(dataset_root))
 
 
 if __name__ == "__main__":

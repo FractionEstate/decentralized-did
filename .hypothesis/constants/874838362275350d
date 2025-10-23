@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cardano/query.py
+# hypothesis_version: 6.140.3
+
+[674, '674', 'did', 'json_metadata', 'label', 'tx_hash']

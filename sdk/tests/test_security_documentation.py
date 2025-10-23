@@ -15,7 +15,7 @@ class TestSecurityDocumentation:
     @pytest.fixture
     def docs_dir(self):
         """Get docs/security directory path"""
-        repo_root = Path(__file__).parent.parent
+        repo_root = Path(__file__).resolve().parents[2]
         return repo_root / "docs" / "security"
 
     def test_security_docs_directory_exists(self, docs_dir):
