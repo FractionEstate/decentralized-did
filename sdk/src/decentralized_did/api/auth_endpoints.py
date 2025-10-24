@@ -10,16 +10,15 @@ Provides REST API endpoints for:
 License: Open-source (MIT)
 """
 
-from typing import Optional, Dict
+from typing import Optional, Dict, Any, Tuple
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException, Header, status
-from pydantic import BaseModel, Field
+from fastapi import APIRouter, Depends, HTTPException, status, FastAPI
+from pydantic import BaseModel, Field, ConfigDict
 
 from .auth import (
     JWTManager,
     APIKeyManager,
     WalletSignatureVerifier,
-    JWTToken,
     APIKey,
     InvalidTokenError,
     InvalidAPIKeyError,
@@ -37,10 +36,9 @@ class RegisterAPIKeyRequest(BaseModel):
     prefix: str = Field(default="did_prod_", pattern="^(did_prod_|did_test_)$")
     expires_days: Optional[int] = Field(default=None, ge=1, le=365)
     rate_limit_multiplier: float = Field(default=1.0, ge=0.1, le=10.0)
-    metadata: Dict = Field(default_factory=dict)
-
-    class Config:
-        json_schema_extra = {
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "prefix": "did_prod_",
                 "expires_days": 90,
@@ -48,6 +46,7 @@ class RegisterAPIKeyRequest(BaseModel):
                 "metadata": {"app_name": "Demo Wallet", "version": "1.0"}
             }
         }
+    )
 
 
 class RegisterAPIKeyResponse(BaseModel):
@@ -59,9 +58,8 @@ class RegisterAPIKeyResponse(BaseModel):
     expires_at: Optional[str]
     rate_limit_multiplier: float
     message: str = "API key created successfully. Store this key securely - it will not be shown again."
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "api_key": "did_prod_AbCdEfGhIjKlMnOpQrStUvWxYz123456",
                 "key_id": "a1b2c3d4e5f6g7h8",
@@ -72,6 +70,7 @@ class RegisterAPIKeyResponse(BaseModel):
                 "message": "API key created successfully. Store this key securely - it will not be shown again."
             }
         }
+    )
 
 
 class LoginRequest(BaseModel):
@@ -81,9 +80,8 @@ class LoginRequest(BaseModel):
     signature: str = Field(..., min_length=64, max_length=256)
     public_key: Optional[str] = Field(
         default=None, min_length=64, max_length=128)
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "wallet_address": "addr1qxyz123456789",
                 "message": "Login to DID system at 2025-10-14T12:00:00Z",
@@ -91,6 +89,7 @@ class LoginRequest(BaseModel):
                 "public_key": "123456789abcdef0" * 4
             }
         }
+    )
 
 
 class LoginResponse(BaseModel):
@@ -100,9 +99,8 @@ class LoginResponse(BaseModel):
     token_type: str = "Bearer"
     expires_in: int
     wallet_address: str
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -111,18 +109,19 @@ class LoginResponse(BaseModel):
                 "wallet_address": "addr1qxyz123456789"
             }
         }
+    )
 
 
 class RefreshTokenRequest(BaseModel):
     """Request model for token refresh"""
     refresh_token: str
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
             }
         }
+    )
 
 
 class RefreshTokenResponse(BaseModel):
@@ -130,27 +129,27 @@ class RefreshTokenResponse(BaseModel):
     access_token: str
     token_type: str = "Bearer"
     expires_in: int
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                 "token_type": "Bearer",
                 "expires_in": 900
             }
         }
+    )
 
 
 class RevokeAPIKeyRequest(BaseModel):
     """Request model for API key revocation"""
     key_id: str = Field(..., min_length=16, max_length=16)
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "key_id": "a1b2c3d4e5f6g7h8"
             }
         }
+    )
 
 
 class RevokeAPIKeyResponse(BaseModel):
@@ -158,15 +157,15 @@ class RevokeAPIKeyResponse(BaseModel):
     message: str
     key_id: str
     revoked_at: str
-
-    class Config:
-        json_schema_extra = {
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "message": "API key revoked successfully",
                 "key_id": "a1b2c3d4e5f6g7h8",
                 "revoked_at": "2025-10-14T12:00:00Z"
             }
         }
+    )
 
 
 # ============================================================================
@@ -176,7 +175,7 @@ class RevokeAPIKeyResponse(BaseModel):
 def create_auth_router(
     jwt_manager: JWTManager,
     api_key_manager: APIKeyManager,
-    api_key_store: dict,
+    api_key_store: Dict[str, APIKey],
     auth_middleware: AuthenticationMiddleware,
     require_auth: bool = False
 ) -> APIRouter:
@@ -436,11 +435,11 @@ def create_auth_router(
 # ============================================================================
 
 def setup_auth_endpoints(
-    app,
+    app: FastAPI,
     jwt_secret: str,
-    api_key_store: Optional[dict] = None,
+    api_key_store: Optional[Dict[str, APIKey]] = None,
     require_auth_for_registration: bool = False
-):
+) -> Tuple[AuthenticationMiddleware, Dict[str, APIKey]]:
     """
     Setup authentication endpoints on FastAPI app
 
@@ -462,24 +461,26 @@ def setup_auth_endpoints(
 
     # Create or use provided store
     if api_key_store is None:
-        api_key_store = {}
+        store: Dict[str, APIKey] = {}
+    else:
+        store = api_key_store
 
     # Create middleware
     auth_middleware = AuthenticationMiddleware(
         jwt_manager=jwt_manager,
         api_key_manager=api_key_manager,
-        api_key_store=api_key_store
+        api_key_store=store
     )
 
     # Create and include router
     auth_router = create_auth_router(
         jwt_manager=jwt_manager,
         api_key_manager=api_key_manager,
-        api_key_store=api_key_store,
+        api_key_store=store,
         auth_middleware=auth_middleware,
         require_auth=require_auth_for_registration
     )
 
     app.include_router(auth_router)
 
-    return auth_middleware, api_key_store
+    return auth_middleware, store

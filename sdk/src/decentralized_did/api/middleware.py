@@ -11,13 +11,14 @@ Provides:
 License: Open-source (MIT)
 """
 
-from typing import Optional, List, Callable
+from typing import Optional, List, Callable, Dict, Any
 from fastapi import Depends, HTTPException, Header, Request, status
 from functools import wraps
 
 from .auth import (
     JWTManager,
     APIKeyManager,
+    APIKey,
     UserRole,
     InvalidTokenError,
     InvalidAPIKeyError,
@@ -48,7 +49,7 @@ class AuthContext:
         auth_method: str,
         roles: List[str],
         wallet_address: Optional[str] = None,
-        api_key_metadata: Optional[dict] = None,
+            api_key_metadata: Optional[Dict[str, Any]] = None,
         rate_limit_multiplier: float = 1.0
     ):
         self.user_id = user_id
@@ -86,7 +87,7 @@ class AuthenticationMiddleware:
         self,
         jwt_manager: JWTManager,
         api_key_manager: APIKeyManager,
-        api_key_store: dict  # In production, use database
+            api_key_store: Dict[str, APIKey]  # In production, use database
     ):
         """
         Initialize authentication middleware

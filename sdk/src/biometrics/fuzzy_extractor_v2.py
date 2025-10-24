@@ -25,8 +25,10 @@ import hmac
 import secrets
 from dataclasses import dataclass
 from typing import Tuple, Dict, Any
+
 import galois
 import numpy as np
+from numpy.typing import NDArray
 
 
 # ============================================================================
@@ -66,7 +68,7 @@ class BCHCodec:
         self.bch = galois.BCH(BCH_N, BCH_K, d=BCH_D)
         self.gf = galois.GF2
 
-    def encode(self, message_bits: np.ndarray) -> np.ndarray:
+    def encode(self, message_bits: NDArray[np.uint8]) -> NDArray[np.uint8]:
         """
         Encode 64-bit message to 127-bit codeword.
 
@@ -88,7 +90,7 @@ class BCHCodec:
         codeword = self.bch.encode(message_bits)
         return np.array(codeword, dtype=np.uint8)
 
-    def decode(self, received_bits: np.ndarray) -> Tuple[np.ndarray, int]:
+    def decode(self, received_bits: NDArray[np.uint8]) -> Tuple[NDArray[np.uint8], int]:
         """
         Decode 127-bit received word to 64-bit message.
 
@@ -112,19 +114,23 @@ class BCHCodec:
             received_bits = self.gf(received_bits)
 
         try:
-            # Decode with error correction
             decoded = self.bch.decode(received_bits)
-
-            # Count errors by comparing with re-encoded version
-            reencoded = self.bch.encode(decoded)
-            error_count = int(np.sum(received_bits != reencoded))
-
-            return np.array(decoded, dtype=np.uint8), error_count
-        except Exception as e:
+        except Exception as exc:
             raise ValueError(
-                f"BCH decoding failed: too many errors (>10 bits)") from e
+                "BCH decoding failed: uncorrectable errors (>10 bits)"
+            ) from exc
 
-    def compute_syndrome(self, codeword: np.ndarray) -> bytes:
+        reencoded = self.bch.encode(decoded)
+        error_count = int(np.sum(received_bits != reencoded))
+
+        if error_count > BCH_T:
+            raise ValueError(
+                f"BCH decoding failed: detected {error_count} bit errors "
+                f"(capacity {BCH_T})"
+            )
+        return np.array(decoded, dtype=np.uint8), error_count
+
+    def compute_syndrome(self, codeword: NDArray[np.uint8]) -> bytes:
         """
         Compute BCH parity bits for helper data.
 
@@ -143,16 +149,17 @@ class BCHCodec:
             codeword = self.gf(codeword)
 
         # Extract parity bits (last 63 bits of systematic BCH codeword)
-        parity_bits = codeword[BCH_K:]  # Last 63 bits
+        parity_bits = np.asarray(codeword[BCH_K:], dtype=np.uint8)
 
         # Pack bits into bytes (pad to 64 bits = 8 bytes)
         syndrome_bits_padded = np.pad(
             parity_bits, (0, 64 - len(parity_bits)), constant_values=0)
-        syndrome_bytes = np.packbits(syndrome_bits_padded).tobytes()
+        syndrome_bytes = np.packbits(
+            syndrome_bits_padded.astype(np.uint8)).tobytes()
 
         return syndrome_bytes[:8]  # Return first 8 bytes
 
-    def decode_with_parity(self, noisy_message: np.ndarray, parity: bytes) -> Tuple[np.ndarray, int]:
+    def decode_with_parity(self, noisy_message: NDArray[np.uint8], parity: bytes) -> Tuple[NDArray[np.uint8], int]:
         """
         Decode noisy message using stored parity bits from enrollment.
 
@@ -323,7 +330,7 @@ def compute_helper_data_hmac(helper_data_bytes: bytes, key: bytes) -> bytes:
 
 
 def derive_key_from_biometric(
-    biometric_bits: np.ndarray,
+    biometric_bits: NDArray[np.uint8],
     salt: bytes,
     personalization: bytes
 ) -> bytes:
@@ -360,7 +367,7 @@ def derive_key_from_biometric(
 # ============================================================================
 
 def fuzzy_extract_gen(
-    biometric_bitstring: np.ndarray,
+    biometric_bitstring: NDArray[np.uint8],
     user_id: str
 ) -> Tuple[bytes, HelperData]:
     """
@@ -422,7 +429,7 @@ def fuzzy_extract_gen(
 
 
 def fuzzy_extract_rep(
-    biometric_bitstring: np.ndarray,
+    biometric_bitstring: NDArray[np.uint8],
     helper_data: HelperData
 ) -> bytes:
     """
@@ -468,11 +475,8 @@ def fuzzy_extract_rep(
     codec = BCHCodec()
 
     # 3. Decode noisy biometric using stored parity bits from helper data
-    try:
-        decoded_message, _ = codec.decode_with_parity(
-            biometric_bitstring, helper_data.bch_syndrome)
-    except ValueError as e:
-        raise ValueError(f"BCH decoding failed: {e}")
+    decoded_message, _ = codec.decode_with_parity(
+        biometric_bitstring, helper_data.bch_syndrome)
 
     # 4. Derive key from corrected biometric
     key = derive_key_from_biometric(
@@ -488,12 +492,12 @@ def fuzzy_extract_rep(
 # CONVENIENCE FUNCTIONS
 # ============================================================================
 
-def bytes_to_bitarray(data: bytes) -> np.ndarray:
+def bytes_to_bitarray(data: bytes) -> NDArray[np.uint8]:
     """Convert bytes to numpy bit array."""
     return np.unpackbits(np.frombuffer(data, dtype=np.uint8))
 
 
-def bitarray_to_bytes(bits: np.ndarray) -> bytes:
+def bitarray_to_bytes(bits: NDArray[np.uint8]) -> bytes:
     """Convert numpy bit array to bytes."""
     return np.packbits(bits).tobytes()
 

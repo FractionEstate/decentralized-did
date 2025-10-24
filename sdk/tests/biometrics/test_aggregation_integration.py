@@ -443,11 +443,9 @@ class TestErrorHandling:
             len(corrupted), num_flips, replace=False)
         corrupted[flip_indices] = 1 - corrupted[flip_indices]
 
-        # Reproduction will fail (too many errors)
-        key_reproduced = fuzzy_extract_rep(corrupted, helper_data)
-
-        # Keys should differ (fuzzy extractor couldn't correct all errors)
-        assert key_reproduced != key_enrolled
+        # Reproduction now fails deterministically when errors exceed BCH capacity
+        with pytest.raises(ValueError, match="BCH decoding failed"):
+            fuzzy_extract_rep(corrupted, helper_data)
 
     def test_insufficient_fingers_during_authentication(
         self, four_finger_biometric_arrays

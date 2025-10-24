@@ -163,7 +163,6 @@ class TestBCHCodec:
         assert error_count == 10
         np.testing.assert_array_equal(decoded, random_64_bits)
 
-    @pytest.mark.skip(reason="BCH can sometimes correct >10 errors depending on error pattern")
     def test_decode_too_many_errors(self, codec, random_64_bits):
         """Test decoding fails with excessive errors (may pass due to BCH properties)"""
         codeword = codec.encode(random_64_bits)
@@ -174,8 +173,6 @@ class TestBCHCodec:
         for pos in error_positions:
             noisy[pos] ^= 1
 
-        # Note: This test is skipped because BCH codes can occasionally
-        # correct more than their guaranteed capacity depending on error pattern
         with pytest.raises(ValueError, match="BCH decoding failed"):
             codec.decode(noisy)
 
@@ -626,7 +623,6 @@ class TestFuzzyExtractRep:
 
         assert key1 == key2
 
-    @pytest.mark.skip(reason="BCH can sometimes correct >10 errors depending on error pattern")
     def test_rep_exceeds_capacity(self, random_64_bits, sample_user_id):
         """Test Rep fails when noise exceeds capacity (may pass due to BCH properties)"""
         _, helper = fuzzy_extract_gen(random_64_bits, sample_user_id)
@@ -636,8 +632,6 @@ class TestFuzzyExtractRep:
         for i in range(32):
             noisy[i * 2] ^= 1
 
-        # Note: This test is skipped because BCH codes can occasionally
-        # correct more than their guaranteed capacity depending on error pattern
         with pytest.raises(ValueError, match="BCH decoding failed"):
             fuzzy_extract_rep(noisy, helper)
 
@@ -820,7 +814,6 @@ class TestFuzzyExtractorIntegration:
         key2 = fuzzy_extract_rep(noisy_10, helper)
         assert key1 == key2
 
-    @pytest.mark.skip(reason="BCH can sometimes correct >10 errors depending on error pattern")
     def test_error_beyond_guaranteed_capacity(self, random_64_bits, sample_user_id):
         """Test failure with errors beyond guaranteed capacity (may pass due to BCH)"""
         key1, helper = fuzzy_extract_gen(random_64_bits, sample_user_id)
@@ -830,9 +823,7 @@ class TestFuzzyExtractorIntegration:
         for i in range(32):
             noisy_32[i * 2] ^= 1
 
-        # Note: This test is skipped because BCH codes can occasionally
-        # correct more than their guaranteed capacity depending on error pattern
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="BCH decoding failed"):
             fuzzy_extract_rep(noisy_32, helper)
 # ============================================================================
 # PROPERTY-BASED TEST STUBS
