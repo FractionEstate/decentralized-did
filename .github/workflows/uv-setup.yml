@@ -1,0 +1,28 @@
+name: uv tools setup
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  install-uv:
+    name: Install uv and print version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv via reusable action
+        uses: FractionEstate/uv-setup-action@main
+        with:
+          # Optional: pin a version (e.g., 0.9.5). Defaults to latest.
+          # version: 0.9.5
+          add-to-path: 'true'
+
+      - name: Verify uv
+        shell: bash
+        run: |
+          set -euo pipefail
+          which uv
+          uv --version
