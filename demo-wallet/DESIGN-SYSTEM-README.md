@@ -7,12 +7,14 @@ This wallet implements a comprehensive design system ensuring pixel-perfect cons
 ## Quick Start
 
 ### Run Design Perfection Workflow
+
 ```bash
 cd demo-wallet
 ./scripts/design-perfection.sh
 ```
 
 This automated workflow will:
+
 1. ✅ Install dependencies (@axe-core/playwright, glob)
 2. 🔍 Audit all pages for design inconsistencies
 3. 🛠️ Guide you through fixing issues
@@ -29,7 +31,7 @@ npm run audit:design
 # Visual regression tests
 npm run test:e2e:visual
 
-# Accessibility tests  
+# Accessibility tests
 npm run test:e2e:a11y
 
 # Full E2E test suite
@@ -45,6 +47,7 @@ npm run test:e2e:update-snapshots
 ## Design Tokens
 
 ### Spacing (8px base grid)
+
 ```scss
 var(--spacing-xs)   // 8px
 var(--spacing-sm)   // 12px
@@ -56,6 +59,7 @@ var(--spacing-3xl)  // 48px
 ```
 
 ### Typography
+
 ```scss
 var(--font-size-xs)    // 12px
 var(--font-size-sm)    // 14px
@@ -72,6 +76,7 @@ var(--font-weight-bold)      // 700
 ```
 
 ### Border Radius
+
 ```scss
 var(--radius-sm)    // 4px
 var(--radius-md)    // 8px
@@ -82,6 +87,7 @@ var(--radius-full)  // 9999px (circle)
 ```
 
 ### Shadows (Elevation)
+
 ```scss
 var(--shadow-xs)   // Subtle
 var(--shadow-sm)   // Small
@@ -91,6 +97,7 @@ var(--shadow-xl)   // Extra large
 ```
 
 ### Colors
+
 ```scss
 // Use Ionic color system
 var(--ion-color-primary)
@@ -118,6 +125,7 @@ var(--color-gray-900) // Darkest
 ## Utility Classes
 
 ### Layout
+
 ```html
 <div class="page-layout">
   <div class="page-content">
@@ -129,6 +137,7 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Spacing
+
 ```html
 <!-- Margin top -->
 <div class="mt-xs mt-sm mt-md mt-lg mt-xl mt-2xl"></div>
@@ -141,6 +150,7 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Typography
+
 ```html
 <h1 class="text-3xl font-bold">Large Heading</h1>
 <h2 class="text-2xl font-semibold">Medium Heading</h2>
@@ -149,6 +159,7 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Cards
+
 ```html
 <!-- Basic card -->
 <div class="card">
@@ -168,6 +179,7 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Buttons
+
 ```html
 <!-- Primary button -->
 <button class="btn btn-primary">Primary Action</button>
@@ -185,13 +197,18 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Progress Bars
+
 ```html
 <div class="progress-bar">
-  <div class="progress-fill" style="width: 60%"></div>
+  <div
+    class="progress-fill"
+    style="width: 60%"
+  ></div>
 </div>
 ```
 
 ### Badges
+
 ```html
 <span class="badge badge-success">Success</span>
 <span class="badge badge-error">Error</span>
@@ -200,15 +217,22 @@ var(--color-gray-900) // Darkest
 ```
 
 ### Icons
+
 ```html
-<ion-icon class="icon-sm"></ion-icon>  <!-- 16px -->
-<ion-icon class="icon-md"></ion-icon>  <!-- 24px -->
-<ion-icon class="icon-lg"></ion-icon>  <!-- 32px -->
-<ion-icon class="icon-xl"></ion-icon>  <!-- 48px -->
-<ion-icon class="icon-2xl"></ion-icon> <!-- 64px -->
+<ion-icon class="icon-sm"></ion-icon>
+<!-- 16px -->
+<ion-icon class="icon-md"></ion-icon>
+<!-- 24px -->
+<ion-icon class="icon-lg"></ion-icon>
+<!-- 32px -->
+<ion-icon class="icon-xl"></ion-icon>
+<!-- 48px -->
+<ion-icon class="icon-2xl"></ion-icon>
+<!-- 64px -->
 ```
 
 ### Animations
+
 ```html
 <div class="animate-fadeIn">Fades in</div>
 <div class="animate-fadeInScale">Fades in with scale</div>
@@ -219,6 +243,7 @@ var(--color-gray-900) // Darkest
 ## Converting Existing Code
 
 ### ❌ Before (Inconsistent)
+
 ```scss
 .my-component {
   padding: 24px;
@@ -226,16 +251,17 @@ var(--color-gray-900) // Darkest
   font-size: 1.25rem;
   font-weight: 600;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   background: #ffffff;
-  
+
   &:hover {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
   }
 }
 ```
 
 ### ✅ After (Using Design System)
+
 ```scss
 .my-component {
   padding: var(--spacing-lg);
@@ -246,7 +272,7 @@ var(--color-gray-900) // Darkest
   box-shadow: var(--shadow-md);
   background: var(--ion-color-light);
   transition: var(--button-transition);
-  
+
   &:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
@@ -255,6 +281,7 @@ var(--color-gray-900) // Darkest
 ```
 
 ### ✅✅ Best (Using Utility Classes)
+
 ```html
 <div class="card card-hover p-lg mb-md">
   <h3 class="text-lg font-semibold">Component Title</h3>
@@ -286,6 +313,7 @@ npm run test:e2e:a11y
 ```
 
 Tests include:
+
 - ✅ Color contrast (4.5:1 ratio)
 - ✅ Touch targets (44x44px minimum)
 - ✅ Focus indicators (visible on all interactive elements)
@@ -303,6 +331,7 @@ npm run audit:design
 ```
 
 Generates `design-audit-report.md` with:
+
 - Files with most issues (prioritized fix list)
 - Line-by-line recommendations
 - Design token suggestions
@@ -329,15 +358,19 @@ demo-wallet/
 ## Accessibility Guidelines
 
 ### Minimum Touch Targets
+
 All interactive elements must be **at least 44x44px** (WCAG 2.1 Level AA):
 
 ```scss
-button, a, input {
+button,
+a,
+input {
   min-height: var(--touch-target-min); // 44px
 }
 ```
 
 ### Focus Indicators
+
 All focusable elements must have visible focus states:
 
 ```scss
@@ -348,21 +381,28 @@ All focusable elements must have visible focus states:
 ```
 
 ### Color Contrast
+
 - Normal text: **4.5:1** minimum
 - Large text (18pt+): **3:1** minimum
 - Use design system colors (pre-validated)
 
 ### Semantic HTML
+
 ```html
 <!-- ✅ Good -->
 <button>Click me</button>
-<input type="text" id="name" aria-label="Your name">
+<input
+  type="text"
+  id="name"
+  aria-label="Your name"
+/>
 <nav aria-label="Main navigation">
-
-<!-- ❌ Bad -->
-<div onclick="...">Click me</div>
-<input> <!-- No label -->
-<div class="nav">
+  <!-- ❌ Bad -->
+  <div onclick="...">Click me</div>
+  <input />
+  <!-- No label -->
+  <div class="nav"></div>
+</nav>
 ```
 
 ## Dark Mode Support
@@ -395,6 +435,7 @@ Respects user's motion preferences (WCAG 2.1):
 ## Browser Support
 
 Tested on:
+
 - ✅ Chrome (Desktop + Android)
 - ✅ Firefox (Desktop)
 - ✅ Safari (Desktop + iOS)
@@ -411,11 +452,12 @@ Tested on:
 ## Common Patterns
 
 ### Full-Page Layout
+
 ```html
 <div class="page-layout">
   <div class="page-content">
     <h1 class="text-3xl font-bold mb-xl">Page Title</h1>
-    
+
     <div class="card mb-lg">
       <h2 class="text-xl font-semibold mb-md">Section</h2>
       <p class="text-base mb-md">Content</p>
@@ -426,23 +468,41 @@ Tested on:
 ```
 
 ### Form Layout
+
 ```html
 <form class="card p-xl">
   <h2 class="text-2xl font-semibold mb-lg">Form Title</h2>
-  
+
   <div class="mb-md">
-    <label for="field1" class="text-base font-medium">Field Label</label>
-    <input type="text" id="field1" class="mt-sm">
+    <label
+      for="field1"
+      class="text-base font-medium"
+      >Field Label</label
+    >
+    <input
+      type="text"
+      id="field1"
+      class="mt-sm"
+    />
   </div>
-  
-  <button type="submit" class="btn btn-primary btn-lg">Submit</button>
+
+  <button
+    type="submit"
+    class="btn btn-primary btn-lg"
+  >
+    Submit
+  </button>
 </form>
 ```
 
 ### List of Cards
+
 ```html
 <div class="page-content">
-  <div class="card card-interactive mb-md" *ngFor="let item of items">
+  <div
+    class="card card-interactive mb-md"
+    *ngFor="let item of items"
+  >
     <div class="mb-sm">
       <h3 class="text-lg font-semibold">{{item.title}}</h3>
       <p class="text-sm text-gray-600">{{item.description}}</p>
@@ -455,26 +515,34 @@ Tested on:
 ## Troubleshooting
 
 ### Issue: Styles not applying
+
 **Solution:** Make sure design-tokens.scss and utilities.scss are imported in App.scss:
+
 ```scss
-@import './design-tokens.scss';
-@import './utilities.scss';
+@import "./design-tokens.scss";
+@import "./utilities.scss";
 ```
 
 ### Issue: Visual tests failing
+
 **Solution:** Regenerate baselines after intentional design changes:
+
 ```bash
 npm run test:e2e:update-snapshots
 ```
 
 ### Issue: Accessibility tests failing
+
 **Solution:** Check specific failures in playwright-report/:
+
 ```bash
 npx playwright show-report
 ```
 
 ### Issue: Design audit shows many issues
+
 **Solution:** Fix priority pages first (listed at top of report):
+
 ```bash
 npm run audit:design
 # Review design-audit-report.md
@@ -493,6 +561,7 @@ npm run audit:design
 ## Changelog
 
 ### v1.0.0 (2025-01-XX)
+
 - ✅ Initial design system implementation
 - ✅ 100+ design tokens defined
 - ✅ 50+ utility classes created

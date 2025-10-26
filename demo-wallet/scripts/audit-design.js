@@ -13,12 +13,16 @@
  * Generates a report with findings and recommendations
  */
 
-const fs = require('fs');
-const path = require('path');
-const glob = require('glob');
+import fs from 'fs';
+import path from 'path';
+import { glob } from 'glob';
+import { fileURLToPath } from 'url';
 
-const PAGES_DIR = path.join(__dirname, '../../../src/ui/pages');
-const OUTPUT_FILE = path.join(__dirname, '../../../design-audit-report.md');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const PAGES_DIR = path.join(__dirname, '../src/ui/pages');
+const OUTPUT_FILE = path.join(__dirname, '../design-audit-report.md');
 
 // Patterns to detect
 const PATTERNS = {
