@@ -21,7 +21,7 @@ Successfully completed Phase 1.1 of Task 4 (Integration Testing) by fixing the b
   * Phase 1: API Server Setup (1 day) - Fix basic, configure secure, set up mock
   * Phase 2: Demo Wallet Tests (1-1.5 days) - Complete 9 deferred integration tests
   * Phase 3: API Server Testing (1.5 days) - Security, load testing, OWASP validation
-  * Phase 4: Blockchain Integration (1-1.5 days) - Blockfrost, on-chain DID registration
+  * Phase 4: Blockchain Integration (1-1.5 days) - Koios, on-chain DID registration
   * Phase 5: Performance & Load (1 day) - Load testing, profiling, memory leak detection
 - **Success Criteria**: All 3 API servers operational, 14/14 integration tests passing, performance targets met
 - **Commit**: c3f02ca
@@ -156,7 +156,7 @@ class HelperData:
 ### Import Test ✅
 ```bash
 $ python -c "import api_server; print('✅ API server imports successfully')"
-⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled
+⚠️  Warning: Koios client unreachable, duplicate detection disabled
 ✅ API server imports successfully
 ```
 
@@ -201,7 +201,7 @@ $ curl http://localhost:8000/health
 ### 1.5 Test Configuration & Credentials (1 hour)
 - [ ] Create `.env.test` configuration file
 - [ ] Set up test API keys and JWT secrets
-- [ ] Configure Blockfrost test API key
+- [ ] Configure Koios duplicate detection settings
 - [ ] Document environment variables
 - [ ] Create test data fixtures
 
@@ -289,11 +289,11 @@ $ curl http://localhost:8000/health
 - **Workaround**: Mock random bits for testing
 - **TODO**: Implement quantization pipeline
 
-### 4. Blockfrost API Key Not Set
+### 4. Koios Endpoint Not Reachable
 - **Issue**: Duplicate DID detection disabled
 - **Impact**: Can't test Sybil resistance at API level
 - **Workaround**: Warning printed, enrollment continues
-- **TODO**: Set `BLOCKFROST_API_KEY` environment variable
+- **TODO**: Ensure `KOIOS_BASE_URL` is reachable (or provide self-hosted endpoint)
 
 ---
 
@@ -322,7 +322,7 @@ $ curl http://localhost:8000/health
   * Add input validation (minutiae count, quality scores)
 
 - **Medium Priority**:
-  * Set up Blockfrost API key for duplicate detection
+  * Configure Koios endpoint for duplicate detection
   * Add comprehensive error handling
   * Implement request/response logging
 

@@ -1,14 +1,26 @@
-from typing import Optional, Dict, Any
-from .blockfrost import BlockfrostClient
+from typing import Optional, Dict, Any, List
+
+from .koios_client import KoiosClient
+from .koios_scanner import (
+    DEFAULT_METADATA_LABEL,
+    KoiosMetadataRecord,
+    KoiosMetadataScanner,
+)
 
 
 class CardanoQuery:
-    """
-    A class to query the Cardano blockchain for DID-related information.
-    """
+    """Query helper that operates on top of Koios endpoints."""
 
-    def __init__(self, blockfrost_client: BlockfrostClient):
-        self.blockfrost_client = blockfrost_client
+    def __init__(
+        self,
+        koios_client: KoiosClient,
+        *,
+        metadata_label: str = DEFAULT_METADATA_LABEL,
+        koios_scanner: Optional[KoiosMetadataScanner] = None,
+    ) -> None:
+        self.koios_client = koios_client
+        self.metadata_label = str(metadata_label)
+        self.koios_scanner = koios_scanner or koios_client.metadata_scanner
 
     async def resolve_did(self, did: str) -> Optional[Dict[str, Any]]:
         """
@@ -17,7 +29,10 @@ class CardanoQuery:
         :param did: The DID to resolve.
         :return: The latest metadata document for the DID, or None if not found.
         """
-        return await self.blockfrost_client.check_did_exists(did)
+        record = await self.koios_scanner.find_did(did, label=self.metadata_label)
+        if record is None:
+            return None
+        return _koios_record_to_enrollment(record)
 
     async def get_enrollment_history(self, did: str) -> list[Dict[str, Any]]:
         """
@@ -26,22 +41,31 @@ class CardanoQuery:
         :param did: The DID to retrieve the history for.
         :return: A list of metadata documents, from oldest to newest.
         """
-        # This is a simplified implementation. A real implementation would need
-        # to handle pagination and potentially multiple transactions in the same slot.
-        transactions = await self.blockfrost_client.get_transactions_by_metadata_label(
-            674
-        )
         history = []
-        for tx_info in transactions:
-            tx_hash = tx_info.get("tx_hash")
-            if not tx_hash:
+        async for record in self.koios_scanner.iter_label_entries(label=self.metadata_label):
+            payload = record.metadata
+            if payload.get("did") != did:
                 continue
-
-            metadata_list = await self.blockfrost_client.get_transaction_metadata(
-                tx_hash)
-            for metadata_entry in metadata_list:
-                if metadata_entry.get("label") == "674":
-                    json_metadata = metadata_entry.get("json_metadata")
-                    if isinstance(json_metadata, dict) and json_metadata.get('did') == did:
-                        history.append(json_metadata)
+            history.append(payload)
+        # Koios returns blocks newest first, so reverse for chronological order.
+        history.reverse()
         return history
+
+
+def _koios_record_to_enrollment(record: KoiosMetadataRecord) -> Dict[str, Any]:
+    """Convert a Koios metadata record to the enrollment dict format."""
+
+    payload = record.metadata
+    controllers = payload.get("controllers") or []
+    if not controllers:
+        wallet = payload.get("wallet_address")
+        if wallet:
+            controllers = [wallet]
+
+    return {
+        "tx_hash": record.tx_hash,
+        "controllers": controllers,
+        "enrollment_timestamp": payload.get("enrollment_timestamp", "unknown"),
+        "revoked": payload.get("revoked", False),
+        "metadata": payload,
+    }

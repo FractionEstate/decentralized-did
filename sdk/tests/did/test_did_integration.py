@@ -22,10 +22,15 @@ import json
 import os
 import pytest
 from src.biometrics.aggregator_v2 import aggregate_finger_keys, FingerKey
+from src.biometrics.threshold_aggregator import (
+    ThresholdShare,
+    create_threshold_enrollment,
+    recover_threshold_master_key,
+)
 from src.did.generator_v2 import (
-    HelperDataEntry, build_did_from_master_key, build_wallet_bundle,
+    HelperDataEntry, ThresholdShareEntry, build_did_from_master_key, build_wallet_bundle,
     HELPER_STORAGE_INLINE, HELPER_STORAGE_EXTERNAL,
-    MAX_METADATA_SIZE_BYTES, _encode_bytes,
+    MAX_METADATA_SIZE_BYTES, _decode_bytes, _encode_bytes,
 )
 
 
@@ -49,6 +54,38 @@ def create_mock_helper_entry(finger_id: str) -> HelperDataEntry:
         bch_syndrome=_encode_bytes(os.urandom(64)),
         hmac=_encode_bytes(os.urandom(32)),
     )
+
+
+def share_entries_to_lookup(entries: list[ThresholdShareEntry]) -> dict[str, ThresholdShare]:
+    """Convert threshold share entries to lookup table."""
+    return {
+        entry.finger_id: ThresholdShare(
+            finger_id=entry.finger_id,
+            share_index=entry.share_index,
+            masked_share=_decode_bytes(entry.masked_share),
+        )
+        for entry in entries
+    }
+
+
+def create_ten_finger_keys(quality: int = 90) -> list[FingerKey]:
+    """Create deterministic list of ten mock finger keys."""
+    finger_ids = [
+        "left_thumb",
+        "left_index",
+        "left_middle",
+        "left_ring",
+        "left_pinky",
+        "right_thumb",
+        "right_index",
+        "right_middle",
+        "right_ring",
+        "right_pinky",
+    ]
+    return [
+        FingerKey(finger_id=fid, key=os.urandom(32), quality=quality)
+        for fid in finger_ids
+    ]
 
 
 # ============================================================================

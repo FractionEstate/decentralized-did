@@ -438,26 +438,17 @@ Scenario 2: Existing user (Alice) with new wallet
 ### Blockchain Query Before Enrollment
 
 ```python
-def query_existing_did(did: str) -> Optional[DIDRecord]:
-    """
-    Query blockchain for existing DID.
+async def query_existing_did(did: str) -> Optional[DIDRecord]:
+  """Query Koios for an existing DID enrollment."""
+  enrollment = await koios_client.check_did_exists(did, label="674")
+  if enrollment is None:
+    return None
 
-    Returns:
-        DIDRecord if found, None otherwise
-    """
-    # Search for transactions with metadata label 674
-    transactions = blockfrost_client.search_metadata(
-        label=674,
-        metadata={"did": did}
-    )
-
-    if not transactions:
-        return None  # DID not found
-
-    # DID exists - return earliest enrollment
-    enrollment = min(transactions, key=lambda tx: tx.block_height)
-
-    return DIDRecord(
+  return DIDRecord(
+    tx_hash=enrollment["tx_hash"],
+    controllers=enrollment.get("controllers", []),
+    enrolled_at=enrollment.get("enrollment_timestamp"),
+    revoked=enrollment.get("revoked", False),
         did=did,
         enrollment_date=enrollment.timestamp,
         block_height=enrollment.block_height,

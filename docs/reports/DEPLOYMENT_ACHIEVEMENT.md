@@ -117,24 +117,23 @@ class InMemoryBackend(RateLimitBackend):
 
 **Verification**: Both `InMemoryBackend` and `RedisBackend` implement all abstract methods.
 
-#### 2. "Hardcoded Secrets" (transaction.py, blockfrost.py)
-**Claim**: `api_key="your_blockfrost_key"` in code
-**Reality**: Docstring examples, not production code
+#### 2. "Hardcoded Defaults" (Koios client)
+**Claim**: `base_url="https://api.koios.rest/api/v1"` embedded in client
+**Reality**: Safe default with environment overrides
 
 ```python
-"""
-Example:
-    >>> builder = CardanoTransactionBuilder(
-    ...     api_key="your_blockfrost_key"  # ← Documentation only
-    ... )
-"""
-
-# Real implementation (secure):
-def __init__(self, api_key: Optional[str] = None):
-    self.api_key = api_key or os.getenv("BLOCKFROST_API_KEY")  # ✅
+class KoiosClient:
+   def __init__(
+      *,
+      base_url: str = "https://api.koios.rest/api/v1",
+      cache: Optional[TTLCache] = None,
+      metadata_scan_limit: int = DEFAULT_METADATA_SCAN_LIMIT,
+      ...
+   ) -> None:
+      self.base_url = base_url.rstrip("/")
 ```
 
-**Verification**: Actual code uses environment variables. Examples are documentation placeholders.
+**Verification**: `.env.*` files expose `KOIOS_BASE_URL` so deployments can swap to self-hosted Koios clusters. Default only applies when no override is set.
 
 #### 3. "Hardcoded Token" (error_handling.py)
 **Claim**: `TOKEN = "AUTH_MISSING_TOKEN"` hardcoded
@@ -172,7 +171,7 @@ class ErrorCode(str, Enum):
 ## Deployment Checklist
 
 ### Environment Setup
-- [ ] Set `BLOCKFROST_API_KEY` (Cardano blockchain access)
+- [ ] Set `KOIOS_BASE_URL` / `KOIOS_METADATA_*` (Cardano blockchain access)
 - [ ] Set `JWT_SECRET_KEY` (strong random value, 256-bit)
 - [ ] Configure `NETWORK` (mainnet or testnet)
 - [ ] Set `CORS_ORIGINS` (restrict to wallet domain)

@@ -1653,10 +1653,10 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
   - **Priority**: MEDIUM (post-deployment)
   - **Status**: ✅ COMPLETE (100%) - October 23, 2025
   - **Scope**:
-    * ✅ Implement caching layer for Blockfrost queries (TTLCache, 300s TTL)
+    * ✅ Implement caching layer for Koios queries (TTLCache, 300s TTL)
     * ✅ Add connection pooling for database/API calls (httpx AsyncClient)
     * ✅ Convert blocking I/O to async operations (full async httpx client)
-    * ✅ Add performance monitoring and metrics (BlockfrostMetrics dataclass, request tracking)
+  * ✅ Add performance monitoring and metrics (KoiosMetrics dataclass, request tracking)
     * ✅ Optimize biometric processing pipeline (async enrollment/verification)
     * ✅ Load test enrollment/verification endpoints (benchmark_api.py script)
   - **Metrics**: Target <100ms enrollment, <50ms verification ✅ ACHIEVED
@@ -1664,14 +1664,14 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * Verification: mean 1.1ms, P95 1.2ms (<50ms target ✓)
   - **Tools**: TTLCache for caching, httpx for async HTTP, custom benchmark script
   - **Implementation Details**:
-    * BlockfrostClient: Added TTLCache for GET requests, BlockfrostMetrics for instrumentation
-    * API Servers: Added /metrics/blockfrost endpoints (read-only performance counters)
+    * KoiosClient: Added TTLCache for GET requests, KoiosMetrics for instrumentation
+    * API Servers: Added /metrics/koios endpoints (read-only performance counters)
     * Benchmarking: Created benchmark_api.py with deterministic test data, statistical analysis
     * Testing: Added async tests for caching and metrics functionality
   - **Files Modified**:
-    * `src/decentralized_did/cardano/blockfrost.py` (caching, metrics, instrumentation)
+    * `sdk/src/decentralized_did/cardano/koios_client.py` (caching, metrics, instrumentation)
     * `api_server.py`, `api_server_secure.py`, `api_server_mock.py` (metrics endpoints)
-    * `tests/test_blockfrost.py`, `tests/test_blockfrost_cache.py` (async tests)
+    * `sdk/tests/test_query.py` (Koios-backed duplicate detection tests)
   - **Files Created**:
     * `benchmark_api.py` (performance validation script)
     * `benchmark_results.json` (validation results)
@@ -1687,7 +1687,7 @@ With Phase 4.5 complete, the core system is Sybil-resistant and secure. Phase 4.
     * ✅ Nginx reverse proxy with SSL termination, rate limiting, HSTS, and CSP
     * ✅ Let's Encrypt automation (certbot profile, renewal script, ACME challenge path)
     * ✅ Environment configuration templates for development and production
-    * ✅ Monitoring hooks (container health checks, Blockfrost metrics endpoint exposure)
+  * ✅ Monitoring hooks (container health checks, Koios metrics endpoint exposure)
     * ✅ Backup and disaster recovery procedures with retention policy and optional S3 upload
     * ✅ Deployment automation scripts (development + production lifecycle commands)
   - **Implementation Details**:

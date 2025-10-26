@@ -25,7 +25,7 @@ The referenced audit still overstates several advanced biometric capabilities. T
 | Metadata label | CIP-20 label 674 only | CLI defaults to label `1990`; transaction builder uses 674 when invoked directly | `src/decentralized_did/cardano/metadata_encoder.py`, `cardano/transaction.py`
 | Mobile enrollment | Implemented QR bridge and device capture | No mobile capture or QR workflow; CLI expects pre-generated minutiae JSON | Entire CLI (`src/decentralized_did/cli.py`)
 | Liveness detection | Required before production | No liveness or anti-spoofing checks in code | Not implemented
-| Blockfrost dependency | Needs failover | Client now async with TTL cache and metrics, but still single-provider (no fallback) | `src/decentralized_did/cardano/blockfrost.py`
+| Koios dependency | Needs failover | Client now async with TTL cache and metrics, but still single-provider (no fallback) | `src/decentralized_did/cardano/koios_client.py`
 | Demo wallet | Fully wired to deterministic DID | Phase 4.6 Task 1 delivered deterministic DID flow with updated fixtures, tests, and documentation | `demo-wallet/src/core/biometric/biometricDidService.ts`, `demo-wallet/DETERMINISTIC-DID-IMPLEMENTATION.md`
 | Performance metrics | 41 ms enrollment / 43 ms verification | Benchmark harness records mean ~2.5 ms enrollment / ~1.1 ms verification (P95 < 10 ms) | `benchmark_api.py`, `docs/reports/benchmark_results.json`
 
@@ -46,6 +46,6 @@ The referenced audit still overstates several advanced biometric capabilities. T
 ## Recommended Follow-Up
 
 1. Decide whether to migrate the public SDK to the BCH-backed extractor (import from `src/biometrics`) or update the audit narrative to reflect the current salted-hash workflow permanently.
-2. Implement multi-provider fallback for Blockfrost-dependent operations and document operational runbooks for outage scenarios.
+2. Implement multi-provider fallback for Koios-dependent operations and document operational runbooks for outage scenarios.
 3. Add explicit regression tests for the helper data format consumed by the CLI to ensure future refactors retain compatibility.
 4. Surface the absence of liveness detection and mobile enrollment flows prominently in public documentation until corresponding features ship.

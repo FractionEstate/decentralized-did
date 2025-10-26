@@ -57,7 +57,7 @@
 1. CLI generates metadata JSON and optional helper file.
 2. DApp uses `cardano.signData` or transaction-building APIs to attach metadata under agreed label.
 3. Wallet signs transaction; metadata becomes accessible on-chain.
-4. Verifiers fetch transaction metadata (using `blockfrost`, `ogmios`, or cardano-node) and reconstruct the DID digest.
+4. Verifiers fetch transaction metadata (using our Koios client, `ogmios`, or cardano-node) and reconstruct the DID digest.
 
 ## CIP-68 NFT Pattern (Roadmap)
 - Mint a reference NFT whose datum stores `idHash` and `helperUri`.
@@ -84,10 +84,10 @@ To compile the validator, run the following command from the root of the reposit
 This will create the compiled Plutus script in the `build/validator/` directory.
 
 ## Blockchain Query Layer
-The `CardanoQuery` class in `src/decentralized_did/cardano/query.py` provides a high-level API for querying DID information from the blockchain. It uses the `BlockfrostClient` to interact with the Cardano network.
+The `CardanoQuery` class in `src/decentralized_did/cardano/query.py` provides a high-level API for querying DID information from the blockchain. It now uses the Koios REST API exclusively via the shared `KoiosClient` and `KoiosMetadataScanner`, removing the previous Blockfrost dependency.
 
 ### DID Resolution
-The `resolve_did` method checks for the existence of a DID by querying the Blockfrost API for transactions with the metadata label `674` and searching for a match. This is useful for preventing duplicate enrollments and for verifying that a DID has been anchored on-chain.
+The `resolve_did` method checks for the existence of a DID by querying the selected backend for transactions with the metadata label `674` and searching for a match. This is useful for preventing duplicate enrollments and for verifying that a DID has been anchored on-chain.
 
 ### Enrollment History
 The `get_enrollment_history` method retrieves all metadata updates for a given DID, providing a full audit trail of the identity's on-chain history.

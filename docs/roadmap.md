@@ -91,7 +91,7 @@ With passport-level security (NIST IAL3/AAL3), this system is now ready for:
 - **Task 1 - Demo Wallet Deterministic DIDs**: Demo wallet now derives deterministic IDs by default, with updated UI flows, fixtures, and 37 automated checks. See `demo-wallet/DETERMINISTIC-DID-IMPLEMENTATION.md`.
 - **Task 3 - API Security Hardening**: Seven-phase security program completed (rate limiting, auth, validation, headers, audit logging, error handling, testing). 307 security tests passing.
 - **Task 4 - Deployment Readiness Audit**: Comprehensive 63-point audit approved production release; optional follow-ups tracked separately.
-- **Task 5 - Performance Optimization**: Blockfrost client caching + metrics shipped. Benchmarks achieved mean enrollment 2.5 ms / P95 9.7 ms and mean verification 1.1 ms / P95 1.2 ms.
+- **Task 5 - Performance Optimization**: Koios client caching + metrics shipped. Benchmarks achieved mean enrollment 2.5 ms / P95 9.7 ms and mean verification 1.1 ms / P95 1.2 ms.
 - **Task 6 - Production Deployment Guide**: Deployment toolchain delivered with Docker images, profile-aware `docker-compose.yml`, automation scripts (`deploy-production.sh`, `deploy-development.sh`, `renew-ssl.sh`, `backup.sh`), environment templates, and `docs/PRODUCTION_DEPLOYMENT_GUIDE.md`.
 
 ### 🔜 Upcoming Focus

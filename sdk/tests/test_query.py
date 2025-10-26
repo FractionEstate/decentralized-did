@@ -1,67 +1,95 @@
-import asyncio
+from unittest.mock import MagicMock
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock
-from src.decentralized_did.cardano.blockfrost import BlockfrostClient
+
+from src.decentralized_did.cardano.koios_client import KoiosClient
+from src.decentralized_did.cardano.koios_scanner import KoiosMetadataRecord
 from src.decentralized_did.cardano.query import CardanoQuery
 
 
-@pytest.fixture
-def mock_blockfrost_client():
-    client = MagicMock(spec=BlockfrostClient)
-    client.check_did_exists = AsyncMock()
-    client.get_transactions_by_metadata_label = AsyncMock()
-    client.get_transaction_metadata = AsyncMock()
-    return client
+class DummyKoiosScanner:
+    def __init__(self, records):
+        self.records = records
+        self.find_calls = []
+
+    async def find_did(self, did: str, *, label: str = "674", max_blocks: int = 1000, offset: int = 0):
+        self.find_calls.append((did, label, max_blocks, offset))
+        for record in self.records:
+            if record.metadata.get("did") == did:
+                return record
+        return None
+
+    async def iter_label_entries(self, *, label: str = "674", max_blocks: int = 1000, offset: int = 0):
+        for record in self.records:
+            yield record
 
 
-@pytest.fixture
-def cardano_query(mock_blockfrost_client):
-    return CardanoQuery(mock_blockfrost_client)
-
-
-@pytest.mark.asyncio
-async def test_resolve_did_found(cardano_query, mock_blockfrost_client):
-    did = "did:cardano:testnet:zQm..."
-    metadata = {"did": did, "data": "some_data"}
-    mock_blockfrost_client.check_did_exists.return_value = metadata
-
-    result = await cardano_query.resolve_did(did)
-
-    assert result == metadata
-    mock_blockfrost_client.check_did_exists.assert_awaited_once_with(did)
+def build_query(scanner: DummyKoiosScanner) -> CardanoQuery:
+    client = MagicMock(spec=KoiosClient)
+    client.metadata_scanner = scanner
+    return CardanoQuery(koios_client=client, koios_scanner=scanner)
 
 
 @pytest.mark.asyncio
-async def test_resolve_did_not_found(cardano_query, mock_blockfrost_client):
-    did = "did:cardano:testnet:zQm..."
-    mock_blockfrost_client.check_did_exists.return_value = None
+async def test_resolve_did_found():
+    did = "did:cardano:testnet:zKoios"
+    record = KoiosMetadataRecord(
+        label="674",
+        tx_hash="tx_hash_1",
+        block_hash="block_hash_1",
+        block_height=123,
+        tx_timestamp=456,
+        metadata={
+            "did": did,
+            "controllers": ["addr_test1"],
+            "enrollment_timestamp": "2025-10-25T12:00:00Z",
+            "revoked": False,
+        },
+    )
 
-    result = await cardano_query.resolve_did(did)
+    query = build_query(DummyKoiosScanner([record]))
+    result = await query.resolve_did(did)
+
+    assert result is not None
+    assert result["tx_hash"] == "tx_hash_1"
+    assert result["metadata"]["did"] == did
+
+
+@pytest.mark.asyncio
+async def test_resolve_did_not_found():
+    did = "did:cardano:testnet:zMissing"
+    query = build_query(DummyKoiosScanner([]))
+
+    result = await query.resolve_did(did)
 
     assert result is None
-    mock_blockfrost_client.check_did_exists.assert_awaited_once_with(did)
 
 
 @pytest.mark.asyncio
-async def test_get_enrollment_history(cardano_query, mock_blockfrost_client):
-    did = "did:cardano:testnet:zQm..."
-    txs = [{"tx_hash": "tx1"}, {"tx_hash": "tx2"}]
-    metadata1 = [{"label": "674", "json_metadata": {
-        "did": did, "version": "1.0"}}]
-    metadata2 = [{"label": "674", "json_metadata": {"did": "did:other", "version": "1.0"}}, {
-        "label": "674", "json_metadata": {"did": did, "version": "1.1"}}]
+async def test_get_enrollment_history_chronological():
+    did = "did:cardano:testnet:zHistory"
+    records = [
+        KoiosMetadataRecord(
+            label="674",
+            tx_hash="tx_hash_new",
+            block_hash="block_new",
+            block_height=200,
+            tx_timestamp=222,
+            metadata={"did": did, "controllers": ["addr"], "enrollment_timestamp": "2025"},
+        ),
+        KoiosMetadataRecord(
+            label="674",
+            tx_hash="tx_hash_old",
+            block_hash="block_old",
+            block_height=100,
+            tx_timestamp=111,
+            metadata={"did": did, "controllers": [], "enrollment_timestamp": "2024"},
+        ),
+    ]
 
-    mock_blockfrost_client.get_transactions_by_metadata_label.return_value = txs
-    mock_blockfrost_client.get_transaction_metadata.side_effect = [
-        metadata1, metadata2]
-
-    history = await cardano_query.get_enrollment_history(did)
+    query = build_query(DummyKoiosScanner(records))
+    history = await query.get_enrollment_history(did)
 
     assert len(history) == 2
-    assert history[0]["version"] == "1.0"
-    assert history[1]["version"] == "1.1"
-    mock_blockfrost_client.get_transactions_by_metadata_label.assert_awaited_once_with(
-        674)
-    assert mock_blockfrost_client.get_transaction_metadata.await_count == 2
-    mock_blockfrost_client.get_transaction_metadata.assert_any_await("tx1")
-    mock_blockfrost_client.get_transaction_metadata.assert_any_await("tx2")
+    assert history[0]["enrollment_timestamp"] == "2024"
+    assert history[1]["enrollment_timestamp"] == "2025"

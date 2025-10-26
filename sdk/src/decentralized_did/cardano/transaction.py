@@ -9,7 +9,6 @@ Features:
 - Fee estimation (155381 + 44 × size lovelace)
 - CIP-20 metadata construction (label 674)
 - Metadata schema v1.1 support (multi-controller, revocation, timestamps)
-- Blockfrost API integration
 - Dry-run mode for validation
 - Error handling and logging
 
@@ -92,10 +91,9 @@ class CardanoTransactionBuilder:
 
     Example:
         >>> builder = CardanoTransactionBuilder(
-        ...     network=Network.TESTNET,
-        ...     signing_key=payment_skey,
-        ...     api_key="your_blockfrost_key"
-        ... )
+    ...     network=Network.TESTNET,
+    ...     signing_key=payment_skey,
+    ... )
         >>> result = builder.build_enrollment_transaction(
         ...     did_document=did_doc,
         ...     helper_data_cid="Qm...",
@@ -109,7 +107,6 @@ class CardanoTransactionBuilder:
         self,
         network: Network = Network.TESTNET,
         signing_key: Optional[PaymentSigningKey] = None,
-        api_key: Optional[str] = None,
         dry_run: bool = False,
     ):
         """
@@ -118,12 +115,10 @@ class CardanoTransactionBuilder:
         Args:
             network: Cardano network (TESTNET or MAINNET)
             signing_key: Payment signing key for transaction signing
-            api_key: Blockfrost API key (optional if dry_run=True)
             dry_run: If True, build transaction without submitting
         """
         self.network = network
         self.signing_key = signing_key
-        self.api_key = api_key
         self.dry_run = dry_run
 
         # Derive verification key and address from signing key

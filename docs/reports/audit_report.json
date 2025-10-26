@@ -226,16 +226,7 @@
     "src/decentralized_did/biometrics/aggregator.py",
     "src/decentralized_did/biometrics/fuzzy_extractor.py"
   ],
-  "hardcoded_api_key": [
-    {
-      "file": "src/decentralized_did/cardano/transaction.py",
-      "match": "api_key=\"your_blockfrost_key\""
-    },
-    {
-      "file": "src/decentralized_did/cardano/blockfrost.py",
-      "match": "api_key=\"your_blockfrost_key\""
-    }
-  ],
+  "hardcoded_api_key": [],
   "hardcoded_token": [
     {
       "file": "src/decentralized_did/api/error_handling.py",

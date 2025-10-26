@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Backend API - Secure (Production)
   backend-api-secure:
@@ -12,15 +10,17 @@ services:
     ports:
       - "8001:8000"
     environment:
-      - API_SECRET_KEY=${API_SECRET_KEY}
-      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
-      - JWT_EXPIRATION_HOURS=${JWT_EXPIRATION_HOURS:-24}
-      - CORS_ORIGINS=${CORS_ORIGINS}
-      - RATE_LIMIT_ENABLED=true
-      - AUDIT_LOG_ENABLED=true
-      - HTTPS_ONLY=${HTTPS_ONLY:-false}
-      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
-      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
+      API_SECRET_KEY: ${API_SECRET_KEY}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      JWT_EXPIRATION_HOURS: ${JWT_EXPIRATION_HOURS:-24}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      RATE_LIMIT_ENABLED: "true"
+      AUDIT_LOG_ENABLED: "true"
+      HTTPS_ONLY: "${HTTPS_ONLY:-false}"
+      CARDANO_NETWORK: ${CARDANO_NETWORK:-mainnet}
+      KOIOS_BASE_URL: "${KOIOS_BASE_URL:-https://api.koios.rest/api/v1}"
+      KOIOS_METADATA_LABEL: "${KOIOS_METADATA_LABEL:-674}"
+      KOIOS_METADATA_BLOCK_LIMIT: "${KOIOS_METADATA_BLOCK_LIMIT:-1000}"
     volumes:
       - ./logs:/app/logs
       - ./data:/app/data
@@ -46,9 +46,11 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - CORS_ORIGINS=${CORS_ORIGINS}
-      - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
-      - CARDANO_NETWORK=${CARDANO_NETWORK:-testnet}
+      CORS_ORIGINS: ${CORS_ORIGINS}
+      CARDANO_NETWORK: ${CARDANO_NETWORK:-testnet}
+      KOIOS_BASE_URL: "${KOIOS_BASE_URL:-https://api.koios.rest/api/v1}"
+      KOIOS_METADATA_LABEL: "${KOIOS_METADATA_LABEL:-674}"
+      KOIOS_METADATA_BLOCK_LIMIT: "${KOIOS_METADATA_BLOCK_LIMIT:-1000}"
     volumes:
       - ./logs:/app/logs
       - ./data:/app/data
@@ -96,19 +98,13 @@ services:
     ports:
       - "3003:80"
     environment:
-      - VITE_API_URL=${API_URL:-http://localhost:8000}
+      VITE_API_URL: ${API_URL:-http://localhost:8000}
     networks:
       - biometric-did-network
-    depends_on:
-      backend-api-basic:
-        condition: service_healthy
-        profiles: ["development"]
-      backend-api-secure:
-        condition: service_healthy
-        profiles: ["production"]
-      backend-api-mock:
-        condition: service_healthy
-        profiles: ["testing"]
+    profiles:
+      - development
+      - production
+      - testing
 
   # Nginx Reverse Proxy (Production SSL/TLS)
   nginx:
@@ -129,7 +125,6 @@ services:
     depends_on:
       backend-api-secure:
         condition: service_healthy
-        profiles: ["production"]
       demo-wallet:
         condition: service_healthy
     profiles:

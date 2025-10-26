@@ -30,35 +30,43 @@ import os
 # Import deterministic DID generation
 from src.decentralized_did.did.generator import generate_deterministic_did
 
-# Import Blockfrost client for duplicate detection
-from src.decentralized_did.cardano.blockfrost import (
-    BlockfrostClient,
-    DIDAlreadyExistsError,
-)
+# Import Koios client for duplicate detection
+from src.decentralized_did.cardano.cache import TTLCache
+from src.decentralized_did.cardano.koios_client import KoiosClient, KoiosError
 
 # Configuration
-BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
+KOIOS_BASE_URL = os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1")
 CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "testnet")
+KOIOS_METADATA_LABEL = os.environ.get("KOIOS_METADATA_LABEL", "674")
+KOIOS_METADATA_BLOCK_LIMIT = int(os.environ.get("KOIOS_METADATA_BLOCK_LIMIT", "1000"))
 MOCK_API_HOST = os.environ.get("MOCK_API_HOST", "0.0.0.0")
 MOCK_API_PORT = int(os.environ.get("MOCK_API_PORT", "8002"))
 MOCK_API_RELOAD = os.environ.get("MOCK_API_RELOAD", "false").lower() == "true"
 
-# Initialize Blockfrost client if API key is available
-blockfrost_client = None
-if BLOCKFROST_API_KEY:
-    blockfrost_client = BlockfrostClient(
-        api_key=BLOCKFROST_API_KEY,
-        network=CARDANO_NETWORK
+# Initialize Koios client for optional duplicate detection
+koios_client: Optional[KoiosClient] = None
+try:
+    koios_client = KoiosClient(
+        base_url=KOIOS_BASE_URL,
+        cache=TTLCache(default_ttl=60),
+        metadata_scan_limit=KOIOS_METADATA_BLOCK_LIMIT,
     )
-    print(f"✅ Blockfrost client initialized: {CARDANO_NETWORK}")
-else:
-    print("⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled")
+    print(f"✅ Koios client initialized (mock server): {KOIOS_BASE_URL}")
+except Exception as exc:  # pragma: no cover
+    koios_client = None
+    print(f"⚠️  Warning: Koios client failed to initialize: {exc}")
 
 app = FastAPI(
     title="Biometric DID API (Mock)",
     description="Mock REST API for biometric DID generation and verification",
     version="1.0.0-mock",
 )
+
+
+@app.on_event("shutdown")
+async def shutdown_koios_client() -> None:
+    if koios_client:
+        await koios_client.close()
 
 # Configure CORS for demo-wallet access
 app.add_middleware(
@@ -213,23 +221,26 @@ async def health_check():
     }
 
 
-@app.get("/metrics/blockfrost")
-async def blockfrost_metrics():
-    """Return Blockfrost instrumentation counters when available."""
+@app.get("/metrics/koios")
+async def koios_metrics():
+    """Return Koios instrumentation counters when available."""
 
-    if not blockfrost_client:
+    if not koios_client:
         raise HTTPException(
             status_code=503,
-            detail="Blockfrost client not configured",
+            detail="Koios client not configured",
         )
 
-    snapshot = blockfrost_client.metrics_snapshot()
+    snapshot = koios_client.metrics_snapshot()
 
     return {
         "network": CARDANO_NETWORK,
-        "cache_enabled": bool(blockfrost_client.cache),
-        "timeout_seconds": blockfrost_client.timeout,
-        "max_retries": blockfrost_client.max_retries,
+        "base_url": KOIOS_BASE_URL,
+        "metadata_label": KOIOS_METADATA_LABEL,
+        "metadata_block_limit": KOIOS_METADATA_BLOCK_LIMIT,
+        "cache_enabled": bool(koios_client.cache),
+        "timeout_seconds": koios_client.timeout,
+        "max_retries": koios_client.max_retries,
         "metrics": snapshot,
     }
 
@@ -264,11 +275,13 @@ async def generate_did(request: GenerateRequest):
         did = generate_deterministic_did(commitment, network="testnet")
 
         # Check for duplicate DID enrollment (Sybil attack prevention)
-        if blockfrost_client:
+        if koios_client:
             try:
-                existing = await blockfrost_client.check_did_exists(did)
+                existing = await koios_client.check_did_exists(
+                    did,
+                    label=KOIOS_METADATA_LABEL,
+                )
                 if existing:
-                    # DID already exists on blockchain
                     raise HTTPException(
                         status_code=409,
                         detail={
@@ -282,21 +295,11 @@ async def generate_did(request: GenerateRequest):
                             "how_to": "Use the add-controller endpoint with your new wallet address"
                         }
                     )
-            except DIDAlreadyExistsError as e:
-                # Custom exception with enrollment data
-                raise HTTPException(
-                    status_code=409,
-                    detail={
-                        "error": "DID_ALREADY_EXISTS",
-                        "message": str(e),
-                        "did": e.did,
-                        "tx_hash": e.tx_hash,
-                        "enrollment_data": e.enrollment_data
-                    }
-                )
-            except Exception as e:
+            except HTTPException:
+                raise
+            except KoiosError as e:
                 # Log blockchain query errors but don't block enrollment
-                print(f"⚠️  Warning: Duplicate check failed: {e}")
+                print(f"⚠️  Warning: Koios duplicate check failed: {e}")
                 print("   Continuing with enrollment (duplicate check skipped)")
 
         # Get current enrollment timestamp

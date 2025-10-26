@@ -47,7 +47,7 @@ Mesh.js should be considered for the **demo wallet** (TypeScript/React), where i
 | **CIP-20 Metadata** | ✅ Full support | ✅ Full support | Tie |
 | **UTXO Selection** | ✅ Built-in | ✅ Built-in | Tie |
 | **Fee Estimation** | ✅ Accurate | ✅ Accurate | Tie |
-| **Blockfrost Integration** | ✅ Native | ✅ Native | Tie |
+| **Koios Integration** | ✅ Custom client available | ✅ REST adapters available | Tie |
 | **Python Integration** | ✅ Native | ❌ Requires bridge | **PyCardano** |
 | **CLI Compatibility** | ✅ Perfect fit | ❌ Requires Node.js | **PyCardano** |
 | **React Components** | ❌ Not applicable | ✅ Extensive library | **Mesh.js** |
@@ -128,7 +128,7 @@ const tx = new Transaction({ ... });
 │  └───────────────┬───────────────────┘ │
 │                  │                      │
 │  ┌───────────────▼───────────────────┐ │
-│  │ Blockfrost API                    │ │
+│  │ Koios REST API                    │ │
 │  └───────────────────────────────────┘ │
 └─────────────────────────────────────────┘
 ```
@@ -165,7 +165,7 @@ const tx = new Transaction({ ... });
 │  └───────────────┬───────────────────┘  │
 │                  │                       │
 │  ┌───────────────▼───────────────────┐  │
-│  │ Blockfrost API                    │  │
+│  │ Koios REST API                    │  │
 │  └───────────────────────────────────┘  │
 └──────────────────────────────────────────┘
 ```
@@ -591,7 +591,7 @@ Demo Wallet (Mesh.js) → User's Browser Wallet → Cardano
 1. ✅ **Keep PyCardano** for Python toolkit
    - Continue implementation (already 90% complete)
    - Complete unit tests (fix 5 failing tests)
-   - Add Blockfrost integration (Phase 4.2)
+    - Add Koios integration (Phase 4.2)
 
 2. ⏳ **Plan Mesh.js adoption** for demo wallet (Phase 4.3)
    - Use Mesh.js React components
@@ -611,7 +611,7 @@ Demo Wallet (Mesh.js) → User's Browser Wallet → Cardano
 - **PyCardano**: https://github.com/pycardano/pycardano
 - **Mesh.js**: https://meshjs.dev/
 - **CIP-20**: https://cips.cardano.org/cips/cip20/
-- **Blockfrost**: https://blockfrost.io/
+- **Koios**: https://api.koios.rest/
 - **Current implementation**: `/src/decentralized_did/cardano/transaction.py`
 
 ---

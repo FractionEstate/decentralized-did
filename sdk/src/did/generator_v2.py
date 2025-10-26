@@ -23,6 +23,8 @@ import json
 import re
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Literal, Any
+
+from src.biometrics.threshold_aggregator import ThresholdShare
 from urllib.parse import urlparse
 
 
@@ -101,6 +103,32 @@ class HelperDataEntry:
 
 
 @dataclass
+class ThresholdShareEntry:
+    """Masked Shamir share bound to a finger."""
+
+    finger_id: str
+    share_index: int
+    masked_share: str  # Base64url-encoded
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "fingerId": self.finger_id,
+            "shareIndex": self.share_index,
+            "maskedShare": self.masked_share,
+        }
+
+    @classmethod
+    def from_threshold_share(cls, share: ThresholdShare) -> "ThresholdShareEntry":
+        """Create metadata entry from ThresholdShare."""
+        return cls(
+            finger_id=share.finger_id,
+            share_index=share.share_index,
+            masked_share=_encode_bytes(share.masked_share),
+        )
+
+
+@dataclass
 class BiometricMetadata:
     """
     Biometric metadata payload for Cardano transaction metadata.
@@ -115,6 +143,9 @@ class BiometricMetadata:
     helper_data: Optional[List[HelperDataEntry]] = None
     fingerprint_count: Optional[int] = None
     aggregation_mode: Optional[str] = None  # "4/4", "3/4", "2/4"
+    threshold: Optional[int] = None
+    total_shares: Optional[int] = None
+    threshold_shares: Optional[List[ThresholdShareEntry]] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
@@ -140,6 +171,17 @@ class BiometricMetadata:
 
         if self.aggregation_mode:
             payload["biometric"]["aggregationMode"] = self.aggregation_mode
+
+        if self.threshold is not None:
+            payload["biometric"]["threshold"] = self.threshold
+
+        if self.total_shares is not None:
+            payload["biometric"]["totalShares"] = self.total_shares
+
+        if self.threshold_shares:
+            payload["biometric"]["thresholdShares"] = [
+                share.to_dict() for share in self.threshold_shares
+            ]
 
         return payload
 
@@ -176,6 +218,12 @@ class BiometricMetadata:
             if self.helper_uri:
                 raise ValueError(
                     "helper_uri not allowed for inline storage mode")
+            if self.threshold_shares is not None and not self.threshold_shares:
+                raise ValueError("threshold_shares must be non-empty when provided")
+            if self.threshold is not None and not self.threshold_shares:
+                raise ValueError(
+                    "thresholdShares required for inline storage when threshold is set"
+                )
 
         # Validate external mode
         if self.helper_storage == HELPER_STORAGE_EXTERNAL:
@@ -185,7 +233,30 @@ class BiometricMetadata:
             if self.helper_data:
                 raise ValueError(
                     "helper_data not allowed for external storage mode")
+            if self.threshold_shares:
+                raise ValueError(
+                    "threshold_shares not allowed for external storage metadata; "
+                    "store shares within helper_data_json instead"
+                )
             _validate_helper_uri(self.helper_uri)
+
+        # Validate threshold configuration
+        if self.threshold is not None:
+            if self.threshold < 2:
+                raise ValueError("threshold must be at least 2")
+            if self.total_shares is not None and self.threshold > self.total_shares:
+                raise ValueError(
+                    f"threshold {self.threshold} cannot exceed totalShares {self.total_shares}"
+                )
+
+        if self.threshold_shares:
+            if self.total_shares is None:
+                raise ValueError(
+                    "totalShares required when thresholdShares provided")
+            if len(self.threshold_shares) != self.total_shares:
+                raise ValueError(
+                    f"thresholdShares count {len(self.threshold_shares)} must match totalShares {self.total_shares}"
+                )
 
         # Validate size
         size = self.size_bytes()
@@ -468,6 +539,9 @@ def build_metadata(
     helper_uri: Optional[str] = None,
     fingerprint_count: Optional[int] = None,
     aggregation_mode: Optional[str] = None,
+    threshold: Optional[int] = None,
+    total_shares: Optional[int] = None,
+    threshold_shares: Optional[List[ThresholdShareEntry]] = None,
     version: int = DID_VERSION,
 ) -> BiometricMetadata:
     """
@@ -477,10 +551,13 @@ def build_metadata(
         wallet_address: Cardano wallet address
         master_key: 32-byte master key from aggregator
         helper_data_entries: List of HelperDataEntry objects (one per finger)
-        helper_storage: Storage mode ("inline" or "external")
-        helper_uri: URI for external helper data (required if helper_storage="external")
-        fingerprint_count: Number of fingerprints enrolled
-        aggregation_mode: Aggregation mode (e.g., "4/4", "3/4")
+    helper_storage: Storage mode ("inline" or "external")
+    helper_uri: URI for external helper data (required if helper_storage="external")
+    fingerprint_count: Number of fingerprints enrolled
+    aggregation_mode: Aggregation mode (e.g., "4/4", "3/4")
+    threshold: Reconstruction threshold (k in k-of-n)
+    total_shares: Total masked shares produced (n in k-of-n)
+    threshold_shares: Threshold share entries (inline mode only)
         version: Metadata version
 
     Returns:
@@ -527,6 +604,9 @@ def build_metadata(
         helper_data=helper_data_entries if helper_storage == HELPER_STORAGE_INLINE else None,
         fingerprint_count=fingerprint_count,
         aggregation_mode=aggregation_mode,
+        threshold=threshold,
+        total_shares=total_shares,
+        threshold_shares=threshold_shares if helper_storage == HELPER_STORAGE_INLINE else None,
     )
 
     # Validate
@@ -544,6 +624,9 @@ def build_wallet_bundle(
     helper_uri: Optional[str] = None,
     fingerprint_count: Optional[int] = None,
     aggregation_mode: Optional[str] = None,
+    threshold: Optional[int] = None,
+    total_shares: Optional[int] = None,
+    threshold_shares: Optional[List[ThresholdShareEntry]] = None,
     metadata_label: int = DEFAULT_METADATA_LABEL,
 ) -> WalletMetadataBundle:
     """
@@ -553,10 +636,13 @@ def build_wallet_bundle(
         wallet_address: Cardano wallet address
         master_key: 32-byte master key from aggregator
         helper_data_entries: List of HelperDataEntry objects
-        helper_storage: Storage mode ("inline" or "external")
-        helper_uri: URI for external helper data
-        fingerprint_count: Number of fingerprints enrolled
-        aggregation_mode: Aggregation mode (e.g., "4/4")
+    helper_storage: Storage mode ("inline" or "external")
+    helper_uri: URI for external helper data
+    fingerprint_count: Number of fingerprints enrolled
+    aggregation_mode: Aggregation mode (e.g., "4/4")
+    threshold: Reconstruction threshold (k in k-of-n)
+    total_shares: Total masked shares produced (n in k-of-n)
+    threshold_shares: Threshold share entries (inline or external payload)
         metadata_label: Cardano metadata label (default: 1990)
 
     Returns:
@@ -590,6 +676,9 @@ def build_wallet_bundle(
         helper_uri=helper_uri,
         fingerprint_count=fingerprint_count,
         aggregation_mode=aggregation_mode,
+        threshold=threshold,
+        total_shares=total_shares,
+        threshold_shares=threshold_shares,
     )
 
     # Build helper data JSON (for external storage)
@@ -598,8 +687,16 @@ def build_wallet_bundle(
         helper_data_json = {
             "version": metadata.version,
             "did": str(did),
-            "helperData": [hd.to_dict() for hd in helper_data_entries]
+            "helperData": [hd.to_dict() for hd in helper_data_entries],
         }
+        if threshold is not None:
+            helper_data_json["threshold"] = threshold
+        if total_shares is not None:
+            helper_data_json["totalShares"] = total_shares
+        if threshold_shares:
+            helper_data_json["thresholdShares"] = [
+                share.to_dict() for share in threshold_shares
+            ]
 
     return WalletMetadataBundle(
         did=did,
@@ -612,13 +709,20 @@ def build_wallet_bundle(
 def estimate_metadata_size(
     helper_data_entries: List[HelperDataEntry],
     helper_storage: Literal["inline", "external"] = "inline",
+    *,
+    threshold: Optional[int] = None,
+    total_shares: Optional[int] = None,
+    threshold_shares: Optional[List[ThresholdShareEntry]] = None,
 ) -> Dict[str, int]:
     """
     Estimate metadata payload size.
 
     Args:
-        helper_data_entries: List of HelperDataEntry objects
-        helper_storage: Storage mode
+    helper_data_entries: List of HelperDataEntry objects
+    helper_storage: Storage mode
+    threshold: Reconstruction threshold (optional)
+    total_shares: Total shares (optional)
+    threshold_shares: Threshold share entries (optional)
 
     Returns:
         Dictionary with size estimates:
@@ -644,15 +748,22 @@ def estimate_metadata_size(
         helper_storage=helper_storage,
         helper_uri="https://example.com/helpers.json" if helper_storage == HELPER_STORAGE_EXTERNAL else None,
         fingerprint_count=len(helper_data_entries),
+        threshold=threshold,
+        total_shares=total_shares,
+        threshold_shares=threshold_shares if helper_storage == HELPER_STORAGE_INLINE else None,
     )
 
     total_bytes = metadata.size_bytes()
 
     # Estimate helper data size
-    if helper_storage == HELPER_STORAGE_INLINE and helper_data_entries:
+    if helper_storage == HELPER_STORAGE_INLINE:
         helper_json = json.dumps(
-            [hd.to_dict() for hd in helper_data_entries], separators=(',', ':'))
+            [hd.to_dict() for hd in helper_data_entries], separators=(',', ':')) if helper_data_entries else ""
         helper_bytes = len(helper_json)
+        if threshold_shares:
+            share_json = json.dumps(
+                [share.to_dict() for share in threshold_shares], separators=(',', ':'))
+            helper_bytes += len(share_json)
     else:
         helper_bytes = 0
 

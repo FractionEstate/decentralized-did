@@ -23,9 +23,10 @@ from pydantic import BaseModel, Field
 # Ensure local imports resolve correctly when executed as a module.
 sys.path.insert(0, str(Path(__file__).parent))
 
-from src.decentralized_did.cardano.blockfrost import (  # noqa: E402  pylint: disable=wrong-import-position
-    BlockfrostClient,
-    DIDAlreadyExistsError,
+from src.decentralized_did.cardano.cache import TTLCache  # noqa: E402  pylint: disable=wrong-import-position
+from src.decentralized_did.cardano.koios_client import (  # noqa: E402  pylint: disable=wrong-import-position
+    KoiosClient,
+    KoiosError,
 )
 from src.decentralized_did.did.generator import (  # noqa: E402  pylint: disable=wrong-import-position
     generate_deterministic_did,
@@ -35,18 +36,22 @@ from src.decentralized_did.did.generator import (  # noqa: E402  pylint: disable
 # Configuration
 # ---------------------------------------------------------------------------
 
-BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
+KOIOS_BASE_URL = os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1")
 CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "testnet")
+KOIOS_METADATA_LABEL = os.environ.get("KOIOS_METADATA_LABEL", "674")
+KOIOS_METADATA_BLOCK_LIMIT = int(os.environ.get("KOIOS_METADATA_BLOCK_LIMIT", "1000"))
 
-blockfrost_client: Optional[BlockfrostClient] = None
-if BLOCKFROST_API_KEY:
-    blockfrost_client = BlockfrostClient(
-        api_key=BLOCKFROST_API_KEY,
-        network=CARDANO_NETWORK,
+koios_client: Optional[KoiosClient] = None
+try:
+    koios_client = KoiosClient(
+        base_url=KOIOS_BASE_URL,
+        cache=TTLCache(default_ttl=60),
+        metadata_scan_limit=KOIOS_METADATA_BLOCK_LIMIT,
     )
-    print(f"✅ Blockfrost client initialized: {CARDANO_NETWORK}")
-else:
-    print("⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled")
+    print(f"✅ Koios client initialized: {CARDANO_NETWORK} -> {KOIOS_BASE_URL}")
+except Exception as exc:  # pragma: no cover
+    koios_client = None
+    print(f"⚠️  Warning: Koios client failed to initialize: {exc}")
 
 app = FastAPI(
     title="Biometric DID API (Basic)",
@@ -70,9 +75,9 @@ app.add_middleware(
 
 
 @app.on_event("shutdown")
-async def shutdown_blockfrost_client() -> None:
-    if blockfrost_client:
-        await blockfrost_client.close()
+async def shutdown_koios_client() -> None:
+    if koios_client:
+        await koios_client.close()
 
 # ---------------------------------------------------------------------------
 # Pydantic models
@@ -197,23 +202,26 @@ async def health_check() -> Dict[str, Any]:
     }
 
 
-@app.get("/metrics/blockfrost")
-async def blockfrost_metrics() -> Dict[str, Any]:
-    """Expose Blockfrost client performance counters for monitoring."""
+@app.get("/metrics/koios")
+async def koios_metrics() -> Dict[str, Any]:
+    """Expose Koios client performance counters for monitoring."""
 
-    if not blockfrost_client:
+    if not koios_client:
         raise HTTPException(
             status_code=503,
-            detail="Blockfrost client not configured",
+            detail="Koios client not configured",
         )
 
-    snapshot = blockfrost_client.metrics_snapshot()
+    snapshot = koios_client.metrics_snapshot()
 
     return {
         "network": CARDANO_NETWORK,
-        "cache_enabled": bool(blockfrost_client.cache),
-        "timeout_seconds": blockfrost_client.timeout,
-        "max_retries": blockfrost_client.max_retries,
+        "base_url": KOIOS_BASE_URL,
+        "metadata_label": KOIOS_METADATA_LABEL,
+        "metadata_block_limit": KOIOS_METADATA_BLOCK_LIMIT,
+        "cache_enabled": bool(koios_client.cache),
+        "timeout_seconds": koios_client.timeout,
+        "max_retries": koios_client.max_retries,
         "metrics": snapshot,
     }
 
@@ -240,9 +248,12 @@ async def generate_did(request: GenerateRequest) -> GenerateResponse:
         network = CARDANO_NETWORK or "testnet"
         did = generate_deterministic_did(commitment, network=network)
 
-        if blockfrost_client:
+        if koios_client:
             try:
-                existing = await blockfrost_client.check_did_exists(did)
+                existing = await koios_client.check_did_exists(
+                    did,
+                    label=KOIOS_METADATA_LABEL,
+                )
                 if existing:
                     raise HTTPException(
                         status_code=409,
@@ -257,19 +268,8 @@ async def generate_did(request: GenerateRequest) -> GenerateResponse:
                             "how_to": "Use the add-controller endpoint with your new wallet address",
                         },
                     )
-            except DIDAlreadyExistsError as exc:
-                raise HTTPException(
-                    status_code=409,
-                    detail={
-                        "error": "DID_ALREADY_EXISTS",
-                        "message": str(exc),
-                        "did": exc.did,
-                        "tx_hash": exc.tx_hash,
-                        "enrollment_data": exc.enrollment_data,
-                    },
-                ) from exc
-            except Exception as exc:  # pragma: no cover
-                print(f"⚠️  Warning: Duplicate check failed: {exc}")
+            except KoiosError as exc:
+                print(f"⚠️  Warning: Koios duplicate check failed: {exc}")
                 print("   Continuing with enrollment (duplicate check skipped)")
 
         helpers: Dict[str, HelperDataEntry] = {

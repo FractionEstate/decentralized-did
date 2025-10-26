@@ -204,14 +204,14 @@ JWT_SECRET_KEY="jwt_secret_for_signing_tokens_32_chars_long"
 - JWT settings (algorithm, expiration)
 - Rate limiting and audit logging flags
 - CORS origins
-- Blockfrost API key (optional)
+- Koios base URL / metadata label configuration
 
 **`.env.test` (Integration Tests)**:
 - Shorter JWT expiration (1 hour)
 - Disabled rate limiting (don't throttle tests)
 - Disabled audit logging (cleaner test output)
 - Wildcard CORS origins
-- No Blockfrost key (offline tests)
+- Default Koios endpoint (public; no API key required)
 
 ---
 

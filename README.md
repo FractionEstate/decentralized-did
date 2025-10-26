@@ -94,7 +94,7 @@ Key references:
 
 ## Performance & Monitoring
 - `benchmark_api.py` exercises enrollment and verification endpoints; export summaries with `--output`.
-- Blockfrost instrumentation (`BlockfrostMetrics`) exposes `/metrics/blockfrost` for latency, cache hit ratio, and error counts.
+- Koios instrumentation (`KoiosMetrics`) exposes `/metrics/koios` for latency, cache hit ratio, and error counts.
 - Targets: enrollment <100 ms, verification <50 ms. Latest figures are logged in `docs/reports/benchmark_results.json`.
 
 Run a local benchmark:
@@ -108,7 +108,7 @@ python benchmark_api.py --server http://localhost:8002 --iterations 5 --output d
 - BCH decoding, adaptive minutiae pruning, and weighted multi-finger fusion live in `src/biometrics/` but are not exported.
 - No liveness or spoofing detection; deployments must integrate external countermeasures.
 - CLI expects minutiae JSON; mobile capture and QR bridge flows are pending.
-- Single Blockfrost provider with TTL cache; multi-provider failover is on the roadmap.
+- Single Koios endpoint with TTL cache; multi-provider failover is on the roadmap.
 - Helper data should be treated as a secret; no encrypted storage backend ships by default.
 
 Tracked in `.github/tasks.md` and `docs/audit-validation-2025-10-22.md`.

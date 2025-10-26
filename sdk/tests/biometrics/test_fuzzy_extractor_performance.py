@@ -109,6 +109,8 @@ class TestEnrollmentPerformance:
         ]
 
         for pattern in patterns:
+            # Prime numba-accelerated routines so we measure steady-state cost
+            fuzzy_extract_gen(pattern, "warmup")
             for _ in range(performance_samples // len(patterns)):
                 start = time.perf_counter()
                 fuzzy_extract_gen(pattern, f"user_{_}")
@@ -462,6 +464,7 @@ class TestComparativePerformance:
 
         # Measure Rep (use last helper)
         rep_times = []
+        fuzzy_extract_rep(bio, helper)  # Warmup to remove cold-start overhead
         for _ in range(performance_samples):
             start = time.perf_counter()
             fuzzy_extract_rep(bio, helper)
