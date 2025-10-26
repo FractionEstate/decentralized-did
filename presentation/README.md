@@ -8,7 +8,7 @@ This folder contains comprehensive presentation materials for pitching, demonstr
 ## 📁 Contents
 
 ### 1. **PITCH_DECK.md** (Main Presentation)
-**Duration**: 20-30 minutes  
+**Duration**: 20-30 minutes
 **Audience**: Investors, partners, general audience
 
 **Sections**:
@@ -30,7 +30,7 @@ This folder contains comprehensive presentation materials for pitching, demonstr
 ---
 
 ### 2. **DEMO_SCRIPT.md** (Live Demonstration)
-**Duration**: 5 minutes  
+**Duration**: 5 minutes
 **Audience**: Technical stakeholders, potential users
 
 **Sections**:
@@ -60,7 +60,7 @@ Total prep time: 45 minutes
 ---
 
 ### 3. **SECURITY_DEMO.md** (Technical Deep-Dive)
-**Duration**: 10-15 minutes  
+**Duration**: 10-15 minutes
 **Audience**: Security engineers, CTOs, compliance officers
 
 **Demonstrations**:
@@ -91,7 +91,7 @@ wget https://github.com/IntersectMBO/cardano-node/releases/...
 ---
 
 ### 4. **ONE_PAGER.md** (Executive Summary)
-**Duration**: 3-minute read  
+**Duration**: 3-minute read
 **Audience**: Busy executives, investors (first touch)
 
 **Content**:
@@ -308,27 +308,27 @@ Create a live dashboard showing:
 ### Adapting for Different Audiences:
 
 #### Investors (20 min)
-**Focus on**: Market, traction, revenue, team, ask  
-**Include**: Slides 1-5, 12-14, 18-21, 28-30  
-**Skip**: Deep technical details (slides 6-11)  
+**Focus on**: Market, traction, revenue, team, ask
+**Include**: Slides 1-5, 12-14, 18-21, 28-30
+**Skip**: Deep technical details (slides 6-11)
 **Add**: Financial projections, cap table, use of funds
 
 #### Technical Partners (30 min)
-**Focus on**: Architecture, security, integration, roadmap  
-**Include**: Slides 6-11, 15-17, 22-24  
-**Skip**: Business model details  
+**Focus on**: Architecture, security, integration, roadmap
+**Include**: Slides 6-11, 15-17, 22-24
+**Skip**: Business model details
 **Add**: API documentation, SDK examples, GitHub repo tour
 
 #### Enterprise Customers (15 min)
-**Focus on**: Use cases, ROI, compliance, support  
-**Include**: Slides 1-3, 16, 19, 25  
-**Skip**: Technology deep-dive  
+**Focus on**: Use cases, ROI, compliance, support
+**Include**: Slides 1-3, 16, 19, 25
+**Skip**: Technology deep-dive
 **Add**: Case studies, pricing tiers, SLA terms
 
 #### General Public (10 min)
-**Focus on**: Problem, solution, demo, call to action  
-**Include**: Slides 1-5, 15 (demo), 30 (CTA)  
-**Skip**: Everything else  
+**Focus on**: Problem, solution, demo, call to action
+**Include**: Slides 1-5, 15 (demo), 30 (CTA)
+**Skip**: Everything else
 **Add**: Testimonials, simple explainer video
 
 ---
@@ -393,7 +393,7 @@ Subject: [Mutual Connection] - Biometric Identity on Cardano ($30B market)
 
 Hi [Name],
 
-[Mutual connection] suggested I reach out. We've built a production-ready 
+[Mutual connection] suggested I reach out. We've built a production-ready
 biometric identity system on Cardano that solves the $6T identity fraud problem.
 
 Key points:
@@ -501,8 +501,8 @@ Feel free to:
 
 ---
 
-**Last Updated**: October 26, 2025  
-**Version**: 1.0  
+**Last Updated**: October 26, 2025
+**Version**: 1.0
 **Maintainer**: [Your name/team]
 
 ---

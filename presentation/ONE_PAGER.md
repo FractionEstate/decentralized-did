@@ -195,18 +195,18 @@ Your 10 Fingerprints → Cryptographic Hash → Blockchain DID
 ## Call to Action
 
 ### For Investors:
-📧 **Email**: investors@[yourdomain].com  
-📅 **Schedule**: [Calendly link]  
+📧 **Email**: investors@[yourdomain].com
+📅 **Schedule**: [Calendly link]
 📊 **Data Room**: [Secure link]
 
 ### For Partners:
-🤝 **Integration**: partners@[yourdomain].com  
-📚 **API Docs**: github.com/FractionEstate/decentralized-did  
+🤝 **Integration**: partners@[yourdomain].com
+📚 **API Docs**: github.com/FractionEstate/decentralized-did
 💬 **Discord**: discord.gg/[yourserver]
 
 ### For Users:
-📱 **Download APK**: [GitHub releases]  
-⭐ **Star on GitHub**: github.com/FractionEstate/decentralized-did  
+📱 **Download APK**: [GitHub releases]
+⭐ **Star on GitHub**: github.com/FractionEstate/decentralized-did
 🐛 **Report Bugs**: [Issue tracker]
 
 ---
@@ -244,11 +244,11 @@ Open Issues: [current]
 
 ## Contact
 
-**Website**: [yourdomain].com  
-**Email**: hello@[yourdomain].com  
-**GitHub**: github.com/FractionEstate/decentralized-did  
-**LinkedIn**: /company/[yourcompany]  
-**Twitter**: @[yourhandle]  
+**Website**: [yourdomain].com
+**Email**: hello@[yourdomain].com
+**GitHub**: github.com/FractionEstate/decentralized-did
+**LinkedIn**: /company/[yourcompany]
+**Twitter**: @[yourhandle]
 **Discord**: discord.gg/[yourserver]
 
 ---

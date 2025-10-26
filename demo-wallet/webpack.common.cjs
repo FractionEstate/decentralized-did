@@ -97,7 +97,13 @@ const config = {
     }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(require("./package.json").version),
-      "process.env": JSON.stringify(process.env)
+      "process.env": JSON.stringify({
+        ...process.env,
+        // Force production API URLs
+        BIOMETRIC_API_URL: process.env.BIOMETRIC_API_URL || "http://localhost:8000",
+        SECURE_API_URL: process.env.SECURE_API_URL || "http://localhost:8000",
+        MOCK_API_URL: "", // Disable mock mode
+      })
     }),
     new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"],

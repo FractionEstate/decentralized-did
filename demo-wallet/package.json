@@ -14,6 +14,13 @@
     "prettier": "npx prettier --write './src/**/*.{ts,tsx,scss}' 'services/{credential-server,credential-server-ui}/src/**/*.{ts,tsx,scss}'",
     "eslint": "eslint 'src/**/*.{ts,tsx}'",
     "test": "jest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:visual": "playwright test visual-regression/design-consistency.spec.ts",
+    "test:e2e:a11y": "playwright test visual-regression/accessibility.spec.ts",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:update-snapshots": "playwright test --update-snapshots",
+    "audit:design": "node scripts/audit-design.js",
     "wdio:android:s24ultra": "npx wdio tests/config/wdio.emu.android.galaxyS24Ultra.config.ts",
     "wdio:ios:15promax": "npx wdio tests/config/wdio.sim.ios.iphone15ProMax.config.ts",
     "wdio:ios:16promax": "npx wdio tests/config/wdio.sim.ios.iphone16ProMax.config.ts",
@@ -67,6 +74,7 @@
     "web-vitals": "^2.1.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@capacitor/assets": "^3.0.5",
     "@capacitor/cli": "^7.2.0",
     "@faker-js/faker": "^8.4.1",

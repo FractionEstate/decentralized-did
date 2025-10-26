@@ -1,3 +1,9 @@
+/**
+ * Import Design System
+ */
+@import "./design-tokens.scss";
+@import "./utilities.scss";
+
 :root[mode="ios"],
 :root[mode="md"] {
   // Ionic v8 include dynamic font scaling enabled by default -> disable to avoid break app UI

@@ -1,8 +1,8 @@
 # Security Demonstration Guide
 ## Proving Tamper-Proof Identity
 
-**Purpose**: Show attackers cannot compromise the system  
-**Duration**: 10-15 minutes  
+**Purpose**: Show attackers cannot compromise the system
+**Duration**: 10-15 minutes
 **Audience**: Technical stakeholders, security teams, investors
 
 ---

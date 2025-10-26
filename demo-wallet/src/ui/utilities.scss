@@ -1,0 +1,495 @@
+/**
+ * Global Utility Classes
+ * Reusable classes following design system tokens
+ */
+
+/* ========================================
+   LAYOUT UTILITIES
+   ======================================== */
+.container {
+  width: 100%;
+  max-width: var(--container-lg);
+  margin: 0 auto;
+  padding: 0 var(--page-padding-mobile);
+}
+
+.page-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--page-padding-mobile);
+}
+
+.page-content {
+  flex: 1;
+  max-width: var(--container-md);
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
+.mt-xs {
+  margin-top: var(--spacing-xs);
+}
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+.mt-xl {
+  margin-top: var(--spacing-xl);
+}
+.mt-2xl {
+  margin-top: var(--spacing-2xl);
+}
+
+.mb-xs {
+  margin-bottom: var(--spacing-xs);
+}
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
+.mb-2xl {
+  margin-bottom: var(--spacing-2xl);
+}
+
+.p-xs {
+  padding: var(--spacing-xs);
+}
+.p-sm {
+  padding: var(--spacing-sm);
+}
+.p-md {
+  padding: var(--spacing-md);
+}
+.p-lg {
+  padding: var(--spacing-lg);
+}
+.p-xl {
+  padding: var(--spacing-xl);
+}
+.p-2xl {
+  padding: var(--spacing-2xl);
+}
+
+/* ========================================
+   TYPOGRAPHY UTILITIES
+   ======================================== */
+.text-xs {
+  font-size: var(--font-size-xs);
+}
+.text-sm {
+  font-size: var(--font-size-sm);
+}
+.text-base {
+  font-size: var(--font-size-base);
+}
+.text-md {
+  font-size: var(--font-size-md);
+}
+.text-lg {
+  font-size: var(--font-size-lg);
+}
+.text-xl {
+  font-size: var(--font-size-xl);
+}
+.text-2xl {
+  font-size: var(--font-size-2xl);
+}
+.text-3xl {
+  font-size: var(--font-size-3xl);
+}
+
+.font-regular {
+  font-weight: var(--font-weight-regular);
+}
+.font-medium {
+  font-weight: var(--font-weight-medium);
+}
+.font-semibold {
+  font-weight: var(--font-weight-semibold);
+}
+.font-bold {
+  font-weight: var(--font-weight-bold);
+}
+
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
+
+.line-height-tight {
+  line-height: var(--line-height-tight);
+}
+.line-height-normal {
+  line-height: var(--line-height-normal);
+}
+.line-height-relaxed {
+  line-height: var(--line-height-relaxed);
+}
+
+/* ========================================
+   CARD COMPONENTS
+   ======================================== */
+.card {
+  background: var(--card-background);
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding);
+  box-shadow: var(--card-shadow);
+  transition: all var(--transition-base) var(--ease-out);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-interactive {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
+  }
+}
+
+/* ========================================
+   BUTTON VARIANTS
+   ======================================== */
+.btn {
+  min-height: var(--touch-target-min);
+  padding: var(--button-padding-md);
+  border-radius: var(--button-border-radius);
+  font-weight: var(--font-weight-semibold);
+  transition: var(--button-transition);
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--button-shadow-hover);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+    transform: none !important;
+  }
+}
+
+.btn-sm {
+  min-height: var(--input-height-sm);
+  padding: var(--button-padding-sm);
+  font-size: var(--font-size-sm);
+}
+
+.btn-lg {
+  min-height: var(--input-height-lg);
+  padding: var(--button-padding-lg);
+  font-size: var(--font-size-lg);
+}
+
+.btn-primary {
+  background: var(--ion-color-primary);
+  color: var(--ion-color-primary-contrast);
+
+  &:hover {
+    background: var(--ion-color-primary-shade);
+  }
+}
+
+.btn-secondary {
+  background: var(--ion-color-light);
+  color: var(--ion-color-dark);
+
+  &:hover {
+    background: var(--color-gray-200);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--ion-color-primary);
+  color: var(--ion-color-primary);
+
+  &:hover {
+    background: var(--ion-color-primary-tint);
+  }
+}
+
+/* ========================================
+   PROGRESS COMPONENTS
+   ======================================== */
+.progress-bar {
+  width: 100%;
+  height: var(--progress-height);
+  background: var(--progress-background);
+  border-radius: var(--progress-border-radius);
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--progress-fill);
+  transition: width var(--transition-slow) var(--ease-out);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ========================================
+   BADGE COMPONENTS
+   ======================================== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--badge-padding);
+  border-radius: var(--badge-border-radius);
+  font-size: var(--badge-font-size);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+}
+
+.badge-success {
+  background: var(--color-success-light);
+  color: var(--color-success-dark);
+}
+
+.badge-error {
+  background: var(--color-error-light);
+  color: var(--color-error-dark);
+}
+
+.badge-warning {
+  background: var(--color-warning-light);
+  color: var(--color-warning-dark);
+}
+
+.badge-info {
+  background: var(--color-info-light);
+  color: var(--color-info-dark);
+}
+
+/* ========================================
+   ICON UTILITIES
+   ======================================== */
+.icon-sm {
+  font-size: var(--icon-size-sm);
+}
+.icon-md {
+  font-size: var(--icon-size-md);
+}
+.icon-lg {
+  font-size: var(--icon-size-lg);
+}
+.icon-xl {
+  font-size: var(--icon-size-xl);
+}
+.icon-2xl {
+  font-size: var(--icon-size-2xl);
+}
+
+.icon-pulse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* ========================================
+   MODAL UTILITIES
+   ======================================== */
+.modal-content {
+  max-width: var(--modal-max-width);
+  border-radius: var(--modal-border-radius);
+  padding: var(--modal-padding);
+  background: var(--card-background);
+}
+
+/* ========================================
+   ACCESSIBILITY UTILITIES
+   ======================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.focus-visible:focus-visible {
+  outline: var(--focus-ring-width) var(--focus-ring-style)
+    var(--focus-ring-color);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--skip-link-background);
+  color: var(--skip-link-color);
+  padding: var(--skip-link-padding);
+  text-decoration: none;
+  z-index: var(--z-index-max);
+
+  &:focus {
+    top: 0;
+  }
+}
+
+/* ========================================
+   ANIMATION UTILITIES
+   ======================================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn var(--transition-base) var(--ease-out);
+}
+
+.animate-fadeInScale {
+  animation: fadeInScale var(--transition-base) var(--ease-out);
+}
+
+.animate-slideInUp {
+  animation: slideInUp var(--transition-base) var(--ease-out);
+}
+
+/* ========================================
+   RESPONSIVE UTILITIES
+   ======================================== */
+@media (min-width: 768px) {
+  .page-layout {
+    padding: var(--page-padding-tablet);
+  }
+
+  .md\:text-lg {
+    font-size: var(--font-size-lg);
+  }
+  .md\:text-xl {
+    font-size: var(--font-size-xl);
+  }
+  .md\:text-2xl {
+    font-size: var(--font-size-2xl);
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-layout {
+    padding: var(--page-padding-desktop);
+  }
+
+  .lg\:text-xl {
+    font-size: var(--font-size-xl);
+  }
+  .lg\:text-2xl {
+    font-size: var(--font-size-2xl);
+  }
+  .lg\:text-3xl {
+    font-size: var(--font-size-3xl);
+  }
+}
+
+/* ========================================
+   MOBILE FIRST BREAKPOINTS
+   ======================================== */
+@media (max-width: 375px) {
+  /* Extra small devices */
+  .page-layout {
+    padding: var(--spacing-md);
+  }
+
+  .card {
+    padding: var(--spacing-md);
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  /* Landscape mode on mobile */
+  .page-layout {
+    padding: var(--spacing-sm) var(--spacing-md);
+  }
+}

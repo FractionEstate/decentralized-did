@@ -1,7 +1,7 @@
 # Live Demo Script
 ## Biometric DID Presentation
 
-**Total Duration: 5 minutes**  
+**Total Duration: 5 minutes**
 **Presenter Notes: Speak confidently, show working product**
 
 ---
@@ -173,11 +173,11 @@
    - Show Python SDK example:
    ```python
    from decentralized_did import BiometricDID
-   
+
    # Create DID from 10 fingerprints
    did = BiometricDID.enroll(fingerprints)
    print(f"Created: {did}")  # did:cardano:mainnet:zQm...
-   
+
    # Verify identity
    verified = BiometricDID.verify(fingerprint, did)
    print(f"Verified: {verified}")  # True

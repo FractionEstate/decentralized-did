@@ -3,20 +3,59 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright Configuration for Biometric DID Demo Wallet E2E Tests
  *
+ * Enhanced with:
+ * - Visual regression testing (screenshot comparison)
+ * - Mobile device emulation
+ * - Comprehensive browser coverage
+ * - Accessibility testing setup
+ *
  * See https://playwright.dev/docs/test-configuration
  */
 const availableProjects = [
+  // Desktop Browsers
   {
     name: 'chromium',
-    use: { ...devices['Desktop Chrome'] },
+    use: {
+      ...devices['Desktop Chrome'],
+    },
   },
   {
     name: 'firefox',
-    use: { ...devices['Desktop Firefox'] },
+    use: {
+      ...devices['Desktop Firefox'],
+    },
   },
   {
     name: 'webkit',
-    use: { ...devices['Desktop Safari'] },
+    use: {
+      ...devices['Desktop Safari'],
+    },
+  },
+
+  // Mobile Devices
+  {
+    name: 'iphone-12',
+    use: {
+      ...devices['iPhone 12'],
+    },
+  },
+  {
+    name: 'iphone-se',
+    use: {
+      ...devices['iPhone SE'],
+    },
+  },
+  {
+    name: 'pixel-5',
+    use: {
+      ...devices['Pixel 5'],
+    },
+  },
+  {
+    name: 'ipad-pro',
+    use: {
+      ...devices['iPad Pro'],
+    },
   },
 ];
 
@@ -80,14 +119,14 @@ export default defineConfig({
       'X-Test-API-URL': process.env.API_URL || 'http://localhost:8000'
     },
 
-    // Screenshots
-    screenshot: 'only-on-failure',
+    // Screenshots (enable for visual regression)
+    screenshot: 'on',
 
-    // Videos
-    video: 'retain-on-failure',
+    // Videos (record all tests)
+    video: 'on',
 
-    // Traces
-    trace: 'on-first-retry',
+    // Traces (detailed debugging)
+    trace: 'on',
 
     // Browser context options
     viewport: { width: 1280, height: 720 },
@@ -96,6 +135,23 @@ export default defineConfig({
     // Timeouts
     actionTimeout: 10 * 1000, // 10 seconds
     navigationTimeout: 30 * 1000, // 30 seconds
+
+    // Animations (disable for consistent screenshots)
+    hasTouch: false,
+    isMobile: false,
+
+    // Locale and timezone for consistent testing
+    locale: 'en-US',
+    timezoneId: 'UTC',
+  },
+
+  // Visual comparison settings
+  expect: {
+    toHaveScreenshot: {
+      maxDiffPixels: 100,
+      threshold: 0.2,
+      animations: 'disabled',
+    },
   },
 
   // Configure projects for major browsers
