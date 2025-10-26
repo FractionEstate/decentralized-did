@@ -21,14 +21,15 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 # Ensure local imports resolve correctly when executed as a module.
-sys.path.insert(0, str(Path(__file__).parent))
+sdk_path = Path(__file__).parent.parent.parent / "sdk" / "src"
+sys.path.insert(0, str(sdk_path))
 
-from src.decentralized_did.cardano.cache import TTLCache  # noqa: E402  pylint: disable=wrong-import-position
-from src.decentralized_did.cardano.koios_client import (  # noqa: E402  pylint: disable=wrong-import-position
+from decentralized_did.cardano.cache import TTLCache  # noqa: E402  pylint: disable=wrong-import-position
+from decentralized_did.cardano.koios_client import (  # noqa: E402  pylint: disable=wrong-import-position
     KoiosClient,
     KoiosError,
 )
-from src.decentralized_did.did.generator import (  # noqa: E402  pylint: disable=wrong-import-position
+from decentralized_did.did.generator import (  # noqa: E402  pylint: disable=wrong-import-position
     generate_deterministic_did,
 )
 

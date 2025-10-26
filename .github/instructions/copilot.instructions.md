@@ -39,6 +39,11 @@ This repository combines a Python toolkit for biometric DID generation and a Jav
 - Python changes: run `pytest` (root `tests/`). Target individual files with `python -m pytest tests/<file>` when the suite is large.
 - Demo wallet changes: run relevant npm scripts. At minimum execute `npm test` for Jest unit suites; add targeted WebDriverIO runs if UI flows change.
 - When editing build tooling or configs, run a dry build (`npm run build:local` or `pip install -e .`) to ensure no regressions.
+- Android deployment prep **must** include:
+  - `HUSKY=0 npm install` (inside `demo-wallet/`) to guarantee local TypeScript/WDIO typings and avoid hook failures.
+  - `npm run build:local` before any Capacitor sync so `build/` assets exist.
+  - `npx cap sync android` after web assets change to regenerate native Gradle files.
+  - `./gradlew assembleDebug` for smoke validation and `./gradlew assembleRelease` for production artifacts. Capture warnings (e.g., deprecated APIs, unstripped libs) in the summary.
 - Document in your summary which commands were executed (or justify why tests were skipped).
 
 ## 4. Documentation Requirements
@@ -110,6 +115,12 @@ metadata = build_metadata_payload(wallet_address, digest, version=1)  # Shows wa
 - Summaries should state *what* changed, *why*, tests run, and outstanding follow-ups.
 - Call out assumptions or open questions explicitly so reviewers can respond quickly.
 - Use TODO comments sparingly; prefer GitHub issues or updates to `docs/roadmap.md` for larger gaps.
+
+## 6.1 Android Build Environment Checklist
+- Use OpenJDK 21 (`/usr/lib/jvm/java-21-openjdk-amd64`) and set `org.gradle.java.home` accordingly when modifying Gradle files.
+- Ensure the Android SDK command-line tools live at `/opt/android-sdk` (or update `local.properties`) and keep `sdk.dir` out of version control.
+- When tweaking ProGuard/R8 rules, run `npm run build:android:proguard` to refresh plugin overrides before invoking Gradle.
+- Release artifacts live in `demo-wallet/android/app/build/outputs/apk/release/`; confirm they are regenerated after each relevant change.
 
 ## 7. Task Management in `.github/tasks.md`
 **Critical Pattern**: Task numbers MUST restart at 1 for each phase.

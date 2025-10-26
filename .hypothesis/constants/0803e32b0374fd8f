@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/biometrics/threshold_aggregator.py
+# hypothesis_version: 6.142.4
+
+[255, 'ThresholdShare']

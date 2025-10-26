@@ -26,13 +26,19 @@ from datetime import datetime, timezone
 import hashlib
 import base64
 import os
+import sys
+from pathlib import Path
+
+# Ensure SDK imports resolve
+sdk_path = Path(__file__).parent.parent.parent / "sdk" / "src"
+sys.path.insert(0, str(sdk_path))
 
 # Import deterministic DID generation
-from src.decentralized_did.did.generator import generate_deterministic_did
+from decentralized_did.did.generator import generate_deterministic_did
 
 # Import Koios client for duplicate detection
-from src.decentralized_did.cardano.cache import TTLCache
-from src.decentralized_did.cardano.koios_client import KoiosClient, KoiosError
+from decentralized_did.cardano.cache import TTLCache
+from decentralized_did.cardano.koios_client import KoiosClient, KoiosError
 
 # Configuration
 KOIOS_BASE_URL = os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1")

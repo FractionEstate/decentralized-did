@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/did/generator_v2.py
+# hypothesis_version: 6.142.4
+
+[b'\x00', 100, 1990, 8192, 16384, '#', ',', ':', '=', 'ThresholdShareEntry', 'addr1', 'aggregationMode', 'ascii', 'bchSyndrome', 'biometric', 'cardano', 'cip30', 'did', 'did:', 'external', 'fingerId', 'fingerprintCount', 'helperData', 'helperStorage', 'helperUri', 'helper_data_bytes', 'hmac', 'http', 'https', 'idHash', 'id_hash is required', 'inline', 'ipfs', 'maskedShare', 'metadata', 'overhead_bytes', 'payload_bytes', 'per_finger_bytes', 'personalization', 'salt', 'shareIndex', 'threshold', 'thresholdShares', 'totalShares', 'version', 'wallet', 'walletAddress', 'x']
