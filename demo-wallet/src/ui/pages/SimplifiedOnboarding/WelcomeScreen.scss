@@ -4,16 +4,16 @@
   gap: 32px;
   align-items: center;
   text-align: center;
-  padding: 32px 24px;
+  padding: var(--spacing-xl) 24px;
   background: linear-gradient(160deg, #252c49 0%, #111628 100%);
-  border-radius: 24px;
+  border-radius: var(--radius-2xl);
   box-shadow: 0 32px 80px rgba(10, 17, 35, 0.45);
   color: #ffffff;
 
   &__header {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-sm);
     max-width: 480px;
 
     &-icon {
@@ -25,14 +25,14 @@
 
     .welcome-screen__title {
       margin: 0;
-      font-size: 2.25rem;
-      font-weight: 700;
+      font-size: var(--font-size-3xl);
+      font-weight: var(--font-weight-bold);
       letter-spacing: 0.02em;
     }
 
     .welcome-screen__subtitle {
       margin: 0;
-      font-size: 1rem;
+      font-size: var(--font-size-base);
       color: rgba(255, 255, 255, 0.76);
     }
   }
@@ -40,17 +40,17 @@
   &__benefits {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
+    gap: var(--spacing-md);
     width: 100%;
   }
 
   &__benefit {
     display: flex;
-    gap: 12px;
+    gap: var(--spacing-sm);
     align-items: center;
     background: rgba(255, 255, 255, 0.08);
-    border-radius: 16px;
-    padding: 16px 18px;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-md) 18px;
     backdrop-filter: blur(10px);
 
     &-icon {
@@ -60,7 +60,7 @@
 
     span {
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       text-align: left;
     }
   }
@@ -68,23 +68,23 @@
   &__actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-sm);
     width: 100%;
 
     .welcome-screen__primary {
       --background: var(--ion-color-tertiary);
       --color: #0b1022;
-      --border-radius: 16px;
+      --border-radius: var(--radius-xl);
       --box-shadow: 0 18px 36px rgba(64, 135, 255, 0.35);
-      font-size: 1rem;
-      font-weight: 600;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
       height: 56px;
     }
 
     .welcome-screen__secondary {
       --color: rgba(255, 255, 255, 0.85);
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
     }
   }
 }
@@ -103,7 +103,7 @@
 @media (max-width: 768px) {
   .welcome-screen {
     padding: 28px 20px;
-    gap: 24px;
+    gap: var(--spacing-lg);
 
     &__header {
       .welcome-screen__title {

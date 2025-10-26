@@ -17,7 +17,7 @@
       }
 
       &::part(native) {
-        padding: 0.5rem;
+        padding: var(--spacing-xs);
       }
     }
 
@@ -96,7 +96,7 @@
       margin: 0 0 0 3%;
 
       .connection-details-history-timestamp {
-        font-weight: 400;
+        font-weight: var(--font-weight-regular);
         text-wrap: nowrap;
       }
     }
@@ -187,7 +187,7 @@
     }
 
     .card-details-info-block-inner {
-      padding: 1rem;
+      padding: var(--spacing-md);
       border-radius: 0.75rem;
 
       &:not(:last-child) {

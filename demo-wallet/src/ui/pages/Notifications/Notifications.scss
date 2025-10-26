@@ -16,9 +16,9 @@
   .notification-empty {
     text-align: center;
     color: var(--ion-color-neutral-500);
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    margin: 1rem 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-tight)rem;
+    margin: var(--spacing-md) 0;
   }
 
   .notifications-tab-chips {
@@ -27,8 +27,8 @@
     overflow-x: scroll;
     scrollbar-width: none;
     padding-inline: 1.25rem;
-    font-size: 1rem;
-    font-weight: 400;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
 
     @media screen and (min-width: 250px) and (max-width: 370px) {
       padding-inline: 0.9rem;
@@ -42,7 +42,7 @@
       --border-radius: 0.5rem;
       color: var(--ion-color-neutral-800);
       width: calc(100vw - 2.5rem);
-      margin: 0.75rem auto 2.25rem;
+      margin: var(--spacing-sm) auto 2.25rem;
       display: block;
 
       &::part(native) {
@@ -139,15 +139,15 @@
           overflow: hidden;
           color: var(--ion-color-neutral-700);
           text-overflow: ellipsis;
-          font-size: 0.875rem;
+          font-size: var(--font-size-sm);
           font-style: normal;
-          font-weight: 400;
+          font-weight: var(--font-weight-regular);
           line-height: 1rem;
 
           .notifications-tab-item-time {
             color: rgba(var(--ion-color-neutral-500-rgb), 0.5);
             font-size: 0.625rem;
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
             line-height: 0.75rem;
           }
         }
@@ -170,7 +170,7 @@
           ion-icon.notifications-tab-item-ellipsis {
             width: 1.18rem;
             height: 1.18rem;
-            margin: 0.5rem 0;
+            margin: var(--spacing-xs) 0;
           }
         }
       }

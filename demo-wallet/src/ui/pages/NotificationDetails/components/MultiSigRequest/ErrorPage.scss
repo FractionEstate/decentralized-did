@@ -13,8 +13,8 @@
     background: rgba(var(--ion-color-error-800-rgb), 0.1);
 
     p {
-      font-size: 1rem;
-      line-height: 1.375rem;
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-tight)75rem;
     }
 
     ion-icon {
@@ -23,9 +23,9 @@
   }
 
   .title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1.5rem;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: var(--line-height-normal)rem;
     margin-bottom: 0.5rem;
     color: var(--ion-color-neutral-800);
   }
@@ -52,7 +52,7 @@
   }
 
   .multisig-feedback-footer {
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
   }
 
   @media screen and (min-width: 250px) and (max-width: 370px) {
@@ -65,7 +65,7 @@
     }
 
     .title {
-      font-size: 1rem;
+      font-size: var(--font-size-base);
     }
 
     .detail-text {

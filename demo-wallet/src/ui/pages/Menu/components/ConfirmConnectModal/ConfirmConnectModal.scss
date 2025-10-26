@@ -9,7 +9,7 @@
     }
 
     .wallet-connect-logo {
-      border-radius: 50%;
+      border-radius: var(--radius-full);
       width: 2.75rem;
       height: 2.75rem;
       margin-bottom: 1rem;
@@ -29,21 +29,21 @@
 
     .confirm-modal-name-title {
       margin-bottom: 0.25rem;
-      font-size: 1rem;
-      font-weight: 500;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
     }
 
     .confirm-modal-name {
       margin: 0 0 1.25rem;
-      font-size: 0.875rem;
+      font-size: var(--font-size-sm);
       line-height: 1rem;
-      font-weight: 400;
+      font-weight: var(--font-weight-regular);
       text-align: center;
     }
 
     .confirm-modal-id {
       margin: 0 0 1.5rem;
-      padding: 1rem 1.5rem;
+      padding: var(--spacing-md) 1.5rem;
       background-color: var(--ion-color-neutral-100);
       border-radius: 1.875rem;
 
@@ -51,7 +51,7 @@
       align-items: center;
 
       & > span {
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
         color: var(--ion-color-neutral-700);
       }
 
@@ -69,8 +69,8 @@
       background: var(--ion-color-neutral-300);
 
       & > span {
-        font-size: 0.75rem;
-        font-weight: 400;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-regular);
       }
     }
 
@@ -87,15 +87,15 @@
     .biometric-metadata-section {
       width: 100%;
       margin: 0 0 1.5rem;
-      padding: 1rem 1.25rem;
+      padding: var(--spacing-md) 1.25rem;
       background-color: var(--ion-color-neutral-100);
       border-radius: 1rem;
       text-align: left;
 
       h4 {
         margin: 0 0 0.75rem;
-        font-size: 0.875rem;
-        font-weight: 600;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
         color: var(--ion-color-neutral-700);
       }
 
@@ -106,19 +106,19 @@
           display: flex;
           justify-content: space-between;
           align-items: baseline;
-          gap: 0.75rem;
+          gap: var(--spacing-sm);
           padding: 0.25rem 0;
 
           dt {
-            font-size: 0.75rem;
-            font-weight: 500;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-medium);
             color: var(--ion-color-neutral-600);
           }
 
           dd {
             margin: 0;
-            font-size: 0.75rem;
-            font-weight: 400;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-regular);
             color: var(--ion-color-neutral-800);
             text-align: right;
             flex: 1;
@@ -164,7 +164,7 @@
         padding: 0.875rem 1.5rem;
 
         & > span {
-          font-size: 0.875rem;
+          font-size: var(--font-size-sm);
         }
       }
 
@@ -174,7 +174,7 @@
       }
 
       .confirm-modal-name-title {
-        font-size: 0.875rem;
+        font-size: var(--font-size-sm);
       }
 
       .confirm-connect-submit {

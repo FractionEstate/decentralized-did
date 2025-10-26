@@ -4,18 +4,18 @@
   left: 50%;
   transform: translateX(-50%);
   background: white;
-  border-radius: 24px;
-  padding: 12px 24px;
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-sm) 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--spacing-md);
 }
 
 .progress-dots {
   display: flex;
-  gap: 12px;
+  gap: var(--spacing-sm);
   align-items: center;
 }
 
@@ -24,12 +24,12 @@
 
   .dot-fill {
     color: #007aff;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   .dot-empty {
     color: #e0e0e0;
-    font-size: 16px;
+    font-size: var(--font-size-base);
   }
 
   &.active {
@@ -38,8 +38,8 @@
 }
 
 .progress-text {
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
   color: #333;
   margin: 0;
 }
@@ -48,21 +48,21 @@
 @media (max-width: 768px) {
   .progress-indicator {
     top: 10px;
-    padding: 8px 16px;
+    padding: var(--spacing-xs) 16px;
 
     .progress-text {
-      font-size: 12px;
+      font-size: var(--font-size-xs);
     }
   }
 
   .progress-dots {
-    gap: 8px;
+    gap: var(--spacing-xs);
   }
 
   .progress-dot {
     .dot-fill,
     .dot-empty {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 }

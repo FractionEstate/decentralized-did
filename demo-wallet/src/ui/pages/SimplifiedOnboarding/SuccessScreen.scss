@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: var(--spacing-lg);
 }
 
 .success-container {
@@ -26,7 +26,7 @@
 
     h1 {
       font-size: 32px;
-      font-weight: 700;
+      font-weight: var(--font-weight-bold);
       margin: 0;
     }
   }
@@ -34,19 +34,19 @@
   .completion-checklist {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 24px;
 
     .checklist-item {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 12px 0;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) 0;
       font-size: 15px;
 
       .icon {
-        font-size: 20px;
+        font-size: var(--font-size-lg);
       }
     }
   }
@@ -54,12 +54,12 @@
   .wallet-address-box {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 24px;
 
     .address-label {
-      font-size: 14px;
+      font-size: var(--font-size-sm);
       margin-bottom: 8px;
       opacity: 0.9;
     }
@@ -67,15 +67,15 @@
     .address-display {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: var(--spacing-sm);
 
       .address-text {
         flex: 1;
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         font-family: 'Courier New', monospace;
         background: rgba(0, 0, 0, 0.2);
-        padding: 12px;
-        border-radius: 8px;
+        padding: var(--spacing-sm);
+        border-radius: var(--radius-md);
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -84,9 +84,9 @@
       .copy-button {
         --color: white;
         --background: rgba(255, 255, 255, 0.2);
-        --border-radius: 8px;
+        --border-radius: var(--radius-md);
         height: 40px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
       }
     }
   }
@@ -94,13 +94,13 @@
   .capabilities {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 20px;
     margin-bottom: 32px;
 
     h3 {
-      font-size: 16px;
-      font-weight: 600;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
       margin-bottom: 12px;
     }
 
@@ -110,9 +110,9 @@
       list-style: none;
 
       li {
-        font-size: 14px;
+        font-size: var(--font-size-sm);
         margin-bottom: 8px;
-        line-height: 1.5;
+        line-height: var(--line-height-normal);
 
         &:last-child {
           margin-bottom: 0;
@@ -124,20 +124,20 @@
   .actions {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--spacing-sm);
 
     .start-button {
       --background: white;
       --color: #34c759;
-      --border-radius: 12px;
+      --border-radius: var(--radius-lg);
       height: 56px;
-      font-size: 18px;
-      font-weight: 700;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
     }
 
     .help-button {
       --color: white;
-      font-size: 14px;
+      font-size: var(--font-size-sm);
     }
   }
 }
@@ -165,7 +165,7 @@
       }
 
       h1 {
-        font-size: 28px;
+        font-size: var(--font-size-2xl);
       }
     }
 

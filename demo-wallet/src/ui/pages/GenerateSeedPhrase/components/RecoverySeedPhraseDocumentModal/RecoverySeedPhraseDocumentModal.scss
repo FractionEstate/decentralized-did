@@ -5,13 +5,13 @@
 
   .document-section {
     .image {
-      margin: 0.75rem auto 0;
+      margin: var(--spacing-sm) auto 0;
       display: block;
     }
 
     .content {
-      margin: 0.75rem 0 0;
-      font-weight: 500;
+      margin: var(--spacing-sm) 0 0;
+      font-weight: var(--font-weight-medium);
     }
   }
 }

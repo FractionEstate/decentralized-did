@@ -15,7 +15,7 @@
   }
 
   .sign-footer {
-    padding: 0.5rem 0;
+    padding: var(--spacing-xs) 0;
 
     .secondary-button::part(native) {
       border: none;
@@ -48,15 +48,15 @@
     }
 
     .sign-name {
-      font-size: 1.5rem;
-      line-height: 1.75rem;
+      font-size: var(--font-size-xl);
+      line-height: var(--line-height-relaxed)rem;
       margin-bottom: 0.5rem;
       color: var(--ion-color-neutral-800);
     }
 
     .sign-link {
-      font-weight: 500;
-      font-size: 0.75rem;
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-xs);
       line-height: 1rem;
       margin: 0;
       color: var(--ion-color-neutral-600);
@@ -69,7 +69,7 @@
 
       .identifier {
         display: block;
-        padding: 0.75rem 0;
+        padding: var(--spacing-sm) 0;
 
         @media screen and (min-width: 250px) and (max-width: 370px) {
           font-size: 0.8rem;
@@ -126,7 +126,7 @@
 
       .card-details-nested-content {
         & > .card-details-info-block-inner {
-          padding: 1rem;
+          padding: var(--spacing-md);
         }
       }
 
@@ -158,7 +158,7 @@
 
       .sign-string {
         display: block;
-        padding: 0.75rem 0;
+        padding: var(--spacing-sm) 0;
         font-weight: normal;
         @media screen and (min-width: 250px) and (max-width: 370px) {
           font-size: 0.8rem;
