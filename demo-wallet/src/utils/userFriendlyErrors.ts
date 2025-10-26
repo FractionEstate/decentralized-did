@@ -296,3 +296,58 @@ export const LOADING_MESSAGES = {
   saving: 'Saving...',
   processing: 'Processing...',
 };
+
+/**
+ * Biometric-specific error mappings
+ */
+export const BIOMETRIC_ERRORS: Record<string, UserError> = {
+  'Poor fingerprint quality': {
+    title: '👆 Fingerprint Quality Low',
+    message: 'The fingerprint scan was unclear.',
+    action: 'Try again with a clean, dry finger. Press firmly on the sensor.',
+    type: 'warning',
+  },
+  'Capture failed': {
+    title: '📷 Capture Failed',
+    message: 'Could not capture your fingerprint.',
+    action: 'Ensure the sensor is clean and your finger is positioned correctly.',
+    type: 'error',
+  },
+  'Sensor not found': {
+    title: '🔌 Sensor Not Connected',
+    message: 'Cannot detect fingerprint sensor.',
+    action: 'Ensure the USB fingerprint reader is plugged in and try again.',
+    type: 'error',
+  },
+  'WebAuthn not supported': {
+    title: '🔒 Biometric Auth Unavailable',
+    message: 'Your device doesn\'t support Touch ID/Face ID/Windows Hello.',
+    action: 'Use a USB fingerprint sensor or set up a PIN instead.',
+    type: 'warning',
+  },
+  'WebAuthn enrollment failed': {
+    title: '❌ Biometric Enrollment Failed',
+    message: 'Could not set up biometric authentication.',
+    action: 'Ensure biometric authentication is enabled in your device settings.',
+    type: 'error',
+  },
+  'Enrollment failed': {
+    title: '⚠️ Enrollment Error',
+    message: 'Could not complete biometric enrollment.',
+    action: 'Try again or skip for now. You can enroll later in settings.',
+    type: 'error',
+  },
+  'Verification failed': {
+    title: '❌ Identity Verification Failed',
+    message: 'Your fingerprint did not match.',
+    action: 'Try again with the same finger you used during enrollment.',
+    type: 'error',
+  },
+  'Helper data not found': {
+    title: '🔑 Security Data Missing',
+    message: 'Could not find your enrollment data.',
+    action: 'You may need to enroll again.',
+    type: 'error',
+  },
+};
+

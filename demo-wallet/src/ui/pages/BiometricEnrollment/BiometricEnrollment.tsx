@@ -3,8 +3,8 @@
  * Captures fingerprints, generates DID, and stores helper data
  */
 
-import { IonIcon, IonSpinner } from "@ionic/react";
-import { checkmarkCircle, fingerPrintOutline } from "ionicons/icons";
+import { IonIcon, IonSpinner, IonModal } from "@ionic/react";
+import { checkmarkCircle, fingerPrintOutline, copyOutline, informationCircleOutline, lockClosedOutline, shieldCheckmarkOutline, helpCircleOutline, closeCircle } from "ionicons/icons";
 import { useState, useEffect, useRef } from "react";
 import { i18n } from "../../../i18n";
 import { RoutePath } from "../../../routes";
@@ -19,6 +19,7 @@ import { PageHeader } from "../../components/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
 import { ToastMsgType } from "../../globals/types";
 import { useAppIonRouter } from "../../hooks";
+import { getUserFriendlyError, BIOMETRIC_ERRORS } from "../../../utils/userFriendlyErrors";
 import {
   biometricDidService,
   fingerprintCaptureService,
@@ -66,6 +67,9 @@ export const BiometricEnrollment = () => {
   const [showErrorAlert, setShowErrorAlert] = useState(false);
   const [webAuthnAvailable, setWebAuthnAvailable] = useState(false);
   const [webAuthnBiometricType, setWebAuthnBiometricType] = useState<string | null>(null);
+  const [isGeneratingDid, setIsGeneratingDid] = useState(false);
+  const [webAuthnLoading, setWebAuthnLoading] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   // Use ref to track current finger index to avoid stale closures
   const currentFingerRef = useRef(0);
@@ -98,6 +102,7 @@ export const BiometricEnrollment = () => {
 
   const startWebAuthnEnrollment = async () => {
     try {
+      setWebAuthnLoading(true);
       setEnrollmentState({
         status: BiometricEnrollmentStatus.InProgress,
         currentFinger: 0,
@@ -129,10 +134,14 @@ export const BiometricEnrollment = () => {
       }, 2000);
     } catch (error) {
       console.error('WebAuthn enrollment error:', error);
+      const userError = getUserFriendlyError(error);
+      const errorMessage = error instanceof Error ? error.message : 'WebAuthn enrollment failed';
+      const biometricError = BIOMETRIC_ERRORS[errorMessage] || userError;
+
       setEnrollmentState((prev) => ({
         ...prev,
         status: BiometricEnrollmentStatus.Failed,
-        error: error instanceof Error ? error.message : 'WebAuthn enrollment failed',
+        error: biometricError.message,
       }));
       setShowErrorAlert(true);
     }
@@ -174,10 +183,15 @@ export const BiometricEnrollment = () => {
         captureNextFinger();
       }, 500);
     } catch (error) {
+      const userError = getUserFriendlyError(error);
+      // Check if it's a known biometric error
+      const errorMessage = error instanceof Error ? error.message : "Capture failed";
+      const biometricError = BIOMETRIC_ERRORS[errorMessage] || userError;
+
       setEnrollmentState((prev) => ({
         ...prev,
         status: BiometricEnrollmentStatus.Failed,
-        error: error instanceof Error ? error.message : "Capture failed",
+        error: biometricError.message,
       }));
       setShowErrorAlert(true);
     }
@@ -185,10 +199,13 @@ export const BiometricEnrollment = () => {
 
   const completeEnrollment = async () => {
     try {
+      // Show loading state during DID generation
+      setIsGeneratingDid(true);
+
       // Capture all fingerprints
       const fingers = await fingerprintCaptureService.captureAllFingerprints();
 
-      // Generate biometric DID
+      // Generate biometric DID (this takes 5-10 seconds)
       const result = await biometricDidService.generate(
         { fingers },
         walletAddress
@@ -217,13 +234,19 @@ export const BiometricEnrollment = () => {
       }, 2000);
     } catch (error) {
       console.error("Biometric enrollment error:", error);
+      const userError = getUserFriendlyError(error);
+      const errorMessage = error instanceof Error ? error.message : "Enrollment failed";
+      const biometricError = BIOMETRIC_ERRORS[errorMessage] || userError;
+
       setEnrollmentState((prev) => ({
         ...prev,
         status: BiometricEnrollmentStatus.Failed,
-        error:
-          error instanceof Error ? error.message : "Enrollment failed",
+        error: biometricError.message,
       }));
       setShowErrorAlert(true);
+    } finally {
+      // Always hide loading state
+      setIsGeneratingDid(false);
     }
   };
 
@@ -274,9 +297,45 @@ export const BiometricEnrollment = () => {
     if (status === BiometricEnrollmentStatus.NotStarted) {
       return (
         <div className="enrollment-intro">
-          <IonIcon icon={fingerPrintOutline} className="large-icon" />
-          <h1>{i18n.t("biometric.enrollment.title")}</h1>
+          <IonIcon icon={fingerPrintOutline} className="large-icon" aria-hidden="true" />
+
+          <div className="header-with-help">
+            <h1>{i18n.t("biometric.enrollment.title")}</h1>
+            <button
+              className="help-button"
+              onClick={() => setShowHelpModal(true)}
+              aria-label="Learn more about biometric enrollment"
+            >
+              <IonIcon icon={helpCircleOutline} />
+            </button>
+          </div>
+
           <p>{i18n.t("biometric.enrollment.description")}</p>
+
+          {/* Quick facts */}
+          <div className="quick-facts">
+            <div className="fact">
+              <IonIcon icon={lockClosedOutline} />
+              <div>
+                <strong>Secure</strong>
+                <p>Your fingerprints never leave this device</p>
+              </div>
+            </div>
+            <div className="fact">
+              <IonIcon icon={shieldCheckmarkOutline} />
+              <div>
+                <strong>Private</strong>
+                <p>No personal data required</p>
+              </div>
+            </div>
+            <div className="fact">
+              <IonIcon icon={checkmarkCircle} />
+              <div>
+                <strong>Unique</strong>
+                <p>One person, one identity</p>
+              </div>
+            </div>
+          </div>
 
           {/* WebAuthn Option (if available) */}
           {webAuthnAvailable && webAuthnBiometricType && (
@@ -288,9 +347,20 @@ export const BiometricEnrollment = () => {
               <button
                 className="webauthn-enroll-button"
                 onClick={startWebAuthnEnrollment}
+                disabled={webAuthnLoading}
+                aria-label={`Enable ${webAuthnBiometricType} for quick biometric authentication`}
               >
-                <IonIcon icon={fingerPrintOutline} />
-                Enable {webAuthnBiometricType}
+                {webAuthnLoading ? (
+                  <>
+                    <IonSpinner name="crescent" />
+                    <span>Enrolling...</span>
+                  </>
+                ) : (
+                  <>
+                    <IonIcon icon={fingerPrintOutline} aria-hidden="true" />
+                    <span>Enable {webAuthnBiometricType}</span>
+                  </>
+                )}
               </button>
             </div>
           )}
@@ -311,6 +381,20 @@ export const BiometricEnrollment = () => {
     }
 
     if (status === BiometricEnrollmentStatus.InProgress) {
+      // Show loading screen during DID generation
+      if (isGeneratingDid) {
+        return (
+          <div className="loading-did">
+            <IonSpinner name="crescent" className="large-spinner" />
+            <h2>Generating Your Secure Digital ID</h2>
+            <p className="loading-message">
+              Creating your unique biometric identity...
+            </p>
+            <p className="loading-time">This may take 5-10 seconds</p>
+          </div>
+        );
+      }
+
       const currentFingerId = FINGER_IDS[currentFinger];
       const fingerName = FINGER_NAMES[currentFingerId];
 
@@ -324,25 +408,60 @@ export const BiometricEnrollment = () => {
           </div>
 
           <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${progress}%` }} />
+            <div
+              className="progress-fill"
+              style={{ width: `${progress}%` }}
+              role="progressbar"
+              aria-valuenow={currentFinger}
+              aria-valuemin={0}
+              aria-valuemax={totalFingers}
+              aria-label={`Biometric enrollment progress: ${currentFinger} of ${totalFingers} fingerprints captured`}
+            />
           </div>
 
+          {/* Screen reader announcements */}
+          <div
+            aria-live="polite"
+            aria-atomic="true"
+            className="sr-only"
+          >
+            {`Capturing ${fingerName}. ${currentFinger} of ${totalFingers} fingerprints complete.`}
+          </div>
+
+          {/* Current finger being captured */}
           <div className="current-finger">
-            <IonIcon icon={fingerPrintOutline} className="pulse-icon" />
-            <h3>Place your finger</h3>
-            <p className="finger-name">{fingerName}</p>
+            <IonIcon
+              icon={fingerPrintOutline}
+              className="pulse-icon"
+              aria-hidden="true"
+            />
+            <h3>Capturing {fingerName}</h3>
+            <p className="instruction">Place finger on sensor...</p>
+            <p className="progress-text">{currentFinger} of {totalFingers} complete</p>
           </div>
 
+          {/* Checklist of all fingers */}
           <div className="completed-fingers">
-            {enrollmentState.completedFingers.map((fingerId) => (
-              <div key={fingerId} className="completed-finger">
-                <IonIcon icon={checkmarkCircle} />
-                <span>{FINGER_NAMES[fingerId as FingerId]}</span>
-              </div>
-            ))}
+            <h4>Fingerprint Progress</h4>
+            <div className="finger-list">
+              {FINGER_IDS.map((fingerId, idx) => {
+                const isCompleted = idx < currentFinger;
+                const isCurrent = idx === currentFinger;
+                return (
+                  <div
+                    key={fingerId}
+                    className={`finger-item ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
+                  >
+                    <IonIcon
+                      icon={isCompleted ? checkmarkCircle : fingerPrintOutline}
+                      className={isCompleted ? 'check-icon' : isCurrent ? 'pulse-small' : 'pending-icon'}
+                    />
+                    <span className="finger-label">{FINGER_NAMES[fingerId]}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-
-          <IonSpinner name="crescent" />
         </div>
       );
     }
@@ -350,23 +469,61 @@ export const BiometricEnrollment = () => {
     if (status === BiometricEnrollmentStatus.Complete) {
       return (
         <div className="enrollment-complete">
-          <IonIcon icon={checkmarkCircle} className="success-icon" />
-          <h1>Enrollment Complete!</h1>
-          <p>Your biometric DID has been created.</p>
+          <IonIcon icon={checkmarkCircle} className="success-icon" aria-hidden="true" />
+          <h1>🎉 Your Identity is Secure!</h1>
+
+          <div className="success-info">
+            <h3>What just happened?</h3>
+            <ul>
+              <li>
+                <IonIcon icon={checkmarkCircle} />
+                <span><strong>Unique Digital ID created</strong> from your fingerprints</span>
+              </li>
+              <li>
+                <IonIcon icon={lockClosedOutline} />
+                <span><strong>Privacy protected</strong> - no personal info stored</span>
+              </li>
+              <li>
+                <IonIcon icon={shieldCheckmarkOutline} />
+                <span><strong>Sybil resistant</strong> - one person, one identity</span>
+              </li>
+            </ul>
+          </div>
+
           {enrollmentState.did && (
             <div className="did-display">
-              <label>Your Decentralized Identifier (DID):</label>
+              <label>Your Digital ID (DID):</label>
               <code className="did-code">{enrollmentState.did}</code>
-              <div className="did-info">
-                <p className="privacy-note">
-                  ✅ <strong>Privacy Protected:</strong> Your DID contains no personal information
-                </p>
-                <p className="sybil-note">
-                  ✅ <strong>Sybil Resistant:</strong> One person = one DID, enforced cryptographically
-                </p>
-              </div>
+              <button
+                className="copy-button"
+                onClick={() => {
+                  navigator.clipboard.writeText(enrollmentState.did || '');
+                  dispatch(setToastMsg(ToastMsgType.COPIED_TO_CLIPBOARD));
+                }}
+                aria-label="Copy DID to clipboard"
+              >
+                <IonIcon icon={copyOutline} />
+                <span>Copy</span>
+              </button>
             </div>
           )}
+
+          <div className="next-steps">
+            <h3>What's next?</h3>
+            <p>You can now use your fingerprint to:</p>
+            <ul>
+              <li>🔓 <strong>Unlock your wallet</strong></li>
+              <li>✍️ <strong>Sign transactions</strong> securely</li>
+              <li>🆔 <strong>Verify your identity</strong></li>
+            </ul>
+          </div>
+
+          <div className="help-text">
+            <IonIcon icon={informationCircleOutline} />
+            <p>
+              Your DID is stored securely on this device. You can view it anytime in <strong>Settings</strong>.
+            </p>
+          </div>
         </div>
       );
     }
@@ -418,6 +575,87 @@ export const BiometricEnrollment = () => {
           handleSkip();
         }}
       />
+
+      {/* Help Modal */}
+      <IonModal
+        isOpen={showHelpModal}
+        onDidDismiss={() => setShowHelpModal(false)}
+        className="help-modal"
+      >
+        <div className="help-modal-content">
+          <div className="help-modal-header">
+            <h2>About Biometric Digital IDs</h2>
+            <button
+              className="close-button"
+              onClick={() => setShowHelpModal(false)}
+              aria-label="Close help modal"
+            >
+              <IonIcon icon={closeCircle} />
+            </button>
+          </div>
+
+          <div className="help-modal-body">
+            <section>
+              <h3>What is a Biometric DID?</h3>
+              <p>
+                A Decentralized Identifier (DID) is a unique digital identity created from your
+                fingerprints. It's like a digital passport that proves you're you, without revealing
+                personal information.
+              </p>
+            </section>
+
+            <section>
+              <h3>How does it work?</h3>
+              <ol>
+                <li>You scan your fingerprints (10 fingers for maximum security)</li>
+                <li>A unique cryptographic ID is generated</li>
+                <li>Your fingerprints are stored securely on <strong>this device only</strong></li>
+                <li>You can prove your identity by scanning your fingerprint again</li>
+              </ol>
+            </section>
+
+            <section>
+              <h3>Is it safe?</h3>
+              <p>
+                <strong>Yes!</strong> Your actual fingerprint images are <strong>NEVER</strong> stored
+                or transmitted. Only cryptographic keys derived from your fingerprints are used.
+              </p>
+              <ul className="safety-features">
+                <li>
+                  <IonIcon icon={lockClosedOutline} />
+                  <span><strong>End-to-end encrypted</strong> - No server can access your biometrics</span>
+                </li>
+                <li>
+                  <IonIcon icon={shieldCheckmarkOutline} />
+                  <span><strong>Tamper-proof</strong> - Impossible to fake or duplicate</span>
+                </li>
+                <li>
+                  <IonIcon icon={checkmarkCircle} />
+                  <span><strong>Revocable</strong> - You can disable it anytime in Settings</span>
+                </li>
+              </ul>
+            </section>
+
+            <section>
+              <h3>Why 10 fingerprints?</h3>
+              <p>
+                Using all 10 fingers provides maximum security and reliability. Even if a few
+                fingerprints are slightly different due to cuts or wear, the system can still
+                verify your identity.
+              </p>
+            </section>
+          </div>
+
+          <div className="help-modal-footer">
+            <button
+              className="primary-button"
+              onClick={() => setShowHelpModal(false)}
+            >
+              Got it!
+            </button>
+          </div>
+        </div>
+      </IonModal>
     </>
   );
 };

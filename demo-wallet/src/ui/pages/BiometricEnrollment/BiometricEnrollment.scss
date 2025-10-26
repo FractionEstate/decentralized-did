@@ -244,3 +244,366 @@
     opacity: 0.8;
   }
 }
+// Mobile Responsiveness
+// Touch targets must be at least 44x44px (WCAG 2.1 Level AAA)
+@media (max-width: 768px) {
+  .biometric-enrollment {
+    .enrollment-intro {
+      padding: 1.5rem;
+
+      .large-icon {
+        font-size: 5rem;
+      }
+
+      .header-with-help {
+        h1 {
+          font-size: 1.5rem;
+        }
+
+        .help-button {
+          min-width: 44px;
+          min-height: 44px;
+        }
+      }
+
+      .quick-facts {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .enrollment-option {
+        padding: 1.25rem;
+      }
+    }
+
+    .enrollment-progress {
+      padding: 1.5rem;
+
+      .progress-header h2 {
+        font-size: 1.3rem;
+      }
+
+      .current-finger {
+        margin: 2rem 0;
+
+        .pulse-icon {
+          font-size: 6rem;
+        }
+
+        h3 {
+          font-size: 1.3rem;
+        }
+      }
+
+      .completed-fingers {
+        .finger-list {
+          gap: 0.5rem;
+        }
+      }
+    }
+
+    .enrollment-complete {
+      padding: 1.5rem;
+
+      .success-icon {
+        font-size: 5rem;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+      }
+
+      .did-display {
+        .did-code {
+          font-size: 0.75rem;
+        }
+      }
+    }
+
+    // Ensure all buttons meet touch target size
+    button,
+    .webauthn-enroll-button,
+    .copy-button,
+    .help-button {
+      min-height: 44px;
+      min-width: 44px;
+    }
+  }
+
+  .help-modal {
+    --height: 95vh;
+    --max-height: 95vh;
+
+    .help-modal-content {
+      .help-modal-header {
+        padding: 1rem;
+
+        h2 {
+          font-size: 1.3rem;
+        }
+      }
+
+      .help-modal-body {
+        padding: 1.5rem;
+      }
+
+      .help-modal-footer {
+        padding: 1rem;
+      }
+    }
+  }
+}
+
+// Small phones (iPhone SE, small Android phones)
+@media (max-width: 375px) {
+  .biometric-enrollment {
+    .enrollment-intro {
+      padding: 1rem;
+
+      .large-icon {
+        font-size: 4rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .header-with-help {
+        h1 {
+          font-size: 1.3rem;
+        }
+      }
+
+      p {
+        font-size: 0.9rem;
+      }
+
+      .quick-facts {
+        .fact {
+          padding: 0.75rem;
+
+          ion-icon {
+            font-size: 1.5rem;
+          }
+
+          div {
+            strong {
+              font-size: 0.9rem;
+            }
+
+            p {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+
+      .enrollment-option {
+        padding: 1rem;
+        margin: 1rem 0;
+
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        p {
+          font-size: 0.9rem;
+        }
+
+        .webauthn-enroll-button {
+          font-size: 1rem;
+          padding: 0.875rem;
+        }
+      }
+    }
+
+    .enrollment-progress {
+      padding: 1rem;
+
+      .progress-header {
+        h2 {
+          font-size: 1.2rem;
+        }
+
+        .progress-counter {
+          font-size: 1rem;
+        }
+      }
+
+      .current-finger {
+        margin: 1.5rem 0;
+
+        .pulse-icon {
+          font-size: 5rem;
+        }
+
+        h3 {
+          font-size: 1.2rem;
+        }
+
+        .instruction {
+          font-size: 0.9rem;
+        }
+      }
+
+      .completed-fingers {
+        padding: 1rem;
+
+        h4 {
+          font-size: 0.9rem;
+        }
+
+        .finger-list {
+          gap: 0.5rem;
+
+          .finger-item {
+            padding: 0.4rem;
+
+            ion-icon {
+              font-size: 1.2rem;
+            }
+
+            .finger-label {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+
+    .enrollment-complete {
+      padding: 1rem;
+
+      .success-icon {
+        font-size: 4rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .success-info,
+      .next-steps {
+        padding: 1rem;
+
+        h3 {
+          font-size: 1.1rem;
+        }
+
+        ul li {
+          font-size: 0.9rem;
+        }
+      }
+
+      .did-display {
+        padding: 1rem;
+
+        .did-code {
+          font-size: 0.7rem;
+          padding: 0.75rem;
+          word-break: break-all;
+        }
+
+        .copy-button {
+          padding: 0.65rem;
+          font-size: 0.95rem;
+        }
+      }
+
+      .help-text {
+        padding: 0.75rem;
+
+        p {
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  .help-modal {
+    .help-modal-content {
+      .help-modal-header {
+        padding: 0.875rem;
+
+        h2 {
+          font-size: 1.2rem;
+        }
+      }
+
+      .help-modal-body {
+        padding: 1rem;
+
+        section {
+          h3 {
+            font-size: 1.1rem;
+          }
+
+          p, ol li, ul li {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .help-modal-footer {
+        padding: 0.875rem;
+
+        .primary-button {
+          padding: 0.875rem;
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}
+
+// Landscape orientation adjustments
+@media (max-height: 600px) and (orientation: landscape) {
+  .biometric-enrollment {
+    .enrollment-intro {
+      .large-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .quick-facts {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .enrollment-progress {
+      .current-finger {
+        margin: 1rem 0;
+
+        .pulse-icon {
+          font-size: 4rem;
+        }
+      }
+    }
+
+    .enrollment-complete {
+      .success-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .help-modal {
+    --height: 95vh;
+
+    .help-modal-content {
+      .help-modal-header,
+      .help-modal-footer {
+        padding: 0.75rem 1.5rem;
+      }
+
+      .help-modal-body {
+        section {
+          margin-bottom: 1rem;
+
+          h3 {
+            margin-bottom: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
