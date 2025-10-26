@@ -6,6 +6,19 @@ Deterministic biometric identifiers for Cardano, powered by an open-source Pytho
 
 ---
 
+## 📱 Download Demo Wallet (Android)
+
+**Ready to test?** Download the latest Android APK:
+
+- **Debug APK** (87 MB): [`demo-wallet/android/app/build/outputs/apk/debug/app-debug.apk`](https://github.com/FractionEstate/decentralized-did/raw/10-finger-biometry-did-and-wallet/demo-wallet/android/app/build/outputs/apk/debug/app-debug.apk)
+  - ✅ Ready to install on any Android device
+  - ✅ Built: October 26, 2025 (includes all 8 UX improvements)
+  - ✅ Features: Biometric enrollment, DID generation, WebAuthn support, mobile responsive UI
+
+**Installation**: Download the APK, enable "Install from Unknown Sources" in Android settings, and tap the file to install.
+
+---
+
 ## Project Highlights
 - **Deterministic DIDs** – `generate_deterministic_did(commitment, network)` returns `did:cardano:{network}:{base58_hash}` without exposing wallet addresses.
 - **Biometric Pipeline** – `FingerTemplate` quantises minutiae (grid `0.05`, 32 angle bins); `FuzzyExtractor` salts and HMACs each finger to produce reproducible digests.
