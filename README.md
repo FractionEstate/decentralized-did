@@ -8,14 +8,17 @@ Deterministic biometric identifiers for Cardano, powered by an open-source Pytho
 
 ## 📱 Download Demo Wallet (Android)
 
-**Ready to test?** Download the latest Android APK:
+**Ready to test?** Download the latest Android APK (built October 26, 2025):
 
-- **Debug APK** (87 MB): [`demo-wallet/android/app/build/outputs/apk/debug/app-debug.apk`](https://github.com/FractionEstate/decentralized-did/raw/10-finger-biometry-did-and-wallet/demo-wallet/android/app/build/outputs/apk/debug/app-debug.apk)
+- **Debug APK** (87 MB): [`releases/demo-wallet-debug-v1.0.0-20251026.apk`](https://github.com/FractionEstate/decentralized-did/raw/10-finger-biometry-did-and-wallet/releases/demo-wallet-debug-v1.0.0-20251026.apk)
   - ✅ Ready to install on any Android device
-  - ✅ Built: October 26, 2025 (includes all 8 UX improvements)
-  - ✅ Features: Biometric enrollment, DID generation, WebAuthn support, mobile responsive UI
+  - ✅ Latest build with all 8 UX improvements
+  - ✅ Features: Biometric enrollment, DID generation, WebAuthn support, mobile responsive UI, WCAG 2.1 AA accessibility
 
-**Installation**: Download the APK, enable "Install from Unknown Sources" in Android settings, and tap the file to install.
+- **Release APK (unsigned)** (77 MB): [`releases/demo-wallet-release-unsigned-v1.0.0-20251026.apk`](https://github.com/FractionEstate/decentralized-did/raw/10-finger-biometry-did-and-wallet/releases/demo-wallet-release-unsigned-v1.0.0-20251026.apk)
+  - ⚠️ Requires signing before installation (for production deployment)
+
+**Installation**: Download the debug APK, enable "Install from Unknown Sources" in Android settings, and tap the file to install.
 
 ---
 
