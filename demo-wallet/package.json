@@ -2,6 +2,10 @@
   "name": "veridian-wallet",
   "version": "1.1.0",
   "private": true,
+  "sideEffects": [
+    "*.scss",
+    "*.css"
+  ],
   "scripts": {
     "dev": "webpack serve --config webpack.dev.cjs --host 0.0.0.0 --port 3003",
     "build": "cross-env ENVIRONMENT=remote webpack --config webpack.prod.cjs",

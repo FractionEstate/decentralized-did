@@ -65,11 +65,25 @@ module.exports = merge(require("./webpack.common.cjs"), {
                compress: {
                   drop_console: false, // Keep console for audit logs
                   passes: 2,
+                  pure_funcs: ['console.debug'], // Remove debug logs only
                },
                mangle: true,
             },
          }),
-         new CssMinimizerPlugin()
+         new CssMinimizerPlugin({
+            minimizerOptions: {
+               preset: [
+                  'default',
+                  {
+                     discardComments: { removeAll: true },
+                     normalizeWhitespace: true,
+                     colormin: true,
+                     minifyFontValues: true,
+                     minifySelectors: true,
+                  },
+               ],
+            },
+         })
       ],
       minimize: true,
       splitChunks: {
