@@ -22,13 +22,13 @@ class IonicSession {
       } catch (e) {
         const error = e as { name?: string; message?: string };
         console.error(`[IonicSession] ❌ Failed to create storage: ${storageName}`, error);
-        
+
         if (error.name === 'NotFoundError') {
           console.error(`🔍 [IonicSession] NotFoundError detected during IndexedDB initialization`);
           console.error(`🔍 [IonicSession] Storage name: ${storageName}`);
           console.error(`🔍 [IonicSession] Driver: IndexedDB`);
         }
-        
+
         throw e;
       }
     }
@@ -40,11 +40,11 @@ class IonicSession {
       console.log(`[IonicSession] ✅ Storage wiped: ${_storageName}`);
     } catch (e) {
       const error = e as { name?: string };
-      
+
       if (error.name === 'NotFoundError') {
         console.error(`🔍 [IonicSession] NotFoundError on wipe("${_storageName}"):`, e);
       }
-      
+
       throw e;
     }
   }

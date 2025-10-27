@@ -53,7 +53,8 @@ module.exports = merge(require("./webpack.common.cjs"), {
          maximumFileSizeToCacheInBytes: 5000000,
       }),
       new MiniCssExtractPlugin({
-         filename: 'styles.[fullhash].min.css',
+         filename: 'styles.[name].[fullhash].min.css',
+         chunkFilename: 'styles.[name].[contenthash].chunk.css',
       }),
    ],
    optimization: {

@@ -424,37 +424,50 @@ class Agent {
   }
 
   async setupLocalDependencies(): Promise<void> {
-    await this.storageSession.open(walletId);
-    this.agentServicesProps = {
-      signifyClient: this.signifyClient,
-      eventEmitter: new CoreEventEmitter(),
-    };
-    this.basicStorageService = new BasicStorage(
-      this.getStorageService<BasicRecord>(this.storageSession)
-    );
-    this.identifierStorage = new IdentifierStorage(
-      this.getStorageService<IdentifierMetadataRecord>(this.storageSession)
-    );
-    this.credentialStorage = new CredentialStorage(
-      this.getStorageService<CredentialMetadataRecord>(this.storageSession)
-    );
-    this.connectionStorage = new ConnectionStorage(
-      this.getStorageService<ConnectionRecord>(this.storageSession)
-    );
-    this.notificationStorage = new NotificationStorage(
-      this.getStorageService<NotificationRecord>(this.storageSession)
-    );
-    this.peerConnectionStorage = new PeerConnectionStorage(
-      this.getStorageService<PeerConnectionMetadataRecord>(this.storageSession)
-    );
-    this.operationPendingStorage = new OperationPendingStorage(
-      this.getStorageService<OperationPendingRecord>(this.storageSession),
-      this.agentServicesProps.eventEmitter
-    );
-    this.connections.onConnectionRemoved();
-    this.connections.onConnectionAdded();
-    this.identifiers.onIdentifierRemoved();
-    this.credentials.onCredentialRemoved();
+    console.log(`[Agent] Setting up local dependencies for wallet: ${walletId}`);
+
+    try {
+      await this.storageSession.open(walletId);
+      this.agentServicesProps = {
+        signifyClient: this.signifyClient,
+        eventEmitter: new CoreEventEmitter(),
+      };
+      this.basicStorageService = new BasicStorage(
+        this.getStorageService<BasicRecord>(this.storageSession)
+      );
+      this.identifierStorage = new IdentifierStorage(
+        this.getStorageService<IdentifierMetadataRecord>(this.storageSession)
+      );
+      this.credentialStorage = new CredentialStorage(
+        this.getStorageService<CredentialMetadataRecord>(this.storageSession)
+      );
+      this.connectionStorage = new ConnectionStorage(
+        this.getStorageService<ConnectionRecord>(this.storageSession)
+      );
+      this.notificationStorage = new NotificationStorage(
+        this.getStorageService<NotificationRecord>(this.storageSession)
+      );
+      this.peerConnectionStorage = new PeerConnectionStorage(
+        this.getStorageService<PeerConnectionMetadataRecord>(this.storageSession)
+      );
+      this.operationPendingStorage = new OperationPendingStorage(
+        this.getStorageService<OperationPendingRecord>(this.storageSession),
+        this.agentServicesProps.eventEmitter
+      );
+      this.connections.onConnectionRemoved();
+      this.connections.onConnectionAdded();
+      this.identifiers.onIdentifierRemoved();
+      this.credentials.onCredentialRemoved();
+      console.log(`[Agent] ✅ Local dependencies initialized successfully`);
+    } catch (e) {
+      const error = e as { name?: string; message?: string };
+      console.error(`[Agent] ❌ Failed to setup local dependencies`, error);
+      if (error.name === 'NotFoundError') {
+        console.error(`🔍 [Agent] NotFoundError during setupLocalDependencies`);
+        console.error(`🔍 [Agent] Wallet ID: ${walletId}`);
+      }
+      throw e;
+    }
   }
 
   async connect(
@@ -551,9 +564,8 @@ class Agent {
       await this.agentServicesProps.signifyClient
         .identifiers()
         .update(identifier.id, {
-          name: `${
-            IdentifierService.DELETED_IDENTIFIER_THEME
-          }-${randomSalt()}:${identifier.displayName}`,
+          name: `${IdentifierService.DELETED_IDENTIFIER_THEME
+            }-${randomSalt()}:${identifier.displayName}`,
         });
     }
 

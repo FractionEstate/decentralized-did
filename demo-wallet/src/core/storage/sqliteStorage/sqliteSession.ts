@@ -46,44 +46,72 @@ class SqliteSession {
   }
 
   async open(storageName: string): Promise<void> {
-    const connection = new SQLiteConnection(CapacitorSQLite);
+    console.log(`[SQLiteSession] Opening database: ${storageName}`);
 
-    const platform = Capacitor.getPlatform();
-    const isPlatformEncryption = platform !== "web";
-    const isEncryptInConfig = (await connection.isInConfigEncryption()).result;
-    const isEncryption = isPlatformEncryption && isEncryptInConfig;
-    if (isEncryption) {
-      const isSetSecret = (await connection.isSecretStored()).result;
-      if (!isSetSecret) {
-        const newBran = randomPasscode();
-        await SecureStorage.set(KeyStoreKeys.DB_ENCRYPTION_BRAN, newBran);
-        await connection.setEncryptionSecret(newBran);
+    try {
+      const connection = new SQLiteConnection(CapacitorSQLite);
+
+      const platform = Capacitor.getPlatform();
+      const isPlatformEncryption = platform !== "web";
+      const isEncryptInConfig = (await connection.isInConfigEncryption()).result;
+      const isEncryption = isPlatformEncryption && isEncryptInConfig;
+      if (isEncryption) {
+        const isSetSecret = (await connection.isSecretStored()).result;
+        if (!isSetSecret) {
+          const newBran = randomPasscode();
+          await SecureStorage.set(KeyStoreKeys.DB_ENCRYPTION_BRAN, newBran);
+          await connection.setEncryptionSecret(newBran);
+        }
       }
-    }
 
-    const ret = await connection.checkConnectionsConsistency();
-    const isConn = (await connection.isConnection(storageName, false)).result;
-    if (ret.result && isConn) {
-      this.sessionInstance = await connection.retrieveConnection(
-        storageName,
-        false
-      );
-    } else {
-      this.sessionInstance = await connection.createConnection(
-        storageName,
-        true,
-        "secret",
-        1,
-        false
-      );
+      const ret = await connection.checkConnectionsConsistency();
+      const isConn = (await connection.isConnection(storageName, false)).result;
+      if (ret.result && isConn) {
+        this.sessionInstance = await connection.retrieveConnection(
+          storageName,
+          false
+        );
+      } else {
+        this.sessionInstance = await connection.createConnection(
+          storageName,
+          true,
+          "secret",
+          1,
+          false
+        );
+      }
+      await this.sessionInstance.open();
+      await this.migrateDb();
+
+      console.log(`[SQLiteSession] ✅ Database opened successfully: ${storageName}`);
+    } catch (e) {
+      const error = e as { name?: string; message?: string };
+      console.error(`[SQLiteSession] ❌ Failed to open database: ${storageName}`, error);
+
+      if (error.name === 'NotFoundError') {
+        console.error(`🔍 [SQLiteSession] NotFoundError detected during SQLite initialization`);
+        console.error(`🔍 [SQLiteSession] Database name: ${storageName}`);
+        console.error(`🔍 [SQLiteSession] Platform: ${Capacitor.getPlatform()}`);
+      }
+
+      throw e;
     }
-    await this.sessionInstance.open();
-    await this.migrateDb();
   }
 
   async wipe(storageName: string): Promise<void> {
-    await this.sessionInstance?.close();
-    await CapacitorSQLite.deleteDatabase({ database: storageName });
+    try {
+      await this.sessionInstance?.close();
+      await CapacitorSQLite.deleteDatabase({ database: storageName });
+      console.log(`[SQLiteSession] ✅ Database wiped: ${storageName}`);
+    } catch (e) {
+      const error = e as { name?: string };
+
+      if (error.name === 'NotFoundError') {
+        console.error(`🔍 [SQLiteSession] NotFoundError on wipe("${storageName}"):`, e);
+      }
+
+      throw e;
+    }
   }
 
   private async migrateDb(): Promise<void> {
