@@ -36,6 +36,7 @@ enum MiscRecordId {
   APP_CRED_FAVOURITE_INDEX = "cred-favourite-index",
   APP_PASSWORD_SKIPPED = "app-password-skipped",
   APP_RECOVERY_WALLET = "recovery-wallet",
+  APP_SEED_PHRASE_BACKED_UP = "app-seed-phrase-backed-up",
   LOGIN_METADATA = "login-metadata",
   CAMERA_DIRECTION = "camera-direction",
   FAILED_NOTIFICATIONS = "failed-notifications",
@@ -68,7 +69,7 @@ interface JSONObject {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface JSONArray extends Array<JSONValue> {}
+interface JSONArray extends Array<JSONValue> { }
 
 type JSONValue =
   | string
@@ -133,10 +134,10 @@ enum OobiType {
 type OobiScan =
   | { type: OobiType.NORMAL; connection: ConnectionShortDetails }
   | {
-      type: OobiType.MULTI_SIG_INITIATOR;
-      groupId: string;
-      connection: ConnectionShortDetails;
-    };
+    type: OobiType.MULTI_SIG_INITIATOR;
+    groupId: string;
+    connection: ConnectionShortDetails;
+  };
 
 interface AgentServicesProps {
   signifyClient: SignifyClient;

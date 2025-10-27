@@ -1,0 +1,183 @@
+.success-screen {
+  --background: linear-gradient(135deg, #34c759 0%, #30a14e 100%);
+}
+
+.success-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.success-container {
+  max-width: 600px;
+  width: 100%;
+  color: white;
+
+  .celebration {
+    text-align: center;
+    margin-bottom: 40px;
+
+    .celebration-icon {
+      font-size: var(--font-size-3xl);
+      animation: celebration 1s ease-out;
+      margin-bottom: var(--spacing-md);
+    }
+
+    h1 {
+      font-size: var(--font-size-2xl);
+      font-weight: var(--font-weight-bold);
+      margin: 0;
+    }
+  }
+
+  .completion-checklist {
+    background: rgba(var(--ion-color-light-rgb), 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+
+    .checklist-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) 0;
+      font-size: var(--font-size-base);
+
+      .icon {
+        font-size: var(--font-size-lg);
+      }
+    }
+  }
+
+  .wallet-address-box {
+    background: rgba(var(--ion-color-light-rgb), 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+
+    .address-label {
+      font-size: var(--font-size-sm);
+      margin-bottom: 8px;
+      opacity: 0.9;
+    }
+
+    .address-display {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+
+      .address-text {
+        flex: 1;
+        font-size: var(--font-size-sm);
+        font-family: 'Courier New', monospace;
+        background: rgba(var(--ion-color-dark-rgb), 0.2);
+        padding: var(--spacing-sm);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .copy-button {
+        --color: white;
+        --background: rgba(255, 255, 255, 0.2);
+        --border-radius: var(--radius-md);
+        height: 40px;
+        font-weight: var(--font-weight-semibold);
+      }
+    }
+  }
+
+  .capabilities {
+    background: rgba(var(--ion-color-light-rgb), 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    margin-bottom: 32px;
+
+    h3 {
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      li {
+        font-size: var(--font-size-sm);
+        margin-bottom: 8px;
+        line-height: var(--line-height-normal);
+
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+
+    .start-button {
+      --background: var(--ion-background-color);
+      --color: var(--ion-color-success);
+      --border-radius: var(--radius-lg);
+      height: 56px;
+      font-size: var(--font-size-md);
+      font-weight: var(--font-weight-bold);
+    }
+
+    .help-button {
+      --color: white;
+      font-size: var(--font-size-sm);
+    }
+  }
+}
+
+@keyframes celebration {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .success-container {
+    .celebration {
+      .celebration-icon {
+        font-size: var(--font-size-3xl);
+      }
+
+      h1 {
+        font-size: var(--font-size-2xl);
+      }
+    }
+
+    .wallet-address-box {
+      .address-display {
+        flex-direction: column;
+        align-items: stretch;
+
+        .copy-button {
+          width: 100%;
+        }
+      }
+    }
+  }
+}

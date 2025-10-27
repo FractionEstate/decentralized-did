@@ -1,0 +1,117 @@
+@import "../../design-tokens.scss";
+
+.backup-warning-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--ion-color-warning-rgb), 0.15),
+    rgba(var(--ion-color-warning-rgb), 0.08)
+  );
+  border-left: 4px solid var(--ion-color-warning);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--radius-md);
+  gap: var(--spacing-md);
+  animation: slideDown 0.3s ease-out;
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    flex: 1;
+  }
+
+  &__icon {
+    font-size: 24px;
+    color: var(--ion-color-warning);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__text {
+    flex: 1;
+
+    strong {
+      display: block;
+      color: var(--ion-text-color);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--spacing-2xs);
+    }
+
+    p {
+      margin: 0;
+      color: var(--ion-color-medium);
+      font-size: var(--font-size-sm);
+      line-height: 1.4;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+
+    ion-button {
+      --padding-start: var(--spacing-md);
+      --padding-end: var(--spacing-md);
+      font-weight: var(--font-weight-semibold);
+      text-transform: none;
+    }
+  }
+
+  &__dismiss {
+    --color: var(--ion-color-medium);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .backup-warning-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--spacing-sm) var(--spacing-md);
+    margin: var(--spacing-xs) var(--spacing-sm);
+
+    &__content {
+      width: 100%;
+    }
+
+    &__actions {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: var(--spacing-2xs);
+
+      ion-button:first-child {
+        flex: 1;
+      }
+    }
+
+    &__text {
+      strong {
+        font-size: var(--font-size-sm);
+      }
+
+      p {
+        font-size: var(--font-size-xs);
+      }
+    }
+  }
+}

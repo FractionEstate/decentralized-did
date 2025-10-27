@@ -116,6 +116,7 @@ For technical details, see [docs/cardano-integration.md](../docs/cardano-integra
 
 - Node.js: Version 20.
 - npm: Compatible with the Node.js version.
+- **Java: OpenJDK 21 (LTS)** - Required for Android builds. The project uses Java 21 features and Android Gradle Plugin 8.7.2.
 - Xcode: For iOS emulation (latest version recommended).
 - Android Studio: For Android emulation (latest version recommended).
 - Capacitor: Version 7.0.0 (refer to package.json). For detailed environment setup, refer to the [Capacitor Environment Setup Guide](https://capacitorjs.com/docs/getting-started/environment-setup).

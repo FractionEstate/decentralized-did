@@ -1,15 +1,26 @@
 .biometric-verification {
   padding: 2rem;
   text-align: center;
-  min-height: 400px;
+  min-height: 100%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .verification-ready,
+  .verification-capturing,
+  .verification-verifying {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+  }
 
   .fingerprint-icon {
     font-size: 8rem;
     color: var(--ion-color-primary);
-    margin-bottom: 1.5rem;
+    margin-top: auto;
+    margin-bottom: 3rem;
+    order: 2;
 
     &.pulse {
       animation: pulse 1.5s ease-in-out infinite;
@@ -31,19 +42,27 @@
   h2 {
     font-size: 1.8rem;
     margin-bottom: 1rem;
+    order: 0;
   }
 
   p {
     font-size: 1.1rem;
     color: var(--ion-color-medium);
     margin-bottom: 1.5rem;
+    order: 1;
+  }
+
+  ion-spinner {
+    --color: var(--ion-color-primary);
+    margin: 1rem auto;
+    order: 3;
   }
 
   .attempts-warning {
     background: var(--ion-color-warning-tint);
     color: var(--ion-color-warning-contrast);
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     margin-bottom: 1.5rem;
     font-weight: bold;
   }
@@ -60,7 +79,7 @@
     button {
       padding: 1rem 2rem;
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
@@ -115,7 +134,7 @@
       background: var(--ion-color-primary);
       color: var(--ion-color-primary-contrast);
       border: none;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
       font-size: 1.1rem;
       font-weight: 600;
       cursor: pointer;
@@ -148,11 +167,16 @@
 @media (max-width: 768px) {
   .biometric-verification {
     padding: 1.5rem;
+    padding-bottom: 3rem;
 
-    .fingerprint-icon,
+    .fingerprint-icon {
+      font-size: 7rem;
+      margin-bottom: 4rem;
+    }
+
     .success-icon,
     .error-icon {
-      font-size: 6rem;
+      font-size: var(--font-size-3xl);
     }
 
     h2 {
@@ -160,7 +184,7 @@
     }
 
     p {
-      font-size: 1rem;
+      font-size: var(--font-size-base);
     }
   }
 }

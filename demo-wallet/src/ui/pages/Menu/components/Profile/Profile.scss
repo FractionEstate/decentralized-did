@@ -31,11 +31,11 @@
     margin: 0;
     display: flex;
     background: var(--ion-color-neutral-100);
-    border-radius: 1rem;
+    border-radius: var(--radius-xl);
     flex-direction: column;
     justify-content: space-evenly;
     padding: var(--spacing-xs) 1.25rem;
-    box-shadow: none;
+    box-shadow: var(--shadow-none);
     --inner-border-width: 0;
     margin-bottom: 1.5rem;
 

@@ -10,11 +10,11 @@ import {
 import { TabsMenu, tabsRoutes } from "../ui/components/navigation/TabsMenu";
 import { CreatePassword } from "../ui/pages/CreatePassword";
 import { CredentialDetails } from "../ui/pages/CredentialDetails";
+import { DeferredBackup } from "../ui/pages/DeferredBackup";
 import { GenerateSeedPhrase } from "../ui/pages/GenerateSeedPhrase";
 import { IdentifierDetails } from "../ui/pages/IdentifierDetails";
 import { NotificationDetails } from "../ui/pages/NotificationDetails";
 import { Onboarding } from "../ui/pages/Onboarding";
-import { SimplifiedOnboarding } from "../ui/pages/SimplifiedOnboarding";
 import { SetPasscode } from "../ui/pages/SetPasscode";
 import { SetupBiometrics } from "../ui/pages/SetupBiometrics/SetupBiometrics";
 import { BiometricEnrollment } from "../ui/pages/BiometricEnrollment";
@@ -49,11 +49,6 @@ const Routes = () => {
         exact
       />
       <Route
-        path={RoutePath.SIMPLIFIED_ONBOARDING}
-        component={SimplifiedOnboarding}
-        exact
-      />
-      <Route
         path={RoutePath.GENERATE_SEED_PHRASE}
         component={GenerateSeedPhrase}
         exact
@@ -61,6 +56,11 @@ const Routes = () => {
       <Route
         path={RoutePath.VERIFY_SEED_PHRASE}
         component={VerifySeedPhrase}
+        exact
+      />
+      <Route
+        path={RoutePath.DEFERRED_BACKUP}
+        component={DeferredBackup}
         exact
       />
       <Route

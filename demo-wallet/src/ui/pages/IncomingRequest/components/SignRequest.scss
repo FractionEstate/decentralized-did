@@ -41,7 +41,7 @@
 
     .sign-name {
       font-size: var(--font-size-xl);
-      line-height: var(--line-height-relaxed)rem;
+      line-height: var(--line-height-relaxed) rem;
       margin-bottom: 0.5rem;
       color: var(--ion-color-neutral-800);
     }
@@ -140,7 +140,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: var(--z-index-max);
   background: var(--ion-background-color, #fff);
   display: flex;
   align-items: center;

@@ -57,7 +57,7 @@
     position: relative;
     margin-bottom: 2.94rem;
     padding: 1.25rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-xl);
     background-color: var(--ion-color-neutral-100);
 
     .connection-details-delete-note {
@@ -132,7 +132,7 @@
     position: fixed;
     bottom: 2.19rem;
     right: 1.25rem;
-    z-index: 10;
+    z-index: var(--z-index-modal);
 
     ion-button {
       width: 3.375rem;

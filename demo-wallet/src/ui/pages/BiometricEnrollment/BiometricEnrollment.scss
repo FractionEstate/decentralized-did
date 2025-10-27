@@ -89,7 +89,7 @@
         .webauthn-enroll-button {
           width: 100%;
           padding: var(--spacing-md);
-          background: white;
+          background: var(--ion-background-color);
           color: var(--ion-color-primary);
           border: none;
           border-radius: var(--radius-md);
@@ -245,7 +245,7 @@
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: var(--font-size-2xl);
       margin-bottom: 1rem;
     }
 
@@ -272,7 +272,7 @@
         font-size: 0.85rem;
         word-break: break-all;
         color: var(--ion-color-primary);
-        background: white;
+        background: var(--ion-background-color);
         padding: var(--spacing-xs);
         border-radius: var(--radius-sm);
       }
@@ -311,7 +311,7 @@
       padding: var(--spacing-lg);
 
       .large-icon {
-        font-size: 5rem;
+        font-size: var(--font-size-3xl);
       }
 
       .header-with-help {
@@ -346,7 +346,7 @@
         margin: var(--spacing-xl) 0;
 
         .pulse-icon {
-          font-size: 6rem;
+          font-size: var(--font-size-3xl);
         }
 
         h3 {
@@ -365,7 +365,7 @@
       padding: var(--spacing-lg);
 
       .success-icon {
-        font-size: 5rem;
+        font-size: var(--font-size-3xl);
       }
 
       h1 {
@@ -420,7 +420,7 @@
       padding: var(--spacing-md);
 
       .large-icon {
-        font-size: 4rem;
+        font-size: var(--font-size-3xl);
         margin-bottom: 0.75rem;
       }
 
@@ -490,7 +490,7 @@
         margin: var(--spacing-lg) 0;
 
         .pulse-icon {
-          font-size: 5rem;
+          font-size: var(--font-size-3xl);
         }
 
         h3 {
@@ -531,7 +531,7 @@
       padding: var(--spacing-md);
 
       .success-icon {
-        font-size: 4rem;
+        font-size: var(--font-size-3xl);
       }
 
       h1 {
@@ -620,7 +620,7 @@
   .biometric-enrollment {
     .enrollment-intro {
       .large-icon {
-        font-size: 3rem;
+        font-size: var(--font-size-3xl);
         margin-bottom: 0.5rem;
       }
 
@@ -634,14 +634,14 @@
         margin: var(--spacing-md) 0;
 
         .pulse-icon {
-          font-size: 4rem;
+          font-size: var(--font-size-3xl);
         }
       }
     }
 
     .enrollment-complete {
       .success-icon {
-        font-size: 3rem;
+        font-size: var(--font-size-3xl);
         margin-bottom: 0.5rem;
       }
     }

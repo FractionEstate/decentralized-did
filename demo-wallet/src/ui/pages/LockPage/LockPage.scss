@@ -1,6 +1,6 @@
 .lock-page {
   display: flex !important;
-  z-index: 2147483647 !important; // max value
+  z-index: var(--z-index-max) !important; // max value
 
   &.hide {
     .responsive-page-content,
@@ -49,7 +49,7 @@
       font-weight: var(--font-weight-medium);
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-sm);
 
       ion-icon {
         font-size: var(--font-size-xl);
@@ -58,12 +58,12 @@
       &:hover {
         background: var(--ion-color-primary-shade);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
       }
 
       &:active {
         transform: translateY(0);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-sm);
       }
     }
   }
@@ -74,5 +74,5 @@
 }
 
 .alert-forgotten {
-  z-index: 2147483647 !important; // max value
+  z-index: var(--z-index-max) !important; // max value
 }

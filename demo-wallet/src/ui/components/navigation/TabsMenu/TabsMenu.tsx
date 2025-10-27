@@ -29,6 +29,7 @@ import { Credentials } from "../../../pages/Credentials";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
 import { Menu } from "../../../pages/Menu";
+import { BackupWarningBanner } from "../../BackupWarningBanner";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { getNotificationsCache } from "../../../../store/reducers/notificationsCache";
 import {
@@ -105,6 +106,9 @@ const TabsMenu = ({ tab, path }: { tab: ComponentType; path: string }) => {
           exact={true}
         />
       </IonRouterOutlet>
+
+      {/* Backup Warning Banner - shows if seed phrase not backed up */}
+      <BackupWarningBanner />
 
       <IonTabBar
         slot="bottom"
