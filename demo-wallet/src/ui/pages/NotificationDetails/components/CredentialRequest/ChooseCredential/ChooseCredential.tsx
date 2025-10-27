@@ -298,7 +298,7 @@ const ChooseCredential = ({
               <div className="item-action">
                 <IonCheckbox
                   checked={selectedCred?.acdc?.d === data.acdc.d}
-                  aria-label=""
+                  aria-label="Select credential for verification"
                   className="checkbox"
                   data-testid={`cred-select-${data.acdc.d}`}
                   onClick={(e) => {

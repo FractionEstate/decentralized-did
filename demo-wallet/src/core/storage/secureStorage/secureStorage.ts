@@ -19,7 +19,13 @@ class SecureStorage {
       const result = await SecureStoragePlugin.get({ key });
       return result.value;
     } catch (e) {
-      const error = e as { message?: string };
+      const error = e as { message?: string; name?: string };
+
+      // Log NotFoundError if it occurs
+      if (error.name === 'NotFoundError') {
+        console.error(`🔍 [SecureStorage] NotFoundError on get("${key}"):`, error);
+      }
+
       if (!SecureStorage.isErrorKeyNotFound(error.message)) {
         throw e;
       }
@@ -28,11 +34,21 @@ class SecureStorage {
   }
 
   static async set(key: string, value: string): Promise<void> {
-    await SecureStoragePlugin.set({
-      key,
-      value,
-      accessibility: "whenUnlockedThisDeviceOnly",
-    });
+    try {
+      await SecureStoragePlugin.set({
+        key,
+        value,
+        accessibility: "whenUnlockedThisDeviceOnly",
+      });
+    } catch (e) {
+      const error = e as { name?: string };
+
+      // Log NotFoundError if it occurs
+      if (error.name === 'NotFoundError') {
+        console.error(`🔍 [SecureStorage] NotFoundError on set("${key}"):`, e);
+      }
+      throw e;
+    }
   }
 
   static async delete(key: string) {
