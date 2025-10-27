@@ -48,32 +48,32 @@ export default function Security() {
   ]
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="w-full h-full flex flex-col justify-center items-center px-3 overflow-hidden">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="text-center mb-16"
+        className="text-center mb-4 sm:mb-6"
       >
-        <Shield className="w-32 h-32 mx-auto mb-8 text-cardano-cyan" />
-        <h2 className="text-7xl font-bold mb-6 text-white">Military-Grade Security</h2>
-        <p className="text-4xl font-light text-white/90">Multi-Layer Defense</p>
+        <Shield className="w-16 sm:w-24 h-16 sm:h-24 mx-auto mb-3 sm:mb-4 text-cardano-cyan" />
+        <h2 className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-2 sm:mb-4 text-white">Military-Grade Security</h2>
+        <p className="text-xl sm:text-3xl lg:text-4xl font-light text-white/90">Multi-Layer Defense</p>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full max-w-5xl mb-4">
         {layers.map((layer, i) => (
           <motion.div
             key={i}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.15 }}
-            className="card-glass p-8"
+            className="card-glass p-3 sm:p-5"
           >
-            <layer.icon className="w-16 h-16 mb-6 text-cardano-cyan" />
-            <h3 className="text-3xl font-bold mb-6 text-white">{layer.title}</h3>
-            <ul className="space-y-3">
+            <layer.icon className="w-8 sm:w-12 h-8 sm:h-12 mb-2 sm:mb-3 text-cardano-cyan" />
+            <h3 className="text-sm sm:text-lg lg:text-xl font-bold mb-2 sm:mb-3 text-white">{layer.title}</h3>
+            <ul className="space-y-1 sm:space-y-2">
               {layer.items.map((item, j) => (
-                <li key={j} className="flex items-start gap-3 text-xl text-white/80">
-                  <span className="text-green-400 text-2xl">✓</span>
+                <li key={j} className="flex items-start gap-1 sm:gap-2 text-xs sm:text-sm text-white/80">
+                  <span className="text-green-400 flex-shrink-0">✓</span>
                   <span>{item}</span>
                 </li>
               ))}
@@ -86,24 +86,24 @@ export default function Security() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8 }}
-        className="card-glass p-12 mt-12 text-center"
+        className="card-glass p-4 sm:p-6 text-center w-full max-w-3xl"
       >
-        <h3 className="text-4xl font-bold mb-6 text-white">Attack Resistance</h3>
-        <div className="grid grid-cols-3 gap-8">
+        <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 sm:mb-4 text-white">Attack Resistance</h3>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4">
           <div>
-            <div className="text-5xl mb-3">🛡️</div>
-            <div className="text-2xl font-semibold text-cardano-cyan mb-2">Spoofing</div>
-            <div className="text-lg text-white/70">Liveness detection</div>
+            <div className="text-3xl sm:text-4xl mb-1">🛡️</div>
+            <div className="text-xs sm:text-base font-semibold text-cardano-cyan mb-1">Spoofing</div>
+            <div className="text-xs text-white/70">Liveness detection</div>
           </div>
           <div>
-            <div className="text-5xl mb-3">🔐</div>
-            <div className="text-2xl font-semibold text-cardano-cyan mb-2">Replay</div>
-            <div className="text-lg text-white/70">Nonce + timestamps</div>
+            <div className="text-3xl sm:text-4xl mb-1">🔐</div>
+            <div className="text-xs sm:text-base font-semibold text-cardano-cyan mb-1">Replay</div>
+            <div className="text-xs text-white/70">Nonce + timestamps</div>
           </div>
           <div>
-            <div className="text-5xl mb-3">⚡</div>
-            <div className="text-2xl font-semibold text-cardano-cyan mb-2">Brute Force</div>
-            <div className="text-lg text-white/70">2^256 keyspace</div>
+            <div className="text-3xl sm:text-4xl mb-1">⚡</div>
+            <div className="text-xs sm:text-base font-semibold text-cardano-cyan mb-1">Brute Force</div>
+            <div className="text-xs text-white/70">2^256 keyspace</div>
           </div>
         </div>
       </motion.div>

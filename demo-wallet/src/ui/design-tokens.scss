@@ -163,14 +163,23 @@
   --opacity-active: 0.24;
 
   /* ========================================
+     PRESENTATION DESIGN SYSTEM (Cardano Summit 2025)
+     ======================================== */
+  /* Modern cyber theme: Cyan, Purple, Dark Blue */
+  --cardano-blue: #0033ad; /* Primary blue */
+  --cardano-cyan: #00d4ff; /* Bright cyan accent */
+  --cardano-purple: #7b3ff2; /* Purple accent */
+  --cardano-dark: #0f0f1e; /* Deep dark background */
+
+  /* ========================================
      COLOR SYSTEM EXTENSIONS
      ======================================== */
   /* Using Ionic color system as base, adding semantic colors */
 
   /* Success States */
-  --color-success-light: var(--ion-color-success-tint);
-  --color-success: var(--ion-color-success);
-  --color-success-dark: var(--ion-color-success-shade);
+  --color-success-light: #10b9811a;
+  --color-success: #10b981; /* Emerald green */
+  --color-success-dark: #059669;
 
   /* Error States */
   --color-error-light: var(--ion-color-danger-tint);
@@ -183,9 +192,9 @@
   --color-warning-dark: var(--ion-color-warning-shade);
 
   /* Info States */
-  --color-info-light: var(--ion-color-primary-tint);
-  --color-info: var(--ion-color-primary);
-  --color-info-dark: var(--ion-color-primary-shade);
+  --color-info-light: #00d4ff1a;
+  --color-info: var(--cardano-cyan); /* Use cyan for primary info */
+  --color-info-dark: #00a8cc;
 
   /* Neutral Grays */
   --color-gray-50: #fafafa;
@@ -203,17 +212,28 @@
      COMPONENT TOKENS
      ======================================== */
 
+  /* Glass-Morphism Cards */
+  --card-glass-background: rgba(255, 255, 255, 0.05);
+  --card-glass-backdrop: blur(10px);
+  --card-glass-border: 1px solid rgba(255, 255, 255, 0.1);
+
   /* Cards */
   --card-border-radius: var(--radius-xl);
   --card-padding: var(--spacing-lg);
   --card-shadow: var(--shadow-md);
-  --card-background: var(--ion-color-light);
+  --card-background: rgba(255, 255, 255, 0.02);
+  --card-backdrop: blur(5px);
+  --card-border: 1px solid rgba(255, 255, 255, 0.05);
 
   /* Buttons */
   --button-border-radius: var(--radius-md);
   --button-shadow: var(--shadow-sm);
   --button-shadow-hover: var(--shadow-md);
   --button-transition: all var(--transition-base) var(--ease-out);
+  --button-primary-bg: var(--cardano-cyan);
+  --button-primary-text: #000000;
+  --button-secondary-bg: var(--cardano-purple);
+  --button-secondary-text: #ffffff;
 
   /* Modals */
   --modal-border-radius: var(--radius-2xl);

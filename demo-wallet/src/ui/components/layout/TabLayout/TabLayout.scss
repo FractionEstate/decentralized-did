@@ -36,7 +36,14 @@
       width: 2.75rem;
       height: 2.75rem;
       border-radius: 1.5rem;
-      background: var(--ion-color-neutral-100);
+      background: rgba(0, 212, 255, 0.15);
+      border: 1px solid rgba(0, 212, 255, 0.3);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(0, 212, 255, 0.25);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+      }
 
       &:not(:first-child) {
         margin-left: 0.5rem;

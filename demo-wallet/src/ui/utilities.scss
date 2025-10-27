@@ -493,3 +493,209 @@
     padding: var(--spacing-sm) var(--spacing-md);
   }
 }
+
+/* ========================================
+   PRESENTATION DESIGN SYSTEM UTILITIES
+   ======================================== */
+
+/* Glass-Morphic Cards */
+.card-glass {
+  background: var(--card-glass-background);
+  backdrop-filter: var(--card-glass-backdrop);
+  border: var(--card-glass-border);
+  border-radius: var(--radius-xl);
+}
+
+.card-glass-strong {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-xl);
+}
+
+.card-glass-subtle {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-lg);
+}
+
+/* Gradient Text Utilities */
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--cardano-cyan),
+    var(--cardano-purple)
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-cyan-purple {
+  background: linear-gradient(90deg, #00d4ff, #7b3ff2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-purple-cyan {
+  background: linear-gradient(90deg, #7b3ff2, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Glow Effects */
+.glow-cyan {
+  text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.glow-purple {
+  text-shadow: 0 0 20px rgba(123, 63, 242, 0.5);
+}
+
+.glow-cyan-box {
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+}
+
+.glow-purple-box {
+  box-shadow: 0 0 30px rgba(123, 63, 242, 0.3);
+}
+
+/* Background Gradients */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #0033ad 0%, #1a1a2e 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(to-b, #0f0f1e, #1a1a2e);
+}
+
+/* Color Utilities */
+.text-cyan {
+  color: var(--cardano-cyan);
+}
+
+.text-purple {
+  color: var(--cardano-purple);
+}
+
+.text-blue {
+  color: var(--cardano-blue);
+}
+
+.bg-cyan {
+  background-color: var(--cardano-cyan);
+}
+
+.bg-purple {
+  background-color: var(--cardano-purple);
+}
+
+.bg-blue {
+  background-color: var(--cardano-blue);
+}
+
+/* Button Variants */
+.btn-cyan {
+  background-color: var(--cardano-cyan);
+  color: #000000;
+  border: none;
+
+  &:hover {
+    background-color: rgba(0, 212, 255, 0.8);
+  }
+
+  &:active {
+    background-color: rgba(0, 212, 255, 0.6);
+  }
+}
+
+.btn-purple {
+  background-color: var(--cardano-purple);
+  color: #ffffff;
+  border: none;
+
+  &:hover {
+    background-color: rgba(123, 63, 242, 0.8);
+  }
+
+  &:active {
+    background-color: rgba(123, 63, 242, 0.6);
+  }
+}
+
+.btn-cyan-outline {
+  background-color: transparent;
+  color: var(--cardano-cyan);
+  border: 2px solid var(--cardano-cyan);
+
+  &:hover {
+    background-color: rgba(0, 212, 255, 0.1);
+  }
+}
+
+.btn-purple-outline {
+  background-color: transparent;
+  color: var(--cardano-purple);
+  border: 2px solid var(--cardano-purple);
+
+  &:hover {
+    background-color: rgba(123, 63, 242, 0.1);
+  }
+}
+
+/* Border Utilities */
+.border-cyan {
+  border-color: var(--cardano-cyan);
+}
+
+.border-purple {
+  border-color: var(--cardano-purple);
+}
+
+.border-glass {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Transition Utilities */
+.transition-smooth {
+  transition: all var(--transition-base) var(--ease-in-out);
+}
+
+.transition-fast {
+  transition: all var(--transition-fast) var(--ease-out);
+}
+
+.transition-slow {
+  transition: all var(--transition-slow) var(--ease-in-out);
+}
+
+/* Focus/Active States */
+.focus-ring-cyan {
+  outline: 2px solid var(--cardano-cyan);
+  outline-offset: 2px;
+}
+
+.focus-ring-purple {
+  outline: 2px solid var(--cardano-purple);
+  outline-offset: 2px;
+}
+
+/* Status Indicators */
+.status-success {
+  color: var(--color-success);
+}
+
+.status-error {
+  color: var(--color-error);
+}
+
+.status-warning {
+  color: var(--color-warning);
+}
+
+.status-info {
+  color: var(--color-info);
+}

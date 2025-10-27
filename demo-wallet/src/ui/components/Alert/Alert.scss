@@ -3,9 +3,15 @@
   padding: 1.56rem 1.25rem;
   border-radius: 1rem !important;
   --width: 100%;
-  --ion-text-color: var(--ion-color-neutral-700);
-  box-shadow: 0.25rem 0.25rem 0.5rem 0rem
-    rgba(var(--ion-color-neutral-600-rgb), 0.2) !important;
+  --ion-text-color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 212, 255, 0.1),
+    rgba(123, 63, 242, 0.1)
+  ) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(0, 212, 255, 0.2) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3) !important;
 
   .alert-title.sc-ion-alert-md {
     text-align: center;
@@ -21,6 +27,7 @@
       font-style: normal;
       font-weight: 500;
       line-height: normal;
+      color: #ffffff;
     }
 
     @media screen and (min-width: 250px) and (max-width: 370px) {
