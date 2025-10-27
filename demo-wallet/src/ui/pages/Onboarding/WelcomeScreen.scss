@@ -77,7 +77,7 @@
 
     .welcome-screen__primary {
       --background: var(--ion-color-tertiary);
-      --color: #0b1022;
+      --color: var(--ion-color-dark);
       --border-radius: var(--radius-xl);
       --box-shadow: var(--shadow-lg);
       font-size: var(--font-size-base);
@@ -101,8 +101,8 @@
     }
 
     .welcome-screen__secondary {
-      --color: rgba(255, 255, 255, 0.85);
-      --border-color: rgba(255, 255, 255, 0.3);
+      --color: var(--ion-color-light-shade);
+      --border-color: var(--ion-color-light-tint);
       font-size: 0.95rem;
       font-weight: var(--font-weight-medium);
       height: 48px;

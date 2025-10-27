@@ -79,17 +79,17 @@
       --padding-start: 16px;
       --padding-end: 48px;
       font-size: var(--font-size-base);
-      font-family: 'Courier New', monospace;
+      font-family: "Courier New", monospace;
       height: 48px;
 
       &.error {
-        --background: #fff5f5;
+        --background: var(--ion-color-error-100);
         --border-color: var(--ion-color-danger);
         border: 2px solid var(--ion-color-danger);
       }
 
       &.success {
-        --background: #f0f9ff;
+        --background: var(--ion-color-primary-100);
         --border-color: var(--ion-color-success);
         border: 2px solid var(--ion-color-success);
       }
@@ -130,19 +130,18 @@
   gap: var(--spacing-sm);
 
   .verify-button {
-    --background: #007aff;
+    --background: var(--ion-color-primary);
     --border-radius: var(--radius-lg);
     height: 56px;
     font-size: var(--font-size-md);
     font-weight: var(--font-weight-semibold);
 
     &:disabled {
-      --background: #e0e0e0;
+      --background: var(--color-gray-300);
       --color: var(--ion-color-medium);
     }
   }
 }
-
 /* Responsive */
 @media (max-width: 768px) {
   .verification-container h1 {

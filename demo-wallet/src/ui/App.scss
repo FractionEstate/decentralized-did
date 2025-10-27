@@ -1,8 +1,10 @@
 /**
  * Import Design System
+ * Note: Using @use with "as *" instead of deprecated @import (Dart Sass 3.0.0 compatibility)
+ * The "as *" syntax imports all symbols into global namespace for backward compatibility
  */
-@import "./design-tokens.scss";
-@import "./utilities.scss";
+@use "./design-tokens.scss" as *;
+@use "./utilities.scss" as *;
 
 :root[mode="ios"],
 :root[mode="md"] {

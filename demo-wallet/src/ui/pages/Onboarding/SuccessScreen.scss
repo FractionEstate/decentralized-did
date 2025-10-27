@@ -1,5 +1,9 @@
 .success-screen {
-  --background: linear-gradient(135deg, #34c759 0%, #30a14e 100%);
+  --background: linear-gradient(
+    135deg,
+    var(--ion-color-success-400) 0%,
+    var(--ion-color-success-800) 100%
+  );
 }
 
 .success-content {
@@ -72,7 +76,7 @@
       .address-text {
         flex: 1;
         font-size: var(--font-size-sm);
-        font-family: 'Courier New', monospace;
+        font-family: "Courier New", monospace;
         background: rgba(var(--ion-color-dark-rgb), 0.2);
         padding: var(--spacing-sm);
         border-radius: var(--radius-md);

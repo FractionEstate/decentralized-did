@@ -64,6 +64,16 @@ export class BiometricDidService {
   private pythonCliPath: string;
   private authState: { token: string; expiresAt: number } | null = null;
   private pendingAuthRequest: Promise<string | null> | null = null;
+  private readonly REQUEST_TIMEOUT_MS = 10000; // 10 seconds
+
+  /**
+   * Generate unique request ID for audit trails
+   */
+  private generateRequestId(): string {
+    const timestamp = Date.now().toString(36);
+    const random = Math.random().toString(36).substring(2, 10);
+    return `${timestamp}-${random}`;
+  }
 
   private constructor() {
     // In production, this would be the path to the bundled Python CLI
@@ -248,20 +258,36 @@ export class BiometricDidService {
   }
 
   private resolveApiBaseUrl(): string {
-    return (
+    const url = (
       process.env.BIOMETRIC_API_URL ||
       process.env.SECURE_API_URL ||
       process.env.MOCK_API_URL ||
       "http://localhost:8000"
     );
+
+    // Enforce HTTPS in production (allow http://localhost for development)
+    if (process.env.NODE_ENV === "production" && url.startsWith("http://") && !url.includes("localhost")) {
+      console.warn(`⚠️ Enforcing HTTPS: ${url} → ${url.replace("http://", "https://")}`);
+      return url.replace("http://", "https://");
+    }
+
+    return url;
   }
 
   private resolveAuthBaseUrl(): string {
-    return (
+    const url = (
       process.env.BIOMETRIC_AUTH_URL ||
       process.env.SECURE_API_URL ||
       this.resolveApiBaseUrl()
     );
+
+    // Enforce HTTPS in production
+    if (process.env.NODE_ENV === "production" && url.startsWith("http://") && !url.includes("localhost")) {
+      console.warn(`⚠️ Enforcing HTTPS: ${url} → ${url.replace("http://", "https://")}`);
+      return url.replace("http://", "https://");
+    }
+
+    return url;
   }
 
   private resolveApiKey(): string | undefined {
@@ -313,15 +339,22 @@ export class BiometricDidService {
   private async requestAuthToken(apiKey: string): Promise<string | null> {
     const authBase = this.resolveAuthBaseUrl();
     const authEndpoint = `${authBase.replace(/\/$/, "")}/auth/token`;
+    const requestId = this.generateRequestId();
 
     try {
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT_MS);
+
       const response = await fetch(authEndpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-Request-ID": requestId,
         },
         body: JSON.stringify({ api_key: apiKey }),
-      });
+        signal: controller.signal,
+      }).finally(() => clearTimeout(timeoutId));
 
       if (!response.ok) {
         const message = await this.extractErrorMessage(response);
@@ -343,11 +376,17 @@ export class BiometricDidService {
         expiresAt: Date.now() + expiresInSeconds * 1000,
       };
 
+      console.log(`✅ Authentication successful [Request ID: ${requestId}]`);
       return data.access_token;
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error(
+          `Authentication request timed out after ${this.REQUEST_TIMEOUT_MS}ms [Request ID: ${requestId}]`
+        );
+      }
       if (this.isNetworkError(error)) {
         throw new Error(
-          `Authentication server unavailable at ${authBase}. Ensure the secure API server is running and BIOMETRIC_AUTH_URL is correct.`
+          `Authentication server unavailable at ${authBase}. Ensure the secure API server is running and BIOMETRIC_AUTH_URL is correct. [Request ID: ${requestId}]`
         );
       }
       throw error;
@@ -403,9 +442,11 @@ export class BiometricDidService {
   ): Promise<T> {
     const baseUrl = this.resolveApiBaseUrl().replace(/\/$/, "");
     const url = `${baseUrl}${path.startsWith("/") ? path : `/${path}`}`;
+    const requestId = this.generateRequestId();
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      "X-Request-ID": requestId,
     };
 
     if (init.headers) {
@@ -425,13 +466,18 @@ export class BiometricDidService {
       headers.Authorization = `Bearer ${token}`;
     }
 
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.REQUEST_TIMEOUT_MS);
+
     const requestInit: RequestInit = {
       ...init,
       headers,
+      signal: controller.signal,
     };
 
     try {
-      const response = await fetch(url, requestInit);
+      const response = await fetch(url, requestInit).finally(() => clearTimeout(timeoutId));
 
       if (response.status === 401 && allowRetry && token) {
         this.invalidateAuthToken();
@@ -440,14 +486,20 @@ export class BiometricDidService {
 
       if (!response.ok) {
         const message = await this.extractErrorMessage(response);
-        throw new Error(message);
+        throw new Error(`${message} [Request ID: ${requestId}]`);
       }
 
+      console.log(`✅ API request successful: ${path} [Request ID: ${requestId}]`);
       return (await response.json()) as T;
     } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error(
+          `API request timed out after ${this.REQUEST_TIMEOUT_MS}ms: ${path} [Request ID: ${requestId}]`
+        );
+      }
       if (this.isNetworkError(error)) {
         throw new Error(
-          `Backend API unavailable at ${baseUrl}. Ensure the server is running and BIOMETRIC_API_URL is correct.`
+          `Backend API unavailable at ${baseUrl}. Ensure the server is running and BIOMETRIC_API_URL is correct. [Request ID: ${requestId}]`
         );
       }
       throw error;

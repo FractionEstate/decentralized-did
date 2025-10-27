@@ -3,13 +3,15 @@ const WorkboxPlugin = require('workbox-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 let { merge } = require("webpack-merge");
-const TerserPlugin = require("terser-webpack-plugin"); 
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = merge(require("./webpack.common.cjs"), {
    mode: "production",
    output: {
       path: path.resolve(__dirname, "build"),
-      filename: '[name].bundle.js',
+      filename: '[name].[contenthash].bundle.js',
+      chunkFilename: '[name].[contenthash].chunk.js',
+      clean: true,
    },
    module: {
       rules: [
@@ -36,7 +38,7 @@ module.exports = merge(require("./webpack.common.cjs"), {
             include: /node_modules/,
             type: 'javascript/auto',
             resolve: {
-              fullySpecified: false,
+               fullySpecified: false,
             },
          },
       ],
@@ -59,12 +61,50 @@ module.exports = merge(require("./webpack.common.cjs"), {
          new TerserPlugin({
             extractComments: false,
             terserOptions: {
-              compress: true,
-              mangle: true,
+               compress: {
+                  drop_console: false, // Keep console for audit logs
+                  passes: 2,
+               },
+               mangle: true,
             },
-          }),
+         }),
          new CssMinimizerPlugin()
       ],
       minimize: true,
+      splitChunks: {
+         chunks: 'all',
+         cacheGroups: {
+            // Vendor code (node_modules)
+            vendor: {
+               test: /[\\/]node_modules[\\/]/,
+               name: 'vendors',
+               priority: 10,
+               reuseExistingChunk: true,
+            },
+            // Ionic/Capacitor frameworks
+            ionic: {
+               test: /[\\/]node_modules[\\/](@ionic|@capacitor)[\\/]/,
+               name: 'ionic',
+               priority: 20,
+               reuseExistingChunk: true,
+            },
+            // Crypto libraries (blake2, bs58, etc)
+            crypto: {
+               test: /[\\/]node_modules[\\/](blakejs|bs58|@noble|@scure)[\\/]/,
+               name: 'crypto',
+               priority: 15,
+               reuseExistingChunk: true,
+            },
+            // Common code shared across routes
+            common: {
+               minChunks: 2,
+               priority: 5,
+               reuseExistingChunk: true,
+               enforce: true,
+            },
+         },
+      },
+      runtimeChunk: 'single',
+      moduleIds: 'deterministic',
    },
 });
