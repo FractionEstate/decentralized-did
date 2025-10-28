@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState, useLayoutEffect } from "react";
 import { SideSlider } from "../SideSlider";
 import {
   getQueueIncomingRequest,
@@ -27,12 +27,15 @@ const SidePage = () => {
   const DELAY_ON_PAGE_CLOSE = 500;
   const [lastContent, setLastContent] = useState<ReactNode | null>(null);
 
-  useEffect(() => {
+  // Use useLayoutEffect to update state before React commits to DOM
+  // This prevents conflicts with sibling component renders
+  useLayoutEffect(() => {
     if (!stateCache.authentication.loggedIn || isConnecting) return;
+
     setOpenSidePage(
       canOpenIncomingRequest ||
-        canOpenPendingWalletConnection ||
-        canOpenConnections
+      canOpenPendingWalletConnection ||
+      canOpenConnections
     );
     if (canOpenPendingWalletConnection) {
       pauseIncommingRequestByConnection.current = true;
@@ -43,9 +46,7 @@ const SidePage = () => {
     canOpenConnections,
     stateCache.authentication.loggedIn,
     isConnecting,
-  ]);
-
-  const getContent = () => {
+  ]); const getContent = () => {
     if (canOpenPendingWalletConnection) {
       return (
         <WalletConnect
@@ -82,7 +83,8 @@ const SidePage = () => {
     }, DELAY_ON_PAGE_CLOSE);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // Update state after layout but before paint
     getContent() !== null && setLastContent(getContent());
     !openSidePage && clearLastContent();
   }, [openSidePage]);

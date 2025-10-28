@@ -1,5 +1,5 @@
 import { IonRouterOutlet } from "@ionic/react";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useRef, useLayoutEffect } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -44,8 +44,12 @@ const Routes = () => {
     store: { stateCache },
   });
 
-  useEffect(() => {
-    if (!routes.length) dispatch(setCurrentRoute({ path: nextPath.pathname }));
+  // Use useLayoutEffect to dispatch BEFORE paint but AFTER DOM measurements
+  // This prevents render cycle conflicts by ensuring state is updated before other renders
+  useLayoutEffect(() => {
+    if (!routes.length) {
+      dispatch(setCurrentRoute({ path: nextPath.pathname }));
+    }
   }, [routes, nextPath.pathname, dispatch]);
 
   return (
@@ -99,12 +103,10 @@ const Routes = () => {
               path={tab.path}
               exact
               render={() => (
-                <ErrorBoundary>
-                  <TabsMenu
-                    tab={tab.component}
-                    path={tab.path}
-                  />
-                </ErrorBoundary>
+                <TabsMenu
+                  tab={tab.component}
+                  path={tab.path}
+                />
               )}
             />
           );
