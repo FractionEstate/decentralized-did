@@ -2,6 +2,9 @@ const path = require("path");
 const WorkboxPlugin = require('workbox-webpack-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const ImageminPlugin = require('imagemin-webpack-plugin').default;
+const imageminMozjpeg = require('imagemin-mozjpeg').default;
+const imageminPngquant = require('imagemin-pngquant').default;
 let { merge } = require("webpack-merge");
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -55,6 +58,20 @@ module.exports = merge(require("./webpack.common.cjs"), {
       new MiniCssExtractPlugin({
          filename: 'styles.[name].[fullhash].min.css',
          chunkFilename: 'styles.[name].[contenthash].chunk.css',
+      }),
+      new ImageminPlugin({
+         test: /\.(jpe?g|png|gif|svg)$/i,
+         minimizerOptions: [
+            imageminMozjpeg({
+               quality: 80,
+               progressive: true,
+            }),
+            imageminPngquant({
+               quality: [0.6, 0.8],
+               speed: 4,
+            }),
+         ],
+         maxConcurrency: 4,
       }),
    ],
    optimization: {

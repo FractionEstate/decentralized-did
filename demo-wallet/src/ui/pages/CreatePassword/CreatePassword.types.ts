@@ -9,8 +9,8 @@ interface PasswordRegexProps {
 }
 
 interface CreatePasswordProps {
-  handleClear: () => void;
-  setPasswordIsSet: (value: boolean) => void;
+  handleClear?: () => void;
+  setPasswordIsSet?: (value: boolean) => void;
   userAction?: MutableRefObject<string>;
 }
 

@@ -1,0 +1,244 @@
+// Loading Skeleton Component Styles
+.loading-skeleton {
+  padding: 1rem;
+  width: 100%;
+
+  // Base skeleton animations
+  ion-skeleton-text {
+    --border-radius: 4px;
+    --background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    margin-bottom: 0.75rem;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  // Text variant - stacked lines
+  &.loading-skeleton-text {
+    .skeleton-line {
+      height: 12px;
+      width: 100%;
+
+      &:nth-child(even) {
+        width: 95%;
+      }
+
+      &:last-child {
+        width: 80%;
+      }
+    }
+  }
+
+  // Card variant - header + content
+  &.loading-skeleton-card {
+    border-radius: 12px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.02)
+    );
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+
+    .skeleton-card-header {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .skeleton-avatar {
+      min-width: 48px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin: 0;
+    }
+
+    .skeleton-card-title {
+      flex: 1;
+
+      .skeleton-title {
+        height: 16px;
+        width: 100%;
+        margin-bottom: 0.5rem;
+      }
+
+      .skeleton-subtitle {
+        height: 12px;
+        width: 70%;
+      }
+    }
+
+    .skeleton-card-content {
+      .skeleton-line {
+        height: 12px;
+        width: 100%;
+
+        &:nth-child(even) {
+          width: 95%;
+        }
+
+        &:last-child {
+          width: 80%;
+        }
+      }
+    }
+  }
+
+  // List variant - items with icons
+  &.loading-skeleton-list {
+    .skeleton-list-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: flex-start;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .skeleton-avatar-small {
+      min-width: 40px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin: 0;
+    }
+
+    .skeleton-list-content {
+      flex: 1;
+    }
+
+    .skeleton-line {
+      height: 12px;
+      margin-bottom: 0.5rem;
+
+      &.skeleton-line-full {
+        width: 100%;
+      }
+
+      &.skeleton-line-short {
+        width: 60%;
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Page variant - full page layout
+  &.loading-skeleton-page {
+    padding: 0;
+
+    .skeleton-page-header {
+      padding: 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 1.5rem;
+
+      .skeleton-header-title {
+        height: 24px;
+        width: 60%;
+      }
+    }
+
+    .skeleton-page-content {
+      padding: 0 1rem;
+    }
+
+    .skeleton-section {
+      margin-bottom: 2rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .skeleton-section-title {
+        height: 16px;
+        width: 40%;
+        margin-bottom: 1rem;
+      }
+
+      .skeleton-section-items {
+        .skeleton-line {
+          height: 12px;
+          width: 100%;
+          margin-bottom: 0.75rem;
+
+          &:nth-child(even) {
+            width: 95%;
+          }
+
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .loading-skeleton {
+    padding: 0.75rem;
+
+    &.loading-skeleton-card {
+      padding: 1rem;
+    }
+
+    &.loading-skeleton-page {
+      .skeleton-page-header {
+        padding: 1rem 0.75rem;
+      }
+
+      .skeleton-page-content {
+        padding: 0 0.75rem;
+      }
+    }
+  }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+  .loading-skeleton {
+    ion-skeleton-text {
+      --background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.05) 0%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.05) 100%
+      );
+    }
+
+    &.loading-skeleton-card {
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.1)
+      );
+    }
+
+    &.loading-skeleton-page {
+      .skeleton-page-header {
+        border-bottom-color: rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+}

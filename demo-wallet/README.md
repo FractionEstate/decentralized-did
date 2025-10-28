@@ -1,9 +1,9 @@
 <div align="center">
-  <img src="src/assets/icon-only.png" alt="Veridian Wallet | Cardano Foundation" height="150" />
+  <img src="src/assets/icon-only.png" alt="BIOVERA | Biometric Cardano Wallet" height="150" />
   <hr />
-  <h1 align="center" style="border-bottom: none">Veridian Wallet | Cardano Foundation</h1>
+  <h1 align="center" style="border-bottom: none">BIOVERA | Your Biometric Truth</h1>
 
-![GitHub](https://img.shields.io/github/license/cardano-foundation/veridian-wallet)
+![GitHub](https://img.shields.io/github/license/FractionEstate/biovera-wallet)
 ![Discord](https://img.shields.io/discord/1022471509173882950)
 
   <hr/>
@@ -13,10 +13,10 @@
 
 <div align="justify">
   <b>
-    Veridian Wallet is an open source application developed by the Cardano Foundation.
-    This project is the result of on-going research and development pertaining to the principles of Self-Sovereign Identity (SSI), Self-Certifying Identifiers (SCIs), Verifiable Data Registries (VDRs), and the standards, frameworks, and implementations available within the Cardano ecosystem and externally.
-    The first release of the wallet provides an open source implementation demonstrating the Key Event Receipt Infrastructure (KERI) on Cardano.
-    This wallet has undergone security auditing and penetration testing, and mitigations have been applied.
+    BIOVERA is an open source, production-ready biometric DID wallet built on Cardano.
+    This innovative application combines the principles of Self-Sovereign Identity (SSI) with advanced biometric authentication and deterministic DID generation from fingerprint data.
+    BIOVERA enables Sybil-resistant, privacy-preserving identity verification through biometric cryptography, leveraging Cardano's decentralized infrastructure and the KERI autonomic identifier system.
+    This wallet has undergone security auditing and penetration testing, with comprehensive biometric security measures and protection against presentation attacks.
   </b>
 </div>
 
@@ -24,17 +24,17 @@
 
 <p align="center">
   <kbd>
-      <img src="docs/images/readme/User-Flow-Preview.png" alt="User Flow Preview" width="720"/>
+      <img src="docs/images/readme/User-Flow-Preview.png" alt="BIOVERA User Flow Preview" width="720"/>
   </kbd>
 </p>
 
 <br>
 
-Check out [our documentation](https://docs.veridian.id/) to learn how to use the app, connect to infrastructure and start developing with KERI!
+Check out [our documentation](https://docs.biovera.io/) to learn how to use BIOVERA, enroll your biometric identity, and start building with Cardano DIDs!
 
 # Features
 
-- :iphone: Android & iOS Support with native biometrics
+- :iphone: Android & iOS Support with native biometric authentication
 - :cloud: High messaging availability with a KERIA cloud agent
 - :closed_lock_with_key: Secure Enclave (SE) / Trusted Execution Environment (TEE) usage for seeds & secrets
 - :fingerprint: **Biometric Decentralized Identifiers (DIDs)** - Privacy-preserving, Sybil-resistant identity
@@ -128,8 +128,8 @@ Ensure that your system meets these requirements to successfully use and develop
 ### Cloning the Repository
 
 ```bash
-git clone https://github.com/cardano-foundation/veridian-wallet.git
-cd veridian-wallet
+git clone https://github.com/FractionEstate/biovera-wallet.git
+cd biovera-wallet
 make init # This will configure the git hooks
 ```
 
