@@ -131,7 +131,7 @@ describe("Onboarding", () => {
     expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
   });
 
-  test("completes the onboarding flow and navigates to credentials", async () => {
+  test("completes the onboarding flow and navigates to passcode setup", async () => {
     jest.useFakeTimers();
     const history = createMemoryHistory({ initialEntries: [RoutePath.ONBOARDING] });
 
@@ -162,7 +162,7 @@ describe("Onboarding", () => {
       expect(screen.queryByText(/Step \d of 3/)).not.toBeInTheDocument();
       fireEvent.click(screen.getByText("Continue to Credentials"));
 
-      expect(history.location.pathname).toBe(TabsRoutePath.CREDENTIALS);
+      expect(history.location.pathname).toBe(RoutePath.SET_PASSCODE);
       expect(jest.getTimerCount()).toBe(0);
     } finally {
       jest.runOnlyPendingTimers();

@@ -199,10 +199,34 @@ npm install --save-dev @axe-core/playwright glob
 
 ### Phase 2: Run Design Audit 🔍
 
+### i18n and label safety updates (2025-10-28)
+
+- Tabs menu now resolves labels at render-time and includes stable human-friendly fallbacks per route (Wallet, Scan, Notifications, Settings) to guarantee visible text even if translations are not yet ready.
+- Footer/header components defensively avoid rendering labels when the literal string "undefined" is passed, preventing confusing UI artifacts.
+- Prefer using the t() hook for components; when constructing test IDs or CSS classes from labels, derive a stable slug from the route ID instead of user-facing text.
+
+Developer tips
+
+- Use t('namespace.key', { defaultValue: 'English fallback' }) for critical UI labels.
+- Avoid calling toLowerCase() on potentially undefined strings; coerce safely and fall back to a stable key.
+- PageFooter/PageHeader will ignore labels equal to the literal string "undefined"; ensure upstream props are either a valid string or undefined.
+
 ```bash
 node scripts/audit-design.js
 # Generates: design-audit-report.md
 ```
+
+### Navigation flow hardening (2025-10-28)
+
+- Tabs are now owned by a single TabsMenu route under `/tabs/*`, which renders all tab pages internally for consistent behavior.
+- Navigating to `/tabs` redirects to the default tab at `/tabs/identifiers` to avoid empty content.
+- Legacy route `/tabs/credentials` is hard-redirected to `/tabs/identifiers` (Credentials tab removed).
+- Onboarding completion now navigates to `/tabs/identifiers` (previously pointed at a hidden tab).
+
+QA notes
+
+- Deep links: `/tabs/scan`, `/tabs/notifications`, `/tabs/menu` work directly.
+- Root `/` resolves to the appropriate page based on onboarding/auth state and lands on the default tab when the main app is ready.
 
 ### Phase 3: Fix Priority Pages 🛠️
 

@@ -69,9 +69,11 @@ const PasscodeModule = ({
           <div
             key={index}
             data-testid={`circle-${index}`}
-            className={`passcode-module-circle ${
-              passcode.length <= index ? "" : "passcode-module-circle-fill"
-            }`}
+            className={`passcode-module-circle ${passcode.length <= index ? "" : "passcode-module-circle-fill"
+              }`}
+            role="img"
+            aria-label={`Passcode character ${index + 1} ${passcode.length <= index ? "empty" : "filled"
+              }`}
           />
         ))}
       </div>
@@ -79,6 +81,8 @@ const PasscodeModule = ({
       <IonGrid
         className="passcode-module-container"
         data-testid="passcode-module-container"
+        role="group"
+        aria-label="Passcode keypad"
       >
         {rows.map(
           (row, rowIndex) =>
@@ -90,21 +94,28 @@ const PasscodeModule = ({
                 {rowIndex === rows.length - 1 && (
                   <IonCol>
                     {handleBiometricButtonClick &&
-                    biometricsCache.enabled &&
-                    biometricInfo?.strongBiometryIsAvailable &&
-                    biometricInfo?.isAvailable ? (
-                        <IonButton
-                          data-testid="passcode-button-#"
-                          className="passcode-module-number-button"
-                          disabled={hasError}
-                          onClick={() =>
-                            biometricInfo?.strongBiometryIsAvailable &&
+                      biometricsCache.enabled &&
+                      biometricInfo?.strongBiometryIsAvailable &&
+                      biometricInfo?.isAvailable ? (
+                      <IonButton
+                        data-testid="passcode-button-#"
+                        className="passcode-module-number-button"
+                        disabled={hasError}
+                        onClick={() =>
+                          biometricInfo?.strongBiometryIsAvailable &&
                           handleBiometricButton()
-                          }
-                        >
-                          {getBiometricIcon()}
-                        </IonButton>
-                      ) : null}
+                        }
+                        aria-label={
+                          [BiometryType.faceAuthentication, BiometryType.faceId].includes(
+                            biometricInfo?.biometryType
+                          )
+                            ? "Use Face ID"
+                            : "Use fingerprint"
+                        }
+                      >
+                        {getBiometricIcon()}
+                      </IonButton>
+                    ) : null}
                   </IonCol>
                 )}
 
@@ -116,6 +127,8 @@ const PasscodeModule = ({
                       onClick={() => handlePinChange(number)}
                       id={`passcode-button-${number}`}
                       disabled={hasError}
+                      aria-label={`Digit ${number} ${labels[number - 1]?.join("") || ""
+                        }`}
                     >
                       <div className="passcode-module-number-button-inner">
                         {number}
@@ -141,6 +154,7 @@ const PasscodeModule = ({
                         data-testid="setpasscode-backspace-button"
                         onClick={() => handleRemove()}
                         disabled={hasError}
+                        aria-label="Delete last digit"
                       >
                         <IonIcon
                           slot="icon-only"

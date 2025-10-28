@@ -50,6 +50,18 @@ const Routes = () => {
   return (
     <IonRouterOutlet animated={false}>
       <Suspense fallback={<LoadingFallback />}>
+        {/* Ensure bare /tabs routes land on the default Identifiers tab */}
+        <Route
+          path={RoutePath.TABS_MENU}
+          exact
+          render={() => <Redirect to={TabsRoutePath.IDENTIFIERS} />}
+        />
+        {/* Legacy credentials route redirected to default tab */}
+        <Route
+          path={TabsRoutePath.CREDENTIALS}
+          exact
+          render={() => <Redirect to={TabsRoutePath.IDENTIFIERS} />}
+        />
         <Route
           path={RoutePath.SET_PASSCODE}
           exact
@@ -86,21 +98,14 @@ const Routes = () => {
           render={() => <VerifyRecoverySeedPhrase />}
         />
 
-        {tabsRoutes.map((tab, index: number) => {
-          return (
-            <Route
-              key={index}
-              path={tab.path}
-              exact
-              render={() => (
-                <TabsMenu
-                  tab={tab.component}
-                  path={tab.path}
-                />
-              )}
-            />
-          );
-        })}
+        {/* Redirect /tabs to the default tab before rendering TabsMenu */}
+        <Route
+          path={RoutePath.TABS_MENU}
+          exact
+          render={() => <Redirect to={TabsRoutePath.IDENTIFIERS} />}
+        />
+        {/* A single TabsMenu handles all nested tab routes */}
+        <Route path={TabsRoutePath.ROOT} render={() => <TabsMenu />} />
         <Route
           path={TabsRoutePath.IDENTIFIER_DETAILS}
           exact
@@ -126,6 +131,7 @@ const Routes = () => {
           exact
           render={() => <NotificationDetails />}
         />
+        {/* Root should always resolve to the computed initial route */}
         <Redirect exact from="/" to={initialRedirectPath} />
       </Suspense>
     </IonRouterOutlet>

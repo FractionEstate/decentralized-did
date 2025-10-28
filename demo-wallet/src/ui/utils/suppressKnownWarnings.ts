@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Suppresses known, expected warnings that don't indicate actual bugs.
  *

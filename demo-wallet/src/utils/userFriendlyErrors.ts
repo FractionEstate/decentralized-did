@@ -215,8 +215,10 @@ export function simplifyText(text: string): string {
 /**
  * Log error for debugging (while showing user-friendly message to user)
  */
+/* eslint-disable no-console */
 export function logError(error: any, context?: string): void {
   if (process.env.NODE_ENV === 'development') {
+    // Dev-only logging for debugging; suppressed in production builds
     console.error(`[Error${context ? ` in ${context}` : ''}]:`, error);
     if (error?.stack) {
       console.error('Stack trace:', error.stack);

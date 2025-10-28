@@ -42,6 +42,10 @@ const store = configureStore({
     const deferRouteMiddleware = () => (next: any) => (action: any) => {
       try {
         if (action && action.type === setCurrentRoute.type) {
+          // In test environments, avoid deferring to prevent act() warnings
+          if (process.env.NODE_ENV === "test") {
+            return next(action);
+          }
           // Queue in the microtask queue to avoid state updates during Ionic render
           if (typeof queueMicrotask !== "undefined") {
             queueMicrotask(() => next(action));

@@ -134,11 +134,11 @@ const PageHeader = ({
     "has-progressbar": !!progressBar,
   });
 
+
   return (
     <IonHeader
-      className={`ion-no-border page-header ${
-        hasContent ? "show-header" : "hide-header"
-      }`}
+      className={`ion-no-border page-header ${hasContent ? "show-header" : "hide-header"
+        }`}
       ref={headerRef}
     >
       <IonToolbar>
@@ -177,7 +177,7 @@ const PageHeader = ({
             </IonButton>
           )}
 
-          {closeButton && closeButtonLabel && (
+          {closeButton && closeButtonLabel && closeButtonLabel !== "undefined" && (
             <IonButton
               className="close-button-label"
               onClick={closeButtonAction}
@@ -238,7 +238,7 @@ const PageHeader = ({
               </IonButton>
             )}
 
-            {actionButton && actionButtonLabel && (
+            {actionButton && actionButtonLabel && actionButtonLabel !== "undefined" && (
               <IonButton
                 disabled={actionButtonDisabled}
                 className="action-button-label"

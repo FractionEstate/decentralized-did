@@ -78,9 +78,8 @@ const TabLayout = ({
 
   return (
     <IonPage
-      className={`tab-layout ${pageId} ${
-        !isActive ? " " + "ion-hide hidden" : "visible"
-      } ${customClass ? " " + customClass : ""}`}
+      className={`tab-layout ${pageId} ${!isActive ? " " + "ion-hide hidden" : "visible"
+        } ${customClass ? " " + customClass : ""}`}
       data-testid={pageId}
       id={pageId}
     >
@@ -116,7 +115,7 @@ const TabLayout = ({
               </IonTitle>
             )}
 
-            {title && (
+            {title && title !== "undefined" && (
               <IonTitle data-testid={`tab-title-${title.toLowerCase()}`}>
                 <h2>{title}</h2>
               </IonTitle>
@@ -125,7 +124,7 @@ const TabLayout = ({
             <IonButtons slot="end">
               {additionalButtons}
 
-              {actionButton && actionButtonLabel && (
+              {actionButton && actionButtonLabel && actionButtonLabel !== "undefined" && (
                 <IonButton
                   className="action-button-label"
                   onClick={actionButtonAction}

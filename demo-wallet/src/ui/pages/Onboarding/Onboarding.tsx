@@ -214,18 +214,18 @@ const Onboarding = () => {
   };
 
   const handleComplete = () => {
-    // Update Redux state and navigate using proper routing logic
+    // Require user to set a passcode before entering the app
     const data: DataProps = {
       store: { stateCache },
       state: {
         recoveryWalletProgress: false,
       },
     };
-    const { nextPath, updateRedux } = getNextRoute(RoutePath.ONBOARDING, data);
-    updateReduxState(nextPath.pathname, data, dispatch, updateRedux);
+    const { updateRedux } = getNextRoute(RoutePath.ONBOARDING, data);
+    updateReduxState(RoutePath.SET_PASSCODE, data, dispatch, updateRedux);
 
     history.push({
-      pathname: TabsRoutePath.CREDENTIALS,
+      pathname: RoutePath.SET_PASSCODE,
       state: data.state,
     });
   };
@@ -325,20 +325,12 @@ async function createWalletWithBiometric(
   dispatch: any,
   stateCache: any
 ): Promise<string> {
-  // Generate a default passcode for new wallet
-  const DEFAULT_PASSCODE = "111111";
   const seedPhraseString = seedPhrase.join(" ");
 
   // 1. Store SIGNIFY_BRAN in secure storage
   await SecureStorage.set(KeyStoreKeys.SIGNIFY_BRAN, bran);
 
-  // 2. Store APP_PASSCODE in secure storage
-  await Agent.agent.auth.storeSecret(
-    KeyStoreKeys.APP_PASSCODE,
-    DEFAULT_PASSCODE
-  );
-
-  // 3. Set APP_ALREADY_INIT flag
+  // 2. Set APP_ALREADY_INIT flag
   await Agent.agent.basicStorage.createOrUpdateBasicRecord(
     new BasicRecord({
       id: MiscRecordId.APP_ALREADY_INIT,
@@ -348,7 +340,7 @@ async function createWalletWithBiometric(
     })
   );
 
-  // 4. Set password skipped flag (user can set password later)
+  // 3. Set password skipped flag (user can set alphanumeric later)
   await Agent.agent.basicStorage.createOrUpdateBasicRecord(
     new BasicRecord({
       id: MiscRecordId.APP_PASSWORD_SKIPPED,
@@ -356,7 +348,7 @@ async function createWalletWithBiometric(
     })
   );
 
-  // 5. Store seedPhraseBackedUp flag
+  // 4. Store seedPhraseBackedUp flag
   await Agent.agent.basicStorage.createOrUpdateBasicRecord(
     new BasicRecord({
       id: MiscRecordId.APP_SEED_PHRASE_BACKED_UP,
@@ -372,7 +364,7 @@ async function createWalletWithBiometric(
     bran: bran,
   }));
 
-  // 7. Boot and connect KERIA agent
+  // 6. Boot and connect KERIA agent
   const keriaUrls = {
     url: "http://127.0.0.1:3901",
     bootUrl: "http://127.0.0.1:3903",
@@ -385,12 +377,12 @@ async function createWalletWithBiometric(
     // Continue anyway - agent can retry connection later
   }
 
-  // 8. Update authentication state
+  // 7. Update authentication state (passcode to be set next)
   dispatch(setAuthentication({
     ...stateCache.authentication,
     loggedIn: true,
     time: Date.now(),
-    passcodeIsSet: true,
+    passcodeIsSet: false,
     passwordIsSet: false,
     passwordIsSkipped: true,
     seedPhraseIsSet: true,
@@ -399,16 +391,9 @@ async function createWalletWithBiometric(
     firstAppLaunch: false,
   }));
 
-  // 9. Return mock wallet address
+  // 9. Return mock wallet address (synchronously resolved in tests)
   // In production, this would call backend API to create actual wallet with biometric data
-  // POST /api/v2/wallet/create
-  // Body: { biometricData, seedPhrase, seedPhraseBackedUp }
-  // Returns: { address, did }
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve("addr1q9xyz...abc123");
-    }, 500);
-  });
+  return Promise.resolve("addr1q9xyz...abc123");
 }
 
 export { Onboarding };

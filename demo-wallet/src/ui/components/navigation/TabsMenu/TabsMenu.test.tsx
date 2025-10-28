@@ -7,6 +7,23 @@ import { waitForIonicReact } from "@ionic/react-test-utils";
 import { act } from "react";
 import { TabsMenu, TabsRoutePath, tabsRoutes } from "./TabsMenu";
 import { notificationsFix } from "../../../__fixtures__/notificationsFix";
+import { i18n } from "../../../../i18n";
+
+// Mock heavy tab pages to avoid deep Redux selector dependencies in this unit test
+jest.mock("../../../pages/Identifiers", () => ({
+  Identifiers: () => <div data-testid="identifiers-page">Identifiers</div>,
+}));
+jest.mock("../../../pages/Scan", () => ({
+  Scan: () => <div data-testid="scan-page">Scan</div>,
+}));
+jest.mock("../../../pages/Notifications", () => ({
+  Notifications: () => (
+    <div data-testid="notifications-page">Notifications</div>
+  ),
+}));
+jest.mock("../../../pages/Menu", () => ({
+  Menu: () => <div data-testid="menu-page">Menu</div>,
+}));
 
 describe("Tab menu", () => {
   const mockStore = configureStore();
@@ -51,31 +68,37 @@ describe("Tab menu", () => {
     const { getByTestId, getByText } = render(
       <IonReactMemoryRouter history={history}>
         <Provider store={storeMocked}>
-          <TabsMenu
-            tab={() => <></>}
-            path={TabsRoutePath.IDENTIFIERS}
-          />
+          <TabsMenu />
         </Provider>
       </IonReactMemoryRouter>
     );
 
     await waitForIonicReact();
 
-    tabsRoutes.forEach((tab) => {
-      expect(getByText(tab.label)).toBeVisible();
+    // Use translated labels for testing (resolved at render time in component)
+    const translatedLabels = [
+      i18n.t("tabsmenu.label.identifiers"),
+      i18n.t("tabsmenu.label.scan"),
+      i18n.t("tabsmenu.label.notifications"),
+      i18n.t("tabsmenu.label.menu"),
+    ];
 
+    // Verify labels are on screen
+    translatedLabels.forEach((label) => {
+      expect(getByText(label)).toBeVisible();
+    });
+
+    // Click each tab by its stable slug-based test id
+    const slugs = [
+      "identifiers",
+      "scan",
+      "notifications",
+      "menu",
+    ];
+    slugs.forEach((slug) => {
       act(() => {
-        fireEvent.click(
-          getByTestId(
-            "tab-button-" + tab.label.toLowerCase().replace(/\s/g, "-")
-          )
-        );
+        fireEvent.click(getByTestId(`tab-button-${slug}`));
       });
-
-      // Note: setCurrentRoute dispatch removed from TabsMenu to prevent
-      // render-cycle warnings during Ionic page transitions. Route state
-      // is now managed through middleware and routing lifecycle.
-      // The tab button href attribute handles native Ionic navigation.
     });
   });
 
@@ -102,10 +125,7 @@ describe("Tab menu", () => {
     const { getAllByText } = render(
       <IonReactMemoryRouter history={history}>
         <Provider store={storeMocked}>
-          <TabsMenu
-            tab={() => <></>}
-            path={TabsRoutePath.NOTIFICATIONS}
-          />
+          <TabsMenu />
         </Provider>
       </IonReactMemoryRouter>
     );
@@ -138,10 +158,7 @@ describe("Tab menu", () => {
     const { getAllByText } = render(
       <IonReactMemoryRouter history={history}>
         <Provider store={storeMocked}>
-          <TabsMenu
-            tab={() => <></>}
-            path={TabsRoutePath.NOTIFICATIONS}
-          />
+          <TabsMenu />
         </Provider>
       </IonReactMemoryRouter>
     );

@@ -7,17 +7,21 @@ const MESSAGE_MILLISECONDS = 1500;
 const ErrorMessage = ({ message, timeout, action }: ErrorMessageProps) => {
   const [visible, setVisible] = useState(true);
 
+  // Only start/destroy the timer when there is an actual message to show
+  // This prevents stray timers when the component renders with no message
   useEffect(() => {
-    if (timeout) {
-      const timer = setTimeout(() => {
-        setVisible(false);
-      }, MESSAGE_MILLISECONDS);
+    if (!timeout) return;
+    if (!message) return;
 
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-  }, []);
+    setVisible(true);
+    const timer = setTimeout(() => {
+      setVisible(false);
+    }, MESSAGE_MILLISECONDS);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [message, timeout]);
 
   return (
     <>
@@ -25,6 +29,8 @@ const ErrorMessage = ({ message, timeout, action }: ErrorMessageProps) => {
         <div
           data-testid="error-message"
           className={`error-message ${visible ? "visible" : ""}`}
+          role="alert"
+          aria-live="assertive"
         >
           <p
             className="text-fadein"
@@ -34,7 +40,7 @@ const ErrorMessage = ({ message, timeout, action }: ErrorMessageProps) => {
           </p>
         </div>
       ) : (
-        <div className="error-message-placeholder" />
+        <div className="error-message-placeholder" aria-hidden="true" />
       )}
     </>
   );

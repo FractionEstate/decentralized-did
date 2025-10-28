@@ -40,6 +40,8 @@ const PageFooter = ({
     return undefined;
   };
 
+  const isValidText = (txt?: string) => Boolean(txt) && txt !== "undefined";
+
   return (
     <IonToolbar
       className={`page-footer${customClass ? " " + customClass : ""}`}
@@ -47,7 +49,7 @@ const PageFooter = ({
     >
       {children}
       <div className="page-footer-content">
-        {primaryButtonText && primaryButtonAction && (
+        {isValidText(primaryButtonText) && primaryButtonAction && (
           <IonButton
             shape="round"
             expand="block"
@@ -67,7 +69,7 @@ const PageFooter = ({
             {primaryButtonText}
           </IonButton>
         )}
-        {secondaryButtonText && secondaryButtonAction && (
+        {isValidText(secondaryButtonText) && secondaryButtonAction && (
           <IonButton
             shape="round"
             expand="block"
@@ -89,7 +91,7 @@ const PageFooter = ({
             {secondaryButtonText}
           </IonButton>
         )}
-        {tertiaryButtonText && tertiaryButtonAction && (
+        {isValidText(tertiaryButtonText) && tertiaryButtonAction && (
           <IonButton
             shape="round"
             expand="block"
@@ -111,7 +113,7 @@ const PageFooter = ({
             {tertiaryButtonText}
           </IonButton>
         )}
-        {archiveButtonText && archiveButtonAction && (
+        {isValidText(archiveButtonText) && archiveButtonAction && (
           <IonButton
             shape="round"
             expand="block"
@@ -131,7 +133,7 @@ const PageFooter = ({
             {archiveButtonText}
           </IonButton>
         )}
-        {deleteButtonText && deleteButtonAction && (
+        {isValidText(deleteButtonText) && deleteButtonAction && (
           <IonButton
             shape="round"
             expand="block"
@@ -151,7 +153,7 @@ const PageFooter = ({
             {deleteButtonText}
           </IonButton>
         )}
-        {declineButtonText && declineButtonAction && (
+        {isValidText(declineButtonText) && declineButtonAction && (
           <IonButton
             shape="round"
             expand="block"

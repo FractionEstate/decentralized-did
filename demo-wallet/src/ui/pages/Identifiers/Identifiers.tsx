@@ -6,7 +6,7 @@ import { Agent } from "../../../core/agent/agent";
 import { CreationStatus, MiscRecordId } from "../../../core/agent/agent.types";
 import { BasicRecord } from "../../../core/agent/records/basicRecord";
 import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { i18n } from "../../../i18n";
+// Use the i18next singleton to ensure translations are available consistently
 import { TabsRoutePath } from "../../../routes/paths";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
@@ -287,15 +287,15 @@ const Identifiers = () => {
   };
 
   const deletePendingCheck = {
-    title: i18n.t("tabs.identifiers.deletepending.title"),
-    description: i18n.t(
+    title: t("tabs.identifiers.deletepending.title"),
+    description: t(
       deletedPendingItem?.creationStatus === CreationStatus.FAILED
         ? "tabs.identifiers.deletepending.witnesserror"
         : deletedPendingItem?.groupMetadata?.groupId
           ? "tabs.identifiers.deletepending.mutilsigdescription"
           : "tabs.identifiers.deletepending.description"
     ),
-    button: i18n.t("tabs.identifiers.deletepending.button"),
+    button: t("tabs.identifiers.deletepending.button"),
   };
 
   const handleConnections = () => {
@@ -309,15 +309,15 @@ const Identifiers = () => {
   const filterOptions = [
     {
       filter: IdentifiersFilters.All,
-      label: i18n.t("tabs.identifiers.tab.filters.all"),
+      label: t("tabs.identifiers.tab.filters.all"),
     },
     {
       filter: IdentifiersFilters.Individual,
-      label: i18n.t("tabs.identifiers.tab.filters.individual"),
+      label: t("tabs.identifiers.tab.filters.individual"),
     },
     {
       filter: IdentifiersFilters.Group,
-      label: i18n.t("tabs.identifiers.tab.filters.group"),
+      label: t("tabs.identifiers.tab.filters.group"),
     },
   ];
 
@@ -342,7 +342,7 @@ const Identifiers = () => {
         pageId={pageId}
         header={!showWelcomePage}
         customClass={tabClasses}
-        title={`${i18n.t("tabs.identifiers.tab.title")}`}
+        title={`${t("tabs.identifiers.tab.title")}`}
         additionalButtons={
           <AdditionalButtons
             handleConnections={handleConnections}
@@ -355,7 +355,7 @@ const Identifiers = () => {
           ) : (
             showPlaceholder && (
               <CardsPlaceholder
-                buttonLabel={`${i18n.t("tabs.identifiers.tab.create")}`}
+                buttonLabel={`${t("tabs.identifiers.tab.create")}`}
                 buttonAction={handleCreateIdentifier}
                 testId={pageId}
               >
@@ -374,7 +374,7 @@ const Identifiers = () => {
                 data-testid="favourite-identifiers"
               >
                 <CardSlider
-                  title={`${i18n.t("tabs.identifiers.tab.favourites")}`}
+                  title={`${t("tabs.identifiers.tab.favourites")}`}
                   name="favs"
                   cardType={CardType.IDENTIFIERS}
                   cardsData={sortedFavIdentifiers}
@@ -394,7 +394,7 @@ const Identifiers = () => {
                       : groupIdentifiers
                 }
                 onShowCardDetails={() => handleShowNavAnimation("cards")}
-                title={`${i18n.t("tabs.identifiers.tab.allidentifiers")}`}
+                title={`${t("tabs.identifiers.tab.allidentifiers")}`}
                 name="allidentifiers"
                 filters={
                   <div className="identifiers-tab-chips">
@@ -418,7 +418,7 @@ const Identifiers = () => {
                       }
                     )}
                     testId={pageId}
-                    buttonLabel={`${i18n.t("tabs.identifiers.tab.create")}`}
+                    buttonLabel={`${t("tabs.identifiers.tab.create")}`}
                     buttonAction={handleCreateIdentifier}
                   />
                 }
@@ -426,7 +426,7 @@ const Identifiers = () => {
             )}
             {!!multiSigIdentifiers.length && (
               <div className="identifiers-tab-content-block multisig-container">
-                <h3>{i18n.t("tabs.identifiers.tab.multisigidentifiers")}</h3>
+                <h3>{t("tabs.identifiers.tab.multisigidentifiers")}</h3>
                 <IdentifierCardList
                   cardTypes={CardType.IDENTIFIERS}
                   cardsData={multiSigIdentifiers}
@@ -440,7 +440,7 @@ const Identifiers = () => {
             {!!pendingIdentifiers.length && (
               <div className="identifiers-tab-content-block pending-container">
                 <ListHeader
-                  title={`${i18n.t("tabs.identifiers.tab.pendingidentifiers")}`}
+                  title={`${t("tabs.identifiers.tab.pendingidentifiers")}`}
                 />
                 <IdentifierCardList
                   cardsData={pendingIdentifiers}
@@ -461,7 +461,7 @@ const Identifiers = () => {
         openFirstCheck={openDeletePendingAlert}
         firstCheckProps={deletePendingCheck}
         onClose={() => setOpenDeletePendingAlert(false)}
-        secondCheckTitle={`${i18n.t(
+        secondCheckTitle={`${t(
           "tabs.identifiers.deletepending.secondchecktitle"
         )}`}
         onDeletePendingItem={deletePendingIdentifier}
