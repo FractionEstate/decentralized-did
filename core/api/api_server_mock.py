@@ -144,6 +144,10 @@ class GenerateResponse(BaseModel):
         ...,
         description="CIP-30 formatted metadata"
     )
+    tx_hash: Optional[str] = Field(
+        None,
+        description="Cardano transaction hash for on-chain metadata"
+    )
 
 
 class VerifyRequest(BaseModel):
@@ -339,12 +343,18 @@ async def generate_did(request: GenerateRequest):
             revoked=False,  # NEW: Revocation status
         )
 
+        # Generate simulated/placeholder tx_hash for development
+        # TODO: Replace with actual blockchain transaction submission in production
+        tx_hash_material = f"{did}:{enrollment_timestamp}:{id_hash}".encode('utf-8')
+        simulated_tx_hash = hashlib.sha256(tx_hash_material).hexdigest().lower()
+
         return GenerateResponse(
             did=did,
             id_hash=id_hash,
             wallet_address=request.wallet_address,
             helpers=helpers,
-            metadata_cip30_inline=cip30_metadata
+            metadata_cip30_inline=cip30_metadata,
+            tx_hash=simulated_tx_hash  # In development/mock, this is simulated
         )
 
     except Exception as e:

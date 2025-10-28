@@ -4,7 +4,7 @@
  */
 
 import { IonIcon, IonSpinner, IonModal } from "@ionic/react";
-import { checkmarkCircle, fingerPrintOutline, copyOutline, informationCircleOutline, lockClosedOutline, shieldCheckmarkOutline, helpCircleOutline, closeCircle } from "ionicons/icons";
+import { checkmarkCircle, fingerPrintOutline, copyOutline, informationCircleOutline, lockClosedOutline, shieldCheckmarkOutline, helpCircleOutline, closeCircle, openOutline } from "ionicons/icons";
 import { useState, useEffect, useRef } from "react";
 import { i18n } from "../../../i18n";
 import { RoutePath } from "../../../routes";
@@ -20,6 +20,7 @@ import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayo
 import { ToastMsgType } from "../../globals/types";
 import { useAppIonRouter } from "../../hooks";
 import { getUserFriendlyError, BIOMETRIC_ERRORS } from "../../../utils/userFriendlyErrors";
+import { openBrowserLink } from "../../utils/openBrowserLink";
 import {
   biometricDidService,
   fingerprintCaptureService,
@@ -29,6 +30,17 @@ import {
 } from "../../../core/biometric";
 import "./BiometricEnrollment.scss";
 
+/**
+ * Generate Cardanoscan explorer URL for a transaction
+ * Supports both testnet (preprod) and mainnet
+ */
+function getCardanoscanUrl(txHash: string, network: string = "testnet"): string {
+  const baseUrl = network === "mainnet"
+    ? "https://cardanoscan.io/transaction"
+    : "https://preprod.cardanoscan.io/transaction";
+  return `${baseUrl}/${txHash}`;
+}
+
 interface EnrollmentState {
   status: BiometricEnrollmentStatus;
   currentFinger: number;
@@ -36,6 +48,7 @@ interface EnrollmentState {
   error?: string;
   did?: string;
   idHash?: string;
+  txHash?: string;  // Cardano transaction hash for blockchain enrollment
 }
 
 const FINGER_NAMES: Record<FingerId, string> = {
@@ -223,6 +236,7 @@ export const BiometricEnrollment = () => {
         status: BiometricEnrollmentStatus.Complete,
         did: result.did,
         idHash: result.id_hash,
+        txHash: result.tx_hash,  // Include transaction hash for explorer link
       }));
 
       // Show success toast
@@ -505,6 +519,38 @@ export const BiometricEnrollment = () => {
                 <IonIcon icon={copyOutline} />
                 <span>Copy</span>
               </button>
+            </div>
+          )}
+
+          {enrollmentState.txHash && (
+            <div className="transaction-explorer">
+              <label>Enrollment Transaction:</label>
+              <div className="tx-hash-display">
+                <code className="tx-hash-code">{enrollmentState.txHash}</code>
+                <button
+                  className="explorer-button"
+                  onClick={() => {
+                    const explorerUrl = getCardanoscanUrl(enrollmentState.txHash!, "testnet");
+                    openBrowserLink(explorerUrl);
+                  }}
+                  aria-label="View transaction on Cardanoscan explorer"
+                  title="View on Cardanoscan"
+                >
+                  <IonIcon icon={openOutline} />
+                  <span>View on Explorer</span>
+                </button>
+                <button
+                  className="copy-button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(enrollmentState.txHash || '');
+                    dispatch(setToastMsg(ToastMsgType.COPIED_TO_CLIPBOARD));
+                  }}
+                  aria-label="Copy transaction hash to clipboard"
+                >
+                  <IonIcon icon={copyOutline} />
+                  <span>Copy</span>
+                </button>
+              </div>
             </div>
           )}
 

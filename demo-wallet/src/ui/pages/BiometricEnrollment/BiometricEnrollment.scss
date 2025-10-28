@@ -277,6 +277,98 @@
         border-radius: var(--radius-sm);
       }
     }
+
+    .transaction-explorer {
+      background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      text-align: left;
+      margin-top: 1.5rem;
+      border-left: 4px solid var(--ion-color-primary);
+
+      label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: var(--ion-color-dark);
+      }
+
+      .tx-hash-display {
+        display: flex;
+        flex-direction: column;
+        gap: var(--spacing-sm);
+
+        .tx-hash-code {
+          display: block;
+          font-size: 0.75rem;
+          word-break: break-all;
+          color: var(--ion-color-secondary);
+          background: rgba(255, 255, 255, 0.7);
+          padding: var(--spacing-xs);
+          border-radius: var(--radius-sm);
+          font-family: "Courier New", monospace;
+          border: 1px solid #ddd;
+        }
+
+        .explorer-button {
+          background: linear-gradient(
+            135deg,
+            var(--ion-color-primary) 0%,
+            #1976d2 100%
+          );
+          color: white;
+          border: none;
+          padding: 0.65rem var(--spacing-md);
+          border-radius: var(--radius-md);
+          font-weight: bold;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          transition: all 0.3s ease;
+          box-shadow: 0 2px 8px rgba(25, 103, 210, 0.3);
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 103, 210, 0.4);
+          }
+
+          &:active {
+            transform: translateY(0);
+          }
+
+          ion-icon {
+            font-size: 1rem;
+          }
+        }
+
+        .copy-button {
+          background: white;
+          color: var(--ion-color-primary);
+          border: 2px solid var(--ion-color-primary);
+          padding: 0.5rem var(--spacing-md);
+          border-radius: var(--radius-md);
+          font-weight: 600;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          font-size: 0.9rem;
+          transition: all 0.2s ease;
+
+          &:hover {
+            background: var(--ion-color-light);
+          }
+
+          ion-icon {
+            font-size: 1rem;
+          }
+        }
+      }
+    }
   }
 }
 

@@ -748,6 +748,7 @@ export class BiometricDidService {
       did,
       id_hash: idHash,
       wallet_address: walletAddress, // Kept in metadata, not in DID identifier
+      tx_hash: cliOutput.tx_hash,  // Optional: Cardano transaction hash for on-chain enrollment
       helpers,
       metadata_cip30_inline: metadata,
     };
