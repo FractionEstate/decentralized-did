@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cardano/koios_client.py
+# hypothesis_version: 6.142.4
+
+[0.0, 300, 400, 429, 500, 1000, 1000000, '/', '/address_utxos', '/genesis', '/submittx', '/tip', '/totals', '/tx_info', '/tx_metadata', '/tx_status', '0', 'Content-Type', 'GET', 'POST', 'User-Agent', '_addresses', '_tx_hashes', 'absolute_slot', 'address', 'amount_lovelace', 'application/cbor', 'application/json', 'asset_list', 'asset_name', 'block_hash', 'block_height', 'cache_hit_ratio', 'cache_hits', 'cache_misses', 'controllers', 'datum_hash', 'detail', 'enrollment_timestamp', 'error', 'error_rate', 'genesis', 'json_metadata', 'label', 'lovelace', 'max_network_latency', 'message', 'metadata', 'network_errors', 'network_requests', 'num_confirmations', 'params', 'policy_id', 'quantity', 'revoked', 'timestamp', 'tip', 'total_requests', 'totals', 'tx_hash', 'tx_index', 'tx_timestamp', 'unit', 'unknown', 'value', 'wallet_address']

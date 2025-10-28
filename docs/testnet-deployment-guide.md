@@ -14,21 +14,19 @@ Complete guide for deploying biometric DIDs to the Cardano testnet (preprod netw
 
 ## Prerequisites
 
-### 1. Blockfrost API Key (Free)
+### 1. Koios Endpoint Access (Public)
 
-Get a free API key from [Blockfrost.io](https://blockfrost.io):
+The deployment script queries the blockchain through the public Koios REST API. No API key is required.
 
-1. Visit https://blockfrost.io
-2. Sign up for a free account
-3. Create a new project
-4. Select "Cardano Preprod Testnet"
-5. Copy your API key
+1. Default endpoint: https://api.koios.rest/api/v1
+2. Ensure outbound HTTPS access to the endpoint from your machine
+3. (Optional) For air-gapped or high availability environments, point `--koios-base-url` to a self-hosted Koios instance
 
-**Free Tier Limits:**
-- 50,000 requests per day
-- Rate limit: 10 requests per second
-- No credit card required
-- Apache 2.0 licensed backend (self-hostable)
+**Koios Characteristics:**
+- Public REST API maintained by the Cardano community
+- Supports metadata scanning and UTXO queries used by the script
+- Open-source and self-hostable (see https://github.com/Koios-io/koios-artifacts)
+- Anonymous usage; consider rate limits when running large batches
 
 ### 2. Testnet ADA (Free)
 
@@ -57,10 +55,12 @@ python3 -c "from pycardano import Network; print('PyCardano OK')"
 
 ## Quick Start
 
-### 1. Set API Key
+### 1. (Optional) Configure Custom Koios Endpoint
 
 ```bash
-export BLOCKFROST_API_KEY="your_testnet_api_key_here"
+# Default public endpoint requires no configuration
+# Override if using a self-hosted Koios instance
+python3 scripts/deploy_testnet.py --koios-base-url https://your-koios/api/v1
 ```
 
 ### 2. Generate Keys and Get Address
@@ -161,7 +161,7 @@ python3 scripts/deploy_testnet.py
 **Deployment Process:**
 
 1. **Key Loading** - Load signing key from `testnet-keys/`
-2. **UTXO Query** - Fetch UTXOs from Blockfrost
+2. **UTXO Query** - Fetch UTXOs from Koios
 3. **DID Creation** - Generate sample 4-finger biometric DID
 4. **Dry-Run** - Validate transaction and estimate fees
 5. **Transaction Build** - Create signed transaction with metadata
@@ -260,16 +260,21 @@ cat testnet-reports/testnet-deployment-TIMESTAMP.json
 The script performs automatic verification:
 
 ```python
-from decentralized_did.cardano.blockfrost import BlockfrostClient
+from decentralized_did.cardano.koios_client import KoiosClient
+from decentralized_did.cardano.cache import TTLCache
 
-client = BlockfrostClient(api_key="YOUR_KEY", network="testnet")
+client = KoiosClient(
+   base_url="https://api.koios.rest/api/v1",
+   cache=TTLCache(default_ttl=60)
+)
 
 # Check transaction status
-status = client.get_transaction_status(tx_hash)
+status = await client.get_transaction_status(tx_hash)
 assert status.confirmed
 
 # Verify metadata
-metadata = client.get_transaction_metadata(tx_hash, label=674)
+records = await client.get_transaction_metadata(tx_hash)
+metadata = next((item["json_metadata"] for item in records if item["label"] == "674"), None)
 assert metadata is not None
 assert "did" in metadata
 assert "verificationMethod" in metadata
@@ -296,29 +301,23 @@ assert "verificationMethod" in metadata
 - Request more from faucet (if 24h limit passed)
 - Or wait 24 hours and request again
 
-### Error: "Blockfrost API error (401)"
+### Error: "Koios request failed"
 
-**Cause:** Invalid or missing API key.
-
-**Solution:**
-```bash
-# Check environment variable
-echo $BLOCKFROST_API_KEY
-
-# Set correct API key
-export BLOCKFROST_API_KEY="preprodXXXXXXXXXX"
-
-# Verify it's for testnet (starts with "preprod")
-```
-
-### Error: "Rate limit exceeded (429)"
-
-**Cause:** Too many API requests.
+**Cause:** Network connectivity issue or Koios endpoint unavailable.
 
 **Solution:**
-- Script has automatic retry with backoff
-- Wait 10 seconds and retry
-- Free tier: 50k req/day, 10 req/sec
+- Check internet access to `https://api.koios.rest/api/v1`
+- Retry after a short delay (script retries with exponential backoff)
+- If using a self-hosted Koios instance, confirm the service is running and the URL is correct
+
+### Error: "Koios rate limit exceeded"
+
+**Cause:** Too many API requests in a short window against a shared endpoint.
+
+**Solution:**
+- The script automatically retries with backoff
+- Wait a few seconds before re-running bulk operations
+- For heavy usage, deploy a private Koios instance and pass `--koios-base-url`
 
 ### Error: "Transaction not confirmed after 200 seconds"
 
@@ -413,7 +412,7 @@ All components are open-source and free:
 
 | Service | License | Free Tier | Self-Hostable |
 |---------|---------|-----------|---------------|
-| Blockfrost | Apache 2.0 | 50k req/day | ✅ Yes |
+| Koios REST API | Apache 2.0 | Public endpoint | ✅ Yes |
 | Cardano Node | Apache 2.0 | N/A | ✅ Yes |
 | Cardano Explorer | Apache 2.0 | Unlimited | ✅ Yes |
 
@@ -421,7 +420,7 @@ All components are open-source and free:
 
 ### Alternative Backends
 
-Instead of Blockfrost, you can self-host:
+Instead of the public Koios endpoint, you can self-host:
 
 1. **Cardano Node + DB Sync**
    - Run your own full node
@@ -499,10 +498,14 @@ builder = CardanoTransactionBuilder(
     dry_run=False
 )
 
-# Use mainnet Blockfrost API
-client = BlockfrostClient(
-    api_key=mainnet_api_key,
-    network="mainnet"
+import os
+
+from decentralized_did.cardano.koios_client import KoiosClient
+
+# Use mainnet Koios API
+client = KoiosClient(
+   base_url=os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1"),
+   metadata_scan_limit=2_000,
 )
 ```
 
@@ -537,7 +540,7 @@ After successful testnet deployment:
 
 ### Documentation
 - [PyCardano Docs](https://pycardano.readthedocs.io/)
-- [Blockfrost API](https://docs.blockfrost.io/)
+- [Koios API](https://www.koios.rest/#/)
 - [CIP-20 Metadata](https://cips.cardano.org/cips/cip20/)
 - [Cardano Docs](https://docs.cardano.org/)
 
@@ -548,7 +551,7 @@ After successful testnet deployment:
 ### Tools
 - [Cardano CLI](https://github.com/IntersectMBO/cardano-cli)
 - [Cardano Node](https://github.com/IntersectMBO/cardano-node)
-- [Blockfrost.io](https://blockfrost.io/)
+- [Koios Status](https://status.koios.rest/)
 
 ### Community
 - [Cardano Forum](https://forum.cardano.org/)

@@ -14,24 +14,25 @@ flow including:
 6. Result documentation
 
 Prerequisites:
-- Blockfrost API key (free tier: https://blockfrost.io)
+- Access to a Koios REST endpoint (default: https://api.koios.rest/api/v1)
 - Testnet ADA from faucet (https://docs.cardano.org/cardano-testnet/tools/faucet/)
 
 Usage:
-    # Set environment variable
-    export BLOCKFROST_API_KEY="your_testnet_api_key"
-
-    # Run deployment
+    # Use default public Koios endpoint
     python3 scripts/deploy_testnet.py
 
-    # Or specify key inline
-    python3 scripts/deploy_testnet.py --api-key your_testnet_api_key
+    # Or specify a custom Koios endpoint
+    python3 scripts/deploy_testnet.py --koios-base-url https://custom-koios/api/v1
 
 Open-source compliance: All dependencies are Apache 2.0, MIT, or BSD-3.
 """
 
 from decentralized_did.did.generator import generate_deterministic_did
-from decentralized_did.cardano.blockfrost import BlockfrostClient
+from decentralized_did.cardano.koios_client import (
+    KoiosClient,
+    KoiosError,
+    convert_utxo_info_to_input,
+)
 from decentralized_did.cardano.transaction import (
     CardanoTransactionBuilder,
     create_payment_keys,
@@ -46,6 +47,7 @@ import time
 from pathlib import Path
 from typing import Dict, Any, Optional
 import argparse
+import asyncio
 
 # Add project root to Python path
 project_root = Path(__file__).parent.parent
@@ -154,8 +156,8 @@ def print_section(title: str) -> None:
     print('─' * 70)
 
 
-def deploy_to_testnet(
-    api_key: str,
+async def deploy_to_testnet(
+    koios_base_url: str,
     keys_dir: Optional[Path] = None,
     dry_run: bool = False
 ) -> Dict[str, Any]:
@@ -163,7 +165,7 @@ def deploy_to_testnet(
     Deploy a sample biometric DID to Cardano testnet.
 
     Args:
-        api_key: Blockfrost API key for testnet
+    koios_base_url: Koios REST API base URL
         keys_dir: Directory to save payment keys (default: ./testnet-keys)
         dry_run: If True, only validate transaction without submitting
 
@@ -181,6 +183,9 @@ def deploy_to_testnet(
         "network": "testnet",
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
     }
+
+    koios_client = KoiosClient(base_url=koios_base_url)
+    results["koios_base_url"] = koios_base_url
 
     try:
         # Step 1: Generate payment keys
@@ -227,12 +232,11 @@ def deploy_to_testnet(
         results["address"] = str(address)
 
         # Step 2: Check UTXOs
-        print_section("Step 2: Query UTXOs from Blockfrost")
+    print_section("Step 2: Query UTXOs from Koios")
 
-        client = BlockfrostClient(api_key=api_key, network="testnet")
-        print(f"🌐 Connected to Blockfrost testnet API")
+    print(f"🌐 Connecting to Koios endpoint: {koios_base_url}")
 
-        utxos = client.get_address_utxos(str(address))
+    utxos = await koios_client.get_address_utxos(str(address))
 
         if not utxos:
             print("\n❌ No UTXOs found at this address!")
@@ -270,12 +274,7 @@ def deploy_to_testnet(
         # Convert UTXOInfo to UTXOInput format for transaction builder
         from decentralized_did.cardano.transaction import UTXOInput
         utxo_inputs = [
-            UTXOInput(
-                tx_hash=utxo.tx_hash,
-                tx_index=utxo.tx_index,
-                amount_lovelace=get_lovelace_amount(utxo),
-                address=utxo.address
-            )
+            UTXOInput(**convert_utxo_info_to_input(utxo))
             for utxo in utxos
         ]
 
@@ -403,9 +402,8 @@ def deploy_to_testnet(
         # Submit to testnet
         print("\n📡 Submitting to Cardano testnet...")
 
-        # Convert bytes to hex string for Blockfrost
-        tx_cbor_hex = tx_result.tx_bytes.hex()
-        tx_hash = client.submit_transaction(tx_cbor_hex)
+    tx_cbor_hex = tx_result.tx_bytes.hex()
+    tx_hash = await koios_client.submit_transaction(tx_cbor_hex)
 
         print(f"✅ Transaction submitted successfully!")
         print(f"   TX Hash: {tx_hash}")
@@ -425,10 +423,10 @@ def deploy_to_testnet(
 
         max_attempts = 20
         for attempt in range(1, max_attempts + 1):
-            time.sleep(10)
+            await asyncio.sleep(10)
 
             try:
-                status = client.get_transaction_status(tx_hash)
+                status = await koios_client.get_transaction_status(tx_hash)
 
                 if status.confirmed:
                     print(f"\n✅ Transaction confirmed!")
@@ -442,6 +440,9 @@ def deploy_to_testnet(
                 else:
                     print(
                         f"   Attempt {attempt}/{max_attempts}: Not yet confirmed...")
+            except KoiosError as e:
+                print(
+                    f"   Attempt {attempt}/{max_attempts}: Koios query issue ({str(e)})")
             except Exception as e:
                 print(
                     f"   Attempt {attempt}/{max_attempts}: Checking... ({str(e)})")
@@ -475,6 +476,8 @@ def deploy_to_testnet(
         traceback.print_exc()
         results["error"] = str(e)
         return results
+    finally:
+        await koios_client.close()
 
 
 def save_deployment_report(results: Dict[str, Any], output_dir: Path) -> Path:
@@ -501,34 +504,34 @@ def save_deployment_report(results: Dict[str, Any], output_dir: Path) -> Path:
 
 def main():
     """Main entry point."""
-    parser = argparse.ArgumentParser(
-        description="Deploy biometric DID to Cardano testnet",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
+        parser = argparse.ArgumentParser(
+                description="Deploy biometric DID to Cardano testnet",
+                formatter_class=argparse.RawDescriptionHelpFormatter,
+                epilog="""
 Examples:
-  # Use environment variable
-  export BLOCKFROST_API_KEY="your_key"
-  python3 scripts/deploy_testnet.py
+    # Use default public Koios endpoint
+    python3 scripts/deploy_testnet.py
 
-  # Specify API key inline
-  python3 scripts/deploy_testnet.py --api-key your_key
+    # Specify a custom Koios endpoint
+    python3 scripts/deploy_testnet.py --koios-base-url https://custom-koios/api/v1
 
-  # Dry-run only (validate without submitting)
-  python3 scripts/deploy_testnet.py --dry-run
+    # Dry-run only (validate without submitting)
+    python3 scripts/deploy_testnet.py --dry-run
 
-Get your free Blockfrost API key:
-  https://blockfrost.io (50,000 requests/day free tier)
+Koios public endpoint reference:
+    https://api.koios.rest/api/v1
 
 Get testnet ADA from faucet:
-  https://docs.cardano.org/cardano-testnet/tools/faucet/
-        """
-    )
+    https://docs.cardano.org/cardano-testnet/tools/faucet/
+                """
+        )
 
-    parser.add_argument(
-        "--api-key",
-        type=str,
-        help="Blockfrost API key for testnet (or set BLOCKFROST_API_KEY env var)"
-    )
+        parser.add_argument(
+                "--koios-base-url",
+                type=str,
+                default=os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1"),
+                help="Koios REST API base URL (default: %(default)s)"
+        )
 
     parser.add_argument(
         "--keys-dir",
@@ -552,28 +555,22 @@ Get testnet ADA from faucet:
 
     args = parser.parse_args()
 
-    # Get API key
-    api_key = args.api_key or os.environ.get("BLOCKFROST_API_KEY")
-
-    if not api_key:
-        print("❌ Error: Blockfrost API key required")
-        print("\nProvide via:")
-        print("  1. --api-key flag: python3 scripts/deploy_testnet.py --api-key YOUR_KEY")
-        print("  2. Environment variable: export BLOCKFROST_API_KEY=YOUR_KEY")
-        print("\nGet your free API key: https://blockfrost.io")
-        sys.exit(1)
+    koios_base_url = args.koios_base_url
 
     # Print header
     print_banner("🚀 CARDANO TESTNET DEPLOYMENT")
     print("Deploying sample biometric DID to Cardano preprod testnet")
     print(f"Network: testnet (preprod)")
+    print(f"Koios endpoint: {koios_base_url}")
     print(f"Mode: {'DRY-RUN' if args.dry_run else 'LIVE DEPLOYMENT'}")
 
     # Deploy
-    results = deploy_to_testnet(
-        api_key=api_key,
-        keys_dir=args.keys_dir,
-        dry_run=args.dry_run
+    results = asyncio.run(
+        deploy_to_testnet(
+            koios_base_url=koios_base_url,
+            keys_dir=args.keys_dir,
+            dry_run=args.dry_run,
+        )
     )
 
     # Save report

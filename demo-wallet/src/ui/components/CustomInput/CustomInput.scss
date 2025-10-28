@@ -23,7 +23,8 @@ ion-item.custom-input {
     margin-bottom: 0.625rem;
     font-size: 1rem;
     font-weight: 500;
-    color: var(--ion-color-neutral-700);
+    color: #e0e7ff;
+    transition: color 0.3s ease;
 
     &.label-stacked.sc-ion-label-md-h {
       transform: none;
@@ -31,22 +32,28 @@ ion-item.custom-input {
 
     .custom-input-optional {
       margin-left: 0.25rem;
-      opacity: 50%;
+      opacity: 60%;
     }
   }
 
   &.error .input-line {
-    border-color: var(--ion-color-danger);
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
   }
 
   .input-line {
     display: flex;
     width: 100%;
-    border: 1px solid var(--ion-color-neutral-400);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
 
     &:focus-within {
-      border-color: var(--ion-color-neutral-700);
+      border-color: #00d4ff;
+      background: rgba(0, 212, 255, 0.08);
+      box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.1);
     }
 
     .input-wrapper {

@@ -11,7 +11,7 @@
   - API error rate > 5%
   - Rate limit exceeded (frequent)
   - Biometric enrollment failures
-  - Blockfrost API errors
+  - Koios API errors
 
 ### 2. Performance Baseline 📊 1-2 hours
 - [ ] Record baseline metrics:
@@ -131,7 +131,7 @@ async def verify_wallet_signature(
 **Potential improvements**:
 - **Caching layer**: Add Redis caching for:
   - DID lookups (TTL: 5 minutes)
-  - Blockfrost responses (TTL: 1 minute)
+  - Koios responses (TTL: 1 minute)
   - Rate limit counters (already supported)
 
 - **Database optimization**:

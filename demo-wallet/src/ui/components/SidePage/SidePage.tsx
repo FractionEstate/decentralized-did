@@ -27,12 +27,14 @@ const SidePage = () => {
   const DELAY_ON_PAGE_CLOSE = 500;
   const [lastContent, setLastContent] = useState<ReactNode | null>(null);
 
+  // Use standard effect to derive open state from store after render commit
   useEffect(() => {
     if (!stateCache.authentication.loggedIn || isConnecting) return;
+
     setOpenSidePage(
       canOpenIncomingRequest ||
-        canOpenPendingWalletConnection ||
-        canOpenConnections
+      canOpenPendingWalletConnection ||
+      canOpenConnections
     );
     if (canOpenPendingWalletConnection) {
       pauseIncommingRequestByConnection.current = true;
@@ -83,6 +85,7 @@ const SidePage = () => {
   };
 
   useEffect(() => {
+    // Persist last content briefly after close for exit animation continuity
     getContent() !== null && setLastContent(getContent());
     !openSidePage && clearLastContent();
   }, [openSidePage]);

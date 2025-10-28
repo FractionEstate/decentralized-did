@@ -1,17 +1,21 @@
 ion-tab-bar {
-  --background: var(--ion-color-neutral-200);
+  --background: rgba(15, 15, 30, 0.7);
   --border: transparent;
-  border-top: 1px solid var(--ion-color-neutral-300);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 212, 255, 0.2);
   padding-inline: 0.625rem;
   height: 4.5rem;
   justify-content: space-around;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 1rem 1rem 0 0;
 
   ion-tab-button {
     max-width: 20%;
     --ripple-color: transparent;
+    transition: all 0.3s ease;
 
     &:not(.tab-selected) {
-      color: var(--ion-color-neutral-700);
+      color: rgba(255, 255, 255, 0.6);
 
       > *:not(.notifications-counter) {
         opacity: 70%;
@@ -22,23 +26,37 @@ ion-tab-bar {
         position: relative;
       }
 
+      &:hover {
+        color: rgba(0, 212, 255, 0.8);
+      }
+
       .notifications-counter {
         display: flex;
         width: 1.25rem;
         height: 1.25rem;
         line-height: 1rem;
         position: absolute;
-        color: var(--ion-color-neutral-100);
+        color: #ffffff;
         justify-content: center;
         align-items: center;
         border-radius: 0.625rem;
-        border: 1px solid var(--ion-color-error-800);
-        background: var(--ion-color-error-800);
+        border: 1px solid #ef4444;
+        background: #ef4444;
         opacity: 1;
         z-index: 10;
         position: absolute;
         top: 0.2rem;
         left: 0.85rem;
+        font-weight: 600;
+        font-size: 0.75rem;
+      }
+    }
+
+    &.tab-selected {
+      color: #00d4ff;
+
+      .border-top {
+        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
       }
     }
 

@@ -65,7 +65,7 @@ set +a
 
 # Validate required environment variables
 validate_env() {
-    local required_vars=("API_SECRET_KEY" "JWT_SECRET_KEY" "DOMAIN" "SSL_EMAIL" "BLOCKFROST_API_KEY")
+    local required_vars=("API_SECRET_KEY" "JWT_SECRET_KEY" "DOMAIN" "SSL_EMAIL")
     local missing_vars=()
 
     for var in "${required_vars[@]}"; do

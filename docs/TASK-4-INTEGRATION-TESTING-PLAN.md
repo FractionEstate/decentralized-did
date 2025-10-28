@@ -147,7 +147,7 @@ test_user = {
 **Tasks** (Completed October 16, 2025):
 - [x] Create `.env.test` configuration file
 - [x] Set up test API keys and JWT secrets
-- [x] Configure Blockfrost test API key
+- [x] Configure Koios duplicate-detection settings
 - [x] Document environment variables
 - [x] Create test data fixtures
 
@@ -164,8 +164,10 @@ JWT_SECRET=test_jwt_secret_for_integration_testing
 JWT_ALGORITHM=HS256
 JWT_EXPIRATION_MINUTES=30
 
-# Blockfrost (Cardano Testnet)
-BLOCKFROST_API_KEY=testnet_api_key_here
+# Koios (Cardano Testnet/Public)
+KOIOS_BASE_URL=https://api.koios.rest/api/v1
+KOIOS_METADATA_LABEL=674
+KOIOS_METADATA_BLOCK_LIMIT=1000
 CARDANO_NETWORK=testnet
 
 # Test Credentials
@@ -342,14 +344,15 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 - Transaction building and submission
 - Blockchain query validation
 
-### 4.1 Blockfrost Integration Testing (4 hours)
+### 4.1 Koios Integration Testing (4 hours)
 
 **Tests**:
-- [ ] API key validation
-- [ ] Network selection (testnet vs mainnet)
+- [ ] Base URL and network selection (testnet, preprod, mainnet)
 - [ ] Transaction submission
 - [ ] Query transactions by wallet address
 - [ ] Query metadata by transaction hash
+- [ ] Metadata label scan for duplicate DID detection
+- [ ] UTxO query coverage
 - [ ] Error handling (rate limits, network errors)
 - [ ] Retry logic and resilience
 
@@ -491,7 +494,7 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 ## Dependencies
 
 ### External Services
-- Blockfrost API (Cardano testnet) - API key required
+- Koios REST API (Cardano network) - public endpoint or self-hosted instance
 - Cardano testnet node (optional, for local testing)
 - Redis (optional, for distributed rate limiting)
 
@@ -509,7 +512,7 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 ## Risk Assessment
 
 ### High Risk
-- ⚠️ Blockfrost API rate limits (testnet: 50 req/10s)
+- ⚠️ Koios throughput limits (shared public endpoint)
 - ⚠️ API server import errors (breaking changes in module structure)
 - ⚠️ JWT authentication complexity (secure server)
 
@@ -531,8 +534,8 @@ TEST_USER_API_KEY=test_api_key_for_integration_testing
 - Update imports to match current API
 - Create adapter layer if needed (backwards compatibility)
 
-### For Blockfrost Rate Limits
-- Implement request throttling (respect 50 req/10s limit)
+### For Koios Throughput Limits
+- Implement request throttling (respect Koios rate guidance)
 - Use mock server for bulk testing
 - Cache blockchain queries (reduce API calls)
 

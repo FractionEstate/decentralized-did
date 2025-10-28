@@ -7,12 +7,28 @@
   line-height: 1.375rem;
   position: relative;
   overflow: hidden;
-  box-shadow: 0.25rem 0.25rem 0.5rem 0rem
-    rgba(var(--ion-color-neutral-500-rgb), 0.2);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 212, 255, 0.1),
+    rgba(123, 63, 242, 0.1)
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover:not(.active) {
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.2),
+      inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    border-color: rgba(0, 212, 255, 0.4);
+  }
 
   &.active:not(:first-child).picked-card {
-    box-shadow: none;
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.3),
+      inset 0 1px 1px rgba(255, 255, 255, 0.1);
     transition: transform 0.25s;
+    border-color: rgba(0, 212, 255, 0.5);
   }
 
   &.active.not-picked {
@@ -37,7 +53,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    color: var(--ion-color-neutral-200);
+    color: #ffffff;
 
     &.pending {
       .card-body {
@@ -46,19 +62,19 @@
 
       .card-body,
       .card-footer-column-value {
-        opacity: 0.4;
+        opacity: 0.5;
         border-radius: 0.25rem;
-        background: var(--ion-color-neutral-700);
+        background: rgba(0, 0, 0, 0.2);
       }
     }
 
     .card-text {
-      color: var(--ion-color-neutral-200);
-      text-shadow: 0.125rem 0.125rem 0.25rem 0rem
-        rgba(var(--ion-color-neutral-600-rgb), 0.8);
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 
       &.time {
-        color: var(--ion-color-neutral-100);
+        color: #00d4ff;
+        font-weight: 500;
       }
     }
 
@@ -79,11 +95,13 @@
 
       ion-chip {
         max-height: 1.625rem;
-        font-weight: 400;
+        font-weight: 500;
         font-size: 0.75rem;
-        background: var(--ion-color-neutral-300);
+        background: rgba(0, 212, 255, 0.2);
+        border: 1px solid rgba(0, 212, 255, 0.4);
         border-radius: 0.25rem;
         padding: 0.375rem 0.625rem;
+        color: #00d4ff;
 
         ion-icon {
           width: 0.875rem;

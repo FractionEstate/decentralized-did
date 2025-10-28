@@ -624,9 +624,9 @@ def verify_biometric(minutiae_set_prime, P):
 - **Advantage:** Fault tolerance + security
 - **Disadvantage:** Complex implementation
 
-**Recommendation:**
-- **Phase 1:** Option B (aggregated, simpler)
-- **Phase 2:** Evaluate Option C (threshold, more robust)
+**Recommendation (Updated Oct 2025):**
+- **Phase 1:** Option B (aggregated, simpler) ✅ Completed
+- **Phase 4.5:** Implement Option C for 10→4 recovery using masked Shamir shares ✅ (see `sdk/src/biometrics/threshold_aggregator.py`)
 
 ### 7.3 Code Parameters Selection
 

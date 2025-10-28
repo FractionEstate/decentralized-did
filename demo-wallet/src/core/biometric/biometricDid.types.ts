@@ -23,6 +23,7 @@ export interface BiometricGenerateResult {
   did: string; // Deterministic format: did:cardano:{network}:{base58_hash}
   id_hash?: string; // Optional: for backward compatibility (not used in deterministic format)
   wallet_address: string; // Kept in metadata only, not in DID identifier
+  tx_hash?: string; // Optional: Cardano transaction hash for on-chain enrollment metadata
   helpers: Record<string, HelperDataEntry>;
   metadata_cip30_inline: {
     version: number | string; // 1.1 (string) for deterministic DIDs with multi-controller support

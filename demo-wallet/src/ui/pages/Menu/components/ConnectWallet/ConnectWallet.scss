@@ -1,7 +1,7 @@
 .connect-wallet-container {
   .connect-wallet-title {
-    font-size: 1.25rem;
-    line-height: 1.5rem;
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-normal)rem;
     margin-bottom: 1rem;
     margin-top: 1.75rem;
   }
@@ -13,7 +13,7 @@
   .connection-pending {
     width: 2rem;
     height: 2rem;
-    padding: 0.5rem;
+    padding: var(--spacing-xs);
 
     & > ion-icon {
       margin: 0;
@@ -32,8 +32,8 @@
 
   @media screen and (min-width: 250px) and (max-width: 370px) {
     .connect-wallet-title {
-      font-size: 1rem;
-      line-height: 1.25rem;
+      font-size: var(--font-size-base);
+      line-height: var(--line-height-tight)rem;
       margin-bottom: 0.75rem;
       margin-top: 1.25rem;
     }

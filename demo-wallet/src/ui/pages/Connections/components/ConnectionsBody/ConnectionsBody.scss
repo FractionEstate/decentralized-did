@@ -9,7 +9,7 @@
   }
 
   .searchbar-cancel-button {
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   @media screen and (min-width: 250px) and (max-width: 370px) {

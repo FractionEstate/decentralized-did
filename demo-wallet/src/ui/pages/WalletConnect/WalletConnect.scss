@@ -28,7 +28,7 @@
         margin-bottom: 1.5rem;
 
         .request-user-logo {
-          border-radius: 5rem;
+          border-radius: var(--radius-full);
           background-color: var(--ion-color-neutral-700);
           width: 4.875rem;
           height: 4.875rem;
@@ -68,11 +68,11 @@
     justify-content: space-between;
 
     .title {
-      font-size: 1rem;
+      font-size: var(--font-size-base);
       line-height: 1.115rem;
       margin-top: 0.75rem;
       margin-bottom: 1.75rem;
-      font-weight: 500;
+      font-weight: var(--font-weight-medium);
       text-align: center;
     }
 

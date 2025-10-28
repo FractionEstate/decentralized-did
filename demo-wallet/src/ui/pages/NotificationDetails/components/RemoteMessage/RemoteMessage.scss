@@ -7,20 +7,20 @@
   }
 
   .sign-confirmation-body {
-    margin: 1.5rem 0;
+    margin: var(--spacing-lg) 0;
 
     h3 {
-      line-height: 1.75rem;
+      line-height: var(--line-height-relaxed)rem;
       margin-bottom: 0.75rem;
     }
 
     p {
-      line-height: 1.5rem;
+      line-height: var(--line-height-normal)rem;
     }
   }
 
   .page-footer {
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
     margin-bottom: 1rem;
 
     ion-button {

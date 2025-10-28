@@ -66,40 +66,31 @@ class RedisBackend(RateLimitBackend):
 
 **Conclusion**: This is the **correct Python pattern** for abstract base classes. All subclasses implement required methods. No action needed.
 
-#### 2. "Hardcoded Secrets" in Blockfrost Integration
-**Finding**: `api_key="your_blockfrost_key"` in `transaction.py` (line 97) and `blockfrost.py` (line 109)
-**Status**: ✅ **DOCUMENTATION EXAMPLES**
+#### 2. "Hardcoded Defaults" in Koios Integration
+**Finding**: `base_url="https://api.koios.rest/api/v1"` default in `koios_client.py`
+**Status**: ✅ **DOCUMENTED DEFAULT (OVERRIDABLE)**
 
 **Context**:
 ```python
-# transaction.py (line 90-106) - DOCSTRING EXAMPLE
-"""
-Example:
-    >>> builder = CardanoTransactionBuilder(
-    ...     network=Network.TESTNET,
-    ...     signing_key=payment_skey,
-    ...     api_key="your_blockfrost_key"  # ← Documentation placeholder
-    ... )
-"""
-
-# blockfrost.py (line 108-112) - DOCSTRING EXAMPLE
-"""
-Usage:
-    >>> client = BlockfrostClient(
-    ...     api_key="your_blockfrost_key",  # ← Documentation placeholder
-    ...     network="testnet"
-    ... )
-"""
+# koios_client.py (constructor excerpt)
+class KoiosClient:
+    def __init__(
+        self,
+        *,
+        base_url: str = "https://api.koios.rest/api/v1",
+        cache: Optional[TTLCache] = None,
+        metadata_scan_limit: int = DEFAULT_METADATA_SCAN_LIMIT,
+        ...
+    ) -> None:
+        self.base_url = base_url.rstrip("/")
+        self.cache = cache or TTLCache(default_ttl=60)
 ```
 
-**Actual Production Code**:
-```python
-# Real implementation uses environment variable (secure)
-def __init__(self, api_key: Optional[str] = None, ...):
-    self.api_key = api_key or os.getenv("BLOCKFROST_API_KEY")  # ← Secure
-```
+**Configuration Guidance**:
+- `.env.example` and `.env.test` expose `KOIOS_BASE_URL`, `KOIOS_METADATA_LABEL`, and `KOIOS_METADATA_BLOCK_LIMIT` so deployments can point to self-hosted Koios clusters or alternate providers.
+- All API servers read the same environment variables; the default base URL is only used when no override is provided.
 
-**Conclusion**: These are **docstring examples** showing parameter format, not production secrets. Real keys come from environment variables. No security risk.
+**Conclusion**: The embedded Koios URL is a **safe default** for open public infrastructure. Production deployments replace it via environment variables—no secrets are hardcoded.
 
 #### 3. "Hardcoded Token" in `error_handling.py`
 **Finding**: `TOKEN = "AUTH_MISSING_TOKEN"` at line 53
@@ -251,7 +242,7 @@ These are likely:
 
 #### Secrets Management
 - ✅ No hardcoded production secrets (verified)
-- ✅ Environment variables used for API keys (Blockfrost, JWT secret)
+- ✅ Environment variables used for blockchain connectivity (Koios), JWT secret
 - ✅ Example placeholders in docstrings (not security risks)
 
 #### API Security
@@ -271,7 +262,7 @@ These are likely:
 ## Deployment Checklist
 
 ### Environment Configuration
-- [ ] Set `BLOCKFROST_API_KEY` environment variable
+- [ ] Set `KOIOS_BASE_URL` / `KOIOS_METADATA_*` environment variables as needed
 - [ ] Set `JWT_SECRET_KEY` environment variable (strong random value)
 - [ ] Configure `NETWORK` (mainnet/testnet)
 - [ ] Set `CORS_ORIGINS` allowlist (restrict to wallet domain)

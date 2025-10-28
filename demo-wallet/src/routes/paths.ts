@@ -1,10 +1,10 @@
 enum RoutePath {
   ROOT = "/",
   ONBOARDING = "/onboarding",
-  SIMPLIFIED_ONBOARDING = "/simplified-onboarding",
   SET_PASSCODE = "/setpasscode",
   GENERATE_SEED_PHRASE = "/generateseedphrase",
   VERIFY_SEED_PHRASE = "/verifyseedphrase",
+  DEFERRED_BACKUP = "/deferredbackup",
   TABS_MENU = "/tabs",
   CREATE_PASSWORD = "/createpassword",
   SSI_AGENT = "/ssiagent",

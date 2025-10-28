@@ -121,7 +121,7 @@ Unless otherwise noted, all JSON payloads use `application/json` with UTF-8 enco
 | Method | Path | Auth | Notes |
 | --- | --- | --- | --- |
 | `GET` | `/health` | None | Returns status/version JSON |
-| `POST` | `/api/biometric/generate` | None | Deterministic commitment (wallet + minutiae); duplicate detection via Blockfrost when configured |
+| `POST` | `/api/biometric/generate` | None | Deterministic commitment (wallet + minutiae); duplicate detection via Koios when configured |
 | `POST` | `/api/biometric/verify` | None | Recomputes helper hash; requires matching helper set and expected hash |
 
 ### `/health`
@@ -136,7 +136,7 @@ Unless otherwise noted, all JSON payloads use `application/json` with UTF-8 enco
 
 ### `/api/biometric/generate`
 - **200 OK** — returns `GenerateResponse`
-- **409 Conflict** — duplicate DID detected when Blockfrost client finds an existing enrollment
+- **409 Conflict** — duplicate DID detected when Koios client finds an existing enrollment
 - **500 Internal Server Error** — unhandled exceptions (stack trace logged to console)
 
 Example:
@@ -180,7 +180,7 @@ curl -X POST http://localhost:8000/api/biometric/generate \
 - **Audit Logging**: Forward `audit.log` to immutable storage (SIEM, WORM bucket) and maintain ≥7 year retention for national identity regulations.
 - **Key Custody**: Plan migration to hardware signing for JWTs (`JWT_SIGNING_BACKEND` roadmap) so bearer tokens remain defensible in court-administered audits.
 - **Compliance Mapping**: Cross-check endpoints against `docs/API-TEST-CONFIGURATION.md#6-production-hardening--compliance` to satisfy NIST SP 800-63, ISO/IEC 24745, GDPR, and eIDAS requirements.
-- **Environment Gate**: `ENVIRONMENT` values `production`/`staging` enforce TLS, rate limiting, audit logging, non-default secrets, and Blockfrost keys at startup—startup aborts if any requirement is unmet.
+- **Environment Gate**: `ENVIRONMENT` values `production`/`staging` enforce TLS, rate limiting, audit logging, non-default secrets, and Koios connectivity at startup—startup aborts if any requirement is unmet.
 
 ### Authentication Flow
 1. Exchange an API key for a JWT access token:
@@ -196,7 +196,7 @@ curl -X POST http://localhost:8000/api/biometric/generate \
 - Request body matches `GenerateRequest`
 - **200 OK** — deterministic DID + helper data
 - **401/403** — missing or invalid bearer token
-- **409 Conflict** — duplicate DID from Blockfrost lookup
+- **409 Conflict** — duplicate DID from Koios lookup
 - **429 Too Many Requests** — rate limit exceeded
 - **500 Internal Server Error** — unexpected failure (logged + audit entry)
 
@@ -278,7 +278,7 @@ Expected results:
 | `200 OK` | Success | Payload returned (may require checking `success` flag) |
 | `401 Unauthorized` | Secure API | Missing or invalid bearer token; also returned for malformed JWT signature |
 | `403 Forbidden` | Secure API | No credentials provided (FastAPI dependency rejection) |
-| `409 Conflict` | Basic/Secure | Duplicate DID detected via Blockfrost client |
+| `409 Conflict` | Basic/Secure | Duplicate DID detected via Koios client |
 | `429 Too Many Requests` | Secure API | Rate limit exceeded (SlowAPI) |
 | `500 Internal Server Error` | All | Unhandled exception; inspect logs/audit trail |
 

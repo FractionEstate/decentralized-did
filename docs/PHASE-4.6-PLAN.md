@@ -206,7 +206,7 @@ async def add_security_headers(request, call_next):
 - Test suite: 69 tests in 0.95s (excellent)
 - Enrollment: Unknown (needs benchmarking)
 - Verification: Unknown (needs benchmarking)
-- Blockchain queries: Unknown (depends on Blockfrost)
+- Blockchain queries: Pending (Koios metrics instrumentation added, need benchmarks)
 
 **Target Performance**:
 - Enrollment: <100ms (excluding biometric capture)
@@ -217,25 +217,21 @@ async def add_security_headers(request, call_next):
 
 #### 4.1 Caching Layer
 ```python
-from redis import asyncio as aioredis
-from functools import lru_cache
+from decentralized_did.cardano.cache import TTLCache
+from decentralized_did.cardano.koios_client import KoiosClient
 
-class BlockfrostCache:
-    def __init__(self, redis_url: str):
-        self.redis = aioredis.from_url(redis_url)
+cache = TTLCache(default_ttl=300)
+koios = KoiosClient(base_url="https://api.koios.rest/api/v1", cache=cache)
 
-    async def get_did(self, did: str):
-        # Check cache first
-        cached = await self.redis.get(f"did:{did}")
-        if cached:
-            return json.loads(cached)
+async def get_cached_enrollment(did: str):
+   cached = cache.get(did)
+   if cached:
+      return cached
 
-        # Query blockchain
-        result = await blockfrost.check_did_exists(did)
-
-        # Cache for 5 minutes
-        await self.redis.setex(f"did:{did}", 300, json.dumps(result))
-        return result
+   result = await koios.check_did_exists(did)
+   if result:
+      cache.set(did, result)
+   return result
 ```
 
 #### 4.2 Async Operations
@@ -245,7 +241,7 @@ class BlockfrostCache:
 
 #### 4.3 Connection Pooling
 - Database connection pooling (if using DB)
-- HTTP connection pooling for Blockfrost
+- HTTP connection pooling for Koios client
 - WebSocket connections for real-time updates
 
 #### 4.4 Biometric Processing
@@ -315,10 +311,10 @@ async def enroll(request: Request):
          └─────────────┘
                 │
                 ▼
-        ┌───────────────┐
-        │  Blockfrost   │ (Cardano blockchain)
-        │   (HTTPS)     │
-        └───────────────┘
+   ┌───────────────┐
+   │    Koios      │ (Cardano blockchain)
+   │   (HTTPS)     │
+   └───────────────┘
 ```
 
 **Deployment Guide Contents**:
@@ -327,7 +323,7 @@ async def enroll(request: Request):
    - Linux server (Ubuntu 22.04 LTS recommended)
    - Docker and Docker Compose
    - Domain name with DNS configured
-   - Blockfrost API key
+   - Koios REST endpoint (public base URL or self-hosted)
 
 2. **Docker Containerization**:
    ```dockerfile
@@ -348,8 +344,11 @@ async def enroll(request: Request):
        build: .
        ports:
          - "8000:8000"
-       environment:
-         - BLOCKFROST_API_KEY=${BLOCKFROST_API_KEY}
+          environment:
+             - KOIOS_BASE_URL=${KOIOS_BASE_URL}
+             - KOIOS_METADATA_LABEL=${KOIOS_METADATA_LABEL}
+             - KOIOS_METADATA_BLOCK_LIMIT=${KOIOS_METADATA_BLOCK_LIMIT}
+             - CARDANO_NETWORK=${CARDANO_NETWORK}
        restart: unless-stopped
 
      demo_wallet:
@@ -391,7 +390,9 @@ async def enroll(request: Request):
 6. **Environment Configuration**:
    ```bash
    # .env file
-   BLOCKFROST_API_KEY=mainnet_YOUR_KEY_HERE
+   KOIOS_BASE_URL=https://api.koios.rest/api/v1
+   KOIOS_METADATA_LABEL=674
+   KOIOS_METADATA_BLOCK_LIMIT=1000
    CARDANO_NETWORK=mainnet
    REDIS_URL=redis://localhost:6379
    JWT_SECRET_KEY=generate_strong_random_key
@@ -581,7 +582,7 @@ This is the manual verification step from Phase 4.5 that was marked optional. If
 
 See `docs/DEPLOYMENT-QUICKSTART.md` for 5-minute setup guide.
 
-**Estimated Time**: 1 hour (if Blockfrost key available)
+**Estimated Time**: 1 hour (assuming Koios endpoint reachable)
 
 ---
 
@@ -708,7 +709,7 @@ Transform the system from "technically secure" to "production-ready" by addressi
 - **Developers**: 1-2 full-time (ideally 2)
 - **Hardware**: Eikon Touch 700 sensor ($25-30)
 - **Infrastructure**: Server for testing deployment
-- **API Keys**: Blockfrost (free tier sufficient)
+- **Blockchain Access**: Koios REST endpoint (public, no API key required)
 
 ### Risk Factors
 - Hardware sensor availability/compatibility

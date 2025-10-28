@@ -13,13 +13,13 @@
       }
 
       h1 {
-        margin: 1.5rem 0 0.75rem 0;
-        font-size: 1.5rem;
-        font-weight: 700;
+        margin: var(--spacing-lg) 0 0.75rem 0;
+        font-size: var(--font-size-xl);
+        font-weight: var(--font-weight-bold);
       }
 
       p {
-        font-weight: 500;
+        font-weight: var(--font-weight-medium);
       }
     }
   }
@@ -36,7 +36,7 @@
         margin-top: 3.5rem;
 
         h1 {
-          font-size: 1.25rem;
+          font-size: var(--font-size-lg);
         }
 
         p {

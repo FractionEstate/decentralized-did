@@ -39,14 +39,14 @@
 
 ## Issues & Follow-Ups
 - Jest exits with status `1` because legacy global coverage thresholds (80% statements/lines) remain unmet for the expanded integration suite. Assertions pass; threshold tuning will be handled separately.
-- Duplicate DID detection (Blockfrost) and network/time-out failure scenarios remain outstanding (requires enabling remote lookups and mock fault injection).
+- Duplicate DID detection (Koios) and network/time-out failure scenarios remain outstanding (requires enabling remote lookups and mock fault injection).
 - External helper storage path remains untested; will require Phase 3 mock fixtures or temporary API flags.
 - Performance benchmarks currently use single-sample latency logs; collecting distribution metrics (P50/P95/P99) is still to-do.
 
 ---
 
 ## Next Steps
-1. Exercise duplicate DID detection flows (mock Blockfrost or enable testnet key) and capture resulting conflict responses.
+1. Exercise duplicate DID detection flows (simulate Koios responses or point to public endpoint) and capture resulting conflict responses.
 2. Add negative-path tests for network interruptions and helper URI fetch failures.
 3. Extend performance harness to gather latency distributions over multiple iterations (targeting Phase 2.4 deliverables).
 4. Update Jest coverage thresholds or split integration suite into a non-covered target to restore zero-exit-code pipelines.

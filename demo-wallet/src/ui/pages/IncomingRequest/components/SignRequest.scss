@@ -18,7 +18,7 @@
   }
 
   .sign-footer {
-    padding: 1rem 0;
+    padding: var(--spacing-md) 0;
 
     .secondary-button::part(native) {
       border: none;
@@ -40,15 +40,15 @@
     }
 
     .sign-name {
-      font-size: 1.5rem;
-      line-height: 1.75rem;
+      font-size: var(--font-size-xl);
+      line-height: var(--line-height-relaxed) rem;
       margin-bottom: 0.5rem;
       color: var(--ion-color-neutral-800);
     }
 
     .sign-link {
-      font-weight: 500;
-      font-size: 0.75rem;
+      font-weight: var(--font-weight-medium);
+      font-size: var(--font-size-xs);
       line-height: 1rem;
       margin: 0;
       color: var(--ion-color-neutral-600);
@@ -61,7 +61,7 @@
 
       .identifier {
         display: block;
-        padding: 0.75rem 0;
+        padding: var(--spacing-sm) 0;
 
         @media screen and (min-width: 250px) and (max-width: 370px) {
           font-size: 0.8rem;
@@ -73,7 +73,7 @@
     .sign-data {
       .card-details-nested-content {
         & > .card-details-info-block-inner {
-          padding: 1rem;
+          padding: var(--spacing-md);
         }
       }
 
@@ -98,7 +98,7 @@
       }
       .sign-string {
         display: block;
-        padding: 0.75rem 0;
+        padding: var(--spacing-sm) 0;
         font-weight: normal;
         @media screen and (min-width: 250px) and (max-width: 370px) {
           font-size: 0.8rem;
@@ -110,17 +110,17 @@
     .sign-passcode-fallback {
       margin-top: 1.5rem;
       text-align: center;
-      padding: 1rem 0;
+      padding: var(--spacing-md) 0;
 
       .passcode-fallback-link {
         background: none;
         border: none;
         color: var(--ion-color-primary);
-        font-size: 0.875rem;
-        font-weight: 500;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-medium);
         cursor: pointer;
         text-decoration: underline;
-        padding: 0.5rem 1rem;
+        padding: var(--spacing-xs) 1rem;
 
         &:hover {
           color: var(--ion-color-primary-shade);
@@ -140,7 +140,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 10000;
+  z-index: var(--z-index-max);
   background: var(--ion-background-color, #fff);
   display: flex;
   align-items: center;

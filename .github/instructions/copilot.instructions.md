@@ -3,7 +3,9 @@ applyTo: '**'
 ---
 # Copilot Working Agreement
 
-This repository combines a Python toolkit for biometric DID generation and a JavaScript demo wallet (`demo-wallet/`, based on Cardano Foundation's Veridian wallet). Follow these instructions whenever you contribute new code or documentation with Copilot assistance.
+This repository combines a Python toolkit for biometric DID generation and a production-ready wallet (`demo-wallet/`, based on Cardano Foundation's Veridian wallet). The wallet is designed for **production use**, not just demonstration. Follow these instructions whenever you contribute new code or documentation with Copilot assistance.
+
+**CRITICAL**: The wallet is a **production application**, not a demo or proof-of-concept. All code must be production-grade: no mock fallbacks, no placeholder implementations, no development shortcuts in production builds.
 
 ## 0. Core Constraint: Open-Source Only
 **CRITICAL**: This project uses NO PAID SERVICES OR COMMERCIAL SOFTWARE.
@@ -34,11 +36,18 @@ This repository combines a Python toolkit for biometric DID generation and a Jav
 - Prefer small, composable functions; add brief comments only when behaviour is non-obvious.
 - Python: adhere to standard formatting (PEP 8). JavaScript/TypeScript: match existing lint setup (ESLint + Prettier).
 - Do not reintroduce the original Git remote inside `demo-wallet/`; the directory stays detached from the Cardano Foundation repository.
+- **Production Code Only**: Never use mock data, placeholder implementations, or development shortcuts in production code paths. Use feature flags or test-only modules for development/testing needs.
+- **Fail Fast**: If production configuration is missing, fail with clear error messages. Do not fall back to localhost, mock APIs, or hardcoded values.
 
 ## 3. Testing & Tooling
 - Python changes: run `pytest` (root `tests/`). Target individual files with `python -m pytest tests/<file>` when the suite is large.
 - Demo wallet changes: run relevant npm scripts. At minimum execute `npm test` for Jest unit suites; add targeted WebDriverIO runs if UI flows change.
 - When editing build tooling or configs, run a dry build (`npm run build:local` or `pip install -e .`) to ensure no regressions.
+- Android deployment prep **must** include:
+  - `HUSKY=0 npm install` (inside `demo-wallet/`) to guarantee local TypeScript/WDIO typings and avoid hook failures.
+  - `npm run build:local` before any Capacitor sync so `build/` assets exist.
+  - `npx cap sync android` after web assets change to regenerate native Gradle files.
+  - `./gradlew assembleDebug` for smoke validation and `./gradlew assembleRelease` for production artifacts. Capture warnings (e.g., deprecated APIs, unstripped libs) in the summary.
 - Document in your summary which commands were executed (or justify why tests were skipped).
 
 ## 4. Documentation Requirements
@@ -106,12 +115,135 @@ metadata = build_metadata_payload(wallet_address, digest, version=1)  # Shows wa
 - See `docs/MIGRATION-GUIDE.md` for detailed migration instructions
 - Legacy format will be removed in v2.0
 
-## 6. Review & Communication
+## 6. SDK Integration & Architecture
+**CRITICAL**: Maintain clean separation between SDK, core API, and demo wallet.
+
+### Architecture Pattern (Verified 2025-01-29)
+```
+demo-wallet/ (TypeScript/React)
+    ↓ HTTP API calls
+core/api/ (Python/FastAPI)
+    ↓ imports from SDK
+sdk/src/decentralized_did/ (Python toolkit)
+```
+
+### ✅ Correct SDK Integration
+**Core API Server** (`core/api/api_server_secure.py`):
+```python
+# ALWAYS import from SDK - NEVER reimplement
+from pathlib import Path
+import sys
+
+# Resolve SDK path
+sdk_path = Path(__file__).parent.parent.parent / "sdk" / "src"
+sys.path.insert(0, str(sdk_path))
+
+# Import SDK functions
+from decentralized_did.did.generator import generate_deterministic_did
+from decentralized_did.cardano.koios_client import KoiosClient
+from decentralized_did.cardano.cache import TTLCache
+```
+
+**Demo Wallet** (`demo-wallet/src/core/biometric/biometricDidService.ts`):
+```typescript
+// Call Python CLI or API - DO NOT reimplement crypto
+private pythonCliPath = "python3 -m decentralized_did.cli";
+
+// For local DID generation (non-crypto only):
+// Allowed: Blake2b hashing, Base58 encoding (deterministic operations)
+// Forbidden: Fuzzy extractor, commitment generation, signature verification
+```
+
+### ❌ Anti-Patterns (NEVER DO THIS)
+```python
+# ❌ DON'T copy SDK code into core/api/
+def generate_did(commitment, network):  # WRONG - reimplements SDK
+    # ... duplicated logic ...
+```
+
+```typescript
+// ❌ DON'T implement biometric crypto in TypeScript
+function generateCommitment(template: Buffer) {  // WRONG - should call API
+    // ... reimplements fuzzy extractor ...
+}
+```
+
+### SDK Version Management
+1. **SDK is source of truth** for all biometric operations
+2. **Current SDK version**: 0.1.0 (from `sdk/pyproject.toml`)
+3. **When SDK changes**:
+   - Update API server imports if function signatures change
+   - Update CLI integration in demo wallet if command flags change
+   - Update tests in `core/api/` and `demo-wallet/tests/`
+   - Document breaking changes in `docs/MIGRATION-GUIDE.md`
+4. **Version compatibility**:
+   - Core API must use SDK v0.1.0+ (deterministic DID support)
+   - Demo wallet must call API endpoints with v1.1 metadata schema
+   - Legacy v1.0 metadata shows deprecation warnings
+
+### Adding New SDK Features
+**Step 1**: Implement in SDK (`sdk/src/decentralized_did/`)
+```python
+# Example: New biometric verification method
+def verify_with_liveness(template: bytes, challenge: bytes) -> bool:
+    """Verify template with liveness detection."""
+    # Implementation here
+```
+
+**Step 2**: Add API endpoint (`core/api/api_server_secure.py`)
+```python
+from decentralized_did.biometric.verification import verify_with_liveness
+
+@app.post("/api/v1/verify-liveness")
+async def verify_liveness_endpoint(request: LivenessRequest):
+    result = verify_with_liveness(request.template, request.challenge)
+    return {"verified": result}
+```
+
+**Step 3**: Call from demo wallet (`demo-wallet/src/core/biometric/`)
+```typescript
+async verifyWithLiveness(template: Uint8Array, challenge: Uint8Array) {
+    const response = await fetch(`${API_BASE}/verify-liveness`, {
+        method: 'POST',
+        body: JSON.stringify({ template, challenge })
+    });
+    return response.json();
+}
+```
+
+**Step 4**: Test integration
+```bash
+# SDK unit tests
+cd sdk && pytest tests/
+
+# API integration tests
+cd core/api && pytest
+
+# Demo wallet tests
+cd demo-wallet && npm test
+```
+
+### Verification Checklist
+Before merging SDK-related changes:
+- [ ] SDK functions properly exported in `__init__.py`
+- [ ] Core API imports from SDK (no code duplication)
+- [ ] Demo wallet calls API (no direct SDK imports)
+- [ ] Tests pass at all three layers
+- [ ] Documentation updated (`docs/cardano-integration.md`, `docs/wallet-integration.md`)
+- [ ] No hardcoded biometric logic outside SDK
+
+## 7. Review & Communication
 - Summaries should state *what* changed, *why*, tests run, and outstanding follow-ups.
 - Call out assumptions or open questions explicitly so reviewers can respond quickly.
 - Use TODO comments sparingly; prefer GitHub issues or updates to `docs/roadmap.md` for larger gaps.
 
-## 7. Task Management in `.github/tasks.md`
+## 7.1 Android Build Environment Checklist
+- Use OpenJDK 21 (`/usr/lib/jvm/java-21-openjdk-amd64`) and set `org.gradle.java.home` accordingly when modifying Gradle files.
+- Ensure the Android SDK command-line tools live at `/opt/android-sdk` (or update `local.properties`) and keep `sdk.dir` out of version control.
+- When tweaking ProGuard/R8 rules, run `npm run build:android:proguard` to refresh plugin overrides before invoking Gradle.
+- Release artifacts live in `demo-wallet/android/app/build/outputs/apk/release/`; confirm they are regenerated after each relevant change.
+
+## 8. Task Management in `.github/tasks.md`
 **Critical Pattern**: Task numbers MUST restart at 1 for each phase.
 
 ### ✅ Correct Task Numbering

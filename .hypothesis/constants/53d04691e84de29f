@@ -1,0 +1,4 @@
+# file: /workspaces/decentralized-did/sdk/src/decentralized_did/cardano/query.py
+# hypothesis_version: 6.142.4
+
+['controllers', 'did', 'enrollment_timestamp', 'metadata', 'revoked', 'tx_hash', 'unknown', 'wallet_address']

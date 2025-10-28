@@ -186,6 +186,36 @@
       "privacy": "Privacy Policy"
     }
   },
+  "deferredbackup": {
+    "header": {
+      "cancel": "Cancel"
+    },
+    "display": {
+      "title": "Backup Your Recovery Phrase",
+      "warning": "⚠️ Important: Write down these 12 words in order and store them securely. This is the only way to recover your wallet if you lose access to this device.",
+      "confirmation": "I have written down my recovery phrase and stored it securely",
+      "button": {
+        "continue": "Continue to Verification"
+      },
+      "error": {
+        "notconfirmed": "Please confirm you've written down your recovery phrase"
+      }
+    },
+    "verify": {
+      "title": "Verify Your Recovery Phrase",
+      "description": "Select the correct word for each position to verify you've written down your recovery phrase correctly.",
+      "wordnumber": "Word #{{number}}",
+      "button": {
+        "verify": "Complete Backup",
+        "back": "Back"
+      },
+      "success": "✅ Recovery phrase backed up successfully!",
+      "error": {
+        "incomplete": "Please select a word for each position",
+        "incorrect": "❌ Incorrect words selected. Please try again."
+      }
+    }
+  },
   "lockpage": {
     "title": "Welcome back",
     "description": "Please enter your passcode to login",

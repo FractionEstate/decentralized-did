@@ -1,22 +1,23 @@
 # Phase 4.5 - Quick Deployment Reference
 
-**Status**: ✅ Ready for Testnet Deployment  
-**Time**: 5 minutes  
+**Status**: ✅ Ready for Testnet Deployment
+**Time**: 5 minutes
 **Cost**: FREE
 
 ## 🚀 Quick Start
 
-### 1. Get API Key (1 min)
-Visit https://blockfrost.io/ → Create preprod project → Copy API key
+### 1. Confirm Koios Endpoint (1 min)
+Default public endpoint: https://api.koios.rest/api/v1 → no API key required. Use `--koios-base-url` if pointing to a self-hosted instance.
 
-### 2. Get Test ADA (2 min)  
+### 2. Get Test ADA (2 min)
 Visit https://docs.cardano.org/cardano-testnet/tools/faucet/ → Enter address → Receive 10K test ADA
 
 ### 3. Deploy (2 min)
 ```bash
-export BLOCKFROST_API_KEY="preprod_YOUR_KEY"
 cd /workspaces/decentralized-did
 python3 scripts/deploy_testnet.py
+# or specify a custom endpoint
+# python3 scripts/deploy_testnet.py --koios-base-url https://your-koios/api/v1
 ```
 
 ### 4. Verify

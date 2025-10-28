@@ -42,7 +42,7 @@ const CredentialItem = ({
               onIonChange={() => {
                 onCheckboxChange(credential.id);
               }}
-              aria-label=""
+              aria-label="Select archived credential"
             />
           )}
           {isRome ? (

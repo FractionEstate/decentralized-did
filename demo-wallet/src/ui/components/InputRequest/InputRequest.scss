@@ -1,16 +1,19 @@
 ion-modal#input-request {
   padding: 1.25rem;
   --height: fit-content;
-  --border-radius: 1rem;
-  --box-shadow: 0.125rem 0.125rem 0.625rem 0rem
-    rgba(var(--ion-color-neutral-600-rgb), 0.3);
+  --border-radius: 1.25rem;
+  --background: rgba(15, 15, 30, 0.95);
+  --box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
 
   &.connection-alias {
-    --backdrop-opacity: var(--ion-backdrop-opacity, 0.4);
+    --backdrop-opacity: var(--ion-backdrop-opacity, 0.5);
 
     .input-request-wrapper {
       h3 {
         font-size: 1.125rem;
+        color: #00d4ff;
       }
     }
   }
@@ -19,9 +22,14 @@ ion-modal#input-request {
     padding: 1.56rem 1.25rem;
 
     h3 {
-      font-weight: 500;
+      font-weight: 600;
       text-align: center;
       line-height: 1.25rem;
+      background: linear-gradient(90deg, #00d4ff, #7b3ff2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
     }
 
     ion-item.custom-input {
@@ -35,9 +43,14 @@ ion-modal#input-request {
     .error-message {
       margin-top: 0.25rem;
       text-align: start;
+      padding: 0.5rem;
+      background: rgba(239, 68, 68, 0.1);
+      border-left: 3px solid #ef4444;
+      border-radius: 4px;
 
       p {
         margin: 0;
+        color: #fca5a5;
       }
     }
 

@@ -306,7 +306,7 @@ const ConnectWallet = forwardRef<ConnectWalletOptionRef, object>(
                   return (
                     <IonCheckbox
                       checked={true}
-                      aria-label=""
+                      aria-label="Connected wallet indicator"
                       className="checkbox"
                       data-testid="connected-wallet-check-mark"
                     />

@@ -11,7 +11,7 @@
   }
 
   p {
-    margin: 0.5rem 0 0;
+    margin: var(--spacing-xs) 0 0;
   }
 
   .connection-details-logo .fallback-logo {

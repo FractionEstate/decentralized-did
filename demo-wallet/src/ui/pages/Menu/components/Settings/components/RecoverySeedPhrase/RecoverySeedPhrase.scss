@@ -13,7 +13,7 @@
     margin-top: 1.75rem;
     margin-bottom: 1.5rem;
     flex-direction: row;
-    padding: 1rem 1.25rem;
+    padding: var(--spacing-md) 1.25rem;
     background: var(--ion-color-neutral-300);
 
     p {
@@ -23,8 +23,8 @@
     .tips {
       margin: 0;
       padding-left: 1.25rem;
-      font-size: 1rem;
-      font-weight: 500;
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
 
       li:not(:last-child) {
         margin-bottom: 0.5rem;
@@ -44,7 +44,7 @@
 }
 
 .recovery-seed-phrase-page-footer {
-  margin: 1rem 0;
+  margin: var(--spacing-md) 0;
 }
 
 .confirm-view-seedpharse {

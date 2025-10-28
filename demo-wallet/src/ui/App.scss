@@ -1,3 +1,11 @@
+/**
+ * Import Design System
+ * Note: Using @use with "as *" instead of deprecated @import (Dart Sass 3.0.0 compatibility)
+ * The "as *" syntax imports all symbols into global namespace for backward compatibility
+ */
+@use "./design-tokens.scss" as *;
+@use "./utilities.scss" as *;
+
 :root[mode="ios"],
 :root[mode="md"] {
   // Ionic v8 include dynamic font scaling enabled by default -> disable to avoid break app UI
@@ -11,7 +19,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 500;
-  background-color: var(--ion-color-neutral-200);
+  /* Presentation design system: dark gradient background */
+  background: linear-gradient(
+    135deg,
+    var(--cardano-blue) 0%,
+    var(--cardano-dark) 100%
+  );
+  background-attachment: fixed;
+  min-height: 100vh;
 
   .max-zindex {
     z-index: 2147483647 !important; // max value
@@ -322,4 +337,81 @@ ion-segment {
 
 ion-spinner {
   color: var(--ion-color-primary-700);
+}
+
+/* ========================================
+   PRESENTATION DESIGN SYSTEM INTEGRATION
+   ======================================== */
+
+/* App-level styling with presentation colors */
+ion-app {
+  background: linear-gradient(
+    135deg,
+    var(--cardano-blue) 0%,
+    var(--cardano-dark) 100%
+  );
+  background-attachment: fixed;
+  --ion-background-color: transparent;
+
+  ion-content {
+    --background: transparent;
+  }
+}
+
+/* Update primary button to use cyan */
+.primary-button {
+  --background: var(--cardano-cyan);
+  --color: #000000;
+  font-weight: 600;
+
+  &:hover {
+    --background: rgba(0, 212, 255, 0.8);
+  }
+
+  &:active {
+    --background: rgba(0, 212, 255, 0.6);
+  }
+}
+
+/* Update secondary button to use purple */
+.secondary-button {
+  --background: var(--cardano-purple);
+  --color: #ffffff;
+  --border-color: var(--cardano-purple);
+  font-weight: 600;
+
+  &:hover {
+    --background: rgba(123, 63, 242, 0.8);
+  }
+
+  &:active {
+    --background: rgba(123, 63, 242, 0.6);
+  }
+}
+
+/* Update tertiary button styling */
+.tertiary-button {
+  --color: var(--cardano-cyan);
+  font-weight: 600;
+  border-bottom: 2px solid var(--cardano-cyan);
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+/* Gradient text for headers */
+h1,
+h2,
+h3 {
+  &.gradient-header {
+    background: linear-gradient(
+      90deg,
+      var(--cardano-cyan),
+      var(--cardano-purple)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }

@@ -16,9 +16,13 @@ class ConfigurationService {
     "Can not load environment file";
 
   async start() {
+    console.log(`[ConfigurationService] Loading environment: ${environment}`);
+    console.log(`[ConfigurationService] Import path: ../../../configs/${environment}.yaml`);
+
     await new Promise((rs, rj) => {
       import(`../../../configs/${environment}.yaml`)
         .then((module) => {
+          console.log(`[ConfigurationService] ✅ Config loaded successfully for ${environment}`);
           const data = module.default;
 
           const validyCheck = this.configurationValid(data);
@@ -26,10 +30,11 @@ class ConfigurationService {
             ConfigurationService.configurationEnv = data as Configuration;
             this.setKeriaIp();
           } else {
+            console.error(`[ConfigurationService] ❌ Config validation failed:`, validyCheck.reason);
             rj(
               new Error(
                 ConfigurationService.INVALID_ENVIRONMENT_FILE +
-                  validyCheck.reason
+                validyCheck.reason
               )
             );
           }
@@ -37,6 +42,12 @@ class ConfigurationService {
           rs(true);
         })
         .catch((e) => {
+          console.error(`[ConfigurationService] ❌ Failed to load config for ${environment}:`, e);
+          console.error(`[ConfigurationService] Error type:`, e.constructor.name);
+          console.error(`[ConfigurationService] Error message:`, e.message);
+          if (e.name === 'NotFoundError') {
+            console.error(`[ConfigurationService] 🔍 NotFoundError detected - file path issue`);
+          }
           rj(
             new Error(ConfigurationService.CANNOT_LOAD_ENVIRONMENT_FILE, {
               cause: e,

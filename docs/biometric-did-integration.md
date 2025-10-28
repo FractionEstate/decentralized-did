@@ -128,6 +128,10 @@ This document describes the **complete biometric DID integration** into the demo
    - Completed fingers checklist
    - Success/error states
    - Mobile-optimized
+6. **Threshold Shares (10→4)**
+   - Masked share generation during enrollment (Shamir k-of-n)
+   - Metadata serialization (`threshold`, `totalShares`, `thresholdShares`)
+   - External helper payload support for threshold shares
 
 ### 🔄 In Progress
 

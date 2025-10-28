@@ -1,6 +1,6 @@
 .lock-page {
   display: flex !important;
-  z-index: 2147483647 !important; // max value
+  z-index: var(--z-index-max) !important; // max value
 
   &.hide {
     .responsive-page-content,
@@ -34,36 +34,36 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    margin: 2rem 0 1rem;
+    margin: var(--spacing-xl) 0 1rem;
 
     .biometric-unlock-button {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      padding: 1rem 2rem;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-md) 2rem;
       background: var(--ion-color-primary);
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
+      border-radius: var(--radius-md);
+      font-size: var(--font-size-base);
+      font-weight: var(--font-weight-medium);
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: var(--shadow-sm);
 
       ion-icon {
-        font-size: 1.5rem;
+        font-size: var(--font-size-xl);
       }
 
       &:hover {
         background: var(--ion-color-primary-shade);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
       }
 
       &:active {
         transform: translateY(0);
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-sm);
       }
     }
   }
@@ -74,5 +74,5 @@
 }
 
 .alert-forgotten {
-  z-index: 2147483647 !important; // max value
+  z-index: var(--z-index-max) !important; // max value
 }

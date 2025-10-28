@@ -14,8 +14,8 @@ import { DataProps, NextRoute, StoreState } from "./nextRoute.types";
 const getNextRootRoute = (data: DataProps) => {
   const authentication = data.store.stateCache.authentication;
 
-  // BIOMETRIC DID: Use simplified 3-step onboarding for new users
-  let path = RoutePath.SIMPLIFIED_ONBOARDING;
+  // BIOMETRIC DID: Use enhanced onboarding with biometric capture for new users
+  let path = RoutePath.ONBOARDING;
 
   // If user already started old flow, continue with it
   if (authentication.passcodeIsSet) {
@@ -49,7 +49,7 @@ const getNextRootRoute = (data: DataProps) => {
 const getNextOnboardingRoute = (data: DataProps) => {
   const nextRoute = getNextRootRoute(data);
 
-  // SimplifiedOnboarding is now the default - it's self-contained, just return it
+  // Enhanced onboarding flow is self-contained with biometric capture + seed phrase
   return nextRoute;
 };
 

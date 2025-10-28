@@ -108,7 +108,9 @@ API_URL=https://api.yourdomain.com
 SSL_EMAIL=admin@yourdomain.com
 
 # Cardano Configuration
-BLOCKFROST_API_KEY=your_blockfrost_mainnet_key
+KOIOS_BASE_URL=https://api.koios.rest/api/v1
+KOIOS_METADATA_LABEL=674
+KOIOS_METADATA_BLOCK_LIMIT=1000
 CARDANO_NETWORK=mainnet
 
 # CORS Origins (your production domains)
@@ -182,7 +184,7 @@ if env_file.exists():
                     if 'CHANGE_ME' in line:
                         print(f'ERROR: {key} still has placeholder value')
                         exit(1)
-                elif key in ['DOMAIN', 'SSL_EMAIL', 'BLOCKFROST_API_KEY']:
+                elif key in ['DOMAIN', 'SSL_EMAIL', 'KOIOS_BASE_URL']:
                     if 'CHANGE_ME' in line or not line.split('=', 1)[1].strip():
                         print(f'ERROR: {key} is required but not set')
                         exit(1)
@@ -355,8 +357,8 @@ sudo apt update && sudo apt upgrade -y
 The API servers include built-in metrics endpoints:
 
 ```bash
-# Blockfrost API metrics
-curl https://api.yourdomain.com/metrics/blockfrost
+# Koios API metrics
+curl https://api.yourdomain.com/metrics/koios
 
 # Response includes:
 # - Request count and latency

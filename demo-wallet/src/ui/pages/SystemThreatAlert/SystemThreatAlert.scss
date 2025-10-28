@@ -8,20 +8,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 1rem;
+    padding: var(--spacing-md);
   }
 
   .title {
     color: var(--ion-color-neutral-800);
     margin-top: 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
   }
 
   .description {
     color: var(--ion-color-neutral-700);
     margin-top: 1rem;
-    font-size: 1rem;
+    font-size: var(--font-size-base);
   }
 
   .system-threats {
@@ -36,15 +36,15 @@
 
   .threat-error {
     text-align: left;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal) rem;
     color: var(--color-neutral-700);
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
   }
 
   .info-card {
     background-color: rgba(var(--ion-color-warning-800-rgb), 0.1);
-    margin: 1.5rem 0;
+    margin: var(--spacing-lg) 0;
 
     p {
       text-align: left;
@@ -59,8 +59,8 @@
     margin-top: 1.5rem;
     width: 100%;
     height: 3.5rem;
-    border-radius: 1rem;
-    padding: 1rem 1.5rem 1rem 1.25rem;
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-md) 1.5rem 1rem 1.25rem;
     background: linear-gradient(
         0deg,
         var(--color-primary-700),
@@ -68,19 +68,19 @@
       ),
       radial-gradient(
         1.86% 150% at 50% 50%,
-        rgba(0, 86, 179, 0.2) 50%,
-        rgba(0, 86, 179, 0.2) 50%
+        rgba(var(--ion-color-primary-rgb), 0.2) 50%,
+        rgba(var(--ion-color-primary-rgb), 0.2) 50%
       );
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    font-weight: 500;
-    font-size: 1rem;
-    line-height: 1.5rem;
+    gap: var(--spacing-xs);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal) rem;
     letter-spacing: 0%;
     text-align: center;
-    color: var(--color-neutral-100, #f9fafb);
+    color: var(--ion-color-neutral-100);
 
     .help-icon {
       width: 1.5rem;
@@ -88,10 +88,10 @@
     }
 
     span {
-      font-size: 1rem;
+      font-size: var(--font-size-base);
       font-style: normal;
-      font-weight: 500;
-      line-height: 1.5rem;
+      font-weight: var(--font-weight-medium);
+      line-height: var(--line-height-normal) rem;
     }
   }
 

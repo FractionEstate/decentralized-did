@@ -30,7 +30,7 @@ const ConditionItem = ({
       </div>
       <IonCheckbox
         checked={checked}
-        aria-label=""
+        aria-label={`Confirm condition: ${text}`}
         className="checkbox"
         slot="end"
         data-testid={`condition-select-${index}`}

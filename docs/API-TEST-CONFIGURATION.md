@@ -125,16 +125,17 @@ MOCK_API_RELOAD=false
 BIOMETRIC_API_URL=http://localhost:8002
 RUN_API_TESTS=false
 
-# Blockfrost (set when validating duplicate detection logic)
-# Leave blank during deterministic local runs to skip remote lookups.
-BLOCKFROST_API_KEY=
+# Koios duplicate detection (public REST API; override when self-hosting)
+KOIOS_BASE_URL=https://api.koios.rest/api/v1
+KOIOS_METADATA_LABEL=674
+KOIOS_METADATA_BLOCK_LIMIT=1000
 CARDANO_NETWORK=testnet
 
 # Test harness defaults
 API_KEY=test_api_key_admin_32_chars_long_abcdef123456
 ```
 
-> **Tip**: Override any value ad-hoc via `ENV_FILE=path/to/custom.env ./test_api_auth.sh secure`. Leaving `BLOCKFROST_API_KEY` empty disables duplicate detection, keeping the mock/secure servers fully offline for deterministic tests. Flip `RUN_API_TESTS=true` only when the mock/secure servers are running.
+> **Tip**: Override any value ad-hoc via `ENV_FILE=path/to/custom.env ./test_api_auth.sh secure`. Keeping the defaults uses the public Koios REST API for duplicate detection; point `KOIOS_BASE_URL` to a self-hosted endpoint when operating on air-gapped infrastructure. The API servers tolerate Koios outages gracefully and continue enrollment, but duplicate protection becomes best-effort. Flip `RUN_API_TESTS=true` only when the mock/secure servers are running.
 
 ### 3.3 Development/Production `.env`
 
@@ -268,7 +269,7 @@ Government-scale deployments must satisfy stringent regulatory, privacy, and ope
 
 ### 6.1 Security Baseline
 
-- **Environment Guardrails**: Set `ENVIRONMENT=production` or `staging` to enforce mandatory settings (TLS, rate limiting, audit logging, non-default secrets, Blockfrost keys). In these modes the server refuses to start if requirements are not met.
+- **Environment Guardrails**: Set `ENVIRONMENT=production` or `staging` to enforce mandatory settings (TLS, rate limiting, audit logging, non-default secrets, Koios connectivity). In these modes the server refuses to start if requirements are not met.
 - **Secrets**: Rotate `API_SECRET_KEY` and `JWT_SECRET_KEY` to 256-bit values generated from a FIPS 140-3 validated source (HSM or OS RNG). Store in a secrets manager (HashiCorp Vault, AWS Secrets Manager, etc.) and inject at process start.
 - **Transport**: Set `HTTPS_ONLY=true` and terminate TLS 1.3 (FIPS ciphersuites) at an ingress proxy. Enforce HSTS, CSP, and OCSP stapling; inspect `Strict-Transport-Security` header emitted by FastAPI middleware.
 - **Authentication**: Persist API keys in an auditable registry with rotation periods ≤90 days. Require signed on-chain attestations or hardware secure elements for issuer enrollment APIs.
@@ -286,7 +287,7 @@ Government-scale deployments must satisfy stringent regulatory, privacy, and ope
 
 ### 6.3 Operational Safeguards
 
-- **Network Segmentation**: Deploy API servers inside a restricted enclave with zero-trust ingress policies. Permit outbound egress only to Blockfrost endpoints or national ledger infrastructure.
+- **Network Segmentation**: Deploy API servers inside a restricted enclave with zero-trust ingress policies. Permit outbound egress only to Koios endpoints or national ledger infrastructure.
 - **Key Custody**: Use FIPS 140-3 Level 3 HSMs or secure enclaves for JWT signing. Update `JWT_SIGNING_BACKEND` (planned Phase 5) to route through PKCS#11 or KMIP.
 - **Disaster Recovery**: Replicate `.env` secrets with Shamir Secret Sharing among custodians. Test restore drills quarterly; ensure helper data backups respect erasure policies.
 - **Monitoring**: Instrument Prometheus/Grafana dashboards for latency targets (<75 ms verification P95). Alert on anomaly detection (duplicate DID spikes, rate-limit breaches).

@@ -59,7 +59,7 @@
         padding: 0 1.5rem;
 
         .icon {
-          padding: 1.5rem;
+          padding: var(--spacing-lg);
 
           ion-icon {
             color: var(--ion-color-primary-400);

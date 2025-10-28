@@ -25,6 +25,7 @@ This document specifies the **multi-finger aggregation strategy** for combining 
 - **Entropy**: 128 bits (2 fingers) → 256 bits (4 fingers)
 - **Revocation**: Individual finger rotation without re-enrollment
 - **Performance**: <2µs aggregation time
+- **Threshold Option**: 10 enrolled fingers with 4-of-10 recovery via masked Shamir shares
 
 **Open-Source**: All operations use Python stdlib (no external dependencies)
 
@@ -366,7 +367,46 @@ def verify_with_fallback(
 - Backup authentication (PIN) adds defense-in-depth for 2/4 scenario
 - Quality thresholds prevent low-confidence matches from reducing security
 
-### 5.3 Graceful Degradation
+### 5.3 Threshold Recovery (10→4 Mode)
+
+**New in Phase 4.5**: Shamir-secret-sharing overlay enables recovery of a
+10-finger enrollment with **any 4 fingers** without recomputing helper data or
+relaxing individual fallback thresholds.
+
+**Construction Overview**:
+
+1. **Master Key**: Compute XOR master key `K_master = ⊕_{i=1..10} K_i` as before.
+2. **Secret Sharing**: Split `K_master` with Shamir k-of-n (`k=4`, `n=10`) over
+     GF(2^8), producing per-finger share vectors `S_i`.
+3. **Masked Shares**: Store `M_i = S_i ⊕ K_i` to keep shares useless without the
+     corresponding finger key. These masked shares are serialized into metadata
+     (`thresholdShares`) or external helper payloads.
+4. **Recovery**: During verification, any 4 fingers unmask their shares and
+     reconstruct `K_master` via Lagrange interpolation at x=0.
+
+**Security Properties**:
+- Shares are independently useless: without `K_i`, masked share `M_i` reveals
+    nothing about `S_i`.
+- Reconstruction still yields the original 256-bit XOR master key, preserving
+    deterministic DID generation.
+- Threshold settings (`threshold`, `totalShares`) are now captured in metadata
+    to inform verifiers and policy engines.
+
+**Implementation**: `sdk/src/biometrics/threshold_aggregator.py`
+
+**Metadata Storage**:
+- Inline mode: `biometric.thresholdShares` carries all 10 masked shares.
+- External mode: shares live in the helper JSON bundle alongside fuzzy helper
+    data (`helper_data_json`).
+- Both modes record `threshold` and `totalShares` for auditability.
+
+**Usage Guidance**:
+- Recommended for high-security enrollments where users can provide the full
+    10-finger baseline but should recover with 4 healthy fingers.
+- Works alongside existing fallback thresholds; wallet policy can choose the
+    stricter of the two depending on context.
+
+### 5.4 Graceful Degradation
 
 **User Experience Flow**:
 

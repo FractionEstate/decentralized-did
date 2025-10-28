@@ -330,7 +330,7 @@ const CredentialDetailModule = ({
       return (
         <IonCheckbox
           checked={selected}
-          aria-label=""
+          aria-label="Select credential notification"
           className="notification-selected"
           data-testid="notification-selected"
           onIonChange={(e) => {
@@ -345,21 +345,18 @@ const CredentialDetailModule = ({
       <>
         <IonButton
           shape="round"
-          className={`heart-button-${
-            isFavourite ? "favourite" : "no-favourite"
-          }`}
+          className={`heart-button-${isFavourite ? "favourite" : "no-favourite"
+            }`}
           data-testid="heart-button"
           onClick={toggleFavouriteCred}
         >
           <IonIcon
             slot="icon-only"
             icon={isFavourite ? heart : heartOutline}
-            className={`heart-icon-${
-              isFavourite ? "favourite" : "no-favourite"
-            }`}
-            data-testid={`heart-icon-${
-              isFavourite ? "favourite" : "no-favourite"
-            }`}
+            className={`heart-icon-${isFavourite ? "favourite" : "no-favourite"
+              }`}
+            data-testid={`heart-icon-${isFavourite ? "favourite" : "no-favourite"
+              }`}
           />
         </IonButton>
         <IonButton

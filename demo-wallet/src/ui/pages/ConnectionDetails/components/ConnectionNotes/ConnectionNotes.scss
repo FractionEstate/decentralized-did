@@ -4,18 +4,18 @@
   }
 
   .connection-details-note-text {
-    font-weight: 400;
+    font-weight: var(--font-weight-regular);
     margin-top: 0.625rem;
     display: block;
   }
 
   .connection-details-note-title {
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 
   @media screen and (min-width: 250px) and (max-width: 370px) {
     .card-details-info-block-inner {
-      padding: 1rem;
+      padding: var(--spacing-md);
     }
 
     .connection-details-note-text {

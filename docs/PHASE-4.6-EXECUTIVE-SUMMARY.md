@@ -49,7 +49,7 @@ Phase 4.6 represents the final push to production readiness. With Phase 4.5 comp
 | Hardware (optional sensor) | $25-30 | $0 | Only if including Task 4 |
 | Development tools | $0 | $0 | All open-source |
 | Testnet testing | ~$0 | $0 | Test ADA is free |
-| Production hosting | $0 | $30-60 | VPS + domain + Blockfrost |
+| Production hosting | $0 | $30-60 | VPS + domain + Koios endpoint |
 | **Total (without sensor)** | **$0** | **$30-60** | **Minimal investment** |
 | **Total (with sensor)** | **$30** | **$30-60** | **Optional hardware** |
 
@@ -267,7 +267,7 @@ Phase 4.6 represents the final push to production readiness. With Phase 4.5 comp
 - **Duration**: 1 hour
 - **Complexity**: LOW
 - **Impact**: LOW (already done in Option 1!)
-- **Dependencies**: Blockfrost API key (free)
+- **Dependencies**: Koios REST endpoint access (public, free)
 - **Risk**: NONE
 
 **Status**: ✅ **ALREADY COMPLETE!**

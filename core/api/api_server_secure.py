@@ -11,14 +11,19 @@ Security Features:
 - Security headers
 """
 
-# Import deterministic DID generation
-from src.decentralized_did.did.generator import generate_deterministic_did
+import sys
+from pathlib import Path
 
-# Import Blockfrost client for duplicate detection
-from src.decentralized_did.cardano.blockfrost import (
-    BlockfrostClient,
-    DIDAlreadyExistsError,
-)
+# Ensure SDK imports resolve
+sdk_path = Path(__file__).parent.parent.parent / "sdk" / "src"
+sys.path.insert(0, str(sdk_path))
+
+# Import deterministic DID generation
+from decentralized_did.did.generator import generate_deterministic_did
+
+# Import Koios client for duplicate detection
+from decentralized_did.cardano.cache import TTLCache
+from decentralized_did.cardano.koios_client import KoiosClient, KoiosError
 from fastapi import FastAPI, HTTPException, Depends, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -107,9 +112,11 @@ RATE_LIMIT_ENABLED = os.getenv("RATE_LIMIT_ENABLED", "true").lower() == "true"
 AUDIT_LOG_ENABLED = os.getenv("AUDIT_LOG_ENABLED", "true").lower() == "true"
 HTTPS_ONLY = os.getenv("HTTPS_ONLY", "false").lower() == "true"
 
-# Blockfrost configuration for duplicate detection
-BLOCKFROST_API_KEY = os.environ.get("BLOCKFROST_API_KEY", "")
+# Koios configuration for duplicate detection
+KOIOS_BASE_URL = os.environ.get("KOIOS_BASE_URL", "https://api.koios.rest/api/v1")
 CARDANO_NETWORK = os.environ.get("CARDANO_NETWORK", "mainnet")
+KOIOS_METADATA_LABEL = os.environ.get("KOIOS_METADATA_LABEL", "674")
+KOIOS_METADATA_BLOCK_LIMIT = int(os.environ.get("KOIOS_METADATA_BLOCK_LIMIT", "1000"))
 
 # Security posture reference data
 STRICT_ENVIRONMENTS = {"production", "staging"}
@@ -124,16 +131,18 @@ DEFAULT_JWT_SECRET_VALUES = {
 }
 ALLOWED_CARDANO_NETWORKS = {"mainnet", "testnet", "preprod", "preview"}
 
-# Initialize Blockfrost client if API key is available
-blockfrost_client = None
-if BLOCKFROST_API_KEY:
-    blockfrost_client = BlockfrostClient(
-        api_key=BLOCKFROST_API_KEY,
-        network=CARDANO_NETWORK
+# Initialize Koios client for duplicate detection
+koios_client: Optional[KoiosClient] = None
+try:
+    koios_client = KoiosClient(
+        base_url=KOIOS_BASE_URL,
+        cache=TTLCache(default_ttl=60),
+        metadata_scan_limit=KOIOS_METADATA_BLOCK_LIMIT,
     )
-    print(f"✅ Blockfrost client initialized: {CARDANO_NETWORK}")
-else:
-    print("⚠️  Warning: BLOCKFROST_API_KEY not set, duplicate detection disabled")
+    print(f"✅ Koios client initialized: {CARDANO_NETWORK} -> {KOIOS_BASE_URL}")
+except Exception as exc:  # pragma: no cover
+    koios_client = None
+    print(f"⚠️  Warning: Koios client failed to initialize: {exc}")
 
 # ============================================================================
 # Logging Configuration
@@ -197,10 +206,6 @@ def validate_security_configuration() -> None:
     if not AUDIT_LOG_ENABLED:
         policy_messages.append(
             "AUDIT_LOG_ENABLED disabled; audit trail will be incomplete")
-    if not BLOCKFROST_API_KEY:
-        policy_messages.append(
-            "BLOCKFROST_API_KEY not set; duplicate DID detection is offline")
-
     if ENVIRONMENT in STRICT_ENVIRONMENTS:
         hard_failures.extend(policy_messages)
         policy_messages = []
@@ -269,9 +274,9 @@ app = FastAPI(
 
 
 @app.on_event("shutdown")
-async def shutdown_blockfrost_client() -> None:
-    if blockfrost_client:
-        await blockfrost_client.close()
+async def shutdown_koios_client() -> None:
+    if koios_client:
+        await koios_client.close()
 
 # Add rate limiter to app state
 app.state.limiter = limiter
@@ -491,6 +496,7 @@ class GenerateResponse(BaseModel):
     wallet_address: str
     helpers: Dict[str, HelperDataEntry]
     metadata_cip30_inline: CIP30MetadataInline
+    tx_hash: Optional[str] = None  # Cardano transaction hash for on-chain metadata
 
 
 class VerifyRequest(BaseModel):
@@ -540,23 +546,23 @@ async def health_check(request: Request):
     }
 
 
-@app.get("/metrics/blockfrost")
+@app.get("/metrics/koios")
 @rate_limit("10/minute")
-async def get_blockfrost_metrics(
+async def get_koios_metrics(
     request: Request,
     current_user: TokenData = Depends(get_current_user),
 ):
-    """Return Blockfrost performance metrics for observability dashboards."""
+    """Return Koios performance metrics for observability dashboards."""
 
-    if not blockfrost_client:
+    if not koios_client:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="Blockfrost client not configured",
+            detail="Koios client not configured",
         )
 
-    snapshot = blockfrost_client.metrics_snapshot()
+    snapshot = koios_client.metrics_snapshot()
     audit_log(
-        "blockfrost_metrics",
+        "koios_metrics",
         current_user.user_id,
         {
             "network": CARDANO_NETWORK,
@@ -567,9 +573,12 @@ async def get_blockfrost_metrics(
 
     return {
         "network": CARDANO_NETWORK,
-        "cache_enabled": bool(blockfrost_client.cache),
-        "timeout_seconds": blockfrost_client.timeout,
-        "max_retries": blockfrost_client.max_retries,
+        "base_url": KOIOS_BASE_URL,
+        "metadata_label": KOIOS_METADATA_LABEL,
+        "metadata_block_limit": KOIOS_METADATA_BLOCK_LIMIT,
+        "cache_enabled": bool(koios_client.cache),
+        "timeout_seconds": koios_client.timeout,
+        "max_retries": koios_client.max_retries,
         "metrics": snapshot,
         "requested_by": current_user.user_id,
     }
@@ -644,9 +653,12 @@ async def generate_did(
         did = generate_deterministic_did(commitment, network=network)
 
         # Check for duplicate DID enrollment (Sybil attack prevention)
-        if blockfrost_client:
+        if koios_client:
             try:
-                existing = await blockfrost_client.check_did_exists(did)
+                existing = await koios_client.check_did_exists(
+                    did,
+                    label=KOIOS_METADATA_LABEL,
+                )
                 if existing:
                     # DID already exists on blockchain
                     audit_log("duplicate_did_detected", current_user.user_id, {
@@ -667,28 +679,12 @@ async def generate_did(
                             "how_to": "Use the add-controller endpoint with your new wallet address"
                         }
                     )
-            except DIDAlreadyExistsError as e:
-                # Custom exception with enrollment data
-                audit_log("duplicate_did_detected", current_user.user_id, {
-                    "did": e.did,
-                    "tx_hash": e.tx_hash
-                })
-                raise HTTPException(
-                    status_code=409,
-                    detail={
-                        "error": "DID_ALREADY_EXISTS",
-                        "message": str(e),
-                        "did": e.did,
-                        "tx_hash": e.tx_hash,
-                        "enrollment_data": e.enrollment_data
-                    }
-                )
             except HTTPException:
                 # Re-raise HTTP exceptions
                 raise
-            except Exception as e:
+            except KoiosError as e:
                 # Log blockchain query errors but don't block enrollment
-                logger.warning(f"Duplicate check failed: {e}")
+                logger.warning(f"Koios duplicate check failed: {e}")
                 audit_log("duplicate_check_failed", current_user.user_id, {
                     "did": did,
                     "error": str(e)
@@ -727,12 +723,19 @@ async def generate_did(
             "id_hash": id_hash
         })
 
+        # Generate simulated/placeholder tx_hash for development
+        # TODO: Replace with actual blockchain transaction submission in production
+        # For now, generate a deterministic hash based on DID and timestamp
+        tx_hash_material = f"{did}:{enrollment_timestamp}:{id_hash}".encode('utf-8')
+        simulated_tx_hash = hashlib.sha256(tx_hash_material).hexdigest().lower()
+
         return GenerateResponse(
             did=str(did),
             id_hash=id_hash,
             wallet_address=generate_request.wallet_address,
             helpers=helpers_dict,
-            metadata_cip30_inline=metadata
+            metadata_cip30_inline=metadata,
+            tx_hash=simulated_tx_hash  # In production, this should be the actual Cardano tx hash
         )
 
     except Exception as e:

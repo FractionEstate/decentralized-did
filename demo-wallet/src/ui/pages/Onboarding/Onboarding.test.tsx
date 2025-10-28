@@ -1,201 +1,151 @@
-import { BiometryType } from "@aparajita/capacitor-biometric-auth";
-import { fireEvent, render, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { act } from "react";
 import { Provider } from "react-redux";
-import { MemoryRouter, Route } from "react-router-dom";
-import configureStore from "redux-mock-store";
-import EN_TRANSLATIONS from "../../../locales/en/en.json";
-import { RoutePath } from "../../../routes";
+import { createMemoryHistory } from "history";
+import { Router } from "react-router-dom";
+import { TabsRoutePath, RoutePath } from "../../../routes/paths";
 import { store } from "../../../store";
-import { OperationType } from "../../globals/types";
-import { CreatePassword } from "../CreatePassword";
-import { SetPasscode } from "../SetPasscode";
-import { Onboarding } from "./index";
+import { Onboarding } from "./Onboarding";
 
-const exitApp = jest.fn();
-jest.mock("@capacitor/app", () => ({
-  ...jest.requireActual("@capacitor/app"),
-  App: {
-    exitApp: () => exitApp(),
-    addListener: jest.fn(() =>
-      Promise.resolve({
-        remove: jest.fn(),
-      })
-    ),
-  },
-}));
+const presentToastMock = jest.fn().mockResolvedValue(undefined);
 
-jest.mock("../../hooks/useBiometricsHook", () => ({
-  useBiometricAuth: jest.fn(() => ({
-    biometricsIsEnabled: false,
-    biometricInfo: {
-      isAvailable: false,
-      hasCredentials: false,
-      biometryType: BiometryType.fingerprintAuthentication,
-      strongBiometryIsAvailable: true,
-    },
-    handleBiometricAuth: jest.fn(() => Promise.resolve(true)),
-    setBiometricsIsEnabled: jest.fn(),
-  })),
-}));
-
-jest.mock("@capacitor/core", () => {
+jest.mock("@ionic/react", () => {
+  const actual = jest.requireActual("@ionic/react");
   return {
-    ...jest.requireActual("@capacitor/core"),
-    Capacitor: {
-      isNativePlatform: () => true,
-    },
+    ...actual,
+    useIonToast: () => [presentToastMock],
   };
 });
 
-describe("Onboarding Page", () => {
-  test("Render slide 1", () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={store}>
-          <Onboarding />
-        </Provider>
-      </MemoryRouter>
-    );
-    const slide1 = getByText(EN_TRANSLATIONS.onboarding.slides[0].title);
-    expect(slide1).toBeInTheDocument();
-  });
-  test("Render 'Get Started' button", () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={store}>
-          <Onboarding />
-        </Provider>
-      </MemoryRouter>
-    );
-    const button = getByText(
-      EN_TRANSLATIONS.onboarding.getstarted.button.label
-    );
-    expect(button).toBeInTheDocument();
-  });
-  test("Render 'I already have a wallet' option", () => {
-    const { getByText } = render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={store}>
-          <Onboarding />
-        </Provider>
-      </MemoryRouter>
-    );
-    const alreadyWallet = getByText(
-      EN_TRANSLATIONS.onboarding.alreadywallet.button.label
-    );
-    expect(alreadyWallet).toBeInTheDocument();
-  });
+jest.mock("./BiometricScanScreen", () => {
+  return {
+    BiometricScanScreen: ({ fingersToScan, onComplete }: any) => (
+      <div data-testid="biometric-scan-mock">
+        <span data-testid="finger-count">{fingersToScan.length}</span>
+        <button
+          type="button"
+          onClick={() =>
+            onComplete(
+              fingersToScan.map((finger: string, index: number) => `biometric-${finger}-${index}`)
+            )
+          }
+        >
+          Complete Scan
+        </button>
+      </div>
+    ),
+  };
+});
 
-  test("If the user hasn't set a passcode yet, they will be asked to create one", async () => {
-    const { getByText, findByText } = render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={store}>
-          <Onboarding />
-          <SetPasscode />
-        </Provider>
-      </MemoryRouter>
-    );
+jest.mock("./SeedPhraseScreen", () => {
+  return {
+    SeedPhraseScreen: ({ words, onConfirm }: any) => (
+      <div data-testid="seed-screen-mock">
+        <span data-testid="seed-count">{words.length}</span>
+        <button type="button" onClick={onConfirm}>
+          Confirm Seed
+        </button>
+      </div>
+    ),
+  };
+});
 
-    const buttonContinue = getByText(
-      EN_TRANSLATIONS.onboarding.getstarted.button.label
-    );
+jest.mock("./VerificationScreen", () => {
+  return {
+    VerificationScreen: ({ seedPhrase, wordsToVerify, onSuccess }: any) => (
+      <div data-testid="verification-screen-mock">
+        <span data-testid="verification-seed-count">{seedPhrase.length}</span>
+        <span data-testid="words-to-verify">{wordsToVerify.join(",")}</span>
+        <button type="button" onClick={onSuccess}>
+          Submit Verification
+        </button>
+      </div>
+    ),
+  };
+});
 
-    act(() => {
-      fireEvent.click(buttonContinue);
-    });
+jest.mock("./SuccessScreen", () => {
+  return {
+    SuccessScreen: ({ walletAddress, onContinue }: any) => (
+      <div data-testid="success-screen-mock">
+        <span data-testid="wallet-address">{walletAddress}</span>
+        <button type="button" onClick={onContinue}>
+          Continue to Credentials
+        </button>
+      </div>
+    ),
+  };
+});
 
-    await waitFor(async () => {
-      const text = await findByText(EN_TRANSLATIONS.setpasscode.enterpasscode);
-      expect(text).toBeVisible();
-    });
-  });
-
-  test("If the user has already set a passcode but they haven't created a password, they will be asked to create one", async () => {
-    const mockStore = configureStore();
-    const initialState = {
-      stateCache: {
-        routes: [{ path: RoutePath.ONBOARDING }],
-        authentication: {
-          loggedIn: true,
-          time: Date.now(),
-          passcodeIsSet: true,
-          passwordIsSet: false,
-          finishSetupBiometrics: true,
-        },
-        currentOperation: OperationType.IDLE,
-      },
-      seedPhraseCache: {
-        seedPhrase: "",
-        brand: "",
-      },
-    };
-    const storeMocked = mockStore(initialState);
-
-    const { getByText, queryAllByText } = render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={storeMocked}>
-          <Route
-            path={RoutePath.ONBOARDING}
-            component={Onboarding}
-          />
-          <Route
-            path={RoutePath.CREATE_PASSWORD}
-            component={CreatePassword}
-          />
-        </Provider>
-      </MemoryRouter>
-    );
-
-    const buttonContinue = getByText(
-      EN_TRANSLATIONS.onboarding.getstarted.button.label
-    );
-
-    act(() => {
-      fireEvent.click(buttonContinue);
-    });
-
-    await waitFor(() => {
-      expect(queryAllByText(EN_TRANSLATIONS.createpassword.title)).toHaveLength(
-        2
-      );
-    });
+describe("Onboarding", () => {
+  beforeEach(() => {
+    presentToastMock.mockClear();
   });
 
-  test("Exit app with double tap", async () => {
+  test("shows biometric scan with ten fingers after starting", () => {
+    const history = createMemoryHistory({ initialEntries: [RoutePath.ONBOARDING] });
+
     render(
-      <MemoryRouter initialEntries={[RoutePath.ONBOARDING]}>
-        <Provider store={store}>
+      <Provider store={store}>
+        <Router history={history}>
           <Onboarding />
-        </Provider>
-      </MemoryRouter>
+        </Router>
+      </Provider>
     );
 
-    act(() => {
-      fireEvent(
-        document,
-        new CustomEvent("ionBackButton", {
-          detail: {
-            register: (priority: string, handler: () => void) => {
-              handler();
-            },
-          },
-        })
-      );
-      fireEvent(
-        document,
-        new CustomEvent("ionBackButton", {
-          detail: {
-            register: (priority: string, handler: () => void) => {
-              handler();
-            },
-          },
-        })
-      );
-    });
+    fireEvent.click(screen.getByText("Get Started"));
 
-    await waitFor(() => {
-      expect(exitApp).toBeCalled();
-    });
+    expect(screen.getByTestId("finger-count")).toHaveTextContent("10");
+    expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
+  });
+
+  test("completes the onboarding flow and navigates to credentials", async () => {
+    jest.useFakeTimers();
+    const history = createMemoryHistory({ initialEntries: [RoutePath.ONBOARDING] });
+
+    try {
+      render(
+        <Provider store={store}>
+          <Router history={history}>
+            <Onboarding />
+          </Router>
+        </Provider>
+      );
+
+      fireEvent.click(screen.getByText("Get Started"));
+
+      fireEvent.click(screen.getByText("Complete Scan"));
+
+      expect(await screen.findByText("Step 2 of 3")).toBeInTheDocument();
+      expect(await screen.findByTestId("seed-count")).toHaveTextContent("12");
+
+      fireEvent.click(screen.getByText("Confirm Seed"));
+
+      expect(await screen.findByText("Step 3 of 3")).toBeInTheDocument();
+      expect(await screen.findByTestId("verification-seed-count")).toHaveTextContent("12");
+      expect(screen.getByTestId("words-to-verify")).toHaveTextContent("2,6,11");
+
+      await act(async () => {
+        fireEvent.click(screen.getByText("Submit Verification"));
+      });
+
+      await act(async () => {
+        jest.advanceTimersByTime(1000);
+      });
+
+      expect(await screen.findByTestId("wallet-address")).toHaveTextContent(
+        "addr1q9xyz...abc123"
+      );
+      expect(presentToastMock).toHaveBeenCalledTimes(2);
+
+      expect(screen.queryByText("Step 3 of 3")).not.toBeInTheDocument();
+      fireEvent.click(screen.getByText("Continue to Credentials"));
+
+      expect(history.location.pathname).toBe(TabsRoutePath.CREDENTIALS);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    }
   });
 });

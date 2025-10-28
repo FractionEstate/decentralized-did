@@ -90,7 +90,7 @@ const IdentifierSelectorModal = ({
               return (
                 <IonCheckbox
                   checked={selectedIdentifier?.id === data.id}
-                  aria-label=""
+                  aria-label="Select identifier"
                   className="checkbox"
                   data-testid={`identifier-select-${data.id}`}
                   onClick={(e) => {

@@ -25,8 +25,8 @@ import { CreatePasswordProps } from "./CreatePassword.types";
 import { SetupPassword } from "./components";
 
 const CreatePassword = ({
-  handleClear,
-  setPasswordIsSet,
+  handleClear = () => { },
+  setPasswordIsSet = () => { },
   userAction,
 }: CreatePasswordProps) => {
   const pageId = "create-password";
