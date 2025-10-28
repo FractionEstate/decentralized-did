@@ -2,7 +2,7 @@ import { CapacitorConfig } from "@capacitor/cli";
 import { KeyboardResize } from "@capacitor/keyboard";
 
 const config: CapacitorConfig = {
-  appId: "org.cardanofoundation.biovera",
+  appId: "org.biovera",
   appName: "BIOVERA",
   webDir: "build",
   android: {
