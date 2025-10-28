@@ -83,7 +83,10 @@ const TabsMenu = ({ tab, path }: { tab: ComponentType; path: string }) => {
   const showWelcomePage = useAppSelector(getShowWelcomePage);
 
   const handleTabClick = (tabPath: string) => {
-    dispatch(setCurrentRoute({ path: tabPath }));
+    // Defer state update to next microtask to avoid React render cycle conflict
+    Promise.resolve().then(() => {
+      dispatch(setCurrentRoute({ path: tabPath }));
+    });
   };
 
   const exactPath = getNextRootRoute({ store: { stateCache: stateCache } });
