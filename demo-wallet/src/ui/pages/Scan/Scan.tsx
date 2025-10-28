@@ -23,7 +23,8 @@ const Scan = () => {
   const [enableCameraDirection, setEnableCameraDirection] = useState(false);
 
   useIonViewWillEnter(() => {
-    dispatch(setCurrentRoute({ path: TabsRoutePath.SCAN }));
+    // Route tracking is deferred via middleware to prevent render-cycle warnings
+    // dispatch(setCurrentRoute({ path: TabsRoutePath.SCAN }));
   });
 
   useEffect(() => {

@@ -10,6 +10,7 @@ import { biometricsCacheSlice } from "./reducers/biometricsCache";
 import { credsArchivedCacheSlice } from "./reducers/credsArchivedCache";
 import { ssiAgentSlice } from "./reducers/ssiAgent";
 import { notificationsCacheSlice } from "./reducers/notificationsCache";
+import { setCurrentRoute } from "./reducers/stateCache/stateCache";
 
 const store = configureStore({
   reducer: {
@@ -25,15 +26,39 @@ const store = configureStore({
     ssiAgentCache: ssiAgentSlice.reducer,
     notificationsCache: notificationsCacheSlice.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
+  middleware: (getDefaultMiddleware) => {
+    const defaultMiddleware = getDefaultMiddleware({
       serializableCheck: {
         // Ignore these field paths in all actions
         ignoredActionPaths: [
           "payload.signTransaction.payload.approvalCallback",
         ],
       },
-    }),
+    });
+
+    // Middleware to defer setCurrentRoute actions to avoid render-cycle warnings.
+    // Uses queueMicrotask to execute after the current task but before the next paint,
+    // giving Ionic time to complete its render cycle.
+    const deferRouteMiddleware = () => (next: any) => (action: any) => {
+      try {
+        if (action && action.type === setCurrentRoute.type) {
+          // Queue in the microtask queue to avoid state updates during Ionic render
+          if (typeof queueMicrotask !== "undefined") {
+            queueMicrotask(() => next(action));
+          } else {
+            // Fallback for older browsers
+            Promise.resolve().then(() => next(action));
+          }
+          return;
+        }
+      } catch (e) {
+        // If anything goes wrong, fallback to forwarding the action
+      }
+      return next(action);
+    };
+
+    return defaultMiddleware.concat(deferRouteMiddleware);
+  },
 });
 
 type RootState = ReturnType<typeof store.getState>;

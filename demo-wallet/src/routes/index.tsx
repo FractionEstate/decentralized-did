@@ -76,11 +76,6 @@ const Routes = () => {
           render={() => <DeferredBackup />}
         />
         <Route
-          path={RoutePath.TABS_MENU}
-          component={TabsMenu}
-          exact
-        />
-        <Route
           path={RoutePath.CREATE_PASSWORD}
           exact
           render={() => <CreatePassword />}

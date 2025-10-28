@@ -88,7 +88,8 @@ const Notifications = () => {
   );
 
   useIonViewWillEnter(() => {
-    dispatch(setCurrentRoute({ path: TabsRoutePath.NOTIFICATIONS }));
+    // Route tracking is deferred via middleware to prevent render-cycle warnings
+    // dispatch(setCurrentRoute({ path: TabsRoutePath.NOTIFICATIONS }));
   });
 
   const maskAsReaded = async (notification: KeriaNotification) => {

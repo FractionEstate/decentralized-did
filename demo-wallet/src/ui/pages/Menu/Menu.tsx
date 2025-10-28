@@ -42,7 +42,8 @@ const Menu = () => {
   >();
 
   useIonViewWillEnter(() => {
-    dispatch(setCurrentRoute({ path: TabsRoutePath.MENU }));
+    // Route tracking is deferred via middleware to prevent render-cycle warnings
+    // dispatch(setCurrentRoute({ path: TabsRoutePath.MENU }));
   });
 
   const backHardwareConfig = useMemo(

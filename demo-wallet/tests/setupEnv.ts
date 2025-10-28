@@ -41,3 +41,10 @@ if (!process.env.BIOMETRIC_API_KEY || process.env.BIOMETRIC_API_KEY === "") {
 
 ensureEnv("RUN_API_TESTS", "false");
 ensureEnv("TEST_WALLET_ADDRESS", "addr_test1_demo_integration_testing");
+
+// Some browser-focused libraries expect `self` to exist. Provide a minimal
+// alias in the JSDOM/Jest environment so modules that reference `self`
+// (for example from cardano-peer-connect) do not throw during import.
+if (typeof (global as unknown as { self?: typeof globalThis }).self === "undefined") {
+  (global as unknown as { self: typeof globalThis }).self = global as unknown as typeof globalThis;
+}

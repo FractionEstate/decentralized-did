@@ -46,8 +46,14 @@ import { initializeFreeRASP, ThreatCheck } from "../security/freerasp";
 import { SystemThreatAlert } from "./pages/SystemThreatAlert/SystemThreatAlert";
 import { ConfigurationService } from "../core/configuration";
 import { i18n } from "../i18n";
+import { suppressKnownWarnings } from "./utils/suppressKnownWarnings";
 
 setupIonicReact();
+
+// Suppress expected warnings that don't affect functionality
+if (process.env.NODE_ENV === "development") {
+  suppressKnownWarnings();
+}
 
 const App = () => {
   const initializationPhase = useAppSelector(getInitializationPhase);

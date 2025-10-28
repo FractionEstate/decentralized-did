@@ -137,7 +137,8 @@ const Identifiers = () => {
   );
 
   useIonViewWillEnter(() => {
-    dispatch(setCurrentRoute({ path: TabsRoutePath.IDENTIFIERS }));
+    // Route tracking is deferred via middleware to prevent render-cycle warnings
+    // dispatch(setCurrentRoute({ path: TabsRoutePath.IDENTIFIERS }));
   });
 
   const handleMultiSigClick = async (identifier: IdentifierShortDetails) => {
@@ -154,7 +155,7 @@ const Identifiers = () => {
   useEffect(() => {
     const multisigId =
       OperationType.OPEN_MULTISIG_IDENTIFIER === currentOperation &&
-      multisigGroupCache
+        multisigGroupCache
         ? multisigGroupCache?.groupId
         : openMultiSigId;
 

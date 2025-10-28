@@ -7,6 +7,38 @@ import { TabsRoutePath, RoutePath } from "../../../routes/paths";
 import { store } from "../../../store";
 import { Onboarding } from "./Onboarding";
 
+const mockBootAndConnect = jest.fn().mockResolvedValue(undefined);
+const mockStoreSecret = jest.fn().mockResolvedValue(undefined);
+const mockCreateOrUpdateRecord = jest.fn().mockResolvedValue(undefined);
+const mockSecureSet = jest.fn().mockResolvedValue(undefined);
+
+jest.mock("../../../core/agent/agent", () => ({
+  Agent: {
+    agent: {
+      getBranAndMnemonic: jest.fn().mockResolvedValue({
+        mnemonic: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about",
+        bran: "test-bran",
+      }),
+      auth: {
+        storeSecret: (...args: unknown[]) => mockStoreSecret(...args),
+      },
+      basicStorage: {
+        createOrUpdateBasicRecord: (...args: unknown[]) => mockCreateOrUpdateRecord(...args),
+      },
+      bootAndConnect: (...args: unknown[]) => mockBootAndConnect(...args),
+    },
+  },
+}));
+
+jest.mock("../../../core/storage", () => ({
+  SecureStorage: {
+    set: (...args: unknown[]) => mockSecureSet(...args),
+  },
+  KeyStoreKeys: {
+    SIGNIFY_BRAN: "signify-bran",
+  },
+}));
+
 const presentToastMock = jest.fn().mockResolvedValue(undefined);
 
 jest.mock("@ionic/react", () => {
@@ -93,7 +125,7 @@ describe("Onboarding", () => {
       </Provider>
     );
 
-    fireEvent.click(screen.getByText("Get Started"));
+    fireEvent.click(screen.getByText("Create Wallet"));
 
     expect(screen.getByTestId("finger-count")).toHaveTextContent("10");
     expect(screen.getByText("Step 1 of 3")).toBeInTheDocument();
@@ -112,33 +144,22 @@ describe("Onboarding", () => {
         </Provider>
       );
 
-      fireEvent.click(screen.getByText("Get Started"));
+      fireEvent.click(screen.getByText("Create Wallet"));
 
       fireEvent.click(screen.getByText("Complete Scan"));
-
-      expect(await screen.findByText("Step 2 of 3")).toBeInTheDocument();
-      expect(await screen.findByTestId("seed-count")).toHaveTextContent("12");
-
-      fireEvent.click(screen.getByText("Confirm Seed"));
-
-      expect(await screen.findByText("Step 3 of 3")).toBeInTheDocument();
-      expect(await screen.findByTestId("verification-seed-count")).toHaveTextContent("12");
-      expect(screen.getByTestId("words-to-verify")).toHaveTextContent("2,6,11");
-
-      await act(async () => {
-        fireEvent.click(screen.getByText("Submit Verification"));
-      });
 
       await act(async () => {
         jest.advanceTimersByTime(1000);
       });
 
+      const successScreen = await screen.findByTestId("success-screen-mock");
+      expect(successScreen).toBeInTheDocument();
       expect(await screen.findByTestId("wallet-address")).toHaveTextContent(
         "addr1q9xyz...abc123"
       );
-      expect(presentToastMock).toHaveBeenCalledTimes(2);
+      expect(presentToastMock).toHaveBeenCalledTimes(1);
 
-      expect(screen.queryByText("Step 3 of 3")).not.toBeInTheDocument();
+      expect(screen.queryByText(/Step \d of 3/)).not.toBeInTheDocument();
       fireEvent.click(screen.getByText("Continue to Credentials"));
 
       expect(history.location.pathname).toBe(TabsRoutePath.CREDENTIALS);

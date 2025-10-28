@@ -6,14 +6,12 @@ import {
   IonTabButton,
   IonTabs,
 } from "@ionic/react";
-import { Redirect, Route } from "react-router";
+import { Route } from "react-router";
 import {
   notifications,
   notificationsOutline,
   fingerPrint,
   fingerPrintOutline,
-  idCard,
-  idCardOutline,
   scan,
   scanOutline,
   apps,
@@ -23,36 +21,31 @@ import { ComponentType } from "react";
 import { useLocation } from "react-router-dom";
 import { i18n } from "../../../../i18n";
 import "./TabsMenu.scss";
-import { RoutePath, TabsRoutePath } from "../../../../routes/paths";
+import { TabsRoutePath } from "../../../../routes/paths";
 import { Identifiers } from "../../../pages/Identifiers";
-import { Credentials } from "../../../pages/Credentials";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
 import { Menu } from "../../../pages/Menu";
 import { BackupWarningBanner } from "../../BackupWarningBanner";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { useAppSelector } from "../../../../store/hooks";
 import { getNotificationsCache } from "../../../../store/reducers/notificationsCache";
-import {
-  getShowWelcomePage,
-  getStateCache,
-  setCurrentRoute,
-} from "../../../../store/reducers/stateCache";
-import { getNextRootRoute } from "../../../../routes/nextRoute";
+import { getShowWelcomePage } from "../../../../store/reducers/stateCache";
 
-const tabsRoutes = [
+type TabConfig = {
+  label: string;
+  path: string;
+  component: ComponentType;
+  icon: [string, string];
+};
+
+const tabsRoutes: TabConfig[] = [
   {
     label: i18n.t("tabsmenu.label.identifiers"),
     path: TabsRoutePath.IDENTIFIERS,
     component: Identifiers,
     icon: [fingerPrint, fingerPrintOutline],
   },
-  // BIOMETRIC DID: Credentials tab hidden (Hyperledger Aries VCs not used)
-  // {
-  //   label: i18n.t("tabsmenu.label.creds"),
-  //   path: TabsRoutePath.CREDENTIALS,
-  //   component: Credentials,
-  //   icon: [idCard, idCardOutline],
-  // },
+  // Credentials tab intentionally hidden (Hyperledger Aries VC flow not active)
   {
     label: i18n.t("tabsmenu.label.scan"),
     path: TabsRoutePath.SCAN,
@@ -72,45 +65,19 @@ const tabsRoutes = [
     icon: [apps, appsOutline],
   },
 ];
+
 const TabsMenu = ({ tab, path }: { tab: ComponentType; path: string }) => {
-  const stateCache = useAppSelector(getStateCache);
   const location = useLocation();
-  const dispatch = useAppDispatch();
   const notifications = useAppSelector(getNotificationsCache);
-  const notificationsCounter = notifications.filter(
-    (notification) => !notification.read
-  ).length;
+  const notificationsCounter = notifications.filter((notification) => !notification.read).length;
   const showWelcomePage = useAppSelector(getShowWelcomePage);
-
-  const handleTabClick = (tabPath: string) => {
-    // Defer state update to next microtask to avoid React render cycle conflict
-    Promise.resolve().then(() => {
-      dispatch(setCurrentRoute({ path: tabPath }));
-    });
-  };
-
-  const exactPath = getNextRootRoute({ store: { stateCache: stateCache } });
-
-  if (exactPath.pathname !== RoutePath.TABS_MENU) {
-    return <Redirect to={exactPath.pathname} />;
-  }
 
   return (
     <IonTabs>
       <IonRouterOutlet animated={false}>
-        <Redirect
-          exact
-          from={TabsRoutePath.ROOT}
-          to={TabsRoutePath.IDENTIFIERS}
-        />
-        <Route
-          path={path}
-          component={tab}
-          exact={true}
-        />
+        <Route path={path} component={tab} exact />
       </IonRouterOutlet>
 
-      {/* Backup Warning Banner - shows if seed phrase not backed up */}
       <BackupWarningBanner />
 
       <IonTabBar
@@ -118,39 +85,28 @@ const TabsMenu = ({ tab, path }: { tab: ComponentType; path: string }) => {
         data-testid="tabs-menu"
         className={showWelcomePage ? "ion-hide" : undefined}
       >
-        {tabsRoutes.map((tab, index: number) => {
-          return (
-            <IonTabButton
-              key={`${tab.label}-${index}`}
-              tab={tab.label}
-              href={tab.path}
-              data-testid={
-                "tab-button-" + tab.label.toLowerCase().replace(/\s/g, "-")
-              }
-              className={
-                "tab-button-" + tab.label.toLowerCase().replace(/\s/g, "-")
-              }
-              onClick={() => {
-                handleTabClick(tab.path);
-              }}
-            >
-              <div className="border-top" />
-              <div className="icon-container">
-                {!!notificationsCounter && (
-                  <span className="notifications-counter">
-                    {notificationsCounter > 99 ? "99+" : notificationsCounter}
-                  </span>
-                )}
-                <IonIcon
-                  icon={
-                    tab.path === location.pathname ? tab.icon[0] : tab.icon[1]
-                  }
-                />
-              </div>
-              <IonLabel>{tab.label}</IonLabel>
-            </IonTabButton>
-          );
-        })}
+        {tabsRoutes.map((tabConfig) => (
+          <IonTabButton
+            key={tabConfig.path}
+            tab={tabConfig.label}
+            href={tabConfig.path}
+            data-testid={`tab-button-${tabConfig.label.toLowerCase().replace(/\s/g, "-")}`}
+            className={`tab-button-${tabConfig.label.toLowerCase().replace(/\s/g, "-")}`}
+          >
+            <div className="border-top" />
+            <div className="icon-container">
+              {!!notificationsCounter && tabConfig.path === TabsRoutePath.NOTIFICATIONS && (
+                <span className="notifications-counter">
+                  {notificationsCounter > 99 ? "99+" : notificationsCounter}
+                </span>
+              )}
+              <IonIcon
+                icon={tabConfig.path === location.pathname ? tabConfig.icon[0] : tabConfig.icon[1]}
+              />
+            </div>
+            <IonLabel>{tabConfig.label}</IonLabel>
+          </IonTabButton>
+        ))}
       </IonTabBar>
     </IonTabs>
   );

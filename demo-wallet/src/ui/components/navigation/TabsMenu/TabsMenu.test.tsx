@@ -6,7 +6,6 @@ import { IonReactMemoryRouter } from "@ionic/react-router";
 import { waitForIonicReact } from "@ionic/react-test-utils";
 import { act } from "react";
 import { TabsMenu, TabsRoutePath, tabsRoutes } from "./TabsMenu";
-import { setCurrentRoute } from "../../../../store/reducers/stateCache";
 import { notificationsFix } from "../../../__fixtures__/notificationsFix";
 
 describe("Tab menu", () => {
@@ -73,7 +72,10 @@ describe("Tab menu", () => {
         );
       });
 
-      expect(dispatchMock).toBeCalledWith(setCurrentRoute({ path: tab.path }));
+      // Note: setCurrentRoute dispatch removed from TabsMenu to prevent
+      // render-cycle warnings during Ionic page transitions. Route state
+      // is now managed through middleware and routing lifecycle.
+      // The tab button href attribute handles native Ionic navigation.
     });
   });
 

@@ -50,18 +50,19 @@ const config = {
       },
       {
         test: /\.ya?ml$/,
-        use: "yaml-loader",
+        use: 'yaml-loader',
       },
       {
         test: /\.css$/i,
-        use: ["style-loader", "css-loader"],
+        use: ['style-loader', 'css-loader'],
       },
     ],
   },
   resolve: {
-    extensions: [".js", ".tsx", ".ts"],
+    extensions: ['.js', '.tsx', '.ts'],
     fallback: {
       fs: false,
+      path: false,
     },
   },
   plugins: [
