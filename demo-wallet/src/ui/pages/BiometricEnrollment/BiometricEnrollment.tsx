@@ -141,10 +141,7 @@ export const BiometricEnrollment = () => {
       // Show success toast
       dispatch(setToastMsg(ToastMsgType.BIOMETRIC_ENROLLMENT_SUCCESS));
 
-      // Navigate to next step after brief delay
-      setTimeout(() => {
-        navToNextStep();
-      }, 2000);
+      // Keep user on success page - they'll click Continue button when ready
     } catch (error) {
       console.error('WebAuthn enrollment error:', error);
       const userError = getUserFriendlyError(error);
@@ -242,10 +239,7 @@ export const BiometricEnrollment = () => {
       // Show success toast
       dispatch(setToastMsg(ToastMsgType.BIOMETRIC_ENROLLMENT_SUCCESS));
 
-      // Navigate to next step after brief delay
-      setTimeout(() => {
-        navToNextStep();
-      }, 2000);
+      // Keep user on success page - they'll click Continue button when ready
     } catch (error) {
       console.error("Biometric enrollment error:", error);
       const userError = getUserFriendlyError(error);
@@ -482,93 +476,105 @@ export const BiometricEnrollment = () => {
 
     if (status === BiometricEnrollmentStatus.Complete) {
       return (
-        <div className="enrollment-complete">
-          <IonIcon icon={checkmarkCircle} className="success-icon" aria-hidden="true" />
-          <h1>🎉 Your Identity is Secure!</h1>
+        <div className="enrollment-complete-wrapper">
+          <div className="enrollment-complete">
+            <IonIcon icon={checkmarkCircle} className="success-icon" aria-hidden="true" />
+            <h1>🎉 Your Identity is Secure!</h1>
 
-          <div className="success-info">
-            <h3>What just happened?</h3>
-            <ul>
-              <li>
-                <IonIcon icon={checkmarkCircle} />
-                <span><strong>Unique Digital ID created</strong> from your fingerprints</span>
-              </li>
-              <li>
-                <IonIcon icon={lockClosedOutline} />
-                <span><strong>Privacy protected</strong> - no personal info stored</span>
-              </li>
-              <li>
-                <IonIcon icon={shieldCheckmarkOutline} />
-                <span><strong>Sybil resistant</strong> - one person, one identity</span>
-              </li>
-            </ul>
-          </div>
-
-          {enrollmentState.did && (
-            <div className="did-display">
-              <label>Your Digital ID (DID):</label>
-              <code className="did-code">{enrollmentState.did}</code>
-              <button
-                className="copy-button"
-                onClick={() => {
-                  navigator.clipboard.writeText(enrollmentState.did || '');
-                  dispatch(setToastMsg(ToastMsgType.COPIED_TO_CLIPBOARD));
-                }}
-                aria-label="Copy DID to clipboard"
-              >
-                <IonIcon icon={copyOutline} />
-                <span>Copy</span>
-              </button>
+            <div className="success-info">
+              <h3>What just happened?</h3>
+              <ul>
+                <li>
+                  <IonIcon icon={checkmarkCircle} />
+                  <span><strong>Unique Digital ID created</strong> from your fingerprints</span>
+                </li>
+                <li>
+                  <IonIcon icon={lockClosedOutline} />
+                  <span><strong>Privacy protected</strong> - no personal info stored</span>
+                </li>
+                <li>
+                  <IonIcon icon={shieldCheckmarkOutline} />
+                  <span><strong>Sybil resistant</strong> - one person, one identity</span>
+                </li>
+              </ul>
             </div>
-          )}
 
-          {enrollmentState.txHash && (
-            <div className="transaction-explorer">
-              <label>Enrollment Transaction:</label>
-              <div className="tx-hash-display">
-                <code className="tx-hash-code">{enrollmentState.txHash}</code>
-                <button
-                  className="explorer-button"
-                  onClick={() => {
-                    const explorerUrl = getCardanoscanUrl(enrollmentState.txHash!, "testnet");
-                    openBrowserLink(explorerUrl);
-                  }}
-                  aria-label="View transaction on Cardanoscan explorer"
-                  title="View on Cardanoscan"
-                >
-                  <IonIcon icon={openOutline} />
-                  <span>View on Explorer</span>
-                </button>
+            {enrollmentState.did && (
+              <div className="did-display">
+                <label>Your Digital ID (DID):</label>
+                <code className="did-code">{enrollmentState.did}</code>
                 <button
                   className="copy-button"
                   onClick={() => {
-                    navigator.clipboard.writeText(enrollmentState.txHash || '');
+                    navigator.clipboard.writeText(enrollmentState.did || '');
                     dispatch(setToastMsg(ToastMsgType.COPIED_TO_CLIPBOARD));
                   }}
-                  aria-label="Copy transaction hash to clipboard"
+                  aria-label="Copy DID to clipboard"
                 >
                   <IonIcon icon={copyOutline} />
                   <span>Copy</span>
                 </button>
               </div>
+            )}
+
+            {enrollmentState.txHash && (
+              <div className="transaction-explorer">
+                <label>Enrollment Transaction:</label>
+                <div className="tx-hash-display">
+                  <code className="tx-hash-code">{enrollmentState.txHash}</code>
+                  <button
+                    className="explorer-button"
+                    onClick={() => {
+                      const explorerUrl = getCardanoscanUrl(enrollmentState.txHash!, "testnet");
+                      openBrowserLink(explorerUrl);
+                    }}
+                    aria-label="View transaction on Cardanoscan explorer"
+                    title="View on Cardanoscan"
+                  >
+                    <IonIcon icon={openOutline} />
+                    <span>View on Explorer</span>
+                  </button>
+                  <button
+                    className="copy-button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(enrollmentState.txHash || '');
+                      dispatch(setToastMsg(ToastMsgType.COPIED_TO_CLIPBOARD));
+                    }}
+                    aria-label="Copy transaction hash to clipboard"
+                  >
+                    <IonIcon icon={copyOutline} />
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="next-steps">
+              <h3>What's next?</h3>
+              <p>You can now use your fingerprint to:</p>
+              <ul>
+                <li>🔓 <strong>Unlock your wallet</strong></li>
+                <li>✍️ <strong>Sign transactions</strong> securely</li>
+                <li>🆔 <strong>Verify your identity</strong></li>
+              </ul>
             </div>
-          )}
 
-          <div className="next-steps">
-            <h3>What's next?</h3>
-            <p>You can now use your fingerprint to:</p>
-            <ul>
-              <li>🔓 <strong>Unlock your wallet</strong></li>
-              <li>✍️ <strong>Sign transactions</strong> securely</li>
-              <li>🆔 <strong>Verify your identity</strong></li>
-            </ul>
-          </div>
+            <div className="help-text">
+              <IonIcon icon={informationCircleOutline} />
+              <p>
+                Your DID is stored securely on this device. You can view it anytime in <strong>Settings</strong>.
+              </p>
+            </div>
 
-          <div className="help-text">
-            <IonIcon icon={informationCircleOutline} />
-            <p>
-              Your DID is stored securely on this device. You can view it anytime in <strong>Settings</strong>.
-            </p>
+            <div className="completion-actions">
+              <button
+                className="continue-button"
+                onClick={navToNextStep}
+                aria-label="Continue to next step"
+              >
+                Continue
+              </button>
+            </div>
           </div>
         </div>
       );
