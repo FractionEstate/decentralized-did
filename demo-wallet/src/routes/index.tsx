@@ -1,12 +1,8 @@
 import { IonRouterOutlet } from "@ionic/react";
-import { lazy, Suspense, useEffect, useRef, useLayoutEffect } from "react";
+import { lazy, Suspense } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  getRoutes,
-  getStateCache,
-  setCurrentRoute,
-} from "../store/reducers/stateCache";
+import { getRoutes, getStateCache } from "../store/reducers/stateCache";
 import { ErrorBoundary } from "../ui/components/ErrorBoundary";
 import { LoadingSkeleton } from "../ui/components/LoadingSkeleton";
 import { TabsMenu, tabsRoutes } from "../ui/components/navigation/TabsMenu";
@@ -37,20 +33,19 @@ const LoadingFallback = () => (
 
 const Routes = () => {
   const stateCache = useAppSelector(getStateCache);
-  const dispatch = useAppDispatch();
   const routes = useAppSelector(getRoutes);
 
   const { nextPath } = getNextRoute(RoutePath.ROOT, {
     store: { stateCache },
   });
 
-  // Use useLayoutEffect to dispatch BEFORE paint but AFTER DOM measurements
-  // This prevents render cycle conflicts by ensuring state is updated before other renders
-  useLayoutEffect(() => {
-    if (!routes.length) {
-      dispatch(setCurrentRoute({ path: nextPath.pathname }));
-    }
-  }, [routes, nextPath.pathname, dispatch]);
+  // Compute initial redirect target without dispatching on first render.
+  // If the next root is tabs, go directly to the default tab to avoid showing
+  // bare "/tabs" in the URL.
+  const initialRedirectPath =
+    nextPath.pathname === RoutePath.TABS_MENU
+      ? TabsRoutePath.IDENTIFIERS
+      : nextPath.pathname;
 
   return (
     <IonRouterOutlet animated={false}>
@@ -136,11 +131,7 @@ const Routes = () => {
           exact
           render={() => <NotificationDetails />}
         />
-        <Redirect
-          exact
-          from="/"
-          to={nextPath}
-        />
+        <Redirect exact from="/" to={initialRedirectPath} />
       </Suspense>
     </IonRouterOutlet>
   );
