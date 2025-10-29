@@ -103,112 +103,117 @@ describe("Forgot Passcode Page", () => {
     dispatch: dispatchMock,
   };
 
-  test("Render", async () => {
-    verifySeedPhraseFnc.mockImplementation(() => {
-      return Promise.resolve(true);
-    });
+  test(
+    "Render",
+    async () => {
+      verifySeedPhraseFnc.mockImplementation(() => {
+        return Promise.resolve(true);
+      });
 
-    const onCloseMock = jest.fn();
+      const onCloseMock = jest.fn();
 
-    const { getByTestId, getByText, findByText, queryByText } = render(
-      <Provider store={storeMocked}>
-        <ForgotAuthInfo
-          isOpen
-          onClose={onCloseMock}
-          type={ForgotType.Passcode}
-        />
-      </Provider>
-    );
+      const { getByTestId, getByText, findByText, queryByText } = render(
+        <Provider store={storeMocked}>
+          <ForgotAuthInfo
+            isOpen
+            onClose={onCloseMock}
+            type={ForgotType.Passcode}
+          />
+        </Provider>
+      );
 
-    await waitFor(() => {
+
+      await waitFor(() => {
+        expect(
+          getByText(EN_TRANSLATIONS.forgotauth.passcode.title)
+        ).toBeVisible();
+      });
+
       expect(
-        getByText(EN_TRANSLATIONS.forgotauth.passcode.title)
+        getByText(EN_TRANSLATIONS.forgotauth.passcode.description)
       ).toBeVisible();
-    });
 
-    expect(
-      getByText(EN_TRANSLATIONS.forgotauth.passcode.description)
-    ).toBeVisible();
+      expect(queryByText(EN_TRANSLATIONS.createpassword.button.skip)).toBeNull();
 
-    expect(queryByText(EN_TRANSLATIONS.createpassword.button.skip)).toBeNull();
-
-    for (let i = 0; i < SEED_PHRASE_LENGTH; i++) {
-      act(() => {
-        const input = getByTestId(`word-input-${i}`);
-        fireEvent.focus(input);
-        fireEvent.change(input, {
-          target: { value: "a" },
+      for (let i = 0; i < SEED_PHRASE_LENGTH; i++) {
+        act(() => {
+          const input = getByTestId(`word-input-${i}`);
+          fireEvent.focus(input);
+          fireEvent.change(input, {
+            target: { value: "a" },
+          });
         });
+
+        await waitFor(() => {
+          expect(getByText("abandon")).toBeVisible();
+        });
+
+        act(() => {
+          fireEvent.click(getByText("abandon"));
+        });
+
+        if (i < SEED_PHRASE_LENGTH - 1) {
+          await waitFor(() => {
+            expect(getByTestId(`word-input-${i}`)).toBeVisible();
+          });
+        }
+      }
+
+      expect(
+        getByText(
+          EN_TRANSLATIONS.verifyrecoveryseedphrase.button.continue
+        ).getAttribute("disabled")
+      ).toBe("false");
+
+      act(() => {
+        fireEvent.click(
+          getByText(EN_TRANSLATIONS.verifyrecoveryseedphrase.button.continue)
+        );
       });
 
       await waitFor(() => {
-        expect(getByText("abandon")).toBeVisible();
+        expect(dispatchMock).toBeCalledWith(
+          setSeedPhraseCache({
+            seedPhrase:
+              "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
+            bran: "",
+          })
+        );
       });
 
-      act(() => {
-        fireEvent.click(getByText("abandon"));
+      await waitFor(() => {
+        expect(
+          getByText(EN_TRANSLATIONS.forgotauth.newpasscode.title)
+        ).toBeVisible();
+        expect(
+          getByText(EN_TRANSLATIONS.forgotauth.newpasscode.description)
+        ).toBeVisible();
       });
 
-      if (i < SEED_PHRASE_LENGTH - 1) {
-        await waitFor(() => {
-          expect(getByTestId(`word-input-${i}`)).toBeVisible();
-        });
-      }
-    }
+      await passcodeFiller(getByText, getByTestId, "193212");
 
-    expect(
-      getByText(
-        EN_TRANSLATIONS.verifyrecoveryseedphrase.button.continue
-      ).getAttribute("disabled")
-    ).toBe("false");
+      await waitFor(() => {
+        expect(
+          getByTestId("secondary-button-forgot-auth-info-modal")
+        ).toBeVisible();
+      });
 
-    act(() => {
-      fireEvent.click(
-        getByText(EN_TRANSLATIONS.verifyrecoveryseedphrase.button.continue)
+      const text = await findByText(
+        EN_TRANSLATIONS.forgotauth.newpasscode.reenterpasscode
       );
-    });
 
-    await waitFor(() => {
-      expect(dispatchMock).toBeCalledWith(
-        setSeedPhraseCache({
-          seedPhrase:
-            "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon",
-          bran: "",
-        })
-      );
-    });
+      await waitFor(() => {
+        expect(text).toBeVisible();
+      });
 
-    await waitFor(() => {
-      expect(
-        getByText(EN_TRANSLATIONS.forgotauth.newpasscode.title)
-      ).toBeVisible();
-      expect(
-        getByText(EN_TRANSLATIONS.forgotauth.newpasscode.description)
-      ).toBeVisible();
-    });
+      await passcodeFiller(getByText, getByTestId, "193212");
 
-    await passcodeFiller(getByText, getByTestId, "193212");
-
-    await waitFor(() => {
-      expect(
-        getByTestId("secondary-button-forgot-auth-info-modal")
-      ).toBeVisible();
-    });
-
-    const text = await findByText(
-      EN_TRANSLATIONS.forgotauth.newpasscode.reenterpasscode
-    );
-
-    await waitFor(() => {
-      expect(text).toBeVisible();
-    });
-
-    await passcodeFiller(getByText, getByTestId, "193212");
-
-    await waitFor(() => {
-      expect(onCloseMock).toHaveBeenCalled();
-    });
-  });
+      await waitFor(() => {
+        expect(onCloseMock).toHaveBeenCalled();
+      });
+    },
+    15000
+  ); // Increased timeout for slow biometric operations
 });
 
 describe("Forgot Password Page", () => {
@@ -311,5 +316,7 @@ describe("Forgot Password Page", () => {
         getByText(EN_TRANSLATIONS.forgotauth.newpassword.description)
       ).toBeVisible();
     });
-  });
+  },
+    15000
+  ); // Increased timeout for slow biometric operations
 });

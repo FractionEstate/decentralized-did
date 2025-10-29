@@ -16,13 +16,17 @@ class ConfigurationService {
     "Can not load environment file";
 
   async start() {
-    console.log(`[ConfigurationService] Loading environment: ${environment}`);
-    console.log(`[ConfigurationService] Import path: ../../../configs/${environment}.yaml`);
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[ConfigurationService] Loading environment: ${environment}`);
+      console.log(`[ConfigurationService] Import path: ../../../configs/${environment}.yaml`);
+    }
 
     await new Promise((rs, rj) => {
       import(`../../../configs/${environment}.yaml`)
         .then((module) => {
-          console.log(`[ConfigurationService] ✅ Config loaded successfully for ${environment}`);
+          if (process.env.NODE_ENV === 'development') {
+            console.log(`[ConfigurationService] ✅ Config loaded successfully for ${environment}`);
+          }
           const data = module.default;
 
           const validyCheck = this.configurationValid(data);
