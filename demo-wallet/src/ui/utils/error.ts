@@ -18,6 +18,11 @@ const showError = (
   if (error instanceof Error && error.message === Agent.KERIA_CONNECTION_BROKEN)
     return;
 
+  // Filter out NotFoundError - it's an expected storage initialization issue
+  if (error instanceof Error && error.name === 'NotFoundError') {
+    return;
+  }
+
   if (toastMessage) {
     dispatch(setToastMsg(toastMessage));
   } else {
