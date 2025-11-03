@@ -1,0 +1,93 @@
+{
+	"name": "Decentralized DID Development",
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.11",
+			"installTools": true
+		},
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "22",
+			"nodeGypDependencies": true
+		},
+		"ghcr.io/devcontainers/features/java:1": {
+			"version": "21",
+			"installGradle": true
+		},
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/jsburckhardt/devcontainer-features/uv:1": {
+			"version": "latest"
+		}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
+				"python.linting.enabled": true,
+				"python.linting.pylintEnabled": true,
+				"python.formatting.provider": "black",
+				"typescript.preferences.includePackageJsonAutoImports": "on",
+				"java.configuration.updateBuildConfiguration": "automatic",
+				"mcp.mcpServers": {
+					"github": {
+						"command": "/home/codespace/.local/bin/uvx",
+						"args": ["--from", "mcp", "mcp-server-github"],
+						"env": {
+							"PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin"
+						}
+					},
+					"filesystem": {
+						"command": "/home/codespace/.local/bin/uvx",
+						"args": ["--from", "mcp", "mcp-server-filesystem", "--root", "/workspaces/decentralized-did"],
+						"env": {
+							"PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin"
+						}
+					},
+					"playwright": {
+						"command": "/usr/local/bin/npx",
+						"args": ["--yes", "@playwright/test", "--mcp"],
+						"env": {
+							"PATH": "/usr/local/bin:/usr/bin:/bin",
+							"NODE_PATH": "/usr/local/bin"
+						}
+					}
+				}
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.pylint",
+				"ms-python.black-formatter",
+				"ms-toolsai.jupyter",
+				"ms-vscode.vscode-typescript-next",
+				"bradlc.vscode-tailwindcss",
+				"esbenp.prettier-vscode",
+				"ms-playwright.playwright",
+				"vscjava.vscode-java-pack",
+				"redhat.vscode-gradle",
+				"ms-vscode.vscode-json"
+			]
+		}
+	},
+	"postCreateCommand": "bash .devcontainer/setup.sh",
+	"remoteUser": "codespace",
+	"workspaceFolder": "/workspaces/decentralized-did",
+	"forwardPorts": [3000, 8000, 8080, 5173],
+	"portsAttributes": {
+		"3000": {
+			"label": "Wallet Dev Server",
+			"onAutoForward": "notify"
+		},
+		"8000": {
+			"label": "API Server",
+			"onAutoForward": "silent"
+		},
+		"8080": {
+			"label": "Android Debug",
+			"onAutoForward": "silent"
+		},
+		"5173": {
+			"label": "Vite Dev Server",
+			"onAutoForward": "notify"
+		}
+	}
+}
