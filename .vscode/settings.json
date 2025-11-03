@@ -10,7 +10,11 @@
   "mcp.mcpServers": {
     "playwright": {
       "command": "/usr/local/bin/npx",
-      "args": ["--yes", "@playwright/test", "--mcp"],
+      "args": [
+        "--yes",
+        "@playwright/test",
+        "--mcp"
+      ],
       "env": {
         "PATH": "/usr/local/bin:/usr/bin:/bin",
         "NODE_PATH": "/usr/local/bin"
@@ -18,14 +22,24 @@
     },
     "filesystem": {
       "command": "/home/codespace/.local/bin/uvx",
-      "args": ["--from", "mcp", "mcp-server-filesystem", "--root", "${workspaceFolder}"],
+      "args": [
+        "--from",
+        "mcp",
+        "mcp-server-filesystem",
+        "--root",
+        "${workspaceFolder}"
+      ],
       "env": {
         "PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin"
       }
     },
     "github": {
       "command": "/home/codespace/.local/bin/uvx",
-      "args": ["--from", "mcp", "mcp-server-github"],
+      "args": [
+        "--from",
+        "mcp",
+        "mcp-server-github"
+      ],
       "env": {
         "PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin",
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
@@ -38,5 +52,7 @@
   "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
     "source.fixAll": "explicit"
-  }
+  },
+  "python-envs.defaultEnvManager": "ms-python.python:system",
+  "python-envs.pythonProjects": []
 }
