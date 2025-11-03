@@ -1,0 +1,284 @@
+/**
+ * Transaction Preview Styles
+ */
+
+.transaction-preview-modal {
+  --height: 90%;
+  --border-radius: 16px 16px 0 0;
+
+  .transaction-preview-content {
+    --padding-top: 16px;
+    --padding-bottom: 80px; // Space for action buttons
+  }
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 16px;
+
+  ion-spinner {
+    width: 48px;
+    height: 48px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    font-size: 16px;
+  }
+}
+
+.summary-card {
+  margin: 0 16px 16px 16px;
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--ion-color-light-shade);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &.total {
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 2px solid var(--ion-color-primary);
+
+      .label,
+      .value {
+        font-weight: 600;
+        font-size: 18px;
+        color: var(--ion-color-primary);
+      }
+    }
+
+    .label {
+      font-size: 14px;
+      color: var(--ion-color-medium);
+      font-weight: 500;
+    }
+
+    .value {
+      font-size: 16px;
+      color: var(--ion-color-dark);
+      font-weight: 600;
+
+      &.fee {
+        color: var(--ion-color-warning);
+      }
+    }
+  }
+}
+
+ion-card {
+  margin: 0 16px 16px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  ion-card-header {
+    padding: 16px;
+
+    ion-card-title {
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .count-badge {
+        margin-left: 8px;
+        font-size: 12px;
+      }
+
+      ion-icon {
+        font-size: 20px;
+      }
+    }
+  }
+
+  ion-card-content {
+    padding: 0 16px 16px 16px;
+
+    ion-list {
+      padding: 0;
+    }
+
+    ion-item {
+      --padding-start: 0;
+      --inner-padding-end: 0;
+      --min-height: 60px;
+
+      ion-label {
+        margin: 8px 0;
+
+        h3 {
+          font-size: 14px;
+          font-weight: 500;
+          color: var(--ion-color-dark);
+          margin: 0 0 4px 0;
+          font-family: monospace;
+        }
+
+        .amount-text {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-color-success);
+          margin: 4px 0;
+        }
+
+        ion-note {
+          font-size: 12px;
+          margin-top: 4px;
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.metadata-json {
+  background: var(--ion-color-light);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: monospace;
+  overflow-x: auto;
+  max-height: 200px;
+  margin: 0;
+  color: var(--ion-color-dark);
+}
+
+.warning-card {
+  margin: 16px;
+
+  ion-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+
+    ion-icon {
+      font-size: 20px;
+      vertical-align: middle;
+    }
+
+    strong {
+      display: inline-block;
+      font-size: 16px;
+    }
+
+    p {
+      margin: 8px 0 0 0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+  }
+}
+
+.action-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background: var(--ion-background-color);
+  border-top: 1px solid var(--ion-color-light-shade);
+  display: flex;
+  gap: 12px;
+  z-index: 1000;
+
+  ion-button {
+    flex: 1;
+    margin: 0;
+    font-weight: 600;
+    --border-radius: 12px;
+    height: 48px;
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .transaction-preview-modal {
+    --height: 95%;
+  }
+
+  ion-card {
+    margin: 0 12px 12px 12px;
+
+    ion-card-header {
+      padding: 12px;
+
+      ion-card-title {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .summary-card {
+    .summary-row {
+      .label {
+        font-size: 13px;
+      }
+
+      .value {
+        font-size: 14px;
+      }
+
+      &.total {
+        .label,
+        .value {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    padding: 12px;
+    gap: 8px;
+
+    ion-button {
+      font-size: 14px;
+      height: 44px;
+    }
+  }
+}
+
+/* Tablet */
+@media (min-width: 769px) {
+  .transaction-preview-modal {
+    --width: 600px;
+    --height: 80%;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .transaction-preview-modal {
+    --width: 700px;
+    --height: 70%;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .metadata-json {
+    background: var(--ion-color-dark-shade);
+    color: var(--ion-color-light);
+  }
+
+  .summary-card {
+    .summary-row {
+      border-bottom-color: var(--ion-color-dark-shade);
+
+      &.total {
+        border-top-color: var(--ion-color-primary-shade);
+      }
+    }
+  }
+}

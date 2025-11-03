@@ -1,0 +1,207 @@
+/**
+ * DAppBrowser Styles
+ */
+
+.dapp-browser-nav {
+  --background: var(--ion-color-light);
+
+  .url-bar {
+    --background: var(--ion-color-light-contrast);
+    --border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    margin: 8px 12px;
+    flex: 1;
+    font-size: 14px;
+  }
+}
+
+.dapp-browser-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--ion-background-color);
+}
+
+.dapp-browser-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: white;
+}
+
+.dapp-browser-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 32px;
+  text-align: center;
+
+  .empty-icon {
+    font-size: 80px;
+    color: var(--ion-color-medium);
+    margin-bottom: 24px;
+  }
+
+  h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 16px;
+    color: var(--ion-color-medium);
+    margin-bottom: 32px;
+  }
+
+  .popular-dapps {
+    width: 100%;
+    max-width: 500px;
+    text-align: left;
+
+    h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ion-color-dark);
+      margin-bottom: 16px;
+      padding-left: 16px;
+    }
+
+    ion-list {
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    ion-item {
+      --padding-start: 16px;
+
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--ion-color-dark);
+        margin: 0;
+      }
+
+      p {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+        margin: 4px 0 0 0;
+      }
+    }
+  }
+}
+
+.connected-dapps-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--ion-color-light);
+  border-top: 1px solid var(--ion-color-light-shade);
+  padding: 12px 16px;
+  z-index: 1000;
+
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+    margin: 0 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .connected-dapp-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--ion-color-light-contrast);
+    border-radius: 8px;
+    margin-bottom: 8px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--ion-color-dark);
+    }
+
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      height: 28px;
+      min-height: 28px;
+    }
+  }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .dapp-browser-nav {
+    .url-bar {
+      font-size: 12px;
+      --padding-start: 8px;
+      --padding-end: 8px;
+      margin: 4px 8px;
+    }
+
+    ion-button {
+      --padding-start: 4px;
+      --padding-end: 4px;
+    }
+  }
+
+  .dapp-browser-empty {
+    padding: 16px;
+
+    .empty-icon {
+      font-size: 60px;
+      margin-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+    }
+
+    p {
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+  }
+}
+
+/* Tablet landscape */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .dapp-browser-container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+}
+
+/* Loading overlay */
+.dapp-browser-container {
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+
+    ion-spinner {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}

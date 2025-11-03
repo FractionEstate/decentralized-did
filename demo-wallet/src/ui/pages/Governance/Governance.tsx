@@ -13,7 +13,7 @@ import {
 import { TabLayout } from "../../components/layout/TabLayout";
 import { PageHeader } from "../../components/PageHeader";
 import { showError } from "../../utils/error";
-import {  formatVotingPower, getStatusColor, formatProposalId } from "../../../core/cardano/governanceService";
+import { formatVotingPower, getStatusColor, formatProposalId } from "../../../core/cardano/governanceService";
 import "./Governance.scss";
 
 // Placeholder stake address - in production this would come from wallet state
@@ -109,8 +109,8 @@ const Governance = () => {
           <div key={proposal.proposal_id} className="proposal-card">
             <div className="proposal-header">
               <h3>{proposal.title}</h3>
-              <span 
-                className="status" 
+              <span
+                className="status"
                 style={{ backgroundColor: getStatusColor(proposal.status) }}
               >
                 {proposal.status}
@@ -121,12 +121,12 @@ const Governance = () => {
             )}
             <div className="proposal-votes">
               <div className="vote-bar">
-                <div 
-                  className="vote-yes" 
+                <div
+                  className="vote-yes"
                   style={{ width: `${(proposal.yes_votes / proposal.total_votes * 100) || 0}%` }}
                 />
-                <div 
-                  className="vote-no" 
+                <div
+                  className="vote-no"
                   style={{ width: `${(proposal.no_votes / proposal.total_votes * 100) || 0}%` }}
                 />
               </div>
@@ -162,8 +162,8 @@ const Governance = () => {
 
   return (
     <TabLayout
-      header={<PageHeader title="Governance" />}
-      routerOutlet={false}
+      title="Governance"
+      header={true}
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />

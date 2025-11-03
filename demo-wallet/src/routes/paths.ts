@@ -24,6 +24,7 @@ enum TabsRoutePath {
   TOKENS = "/tabs/tokens",
   STAKING = "/tabs/staking",
   GOVERNANCE = "/tabs/governance",
+  DAPP_BROWSER = "/tabs/dapp-browser",
   IDENTIFIER_DETAILS = "/tabs/identifiers/:id",
   CREDENTIAL_DETAILS = "/tabs/credentials/:id",
   NOTIFICATION_DETAILS = "/tabs/notifications/:id",

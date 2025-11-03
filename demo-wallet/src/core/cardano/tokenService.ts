@@ -1,6 +1,6 @@
 /**
  * Token Service for Cardano blockchain
- * 
+ *
  * Provides API client for token management operations including:
  * - ADA balance queries
  * - Native asset tracking
@@ -8,8 +8,7 @@
  * - Transaction history
  */
 
-// API base URL - configurable via environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8002";
+import { API_BASE_URL } from "../config/env";
 
 // Type definitions
 export interface Asset {

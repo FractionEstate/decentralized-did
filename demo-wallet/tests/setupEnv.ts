@@ -48,3 +48,11 @@ ensureEnv("TEST_WALLET_ADDRESS", "addr_test1_demo_integration_testing");
 if (typeof (global as unknown as { self?: typeof globalThis }).self === "undefined") {
   (global as unknown as { self: typeof globalThis }).self = global as unknown as typeof globalThis;
 }
+
+// Mock import.meta for Jest environment
+// @ts-ignore - Adding import.meta polyfill for Jest
+globalThis.importMeta = {
+  env: {
+    VITE_API_BASE_URL: process.env.VITE_API_BASE_URL || "http://localhost:8002",
+  }
+};

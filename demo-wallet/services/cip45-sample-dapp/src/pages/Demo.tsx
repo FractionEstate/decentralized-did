@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { QRCode } from "react-qrcode-logo";
 import { useCardano } from "@cardano-foundation/cardano-connect-with-wallet";
 import { NetworkType } from "@cardano-foundation/cardano-connect-with-wallet-core";
-import idwLogo from "../../public/idw.png";
+import idwLogo from "/idw.png";
 import {
   biometricDid,
   demoHelperStorageMode,
@@ -123,7 +123,7 @@ const Demo: React.FC = () => {
       };
 
       // @ts-ignore
-      const onP2PConnect = (a): void => {};
+      const onP2PConnect = (a): void => { };
 
       initDappConnect(
         "Cip45 sample demo",
@@ -153,8 +153,8 @@ const Demo: React.FC = () => {
       const message = isMetadataParseError(err)
         ? err.message
         : err instanceof Error
-        ? err.message
-        : "Unknown metadata parsing error.";
+          ? err.message
+          : "Unknown metadata parsing error.";
       setMetadataError(message);
     }
   }, [payload, metadataError]);
@@ -187,14 +187,14 @@ const Demo: React.FC = () => {
 
           const checkApi = setInterval(async () => {
             const api =
-                // @ts-ignore
-                window.cardano && window.cardano[peerConnectWalletInfo.name];
+              // @ts-ignore
+              window.cardano && window.cardano[peerConnectWalletInfo.name];
             if (api || Date.now() - start > timeout) {
               clearInterval(checkApi);
               if (api) {
                 const enabledApi = await api.enable();
                 const keriIdentifier =
-                    await enabledApi.experimental.getKeriIdentifier();
+                  await enabledApi.experimental.getKeriIdentifier();
                 setPeerConnectWalletInfo((prev) => ({
                   ...prev,
                   address: keriIdentifier.id,
@@ -229,18 +229,18 @@ const Demo: React.FC = () => {
       const enabledApi = await api.enable();
       try {
         const signedMessage = await enabledApi.experimental.signKeri(
-            peerConnectWalletInfo?.address,
-            payload
+          peerConnectWalletInfo?.address,
+          payload
         );
 
         setSignature(signedMessage);
-      // @ts-ignore
+        // @ts-ignore
       } catch (e) {
         // @ts-ignore
         setError(e.code === 2
-            ? "User declined to sign"
-            // @ts-ignore
-            : e.info)
+          ? "User declined to sign"
+          // @ts-ignore
+          : e.info)
       }
     } else {
       setError("Wallet not connected")
@@ -291,7 +291,7 @@ const Demo: React.FC = () => {
       <h1 className="text-3xl font-bold text-center text-gray-800">CIP45 Demo Dapp</h1>
       <p className="mt-4 text-lg text-gray-600 text-center">Scan the QR code with your IDW wallet to proceed.</p>
       <div className="p-4 border-2 border-dashed border-gray-400 rounded-lg flex flex-col items-center">
-        <div className="h-8"/>
+        <div className="h-8" />
         <QRCode
           value={meerkatAddress}
           size={250}
@@ -308,10 +308,10 @@ const Demo: React.FC = () => {
         <div className="h-12 my-4">
           {
             showAcceptButton ? <button className="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg"
-                                       onClick={handleAcceptWallet} disabled={!showAcceptButton}>
+              onClick={handleAcceptWallet} disabled={!showAcceptButton}>
               Accept connection with {peerConnectWalletInfo.name}
             </button> : walletIsConnected ? <button className="bg-red-600 text-white font-bold py-3 px-6 rounded-lg"
-                                onClick={disconnectWallet}>
+              onClick={disconnectWallet}>
               Disconnect Wallet
             </button> : null
           }
@@ -320,24 +320,24 @@ const Demo: React.FC = () => {
       <div className="my-6 text-center">
         <div className="h-24 mt-2">
           {peerConnectWalletInfo.address.length ? (
-              <div className="flex flex-col space-y-2">
-                <div className="flex justify-between items-center">
-                  <p className="text-green-500 w-1/3 text-right pr-2">Connected Wallet:</p>
-                  <p className="text-gray-800 w-2/3 text-left pl-2">{peerConnectWalletInfo.name}</p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <p className="text-gray-800 w-1/3 text-right pr-2">AID:</p>
-                  <p className="text-gray-800 w-2/3 text-left pl-2">{peerConnectWalletInfo.address}</p>
-                </div>
-                <div className="flex justify-between items-center">
-                  <p className="text-gray-800 w-1/3 text-right pr-2">OOBI:</p>
-                  <p
-                      className="text-gray-800 w-2/3 text-left pl-2 w-full break-words"
-                  >
-                    {peerConnectWalletInfo.oobi}
-                  </p>
-                </div>
+            <div className="flex flex-col space-y-2">
+              <div className="flex justify-between items-center">
+                <p className="text-green-500 w-1/3 text-right pr-2">Connected Wallet:</p>
+                <p className="text-gray-800 w-2/3 text-left pl-2">{peerConnectWalletInfo.name}</p>
               </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-800 w-1/3 text-right pr-2">AID:</p>
+                <p className="text-gray-800 w-2/3 text-left pl-2">{peerConnectWalletInfo.address}</p>
+              </div>
+              <div className="flex justify-between items-center">
+                <p className="text-gray-800 w-1/3 text-right pr-2">OOBI:</p>
+                <p
+                  className="text-gray-800 w-2/3 text-left pl-2 w-full break-words"
+                >
+                  {peerConnectWalletInfo.oobi}
+                </p>
+              </div>
+            </div>
           ) : null}
           {error.length ? <p className="text-red-500">{error}</p> : null}
         </div>
@@ -363,21 +363,21 @@ const Demo: React.FC = () => {
         </button>
       </div>
       <div className="mb-6 text-center">
-                <textarea
-                  className="form-textarea mt-1 block w-full rounded-lg p-4 bg-white text-gray-900"
-                  rows={4}
-                  placeholder="Enter payload here..."
-                  value={payload}
-                  onChange={(e) => setPayload(e.target.value)}
-                />
+        <textarea
+          className="form-textarea mt-1 block w-full rounded-lg p-4 bg-white text-gray-900"
+          rows={4}
+          placeholder="Enter payload here..."
+          value={payload}
+          onChange={(e) => setPayload(e.target.value)}
+        />
         <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
           <button className="bg-blue-500 text-white font-bold py-3 px-6 rounded-lg"
-                  onClick={signMessageWithWallet} disabled={!walletIsConnected || !payload.trim()}>
+            onClick={signMessageWithWallet} disabled={!walletIsConnected || !payload.trim()}>
             Sign Payload
           </button>
           <button className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg"
-                  onClick={sendMetadataViaWallet}
-                  disabled={!walletIsConnected || !!metadataError}>
+            onClick={sendMetadataViaWallet}
+            disabled={!walletIsConnected || !!metadataError}>
             Send CIP-30 metadata
           </button>
         </div>

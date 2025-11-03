@@ -22,10 +22,10 @@
     "emitDecoratorMetadata": true,
     "types": [
       "node",
-      "@wdio/globals/types",
-      "@wdio/cucumber-framework",
       "jest"
-    ]
+    ],
+    // Note: @wdio types are available from the packages themselves, not @types
+    // They are used in test files and don't need to be in global types
   },
   "include": [
     "src",

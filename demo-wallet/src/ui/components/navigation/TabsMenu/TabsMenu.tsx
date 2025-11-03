@@ -22,6 +22,8 @@ import {
   trophy,
   documentTextOutline,
   documentText,
+  globeOutline,
+  globe,
 } from "ionicons/icons";
 import { ComponentType } from "react";
 import { useLocation } from "react-router-dom";
@@ -35,6 +37,7 @@ import { Menu } from "../../../pages/Menu";
 import Tokens from "../../../pages/Tokens/Tokens";
 import Staking from "../../../pages/Staking/Staking";
 import Governance from "../../../pages/Governance/Governance";
+import DAppBrowser from "../../../pages/DAppBrowser/DAppBrowser";
 import { BackupWarningBanner } from "../../BackupWarningBanner";
 import { useAppSelector } from "../../../../store/hooks";
 import { getNotificationsCache } from "../../../../store/reducers/notificationsCache";
@@ -56,6 +59,7 @@ const FALLBACK_TAB_LABELS: Record<string, string> = {
   [TabsRoutePath.TOKENS]: "Tokens",
   [TabsRoutePath.STAKING]: "Staking",
   [TabsRoutePath.GOVERNANCE]: "Governance",
+  [TabsRoutePath.DAPP_BROWSER]: "Browser",
   [TabsRoutePath.SCAN]: "Scan",
   [TabsRoutePath.NOTIFICATIONS]: "Notifications",
   [TabsRoutePath.MENU]: "Settings",
@@ -85,6 +89,12 @@ const tabsRoutesBase: TabConfigBase[] = [
     component: Governance,
     icon: [documentText, documentTextOutline],
     i18nKey: "tabsmenu.label.governance",
+  },
+  {
+    path: TabsRoutePath.DAPP_BROWSER,
+    component: DAppBrowser,
+    icon: [globe, globeOutline],
+    i18nKey: "tabsmenu.label.browser",
   },
   // Credentials tab intentionally hidden (Hyperledger Aries VC flow not active)
   {
@@ -132,6 +142,7 @@ const TabsMenu = () => {
         {/* Render default Identifiers tab when visiting /tabs without a subpath */}
         <Route path={TabsRoutePath.ROOT} component={Identifiers} exact />
         <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
+        <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
         <Route path={TabsRoutePath.SCAN} component={Scan} exact />
         <Route path={TabsRoutePath.NOTIFICATIONS} component={Notifications} exact />
         <Route path={TabsRoutePath.MENU} component={Menu} exact />

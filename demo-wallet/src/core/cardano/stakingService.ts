@@ -1,6 +1,6 @@
 /**
  * Staking Service for Cardano blockchain
- * 
+ *
  * Provides API client for staking operations including:
  * - Stake account queries
  * - Pool selection and metadata
@@ -8,8 +8,7 @@
  * - APY calculations
  */
 
-// API base URL - configurable via environment
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8002";
+import { API_BASE_URL } from "../config/env";
 
 // Type definitions
 export interface StakeAccount {
@@ -274,7 +273,7 @@ export class StakingService {
   static formatStake(lovelace: string): string {
     const ada = Number(lovelace) / 1_000_000;
     const millions = ada / 1_000_000;
-    
+
     if (millions >= 1) {
       return `${millions.toFixed(2)}M ₳`;
     } else if (ada >= 1000) {
@@ -307,7 +306,7 @@ export class StakingService {
     const epochDuration = 5 * 24 * 60 * 60 * 1000; // 5 days in ms
     const epochTime = genesisTime + (epoch * epochDuration);
     const date = new Date(epochTime);
-    
+
     return date.toLocaleDateString(undefined, {
       year: "numeric",
       month: "short",
