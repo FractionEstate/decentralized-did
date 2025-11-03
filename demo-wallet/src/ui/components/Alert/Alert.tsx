@@ -103,7 +103,7 @@ const Alert = ({
         backdropDismiss={backdropDismiss}
         cssClass={alerClasses}
         header={headerText}
-        subHeader={subheaderText}
+        subHeader={subheaderText !== "" ? subheaderText : undefined}
         buttons={buttons}
         onDidDismiss={({ detail }) =>
           detail.role === "backdrop" && handleDismiss()
