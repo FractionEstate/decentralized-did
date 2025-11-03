@@ -32,7 +32,8 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install -r core/api/api_requirements.txt
+          pip install -e sdk/
 
       - name: Install demo-wallet dependencies
         working-directory: ./demo-wallet
@@ -43,6 +44,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Generate test secrets
+        working-directory: ./core/api
         run: |
           echo "API_SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" >> .env
           echo "JWT_SECRET_KEY=$(python3 -c 'import secrets; print(secrets.token_urlsafe(32))')" >> .env
@@ -53,10 +55,11 @@ jobs:
           chmod 600 .env
 
       - name: Start backend API
+        working-directory: ./core/api
         run: |
-          mkdir -p logs data
-          python3 api_server_secure.py &> logs/api_server.log &
-          echo $! > logs/api_server.pid
+          mkdir -p ../../logs ../../data
+          python3 api_server_secure.py &> ../../logs/api_server.log &
+          echo $! > ../../logs/api_server.pid
 
           # Wait for API to be ready
           for i in {1..30}; do
@@ -94,6 +97,7 @@ jobs:
       - name: Stop backend API
         if: always()
         run: |
-          if [ -f logs/api_server.pid ]; then
-            kill $(cat logs/api_server.pid) || true
+          if [ -f ../../logs/api_server.pid ]; then
+            kill $(cat ../../logs/api_server.pid) || true
           fi
+        working-directory: ./core/api
