@@ -16,6 +16,12 @@ import {
   scanOutline,
   apps,
   appsOutline,
+  wallet,
+  walletOutline,
+  trophyOutline,
+  trophy,
+  documentTextOutline,
+  documentText,
 } from "ionicons/icons";
 import { ComponentType } from "react";
 import { useLocation } from "react-router-dom";
@@ -26,6 +32,9 @@ import { Identifiers } from "../../../pages/Identifiers";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
 import { Menu } from "../../../pages/Menu";
+import Tokens from "../../../pages/Tokens/Tokens";
+import Staking from "../../../pages/Staking/Staking";
+import Governance from "../../../pages/Governance/Governance";
 import { BackupWarningBanner } from "../../BackupWarningBanner";
 import { useAppSelector } from "../../../../store/hooks";
 import { getNotificationsCache } from "../../../../store/reducers/notificationsCache";
@@ -44,6 +53,9 @@ type TabConfig = TabConfigBase & {
 
 const FALLBACK_TAB_LABELS: Record<string, string> = {
   [TabsRoutePath.IDENTIFIERS]: "Wallet",
+  [TabsRoutePath.TOKENS]: "Tokens",
+  [TabsRoutePath.STAKING]: "Staking",
+  [TabsRoutePath.GOVERNANCE]: "Governance",
   [TabsRoutePath.SCAN]: "Scan",
   [TabsRoutePath.NOTIFICATIONS]: "Notifications",
   [TabsRoutePath.MENU]: "Settings",
@@ -55,6 +67,24 @@ const tabsRoutesBase: TabConfigBase[] = [
     component: Identifiers,
     icon: [fingerPrint, fingerPrintOutline],
     i18nKey: "tabsmenu.label.identifiers",
+  },
+  {
+    path: TabsRoutePath.TOKENS,
+    component: Tokens,
+    icon: [wallet, walletOutline],
+    i18nKey: "tabsmenu.label.tokens",
+  },
+  {
+    path: TabsRoutePath.STAKING,
+    component: Staking,
+    icon: [trophy, trophyOutline],
+    i18nKey: "tabsmenu.label.staking",
+  },
+  {
+    path: TabsRoutePath.GOVERNANCE,
+    component: Governance,
+    icon: [documentText, documentTextOutline],
+    i18nKey: "tabsmenu.label.governance",
   },
   // Credentials tab intentionally hidden (Hyperledger Aries VC flow not active)
   {

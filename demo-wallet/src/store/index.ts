@@ -10,6 +10,9 @@ import { biometricsCacheSlice } from "./reducers/biometricsCache";
 import { credsArchivedCacheSlice } from "./reducers/credsArchivedCache";
 import { ssiAgentSlice } from "./reducers/ssiAgent";
 import { notificationsCacheSlice } from "./reducers/notificationsCache";
+import tokensCacheReducer from "./reducers/tokensCache";
+import stakingCacheReducer from "./reducers/stakingCache";
+import governanceCacheReducer from "./reducers/governanceCache";
 import { setCurrentRoute } from "./reducers/stateCache/stateCache";
 
 const store = configureStore({
@@ -25,6 +28,9 @@ const store = configureStore({
     biometricsCache: biometricsCacheSlice.reducer,
     ssiAgentCache: ssiAgentSlice.reducer,
     notificationsCache: notificationsCacheSlice.reducer,
+    tokensCache: tokensCacheReducer,
+    stakingCache: stakingCacheReducer,
+    governanceCache: governanceCacheReducer,
   },
   middleware: (getDefaultMiddleware) => {
     const defaultMiddleware = getDefaultMiddleware({

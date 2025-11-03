@@ -1,0 +1,173 @@
+.tokens-page {
+  .tokens-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--ion-color-light);
+    padding: 0 16px;
+    background: var(--ion-background-color);
+    
+    .tab-button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--ion-color-medium);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &.active {
+        color: var(--ion-color-primary);
+        border-bottom-color: var(--ion-color-primary);
+      }
+      
+      &:hover {
+        color: var(--ion-color-primary-shade);
+      }
+    }
+  }
+  
+  .tokens-content {
+    padding: 16px;
+  }
+  
+  .loading-placeholder,
+  .error-message,
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--ion-color-medium);
+  }
+  
+  .error-message {
+    color: var(--ion-color-danger);
+  }
+  
+  // Balance styles
+  .balance-container {
+    .ada-balance {
+      background: var(--ion-color-light);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 24px;
+      
+      .balance-label {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+        margin-bottom: 8px;
+      }
+      
+      .balance-amount {
+        font-size: 32px;
+        font-weight: bold;
+        color: var(--ion-color-primary);
+        margin-bottom: 4px;
+      }
+      
+      .balance-lovelace {
+        font-size: 12px;
+        color: var(--ion-color-medium);
+      }
+    }
+    
+    .assets-section {
+      .section-header {
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: var(--ion-color-dark);
+      }
+      
+      .assets-list {
+        .asset-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 12px;
+          background: var(--ion-color-light);
+          border-radius: 8px;
+          margin-bottom: 8px;
+          
+          .asset-name {
+            font-weight: 500;
+          }
+          
+          .asset-quantity {
+            color: var(--ion-color-primary);
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+  
+  // NFT styles
+  .nfts-container {
+    .nfts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 16px;
+      
+      .nft-card {
+        background: var(--ion-color-light);
+        border-radius: 12px;
+        overflow: hidden;
+        
+        .nft-image {
+          width: 100%;
+          aspect-ratio: 1;
+          object-fit: cover;
+        }
+        
+        .nft-name {
+          padding: 8px;
+          font-weight: 600;
+          font-size: 14px;
+        }
+        
+        .nft-description {
+          padding: 0 8px 8px;
+          font-size: 12px;
+          color: var(--ion-color-medium);
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+  
+  // Transaction history styles
+  .transactions-container {
+    .transactions-list {
+      .transaction-item {
+        background: var(--ion-color-light);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 8px;
+        
+        .tx-hash {
+          font-family: monospace;
+          font-size: 12px;
+          margin-bottom: 4px;
+          color: var(--ion-color-primary);
+        }
+        
+        .tx-details {
+          display: flex;
+          gap: 12px;
+          font-size: 11px;
+          color: var(--ion-color-medium);
+          
+          span {
+            &:not(:last-child)::after {
+              content: "•";
+              margin-left: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

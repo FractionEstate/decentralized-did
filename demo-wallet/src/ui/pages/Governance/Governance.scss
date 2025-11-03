@@ -1,0 +1,253 @@
+.governance-page {
+  padding: 16px;
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--ion-color-light);
+
+    button {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      color: var(--ion-color-medium);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &.active {
+        color: var(--ion-color-primary);
+        border-bottom-color: var(--ion-color-primary);
+      }
+
+      &:hover {
+        color: var(--ion-color-primary-shade);
+      }
+    }
+  }
+
+  .tab-content {
+    min-height: 400px;
+  }
+
+  // Loading and empty states
+  .loading-placeholder,
+  .error-message,
+  .empty-state,
+  .info-message {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--ion-color-medium);
+  }
+
+  .error-message {
+    color: var(--ion-color-danger);
+  }
+
+  .info-message {
+    background: var(--ion-color-light);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  // DReps list
+  .dreps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .drep-card {
+      background: var(--ion-color-light);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      .drep-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+
+        h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+        }
+
+        .status {
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 600;
+
+          &.active {
+            background: #22c55e;
+            color: white;
+          }
+
+          &.inactive {
+            background: var(--ion-color-medium);
+            color: white;
+          }
+        }
+      }
+
+      .drep-description {
+        color: var(--ion-color-medium-shade);
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 12px;
+      }
+
+      .drep-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+
+        .metric {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+
+          .label {
+            font-size: 12px;
+            color: var(--ion-color-medium);
+            text-transform: uppercase;
+          }
+
+          .value {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--ion-color-dark);
+          }
+        }
+      }
+    }
+  }
+
+  // Proposals list
+  .proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .proposal-card {
+      background: var(--ion-color-light);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+      .proposal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 12px;
+        gap: 12px;
+
+        h3 {
+          margin: 0;
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--ion-color-dark);
+          flex: 1;
+        }
+
+        .status {
+          padding: 4px 12px;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 600;
+          color: white;
+          text-transform: capitalize;
+          white-space: nowrap;
+        }
+      }
+
+      .proposal-description {
+        color: var(--ion-color-medium-shade);
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 16px;
+      }
+
+      .proposal-votes {
+        margin-bottom: 12px;
+
+        .vote-bar {
+          display: flex;
+          height: 8px;
+          border-radius: 4px;
+          overflow: hidden;
+          background: var(--ion-color-light-shade);
+          margin-bottom: 12px;
+
+          .vote-yes {
+            background: #22c55e;
+          }
+
+          .vote-no {
+            background: #ef4444;
+          }
+        }
+
+        .vote-counts {
+          display: flex;
+          justify-content: space-between;
+          font-size: 14px;
+          margin-bottom: 8px;
+
+          .yes {
+            color: #22c55e;
+          }
+
+          .no {
+            color: #ef4444;
+          }
+
+          .abstain {
+            color: var(--ion-color-medium);
+          }
+        }
+
+        .approval {
+          text-align: center;
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--ion-color-primary);
+        }
+      }
+
+      .proposal-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        color: var(--ion-color-medium);
+        padding-top: 12px;
+        border-top: 1px solid var(--ion-color-light-shade);
+
+        span {
+          font-family: monospace;
+        }
+      }
+    }
+  }
+
+  // Votes section
+  .votes-section {
+    padding: 20px 0;
+  }
+}
+
+// Responsive adjustments
+@media (min-width: 768px) {
+  .governance-page {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+}
