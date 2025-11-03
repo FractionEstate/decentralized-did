@@ -318,7 +318,8 @@
       "notifications": "Notifications",
       "menu": "Settings",
       "tokens": "Tokens",
-      "staking": "Staking"
+      "staking": "Staking",
+      "governance": "Governance"
     }
   },
   "custominput": {

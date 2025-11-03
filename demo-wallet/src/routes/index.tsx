@@ -20,6 +20,7 @@ const SetupBiometrics = lazy(() => import("../ui/pages/SetupBiometrics/SetupBiom
 const BiometricEnrollment = lazy(() => import("../ui/pages/BiometricEnrollment").then(m => ({ default: m.BiometricEnrollment })));
 const Staking = lazy(() => import("../ui/pages/Staking/Staking"));
 const Tokens = lazy(() => import("../ui/pages/Tokens/Tokens"));
+const Governance = lazy(() => import("../ui/pages/Governance/Governance"));
 const VerifyRecoverySeedPhrase = lazy(() => import("../ui/pages/VerifyRecoverySeedPhrase").then(m => ({ default: m.VerifyRecoverySeedPhrase })));
 const VerifySeedPhrase = lazy(() => import("../ui/pages/VerifySeedPhrase").then(m => ({ default: m.VerifySeedPhrase })));
 
