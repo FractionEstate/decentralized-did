@@ -18,6 +18,7 @@ const Onboarding = lazy(() => import("../ui/pages/Onboarding").then(m => ({ defa
 const SetPasscode = lazy(() => import("../ui/pages/SetPasscode").then(m => ({ default: m.SetPasscode })));
 const SetupBiometrics = lazy(() => import("../ui/pages/SetupBiometrics/SetupBiometrics").then(m => ({ default: m.SetupBiometrics })));
 const BiometricEnrollment = lazy(() => import("../ui/pages/BiometricEnrollment").then(m => ({ default: m.BiometricEnrollment })));
+const Tokens = lazy(() => import("../ui/pages/Tokens/Tokens"));
 const VerifyRecoverySeedPhrase = lazy(() => import("../ui/pages/VerifyRecoverySeedPhrase").then(m => ({ default: m.VerifyRecoverySeedPhrase })));
 const VerifySeedPhrase = lazy(() => import("../ui/pages/VerifySeedPhrase").then(m => ({ default: m.VerifySeedPhrase })));
 

@@ -316,7 +316,8 @@
       "creds": "Credentials",
       "scan": "Scan",
       "notifications": "Notifications",
-      "menu": "Settings"
+      "menu": "Settings",
+      "tokens": "Tokens"
     }
   },
   "custominput": {

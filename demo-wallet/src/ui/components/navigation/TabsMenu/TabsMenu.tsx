@@ -16,6 +16,8 @@ import {
   scanOutline,
   apps,
   appsOutline,
+  wallet,
+  walletOutline,
 } from "ionicons/icons";
 import { ComponentType } from "react";
 import { useLocation } from "react-router-dom";
@@ -26,6 +28,7 @@ import { Identifiers } from "../../../pages/Identifiers";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
 import { Menu } from "../../../pages/Menu";
+import Tokens from "../../../pages/Tokens/Tokens";
 import { BackupWarningBanner } from "../../BackupWarningBanner";
 import { useAppSelector } from "../../../../store/hooks";
 import { getNotificationsCache } from "../../../../store/reducers/notificationsCache";
@@ -44,6 +47,7 @@ type TabConfig = TabConfigBase & {
 
 const FALLBACK_TAB_LABELS: Record<string, string> = {
   [TabsRoutePath.IDENTIFIERS]: "Wallet",
+  [TabsRoutePath.TOKENS]: "Tokens",
   [TabsRoutePath.SCAN]: "Scan",
   [TabsRoutePath.NOTIFICATIONS]: "Notifications",
   [TabsRoutePath.MENU]: "Settings",
@@ -55,6 +59,12 @@ const tabsRoutesBase: TabConfigBase[] = [
     component: Identifiers,
     icon: [fingerPrint, fingerPrintOutline],
     i18nKey: "tabsmenu.label.identifiers",
+  },
+  {
+    path: TabsRoutePath.TOKENS,
+    component: Tokens,
+    icon: [wallet, walletOutline],
+    i18nKey: "tabsmenu.label.tokens",
   },
   // Credentials tab intentionally hidden (Hyperledger Aries VC flow not active)
   {
