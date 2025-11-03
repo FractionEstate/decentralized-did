@@ -24,12 +24,21 @@ import {
   documentText,
   globeOutline,
   globe,
+  home,
+  homeOutline,
+  images,
+  imagesOutline,
+  settings,
+  settingsOutline,
 } from "ionicons/icons";
 import { ComponentType } from "react";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./TabsMenu.scss";
 import { TabsRoutePath } from "../../../../routes/paths";
+import { Home } from "../../../pages/Home";
+import { NFTs } from "../../../pages/NFTs";
+import { Settings } from "../../../pages/Settings";
 import { Identifiers } from "../../../pages/Identifiers";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
@@ -55,6 +64,8 @@ type TabConfig = TabConfigBase & {
 };
 
 const FALLBACK_TAB_LABELS: Record<string, string> = {
+  [TabsRoutePath.HOME]: "Home",
+  [TabsRoutePath.NFTS]: "NFTs",
   [TabsRoutePath.IDENTIFIERS]: "Wallet",
   [TabsRoutePath.TOKENS]: "Tokens",
   [TabsRoutePath.STAKING]: "Staking",
@@ -66,6 +77,34 @@ const FALLBACK_TAB_LABELS: Record<string, string> = {
 };
 
 const tabsRoutesBase: TabConfigBase[] = [
+  {
+    path: TabsRoutePath.HOME,
+    component: Home,
+    icon: [home, homeOutline],
+    i18nKey: "tabsmenu.label.home",
+  },
+  {
+    path: TabsRoutePath.NFTS,
+    component: NFTs,
+    icon: [images, imagesOutline],
+    i18nKey: "tabsmenu.label.nfts",
+  },
+  {
+    path: TabsRoutePath.SCAN,
+    component: Scan,
+    icon: [scan, scanOutline],
+    i18nKey: "tabsmenu.label.scan",
+  },
+  {
+    path: TabsRoutePath.MENU,
+    component: Settings,
+    icon: [settings, settingsOutline],
+    i18nKey: "tabsmenu.label.settings",
+  },
+];
+
+// Legacy routes - still accessible but not in main navigation
+const legacyRoutesBase: TabConfigBase[] = [
   {
     path: TabsRoutePath.IDENTIFIERS,
     component: Identifiers,
@@ -96,24 +135,11 @@ const tabsRoutesBase: TabConfigBase[] = [
     icon: [globe, globeOutline],
     i18nKey: "tabsmenu.label.browser",
   },
-  // Credentials tab intentionally hidden (Hyperledger Aries VC flow not active)
-  {
-    path: TabsRoutePath.SCAN,
-    component: Scan,
-    icon: [scan, scanOutline],
-    i18nKey: "tabsmenu.label.scan",
-  },
   {
     path: TabsRoutePath.NOTIFICATIONS,
     component: Notifications,
     icon: [notifications, notificationsOutline],
     i18nKey: "tabsmenu.label.notifications",
-  },
-  {
-    path: TabsRoutePath.MENU,
-    component: Menu,
-    icon: [apps, appsOutline],
-    i18nKey: "tabsmenu.label.menu",
   },
 ];
 
@@ -139,13 +165,24 @@ const TabsMenu = () => {
   return (
     <IonTabs>
       <IonRouterOutlet animated={false}>
-        {/* Render default Identifiers tab when visiting /tabs without a subpath */}
-        <Route path={TabsRoutePath.ROOT} component={Identifiers} exact />
-        <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
-        <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
+        {/* Render default Home tab when visiting /tabs without a subpath */}
+        <Route path={TabsRoutePath.ROOT} component={Home} exact />
+        
+        {/* Main navigation routes */}
+        <Route path={TabsRoutePath.HOME} component={Home} exact />
+        <Route path={TabsRoutePath.NFTS} component={NFTs} exact />
         <Route path={TabsRoutePath.SCAN} component={Scan} exact />
+        <Route path={TabsRoutePath.MENU} component={Settings} exact />
+        
+        {/* Legacy routes (accessible via direct URL or navigation from other pages) */}
+        <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
+        <Route path={TabsRoutePath.TOKENS} component={Tokens} exact />
+        <Route path={TabsRoutePath.STAKING} component={Staking} exact />
+        <Route path={TabsRoutePath.GOVERNANCE} component={Governance} exact />
+        <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
         <Route path={TabsRoutePath.NOTIFICATIONS} component={Notifications} exact />
-        <Route path={TabsRoutePath.MENU} component={Menu} exact />
+        {/* Legacy Menu component */}
+        <Route path="/tabs/legacy-menu" component={Menu} exact />
       </IonRouterOutlet>
 
       <BackupWarningBanner />

@@ -1,0 +1,44 @@
+{
+  "folders": [
+    {
+      "name": "Decentralized DID",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "mcp.mcpServers": {
+      "playwright": {
+        "command": "/usr/local/bin/npx",
+        "args": ["--yes", "@playwright/test", "--mcp"],
+        "env": {
+          "PATH": "/usr/local/bin:/usr/bin:/bin",
+          "NODE_PATH": "/usr/local/bin"
+        }
+      },
+      "filesystem": {
+        "command": "/home/codespace/.local/bin/uvx",
+        "args": ["--from", "mcp", "mcp-server-filesystem", "--root", "/workspaces/decentralized-did"],
+        "env": {
+          "PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin"
+        }
+      },
+      "github": {
+        "command": "/home/codespace/.local/bin/uvx",
+        "args": ["--from", "mcp", "mcp-server-github"],
+        "env": {
+          "PATH": "/usr/local/bin:/usr/bin:/bin:/home/codespace/.local/bin"
+        }
+      }
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "ms-python.python",
+      "ms-python.pylint",
+      "ms-python.flake8",
+      "bradlc.vscode-tailwindcss",
+      "esbenp.prettier-vscode",
+      "ms-playwright.playwright"
+    ]
+  }
+}

@@ -312,14 +312,18 @@
   },
   "tabsmenu": {
     "label": {
+      "home": "Home",
+      "nfts": "NFTs",
       "identifiers": "Wallet",
       "creds": "Credentials",
       "scan": "Scan",
       "notifications": "Notifications",
       "menu": "Settings",
+      "settings": "Settings",
       "tokens": "Tokens",
       "staking": "Staking",
-      "governance": "Governance"
+      "governance": "Governance",
+      "browser": "Browser"
     }
   },
   "custominput": {

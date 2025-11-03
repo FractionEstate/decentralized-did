@@ -5,6 +5,7 @@
  */
 @use "./design-tokens.scss" as *;
 @use "./utilities.scss" as *;
+@use "./enhanced-design-system.scss" as *;
 
 :root[mode="ios"],
 :root[mode="md"] {

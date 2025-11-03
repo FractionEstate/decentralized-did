@@ -1,0 +1,522 @@
+/**
+ * Enhanced Visual Design System for Biovera Wallet
+ * Improves typography hierarchy, spacing consistency, and biometric branding
+ */
+
+/* ========================================
+   ENHANCED TYPOGRAPHY SYSTEM
+   ======================================== */
+
+/* Typography Hierarchy Classes */
+.heading-display {
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  color: var(--ion-color-primary);
+  margin-bottom: var(--spacing-xl);
+}
+
+.heading-h1 {
+  font-size: var(--font-size-3xl);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  letter-spacing: var(--letter-spacing-tight);
+  margin-bottom: var(--spacing-lg);
+}
+
+.heading-h2 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-md);
+}
+
+.heading-h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-sm);
+}
+
+.heading-h4 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+  margin-bottom: var(--spacing-sm);
+}
+
+.text-large {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-relaxed);
+}
+
+.text-base {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+}
+
+.text-small {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+}
+
+.text-caption {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-normal);
+  color: var(--color-gray-600);
+}
+
+/* Text Utilities */
+.text-emphasized {
+  font-weight: var(--font-weight-semibold);
+}
+
+.text-muted {
+  color: var(--color-gray-600);
+}
+
+.text-accent {
+  color: var(--cardano-cyan);
+  font-weight: var(--font-weight-medium);
+}
+
+.text-success {
+  color: var(--color-success);
+}
+
+.text-error {
+  color: var(--color-error);
+}
+
+.text-warning {
+  color: var(--color-warning);
+}
+
+.text-mono {
+  font-family: 'SF Mono', 'Monaco', 'Cascadia Code', 'Roboto Mono', monospace;
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+/* ========================================
+   BIOMETRIC BRANDING SYSTEM
+   ======================================== */
+
+.biometric-brand {
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, var(--cardano-cyan), var(--cardano-purple));
+    opacity: 0.1;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+}
+
+.biometric-gradient {
+  background: linear-gradient(135deg, var(--cardano-cyan) 0%, var(--cardano-purple) 100%);
+  color: white;
+}
+
+.biometric-accent {
+  color: var(--cardano-cyan);
+}
+
+.biometric-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background: linear-gradient(135deg, var(--cardano-cyan), var(--cardano-purple));
+  color: white;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  
+  ion-icon {
+    margin-right: var(--spacing-xs);
+    font-size: 14px;
+  }
+}
+
+.biometric-indicator {
+  position: relative;
+  display: inline-block;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background: var(--cardano-cyan);
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px rgba(0, 212, 255, 0.3);
+  }
+}
+
+/* ========================================
+   ENHANCED COMPONENT SYSTEM
+   ======================================== */
+
+/* Elevated Cards */
+.card-elevated {
+  background: white;
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--card-shadow);
+  padding: var(--card-padding);
+  transition: all var(--transition-base) var(--ease-out);
+  border: 1px solid var(--color-gray-200);
+  
+  &:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  &.interactive {
+    cursor: pointer;
+    
+    &:active {
+      transform: translateY(0);
+      box-shadow: var(--card-shadow);
+    }
+  }
+}
+
+/* Glass Morphism Cards */
+.card-glass {
+  background: var(--card-glass-background);
+  backdrop-filter: var(--card-glass-backdrop);
+  border: var(--card-glass-border);
+  border-radius: var(--card-border-radius);
+  padding: var(--card-padding);
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  }
+}
+
+/* Enhanced Buttons */
+.btn-primary-enhanced {
+  background: linear-gradient(135deg, var(--cardano-cyan) 0%, #00a8cc 100%);
+  color: var(--ion-color-primary-contrast);
+  border: none;
+  border-radius: var(--button-border-radius);
+  padding: var(--button-padding-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  min-height: var(--touch-target-comfortable);
+  position: relative;
+  overflow: hidden;
+  transition: var(--button-transition);
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  &:hover::before {
+    left: 100%;
+  }
+  
+  &:hover {
+    box-shadow: var(--button-shadow-hover);
+    transform: translateY(-1px);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.btn-secondary-enhanced {
+  background: white;
+  color: var(--cardano-cyan);
+  border: 2px solid var(--cardano-cyan);
+  border-radius: var(--button-border-radius);
+  padding: var(--button-padding-md);
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  min-height: var(--touch-target-comfortable);
+  transition: var(--button-transition);
+  
+  &:hover {
+    background: var(--cardano-cyan);
+    color: white;
+    box-shadow: var(--button-shadow-hover);
+    transform: translateY(-1px);
+  }
+}
+
+/* Focus States (WCAG AAA) */
+.enhanced-focus {
+  &:focus,
+  &:focus-visible {
+    outline: var(--focus-ring-width) var(--focus-ring-style) var(--focus-ring-color);
+    outline-offset: var(--focus-ring-offset);
+    border-radius: var(--radius-md);
+  }
+}
+
+/* ========================================
+   LAYOUT ENHANCEMENTS
+   ======================================== */
+
+/* Consistent Page Layouts */
+.page-container {
+  max-width: var(--container-md);
+  margin: 0 auto;
+  padding: 0 var(--page-padding-mobile);
+  
+  @media (min-width: 768px) {
+    padding: 0 var(--page-padding-tablet);
+  }
+  
+  @media (min-width: 1024px) {
+    padding: 0 var(--page-padding-desktop);
+  }
+}
+
+.content-section {
+  margin-bottom: var(--spacing-2xl);
+  
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+/* Grid System Extensions */
+.grid-responsive {
+  display: grid;
+  gap: var(--grid-gap);
+  
+  &.grid-2-cols {
+    grid-template-columns: repeat(2, 1fr);
+    
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  &.grid-3-cols {
+    grid-template-columns: repeat(3, 1fr);
+    
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  &.grid-4-cols {
+    grid-template-columns: repeat(4, 1fr);
+    
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/* ========================================
+   ANIMATION ENHANCEMENTS
+   ======================================== */
+
+.fade-in {
+  animation: fadeIn var(--transition-base) var(--ease-out) forwards;
+}
+
+.slide-up {
+  animation: slideUp var(--transition-base) var(--ease-out) forwards;
+}
+
+.scale-in {
+  animation: scaleIn var(--transition-base) var(--ease-bounce) forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+  .card-elevated,
+  .card-glass {
+    border: 2px solid var(--ion-color-primary);
+  }
+  
+  .btn-primary-enhanced,
+  .btn-secondary-enhanced {
+    border: 2px solid currentColor;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .fade-in,
+  .slide-up,
+  .scale-in {
+    animation: none;
+  }
+  
+  .card-elevated:hover,
+  .btn-primary-enhanced:hover,
+  .btn-secondary-enhanced:hover {
+    transform: none;
+  }
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* Spacing Utilities */
+.m-0 { margin: 0; }
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+.ml-auto { margin-left: auto; }
+.mr-auto { margin-right: auto; }
+
+.p-xs { padding: var(--spacing-xs); }
+.p-sm { padding: var(--spacing-sm); }
+.p-md { padding: var(--spacing-md); }
+.p-lg { padding: var(--spacing-lg); }
+.p-xl { padding: var(--spacing-xl); }
+
+.px-xs { padding-left: var(--spacing-xs); padding-right: var(--spacing-xs); }
+.px-sm { padding-left: var(--spacing-sm); padding-right: var(--spacing-sm); }
+.px-md { padding-left: var(--spacing-md); padding-right: var(--spacing-md); }
+.px-lg { padding-left: var(--spacing-lg); padding-right: var(--spacing-lg); }
+.px-xl { padding-left: var(--spacing-xl); padding-right: var(--spacing-xl); }
+
+.py-xs { padding-top: var(--spacing-xs); padding-bottom: var(--spacing-xs); }
+.py-sm { padding-top: var(--spacing-sm); padding-bottom: var(--spacing-sm); }
+.py-md { padding-top: var(--spacing-md); padding-bottom: var(--spacing-md); }
+.py-lg { padding-top: var(--spacing-lg); padding-bottom: var(--spacing-lg); }
+.py-xl { padding-top: var(--spacing-xl); padding-bottom: var(--spacing-xl); }
+
+.mt-xs { margin-top: var(--spacing-xs); }
+.mt-sm { margin-top: var(--spacing-sm); }
+.mt-md { margin-top: var(--spacing-md); }
+.mt-lg { margin-top: var(--spacing-lg); }
+.mt-xl { margin-top: var(--spacing-xl); }
+
+.mb-xs { margin-bottom: var(--spacing-xs); }
+.mb-sm { margin-bottom: var(--spacing-sm); }
+.mb-md { margin-bottom: var(--spacing-md); }
+.mb-lg { margin-bottom: var(--spacing-lg); }
+.mb-xl { margin-bottom: var(--spacing-xl); }
+
+/* Display Utilities */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-row { flex-direction: row; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.justify-start { justify-content: flex-start; }
+.justify-end { justify-content: flex-end; }
+
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+
+/* Text Alignment */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* Border Radius */
+.rounded-none { border-radius: var(--radius-none); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-md { border-radius: var(--radius-md); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.rounded-full { border-radius: var(--radius-full); }
+
+/* Width & Height */
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.min-h-screen { min-height: 100vh; }

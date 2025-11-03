@@ -1,0 +1,177 @@
+.settings-page {
+  background: #f5f7fa;
+  min-height: 100vh;
+
+  .page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    
+    .header-title {
+      font-weight: 700;
+      font-size: 20px;
+    }
+  }
+}
+
+.settings-content {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.settings-section {
+  margin-bottom: 24px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.settings-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.settings-item {
+  --background: white;
+  --color: #333;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 60px;
+  border-radius: 0;
+  margin-bottom: 1px;
+
+  &:first-child {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    margin-bottom: 0;
+  }
+
+  &:only-child {
+    border-radius: 12px;
+  }
+
+  &:hover {
+    --background: #f8f9fa;
+  }
+
+  &.item-disabled {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+.settings-item-icon {
+  color: #667eea;
+  font-size: 24px;
+  margin-right: 4px;
+}
+
+.settings-item-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.settings-item-value {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.3;
+}
+
+.settings-chevron {
+  color: #ccc;
+  font-size: 20px;
+}
+
+/* Card styling */
+ion-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  margin: 0;
+  padding: 0;
+
+  ion-list {
+    padding: 0;
+  }
+}
+
+/* Toggle styling */
+ion-toggle {
+  --background: #e0e0e0;
+  --background-checked: #667eea;
+  --handle-background: white;
+  --handle-background-checked: white;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  .settings-content {
+    padding: 12px;
+  }
+
+  .settings-section {
+    margin-bottom: 20px;
+  }
+
+  .settings-section-title {
+    font-size: 15px;
+  }
+
+  .settings-item {
+    --min-height: 56px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+  }
+
+  .settings-item-icon {
+    font-size: 22px;
+  }
+
+  .settings-item-label {
+    font-size: 15px;
+  }
+
+  .settings-item-value {
+    font-size: 13px;
+  }
+}
+
+@media (min-width: 768px) {
+  .settings-content {
+    padding: 24px;
+    max-width: 800px;
+  }
+
+  .settings-section {
+    margin-bottom: 32px;
+  }
+
+  .settings-item {
+    --min-height: 64px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+  }
+
+  .settings-item-icon {
+    font-size: 26px;
+  }
+
+  .settings-item-label {
+    font-size: 17px;
+  }
+
+  .settings-item-value {
+    font-size: 15px;
+  }
+}

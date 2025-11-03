@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build"
   },
   "dependencies": {
-    "@cardano-foundation/cardano-connect-with-wallet": "^0.2.9",
+    "@cardano-foundation/cardano-connect-with-wallet": "^0.2.15",
+    "@cardano-foundation/cardano-connect-with-wallet-core": "^0.2.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-qrcode-logo": "^3.0.0"

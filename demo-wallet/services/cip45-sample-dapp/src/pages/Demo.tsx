@@ -32,6 +32,7 @@ const Demo: React.FC = () => {
     } catch (err) {
       const fallbackSummary: MetadataSummary = { helperKeys: [], labels: [] };
       if (isMetadataParseError(err) || err instanceof Error) {
+        // eslint-disable-next-line no-console
         console.warn("Failed to parse default demo metadata", err);
       }
       return { map: new Map<bigint, unknown>(), summary: fallbackSummary };

@@ -48,6 +48,90 @@
       "problemMatcher": [
         "$tsc"
       ]
+    },
+    {
+      "label": "Start API Server",
+      "type": "shell",
+      "command": "python3",
+      "args": [
+        "api_server_secure.py"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/core/api"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*Starting.*",
+          "endsPattern": "^.*server.*running.*"
+        }
+      }
+    },
+    {
+      "label": "Test SDK",
+      "type": "shell",
+      "command": "python",
+      "args": [
+        "-m",
+        "pytest",
+        "tests/",
+        "-v"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/sdk"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$python"
+      ]
+    },
+    {
+      "label": "Test Wallet E2E",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "playwright",
+        "test"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/demo-wallet"
+      },
+      "group": "test",
+      "problemMatcher": []
+    },
+    {
+      "label": "Test MCP Tools",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "echo 'Testing MCP tools...' && which npx && npx --version && which uvx && uvx --version && echo 'MCP tools verified!'"
+      ],
+      "group": "test"
+    },
+    {
+      "label": "Install SDK",
+      "type": "shell",
+      "command": "pip",
+      "args": [
+        "install",
+        "-e",
+        "."
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/sdk"
+      },
+      "group": "build"
     }
   ]
 }

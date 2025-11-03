@@ -16,12 +16,14 @@ enum RoutePath {
 
 enum TabsRoutePath {
   ROOT = "/tabs",
+  HOME = "/tabs/home",
   IDENTIFIERS = "/tabs/identifiers",
   CREDENTIALS = "/tabs/credentials",
   SCAN = "/tabs/scan",
   NOTIFICATIONS = "/tabs/notifications",
   MENU = "/tabs/menu",
   TOKENS = "/tabs/tokens",
+  NFTS = "/tabs/nfts",
   STAKING = "/tabs/staking",
   GOVERNANCE = "/tabs/governance",
   DAPP_BROWSER = "/tabs/dapp-browser",
