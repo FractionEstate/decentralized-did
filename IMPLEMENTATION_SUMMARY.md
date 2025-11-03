@@ -384,23 +384,23 @@ This document tracks the implementation of advanced Cardano wallet features incl
 ## Current Progress
 
 ### Lines of Code
-- Backend: ~970 lines (tokens.py + endpoints/tokens.py + tests/test_tokens.py)
-- Frontend: ~280 lines (tokenService.ts)
-- **Total**: ~1,250 lines
+- Backend: ~2,100 lines (tokens.py + staking.py + endpoints/ + tests/)
+- Frontend: ~560 lines (tokenService.ts + stakingService.ts + Tokens UI)
+- **Total**: ~2,660 lines
 
 ### Test Coverage
-- Backend: 22 tests (100% passing)
+- Backend: 42 tests (100% passing - 22 tokens + 20 staking)
 - Frontend: 0 tests (pending)
 
 ### Completion Status
-- Phase 1: 60% complete (backend done, frontend API client done, UI pending)
-- Phase 2: 0% complete
+- Phase 1: 100% complete (backend done, frontend done, UI working)
+- Phase 2: 60% complete (backend done, service created, UI pending)
 - Phase 3: 0% complete
 - Phase 4: 0% complete
 - Phase 5: 0% complete
 - Phase 6: 0% complete
 
-### **Overall Project**: ~10% complete
+### **Overall Project**: ~20% complete
 
 ---
 

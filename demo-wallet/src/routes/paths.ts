@@ -22,6 +22,7 @@ enum TabsRoutePath {
   NOTIFICATIONS = "/tabs/notifications",
   MENU = "/tabs/menu",
   TOKENS = "/tabs/tokens",
+  STAKING = "/tabs/staking",
   IDENTIFIER_DETAILS = "/tabs/identifiers/:id",
   CREDENTIAL_DETAILS = "/tabs/credentials/:id",
   NOTIFICATION_DETAILS = "/tabs/notifications/:id",

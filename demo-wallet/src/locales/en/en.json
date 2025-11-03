@@ -317,7 +317,8 @@
       "scan": "Scan",
       "notifications": "Notifications",
       "menu": "Settings",
-      "tokens": "Tokens"
+      "tokens": "Tokens",
+      "staking": "Staking"
     }
   },
   "custominput": {
