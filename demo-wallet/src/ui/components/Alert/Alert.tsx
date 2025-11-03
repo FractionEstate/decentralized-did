@@ -102,8 +102,8 @@ const Alert = ({
         isOpen={isOpen}
         backdropDismiss={backdropDismiss}
         cssClass={alerClasses}
-        header={headerText || undefined}
-        subHeader={subheaderText || undefined}
+        header={headerText}
+        subHeader={subheaderText !== "" ? subheaderText : undefined}
         buttons={buttons}
         onDidDismiss={({ detail }) =>
           detail.role === "backdrop" && handleDismiss()
