@@ -3,71 +3,52 @@
 .backup-warning-banner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  background: linear-gradient(
-    135deg,
-    rgba(var(--ion-color-warning-rgb), 0.15),
-    rgba(var(--ion-color-warning-rgb), 0.08)
-  );
-  border-left: 4px solid var(--ion-color-warning);
-  padding: var(--spacing-md) var(--spacing-lg);
-  margin: var(--spacing-sm) var(--spacing-md);
-  border-radius: var(--radius-md);
-  gap: var(--spacing-md);
-  animation: slideDown 0.3s ease-out;
-
-  &__content {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--spacing-sm);
-    flex: 1;
-  }
+  justify-content: center;
+  background: rgba(var(--ion-color-warning-rgb), 0.06);
+  border-top: 1px solid rgba(var(--ion-color-warning-rgb), 0.12);
+  padding: var(--spacing-2xs) var(--spacing-sm);
+  height: 1.75rem;
+  gap: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  position: fixed;
+  bottom: var(--ion-tab-bar-height, 50px);
+  left: 0;
+  right: 0;
+  z-index: var(--z-index-sticky);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   &__icon {
-    font-size: 24px;
+    font-size: 16px;
     color: var(--ion-color-warning);
     flex-shrink: 0;
-    margin-top: 2px;
   }
 
   &__text {
-    flex: 1;
-
-    strong {
-      display: block;
-      color: var(--ion-text-color);
-      font-size: var(--font-size-base);
-      font-weight: var(--font-weight-semibold);
-      margin-bottom: var(--spacing-2xs);
-    }
-
-    p {
-      margin: 0;
-      color: var(--ion-color-medium);
-      font-size: var(--font-size-sm);
-      line-height: 1.4;
-    }
+    color: var(--ion-text-color);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
   }
 
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-xs);
-    flex-shrink: 0;
-
-    ion-button {
-      --padding-start: var(--spacing-md);
-      --padding-end: var(--spacing-md);
-      font-weight: var(--font-weight-semibold);
-      text-transform: none;
-    }
+  &__action {
+    --padding-start: var(--spacing-xs);
+    --padding-end: var(--spacing-xs);
+    --color: var(--ion-color-warning);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: none;
+    min-height: 1.5rem;
   }
 
   &__dismiss {
     --color: var(--ion-color-medium);
+    --padding-start: var(--spacing-2xs);
+    --padding-end: var(--spacing-2xs);
+    min-height: 1.5rem;
 
     ion-icon {
-      font-size: 20px;
+      font-size: 14px;
     }
   }
 }
@@ -75,8 +56,9 @@
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -85,32 +67,31 @@
 
 @media (max-width: 768px) {
   .backup-warning-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--spacing-sm) var(--spacing-md);
-    margin: var(--spacing-xs) var(--spacing-sm);
-
-    &__content {
-      width: 100%;
-    }
-
-    &__actions {
-      width: 100%;
-      justify-content: space-between;
-      margin-top: var(--spacing-2xs);
-
-      ion-button:first-child {
-        flex: 1;
-      }
-    }
+    height: 1.5rem;
+    padding: var(--spacing-3xs) var(--spacing-xs);
+    gap: var(--spacing-xs);
+    bottom: var(--ion-tab-bar-height, 56px); // Mobile tab bar is typically taller
 
     &__text {
-      strong {
-        font-size: var(--font-size-sm);
-      }
+      font-size: 10px;
+    }
 
-      p {
-        font-size: var(--font-size-xs);
+    &__action {
+      font-size: 10px;
+      --padding-start: var(--spacing-3xs);
+      --padding-end: var(--spacing-3xs);
+      min-height: 1.25rem;
+    }
+
+    &__icon {
+      font-size: 12px;
+    }
+
+    &__dismiss {
+      min-height: 1.25rem;
+
+      ion-icon {
+        font-size: 12px;
       }
     }
   }

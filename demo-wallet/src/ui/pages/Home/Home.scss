@@ -1,34 +1,166 @@
+@use "../../design-tokens.scss" as *;
+
 .home-page {
-  background: #f5f7fa;
+  /* Mobile-first: transparent background to show app gradient */
+  background: transparent;
   min-height: 100vh;
 
+  /* Enhanced header with Cardano cyber theme */
   .page-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    
+    background: linear-gradient(135deg,
+        rgba(0, 212, 255, 0.95) 0%,
+        rgba(123, 63, 242, 0.95) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
     .header-title {
       font-weight: 700;
-      font-size: 20px;
+      font-size: 1.25rem;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+      /* Mobile scaling */
+      @media (max-width: 374px) {
+        font-size: 1.125rem;
+      }
+
+      /* Desktop enhancement */
+      @media (min-width: 768px) {
+        font-size: 1.375rem;
+      }
     }
   }
 }
 
 .home-content {
-  padding: 0 16px 80px;
-  max-width: 600px;
-  margin: 0 auto;
-}
+  /* Mobile-first: optimized for thumb navigation */
+  padding: 1rem 1rem calc(var(--ion-safe-area-bottom, 0px) + 5rem) 1rem;
+  width: 100%;
+  max-width: none;
 
-/* Responsive design */
-@media (max-width: 480px) {
-  .home-content {
-    padding: 0 12px 80px;
+  /* Enhanced mobile experience */
+  @media (max-width: 374px) {
+    padding: 0.875rem 0.875rem calc(var(--ion-safe-area-bottom, 0px) + 5rem) 0.875rem;
+  }
+
+  /* Desktop: maintain mobile-first constraints */
+  @media (min-width: 768px) {
+    padding: 1.5rem 1.5rem calc(var(--ion-safe-area-bottom, 0px) + 6rem) 1.5rem;
   }
 }
 
-@media (min-width: 768px) {
-  .home-content {
-    padding: 0 24px 80px;
-    max-width: 800px;
+/* Mobile-first component spacing */
+.home-content>* {
+  margin-bottom: 1.5rem;
+
+  @media (max-width: 374px) {
+    margin-bottom: 1.25rem;
   }
+
+  @media (min-width: 768px) {
+    margin-bottom: 1.75rem;
+  }
+}
+
+/* Remove margin from last child */
+.home-content>*:last-child {
+  margin-bottom: 0;
+}
+
+/* Enhanced refresher styling */
+ion-refresher {
+  --background: transparent;
+
+  ion-refresher-content {
+    --color: var(--cardano-cyan);
+  }
+}
+
+/* Biometric branding integration */
+.biometric-brand {
+  /* Subtle glow effect for biometric features */
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg,
+        rgba(0, 212, 255, 0.1),
+        rgba(123, 63, 242, 0.1));
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Mobile-first loading states */
+.loading-skeleton {
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0.1) 25%,
+      rgba(255, 255, 255, 0.2) 50%,
+      rgba(255, 255, 255, 0.1) 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+  border-radius: 12px;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Error states with mobile-first approach */
+.error-state {
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid rgba(255, 59, 48, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  color: #ffffff;
+
+  @media (max-width: 374px) {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Success states */
+.success-state {
+  background: rgba(48, 209, 88, 0.1);
+  border: 1px solid rgba(48, 209, 88, 0.3);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  color: #ffffff;
+
+  @media (max-width: 374px) {
+    padding: 0.875rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Hide tab headers to maximize screen space */
+.home-page .tab-header,
+.settings-page .tab-header,
+.governance-page .tab-header,
+.staking-page .tab-header,
+.tokens-page .tab-header {
+  display: none;
 }

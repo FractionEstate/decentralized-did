@@ -21,6 +21,7 @@ interface TabLayoutProps {
     priority?: BackEventPriorityType;
     handler?: (processNextHandler: () => void) => void;
   };
+  theme?: 'light' | 'dark';
 }
 
 export type { TabLayoutProps };

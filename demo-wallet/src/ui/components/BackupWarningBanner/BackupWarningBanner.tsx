@@ -46,35 +46,26 @@ const BackupWarningBanner = () => {
 
   return (
     <div className="backup-warning-banner">
-      <div className="backup-warning-banner__content">
-        <IonIcon
-          icon={warningOutline}
-          className="backup-warning-banner__icon"
-        />
-        <div className="backup-warning-banner__text">
-          <strong>Backup your recovery phrase</strong>
-          <p>You haven't backed up your recovery phrase yet. Do this now to secure your wallet.</p>
-        </div>
-      </div>
-      <div className="backup-warning-banner__actions">
-        <IonButton
-          size="small"
-          fill="solid"
-          color="warning"
-          onClick={handleBackupNow}
-        >
-          Backup Now
-        </IonButton>
-        <IonButton
-          size="small"
-          fill="clear"
-          color="medium"
-          onClick={handleDismiss}
-          className="backup-warning-banner__dismiss"
-        >
-          <IonIcon icon={closeOutline} slot="icon-only" />
-        </IonButton>
-      </div>
+      <IonIcon icon={warningOutline} className="backup-warning-banner__icon" />
+      <span className="backup-warning-banner__text">Backup your recovery phrase</span>
+      <IonButton
+        size="small"
+        fill="clear"
+        color="warning"
+        onClick={handleBackupNow}
+        className="backup-warning-banner__action"
+      >
+        Backup
+      </IonButton>
+      <IonButton
+        size="small"
+        fill="clear"
+        color="medium"
+        onClick={handleDismiss}
+        className="backup-warning-banner__dismiss"
+      >
+        <IonIcon icon={closeOutline} slot="icon-only" />
+      </IonButton>
     </div>
   );
 };

@@ -68,7 +68,7 @@ const Staking = () => {
               {account.status}
             </div>
           </div>
-          
+
           <div className="balance-info">
             <div className="balance-item">
               <div className="label">Total Balance</div>
@@ -114,9 +114,9 @@ const Staking = () => {
                   <div className="pool-apy">{StakingService.formatAPY(pool.estimated_apy)} APY</div>
                 )}
               </div>
-              
+
               {pool.name && <div className="pool-name">{pool.name}</div>}
-              
+
               <div className="pool-metrics">
                 <div className="metric">
                   <span className="metric-label">Stake:</span>
@@ -133,7 +133,7 @@ const Staking = () => {
                   </span>
                 </div>
               </div>
-              
+
               <div className="pool-stats">
                 <span>{pool.blocks_minted} blocks</span>
                 <span>•</span>
@@ -181,9 +181,8 @@ const Staking = () => {
   return (
     <TabLayout
       pageId="staking-page"
-      header={true}
+      header={false}
       customClass="staking-page"
-      title="Staking"
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />

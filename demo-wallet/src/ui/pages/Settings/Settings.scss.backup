@@ -1,14 +1,11 @@
-@use "../../design-tokens.scss" as *;
-
 .settings-page {
-  /* Mobile-first: transparent background for app gradient */
-  background: transparent;
+  background: #f5f7fa;
   min-height: 100vh;
 
   .page-header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-
+    
     .header-title {
       font-weight: 700;
       font-size: 20px;
@@ -17,18 +14,10 @@
 }
 
 .settings-content {
-  /* Mobile-first padding with safe areas */
-  padding: 1rem 1rem calc(var(--ion-safe-area-bottom, 0px) + 5rem) 1rem;
-  width: 100%;
-  max-width: none;
-
-  @media (max-width: 374px) {
-    padding: 0.875rem 0.875rem calc(var(--ion-safe-area-bottom, 0px) + 5rem) 0.875rem;
-  }
-
-  @media (min-width: 768px) {
-    padding: 1.5rem 1.5rem calc(var(--ion-safe-area-bottom, 0px) + 6rem) 1.5rem;
-  }
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding-bottom: 80px;
 }
 
 .settings-section {
@@ -48,17 +37,13 @@
 }
 
 .settings-item {
-  --background: rgba(255, 255, 255, 0.08);
-  --color: #ffffff;
-  --padding-start: 1.25rem;
-  --padding-end: 1.25rem;
-  --min-height: 3.5rem;
+  --background: white;
+  --color: #333;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --min-height: 60px;
   border-radius: 0;
   margin-bottom: 1px;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.2s ease;
 
   &:first-child {
     border-top-left-radius: 12px;
@@ -86,20 +71,9 @@
 }
 
 .settings-item-icon {
-  color: var(--cardano-cyan);
-  font-size: 1.5rem;
-  margin-right: 0.75rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 212, 255, 0.3));
-
-  @media (max-width: 374px) {
-    font-size: 1.375rem;
-    margin-right: 0.625rem;
-  }
-
-  @media (min-width: 768px) {
-    font-size: 1.625rem;
-    margin-right: 1rem;
-  }
+  color: #667eea;
+  font-size: 24px;
+  margin-right: 4px;
 }
 
 .settings-item-label {

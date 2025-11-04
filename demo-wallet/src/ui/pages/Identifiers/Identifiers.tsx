@@ -340,7 +340,7 @@ const Identifiers = () => {
     <>
       <TabLayout
         pageId={pageId}
-        header={!showWelcomePage}
+        header={false}
         customClass={tabClasses}
         title={`${t("tabs.identifiers.tab.title")}`}
         additionalButtons={

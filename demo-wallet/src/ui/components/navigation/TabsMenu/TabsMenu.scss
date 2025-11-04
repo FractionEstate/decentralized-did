@@ -1,13 +1,13 @@
 ion-tab-bar {
-  --background: rgba(15, 15, 30, 0.7);
+  --background: rgba(var(--cardano-dark-rgb, 15, 15, 30), 0.85);
   --border: transparent;
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(0, 212, 255, 0.2);
-  padding-inline: 0.625rem;
-  height: 4.5rem;
+  backdrop-filter: blur(var(--blur-lg, 12px));
+  border-top: 1px solid rgba(var(--cardano-cyan-rgb, 0, 212, 255), 0.2);
+  padding-inline: var(--spacing-md, 0.625rem);
+  height: var(--tab-bar-height, 4.5rem);
   justify-content: space-around;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.2);
-  border-radius: 1rem 1rem 0 0;
+  box-shadow: var(--shadow-lg, 0 -4px 15px rgba(0, 0, 0, 0.2));
+  border-radius: var(--border-radius-lg, 1rem) var(--border-radius-lg, 1rem) 0 0;
 
   ion-tab-button {
     max-width: 20%;
@@ -15,48 +15,50 @@ ion-tab-bar {
     transition: all 0.3s ease;
 
     &:not(.tab-selected) {
-      color: rgba(255, 255, 255, 0.6);
+      color: var(--ion-color-neutral-400);
 
-      > *:not(.notifications-counter) {
-        opacity: 70%;
+      >*:not(.notifications-counter) {
+        opacity: var(--opacity-medium, 0.7);
       }
 
-      > .icon-container {
+      >.icon-container {
         opacity: 1;
         position: relative;
       }
 
       &:hover {
-        color: rgba(0, 212, 255, 0.8);
+        color: var(--cardano-cyan, #00d4ff);
+        transform: translateY(-1px);
+        transition: all var(--transition-fast, 0.2s) var(--ease-out);
       }
 
       .notifications-counter {
         display: flex;
-        width: 1.25rem;
-        height: 1.25rem;
+        width: var(--badge-size, 1.25rem);
+        height: var(--badge-size, 1.25rem);
         line-height: 1rem;
         position: absolute;
-        color: #ffffff;
+        color: var(--ion-color-neutral-100);
         justify-content: center;
         align-items: center;
-        border-radius: 0.625rem;
-        border: 1px solid #ef4444;
-        background: #ef4444;
+        border-radius: var(--border-radius-full, 0.625rem);
+        border: 1px solid var(--ion-color-error-800);
+        background: var(--ion-color-error-800);
         opacity: 1;
-        z-index: 10;
+        z-index: var(--z-index-badge, 10);
         position: absolute;
-        top: 0.2rem;
-        left: 0.85rem;
-        font-weight: 600;
-        font-size: 0.75rem;
+        top: var(--spacing-xs, 0.2rem);
+        left: var(--spacing-sm, 0.85rem);
+        font-weight: var(--font-weight-semibold, 600);
+        font-size: var(--font-size-xs, 0.75rem);
       }
     }
 
     &.tab-selected {
-      color: #00d4ff;
+      color: var(--cardano-cyan, #00d4ff);
 
       .border-top {
-        background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+        background: linear-gradient(90deg, transparent, var(--cardano-cyan, #00d4ff), transparent);
       }
     }
 
@@ -110,6 +112,7 @@ ion-tab-bar {
     height: 3.5rem;
 
     ion-tab-button {
+
       ion-icon,
       &.md ion-icon {
         margin-top: 0.35rem;

@@ -162,8 +162,7 @@ const Governance = () => {
 
   return (
     <TabLayout
-      title="Governance"
-      header={true}
+      header={false}
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />

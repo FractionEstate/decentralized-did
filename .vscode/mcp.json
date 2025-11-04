@@ -13,9 +13,7 @@
 				"${input:isolated}",
 				"--channel",
 				"${input:chrome_channel}"
-			],
-			"gallery": "https://api.mcp.github.com",
-			"version": "0.0.1-seed"
+			]
 		}
 	},
 	"inputs": [

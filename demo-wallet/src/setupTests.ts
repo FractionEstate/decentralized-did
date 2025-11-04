@@ -18,8 +18,8 @@ Object.defineProperty(global, "crypto", {
 
 global.structuredClone = (v) => JSON.parse(JSON.stringify(v));
 
-// Polyfill matchMedia for components using responsive checks
-if (!window.matchMedia) {
+// Polyfill matchMedia for components using responsive checks (only in DOM environment)
+if (typeof window !== 'undefined' && !window.matchMedia) {
   // @ts-ignore
   window.matchMedia = (query: string) => ({
     matches: false,
@@ -33,26 +33,26 @@ if (!window.matchMedia) {
   });
 }
 
-// Polyfill ResizeObserver & IntersectionObserver for layout-dependent components
+// Polyfill ResizeObserver & IntersectionObserver for layout-dependent components (only in DOM environment)
 class NoopObserver {
   observe() { }
   unobserve() { }
   disconnect() { }
 }
 // @ts-ignore
-if (!("ResizeObserver" in window)) window.ResizeObserver = NoopObserver as any;
-// @ts-ignore
-if (!("IntersectionObserver" in window)) window.IntersectionObserver = NoopObserver as any;
+if (typeof window !== 'undefined') {
+  if (!("ResizeObserver" in window)) window.ResizeObserver = NoopObserver as any;
+  // @ts-ignore
+  if (!("IntersectionObserver" in window)) window.IntersectionObserver = NoopObserver as any;
+  // @ts-ignore
+  if (!window.scrollTo) window.scrollTo = () => { };
+}
 
-// Mock navigator.clipboard for tests that copy values
-if (!navigator.clipboard) {
+// Mock navigator.clipboard for tests that copy values (only in DOM environment)
+if (typeof navigator !== 'undefined' && !navigator.clipboard) {
   // @ts-ignore
   navigator.clipboard = {
     writeText: async () => { },
     readText: async () => "",
   };
 }
-
-// Ensure scrollTo is defined for components invoking it
-// @ts-ignore
-if (!window.scrollTo) window.scrollTo = () => { };

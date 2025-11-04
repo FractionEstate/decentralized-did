@@ -33,6 +33,7 @@ const TabLayout = ({
   children,
   placeholder,
   hardwareBackButtonConfig,
+  theme = "dark",
 }: TabLayoutProps) => {
   const [isActive, setIsActive] = useState(false);
 
@@ -79,7 +80,7 @@ const TabLayout = ({
   return (
     <IonPage
       className={`tab-layout ${pageId} ${!isActive ? " " + "ion-hide hidden" : "visible"
-        } ${customClass ? " " + customClass : ""}`}
+        } ${customClass ? " " + customClass : ""} theme-${theme}`}
       data-testid={pageId}
       id={pageId}
     >

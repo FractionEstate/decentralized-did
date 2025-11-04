@@ -1,0 +1,52 @@
+/* Hide tab page headers to maximize screen real estate on mobile */
+.tab-layout {
+    .tab-header {
+        display: none;
+    }
+}
+
+/* Show header only for specific pages that need functionality */
+.identifiers-page {
+    .tab-header {
+        display: block;
+
+        /* But hide the title to save space */
+        ion-title {
+            display: none;
+        }
+    }
+}
+
+/* DApp Browser needs special handling */
+.dapp-browser-page {
+    .dapp-browser-header {
+        ion-toolbar:first-child {
+            display: none;
+        }
+    }
+}
+
+/* Adjust content padding when headers are hidden */
+.tab-layout:not(.identifiers-page) {
+    .tab-content {
+        --padding-top: 1rem;
+
+        @media (max-width: 374px) {
+            --padding-top: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            --padding-top: 1.5rem;
+        }
+    }
+}
+
+/* Ensure DApp Browser content starts from top */
+.dapp-browser-content {
+    --padding-top: 0;
+
+    .dapp-browser-nav {
+        margin-top: 0;
+        padding-top: var(--ion-safe-area-top, 0);
+    }
+}

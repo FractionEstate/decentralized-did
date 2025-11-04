@@ -207,27 +207,23 @@ const DAppBrowser: React.FC<DAppBrowserProps> = ({ initialUrl = "" }) => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>dApp Browser</IonTitle>
-        </IonToolbar>
-
-        {/* Navigation toolbar */}
-        <IonToolbar className="dapp-browser-nav">
-          <IonButtons slot="start">
-            <IonButton onClick={goBack} disabled={!canGoBack}>
+      <IonContent>
+        {/* Navigation toolbar moved into content for mobile-first design */}
+        <div className="dapp-browser-nav-container">
+          <div className="browser-controls">
+            <IonButton onClick={goBack} disabled={!canGoBack} size="small" fill="clear">
               <IonIcon slot="icon-only" icon={arrowBack} />
             </IonButton>
-            <IonButton onClick={goForward} disabled={!canGoForward}>
+            <IonButton onClick={goForward} disabled={!canGoForward} size="small" fill="clear">
               <IonIcon slot="icon-only" icon={arrowForward} />
             </IonButton>
-            <IonButton onClick={reload} disabled={!currentUrl}>
+            <IonButton onClick={reload} disabled={!currentUrl} size="small" fill="clear">
               <IonIcon slot="icon-only" icon={refresh} />
             </IonButton>
-            <IonButton onClick={goHome}>
+            <IonButton onClick={goHome} size="small" fill="clear">
               <IonIcon slot="icon-only" icon={home} />
             </IonButton>
-          </IonButtons>
+          </div>
 
           <IonInput
             className="url-bar"
@@ -238,18 +234,15 @@ const DAppBrowser: React.FC<DAppBrowserProps> = ({ initialUrl = "" }) => {
             clearInput
           />
 
-          <IonButtons slot="end">
+          <div className="connection-status">
             {connectedDApps.length > 0 && (
-              <IonButton color="success">
+              <IonButton color="success" size="small" fill="clear">
                 <IonIcon slot="icon-only" icon={shieldCheckmark} />
                 <IonBadge color="success">{connectedDApps.length}</IonBadge>
               </IonButton>
             )}
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
-
-      <IonContent>
+          </div>
+        </div>
         <IonLoading isOpen={loading} message="Loading dApp..." />
 
         {/* Connection request alert */}

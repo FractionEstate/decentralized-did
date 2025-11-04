@@ -34,7 +34,8 @@ export default {
       "<rootDir>/src/ui/__mocks__/fileMock.ts",
     "\\.(css|scss)$": "<rootDir>/src/ui/__mocks__/styleMock.ts",
     "^../config/env$": "<rootDir>/src/core/config/__mocks__/env.ts",
-    "^ionicons/components/ion-icon.js$": "ionicons/components/ion-icon",
+    "^ionicons/components/ion-icon.js$": "<rootDir>/src/ui/__mocks__/ionIconMock.ts",
+    "^ionicons/icons$": "<rootDir>/src/ui/__mocks__/ionIconsMock.ts",
     // Jest cannot import the browser version so we can map in the NodeJS version instead.
   },
   testEnvironment: "jsdom",

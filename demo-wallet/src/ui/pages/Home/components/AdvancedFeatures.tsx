@@ -1,11 +1,11 @@
 import { IonIcon } from "@ionic/react";
-import { 
-  trophy, 
-  documentText, 
-  globe, 
-  shield, 
+import {
+  trophy,
+  documentText,
+  globe,
+  shield,
   fingerPrint,
-  stats
+  analytics
 } from "ionicons/icons";
 import "./AdvancedFeatures.scss";
 
@@ -16,7 +16,7 @@ interface AdvancedFeaturesProps {
   onBiometricClick?: () => void;
 }
 
-const AdvancedFeatures: React.FC<AdvancedFeaturesProps> = ({ 
+const AdvancedFeatures: React.FC<AdvancedFeaturesProps> = ({
   onStakingClick,
   onGovernanceClick,
   onBrowserClick,
@@ -63,15 +63,15 @@ const AdvancedFeatures: React.FC<AdvancedFeaturesProps> = ({
         <h3>Explore More</h3>
         <p>Advanced features for power users</p>
       </div>
-      
+
       <div className="features-grid">
         {features.map((feature) => (
-          <div 
+          <div
             key={feature.id}
             className="feature-card"
             onClick={feature.onClick}
           >
-            <div 
+            <div
               className="feature-icon"
               style={{ background: feature.gradient }}
             >

@@ -10,8 +10,34 @@ import { notificationsFix } from "../../../__fixtures__/notificationsFix";
 import { i18n } from "../../../../i18n";
 
 // Mock heavy tab pages to avoid deep Redux selector dependencies in this unit test
+jest.mock("../../../pages/Tokens/Tokens", () => ({
+  __esModule: true,
+  default: () => <div data-testid="tokens-page">Tokens</div>,
+}));
 jest.mock("../../../pages/Identifiers", () => ({
   Identifiers: () => <div data-testid="identifiers-page">Identifiers</div>,
+}));
+jest.mock("../../../pages/DAppBrowser/DAppBrowser", () => ({
+  __esModule: true,
+  default: () => <div data-testid="dapp-browser-page">DApp Browser</div>,
+}));
+jest.mock("../../../pages/Governance/Governance", () => ({
+  __esModule: true,
+  default: () => <div data-testid="governance-page">Governance</div>,
+}));
+jest.mock("../../../pages/Staking/Staking", () => ({
+  __esModule: true,
+  default: () => <div data-testid="staking-page">Staking</div>,
+}));
+jest.mock("../../../pages/Settings", () => ({
+  Settings: () => <div data-testid="settings-page">Settings</div>,
+}));
+// Legacy page mocks
+jest.mock("../../../pages/Home", () => ({
+  Home: () => <div data-testid="home-page">Home</div>,
+}));
+jest.mock("../../../pages/NFTs", () => ({
+  NFTs: () => <div data-testid="nfts-page">NFTs</div>,
 }));
 jest.mock("../../../pages/Scan", () => ({
   Scan: () => <div data-testid="scan-page">Scan</div>,
@@ -63,7 +89,7 @@ describe("Tab menu", () => {
 
   test("Render", async () => {
     const history = createMemoryHistory();
-    history.push(TabsRoutePath.IDENTIFIERS);
+    history.push(TabsRoutePath.TOKENS);
 
     const { getByTestId, getByText } = render(
       <IonReactMemoryRouter history={history}>
@@ -77,10 +103,12 @@ describe("Tab menu", () => {
 
     // Use translated labels for testing (resolved at render time in component)
     const translatedLabels = [
-      i18n.t("tabsmenu.label.identifiers"),
-      i18n.t("tabsmenu.label.scan"),
-      i18n.t("tabsmenu.label.notifications"),
-      i18n.t("tabsmenu.label.menu"),
+      i18n.t("tabsmenu.label.wallet"),
+      i18n.t("tabsmenu.label.identity"),
+      i18n.t("tabsmenu.label.browser"),
+      i18n.t("tabsmenu.label.governance"),
+      i18n.t("tabsmenu.label.staking"),
+      i18n.t("tabsmenu.label.settings"),
     ];
 
     // Verify labels are on screen
@@ -90,9 +118,11 @@ describe("Tab menu", () => {
 
     // Click each tab by its stable slug-based test id
     const slugs = [
+      "tokens",
       "identifiers",
-      "scan",
-      "notifications",
+      "dapp-browser",
+      "governance",
+      "staking",
       "menu",
     ];
     slugs.forEach((slug) => {
@@ -102,27 +132,11 @@ describe("Tab menu", () => {
     });
   });
 
-  test("Render notification", async () => {
-    const state = {
-      ...initialState,
-      stateCache: {
-        ...initialState.stateCache,
-        routes: [TabsRoutePath.NOTIFICATIONS],
-      },
-      notificationsCache: {
-        notifications: notificationsFix,
-      },
-    };
-
-    const storeMocked = {
-      ...mockStore(state),
-      dispatch: dispatchMock,
-    };
-
+  test("Render new tab structure", async () => {
     const history = createMemoryHistory();
-    history.push(TabsRoutePath.NOTIFICATIONS);
+    history.push(TabsRoutePath.TOKENS);
 
-    const { getAllByText } = render(
+    const { getByTestId } = render(
       <IonReactMemoryRouter history={history}>
         <Provider store={storeMocked}>
           <TabsMenu />
@@ -132,39 +146,12 @@ describe("Tab menu", () => {
 
     await waitForIonicReact();
 
-    expect(getAllByText(notificationsFix.length).length).toBeGreaterThan(0);
-  });
-
-  test("Render 99+ notification", async () => {
-    const state = {
-      ...initialState,
-      stateCache: {
-        ...initialState.stateCache,
-        routes: [TabsRoutePath.NOTIFICATIONS],
-      },
-      notificationsCache: {
-        notifications: new Array(100).fill(notificationsFix[0]),
-      },
-    };
-
-    const storeMocked = {
-      ...mockStore(state),
-      dispatch: dispatchMock,
-    };
-
-    const history = createMemoryHistory();
-    history.push(TabsRoutePath.NOTIFICATIONS);
-
-    const { getAllByText } = render(
-      <IonReactMemoryRouter history={history}>
-        <Provider store={storeMocked}>
-          <TabsMenu />
-        </Provider>
-      </IonReactMemoryRouter>
-    );
-
-    await waitForIonicReact();
-
-    expect(getAllByText("99+").length).toBeGreaterThan(0);
+    // Verify all main navigation tabs are present
+    expect(getByTestId("tab-button-tokens")).toBeVisible();
+    expect(getByTestId("tab-button-identifiers")).toBeVisible();
+    expect(getByTestId("tab-button-dapp-browser")).toBeVisible();
+    expect(getByTestId("tab-button-governance")).toBeVisible();
+    expect(getByTestId("tab-button-staking")).toBeVisible();
+    expect(getByTestId("tab-button-menu")).toBeVisible();
   });
 });

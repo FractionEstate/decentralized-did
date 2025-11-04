@@ -1,4 +1,5 @@
-import { IonRefresher, IonRefresherContent, useIonViewWillEnter } from "@ionic/react";
+import { IonRefresher, IonRefresherContent, IonIcon, useIonViewWillEnter } from "@ionic/react";
+import { albumsOutline, imagesOutline, timeOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
@@ -20,6 +21,7 @@ const Tokens = () => {
   const dispatch = useAppDispatch();
   const addressData = useAppSelector(getCurrentAddressData);
   const [activeTab, setActiveTab] = useState<"balance" | "nfts" | "history">("balance");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useIonViewWillEnter(() => {
     // Set current address and load data
@@ -38,9 +40,11 @@ const Tokens = () => {
   };
 
   const handleRefresh = (event: CustomEvent) => {
+    setIsRefreshing(true);
     loadTokenData();
     setTimeout(() => {
       event.detail.complete();
+      setIsRefreshing(false);
     }, 1000);
   };
 
@@ -60,23 +64,30 @@ const Tokens = () => {
     const { balance } = addressData;
 
     return (
-      <div className="balance-container">
-        <div className="ada-balance">
-          <div className="balance-label">ADA Balance</div>
-          <div className="balance-amount">{balance.ada_amount} ₳</div>
-          <div className="balance-lovelace">{balance.ada_lovelace} lovelace</div>
+      <div className="balance-view">
+        {/* Primary ADA Balance Card */}
+        <div className="balance-card-primary">
+          <div className="balance-label">Total Balance</div>
+          <div className="balance-amount">{balance.ada_amount} <span className="currency">₳</span></div>
+          <div className="balance-lovelace">{balance.ada_lovelace.toLocaleString()} lovelace</div>
         </div>
 
         {balance.total_assets > 0 && (
           <div className="assets-section">
-            <div className="section-header">Native Assets ({balance.total_assets})</div>
+            <h3 className="section-header">Native Assets ({balance.total_assets})</h3>
             <div className="assets-list">
               {balance.assets.map((asset, index) => (
                 <div key={`${asset.policy_id}-${asset.asset_name}-${index}`} className="asset-item">
-                  <div className="asset-name">
-                    {asset.asset_name_ascii || asset.asset_name.substring(0, 16) + "..."}
+                  <div className="asset-icon">
+                    <IonIcon icon={albumsOutline} />
                   </div>
-                  <div className="asset-quantity">{asset.display_quantity}</div>
+                  <div className="asset-info">
+                    <div className="asset-name">
+                      {asset.asset_name_ascii || asset.asset_name.substring(0, 20) + "..."}
+                    </div>
+                    <div className="asset-policy">Policy: {asset.policy_id.substring(0, 12)}...</div>
+                  </div>
+                  <div className="asset-amount">{asset.display_quantity}</div>
                 </div>
               ))}
             </div>
@@ -98,25 +109,38 @@ const Tokens = () => {
     const nfts = addressData?.nfts || [];
 
     if (nfts.length === 0) {
-      return <div className="empty-state">No NFTs found</div>;
+      return (
+        <div className="empty-state">
+          <IonIcon icon={imagesOutline} className="empty-icon" />
+          <div className="empty-title">No NFTs Found</div>
+          <div className="empty-description">
+            Your wallet doesn't contain any NFTs yet.
+          </div>
+        </div>
+      );
     }
 
     return (
-      <div className="nfts-container">
+      <div className="nfts-view">
+        <h3 className="section-header">NFT Collection ({nfts.length})</h3>
         <div className="nfts-grid">
           {nfts.map((nft, index) => (
             <div key={`${nft.asset.policy_id}-${nft.asset.asset_name}-${index}`} className="nft-card">
               {nft.metadata?.image && (
-                <img
-                  src={nft.metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/")}
-                  alt={nft.display_name}
-                  className="nft-image"
-                />
+                <div className="nft-image-container">
+                  <img
+                    src={nft.metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/")}
+                    alt={nft.display_name}
+                    className="nft-image"
+                  />
+                </div>
               )}
-              <div className="nft-name">{nft.display_name}</div>
-              {nft.metadata?.description && (
-                <div className="nft-description">{nft.metadata.description}</div>
-              )}
+              <div className="nft-info">
+                <div className="nft-name">{nft.display_name}</div>
+                {nft.metadata?.description && (
+                  <div className="nft-description">{nft.metadata.description.substring(0, 80)}{nft.metadata.description.length > 80 ? '...' : ''}</div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -136,20 +160,35 @@ const Tokens = () => {
     const transactions = addressData?.transactions || [];
 
     if (transactions.length === 0) {
-      return <div className="empty-state">No transactions found</div>;
+      return (
+        <div className="empty-state">
+          <IonIcon icon={timeOutline} className="empty-icon" />
+          <div className="empty-title">No Transactions</div>
+          <div className="empty-description">
+            Transaction history will appear here.
+          </div>
+        </div>
+      );
     }
 
     return (
-      <div className="transactions-container">
+      <div className="history-view">
+        <h3 className="section-header">Recent Transactions ({transactions.length})</h3>
         <div className="transactions-list">
           {transactions.map((tx) => (
             <div key={tx.tx_hash} className="transaction-item">
-              <div className="tx-hash">
-                {tx.tx_hash.substring(0, 16)}...{tx.tx_hash.substring(tx.tx_hash.length - 8)}
+              <div className="tx-icon">
+                <IonIcon icon={timeOutline} />
               </div>
-              <div className="tx-details">
-                {tx.block_height && <span>Block: {tx.block_height}</span>}
-                {tx.fee_ada && <span>Fee: {tx.fee_ada} ₳</span>}
+              <div className="tx-info">
+                <div className="tx-hash">
+                  {tx.tx_hash.substring(0, 12)}...{tx.tx_hash.substring(tx.tx_hash.length - 6)}
+                </div>
+                <div className="tx-details">
+                  {tx.block_height && <span>Block {tx.block_height.toLocaleString()}</span>}
+                  {tx.block_height && tx.fee_ada && <span className="tx-separator">•</span>}
+                  {tx.fee_ada && <span>Fee: {tx.fee_ada} ₳</span>}
+                </div>
               </div>
             </div>
           ))}
@@ -161,9 +200,9 @@ const Tokens = () => {
   return (
     <TabLayout
       pageId="tokens-page"
-      header={true}
+      header={false}
       customClass="tokens-page"
-      title="Tokens"
+      theme="dark"
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />
@@ -174,19 +213,22 @@ const Tokens = () => {
           className={`tab-button ${activeTab === "balance" ? "active" : ""}`}
           onClick={() => setActiveTab("balance")}
         >
-          Balance
+          <IonIcon icon={albumsOutline} />
+          <span>Balance</span>
         </button>
         <button
           className={`tab-button ${activeTab === "nfts" ? "active" : ""}`}
           onClick={() => setActiveTab("nfts")}
         >
-          NFTs
+          <IonIcon icon={imagesOutline} />
+          <span>NFTs</span>
         </button>
         <button
           className={`tab-button ${activeTab === "history" ? "active" : ""}`}
           onClick={() => setActiveTab("history")}
         >
-          History
+          <IonIcon icon={timeOutline} />
+          <span>History</span>
         </button>
       </div>
 

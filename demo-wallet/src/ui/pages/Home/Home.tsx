@@ -97,9 +97,8 @@ const Home = () => {
   return (
     <TabLayout
       pageId="home-page"
-      header={true}
+      header={false}
       customClass="home-page biometric-brand"
-      title="Biovera Wallet"
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />

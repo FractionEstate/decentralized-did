@@ -64,19 +64,60 @@ type TabConfig = TabConfigBase & {
 };
 
 const FALLBACK_TAB_LABELS: Record<string, string> = {
+  [TabsRoutePath.TOKENS]: "Wallet",
+  [TabsRoutePath.IDENTIFIERS]: "Identity",
+  [TabsRoutePath.DAPP_BROWSER]: "Browser",
+  [TabsRoutePath.GOVERNANCE]: "Governance",
+  [TabsRoutePath.STAKING]: "Staking",
+  [TabsRoutePath.MENU]: "Settings",
+  // Legacy/Hidden routes
   [TabsRoutePath.HOME]: "Home",
   [TabsRoutePath.NFTS]: "NFTs",
-  [TabsRoutePath.IDENTIFIERS]: "Wallet",
-  [TabsRoutePath.TOKENS]: "Tokens",
-  [TabsRoutePath.STAKING]: "Staking",
-  [TabsRoutePath.GOVERNANCE]: "Governance",
-  [TabsRoutePath.DAPP_BROWSER]: "Browser",
   [TabsRoutePath.SCAN]: "Scan",
   [TabsRoutePath.NOTIFICATIONS]: "Notifications",
-  [TabsRoutePath.MENU]: "Settings",
 };
 
 const tabsRoutesBase: TabConfigBase[] = [
+  {
+    path: TabsRoutePath.TOKENS,
+    component: Tokens,
+    icon: [wallet, walletOutline],
+    i18nKey: "tabsmenu.label.wallet",
+  },
+  {
+    path: TabsRoutePath.IDENTIFIERS,
+    component: Identifiers,
+    icon: [fingerPrint, fingerPrintOutline],
+    i18nKey: "tabsmenu.label.identity",
+  },
+  {
+    path: TabsRoutePath.DAPP_BROWSER,
+    component: DAppBrowser,
+    icon: [globe, globeOutline],
+    i18nKey: "tabsmenu.label.browser",
+  },
+  {
+    path: TabsRoutePath.GOVERNANCE,
+    component: Governance,
+    icon: [documentText, documentTextOutline],
+    i18nKey: "tabsmenu.label.governance",
+  },
+  {
+    path: TabsRoutePath.STAKING,
+    component: Staking,
+    icon: [trophy, trophyOutline],
+    i18nKey: "tabsmenu.label.staking",
+  },
+  {
+    path: TabsRoutePath.MENU,
+    component: Settings,
+    icon: [settings, settingsOutline],
+    i18nKey: "tabsmenu.label.settings",
+  },
+];
+
+// Legacy routes - still accessible but not in main navigation
+const legacyRoutesBase: TabConfigBase[] = [
   {
     path: TabsRoutePath.HOME,
     component: Home,
@@ -94,46 +135,6 @@ const tabsRoutesBase: TabConfigBase[] = [
     component: Scan,
     icon: [scan, scanOutline],
     i18nKey: "tabsmenu.label.scan",
-  },
-  {
-    path: TabsRoutePath.MENU,
-    component: Settings,
-    icon: [settings, settingsOutline],
-    i18nKey: "tabsmenu.label.settings",
-  },
-];
-
-// Legacy routes - still accessible but not in main navigation
-const legacyRoutesBase: TabConfigBase[] = [
-  {
-    path: TabsRoutePath.IDENTIFIERS,
-    component: Identifiers,
-    icon: [fingerPrint, fingerPrintOutline],
-    i18nKey: "tabsmenu.label.identifiers",
-  },
-  {
-    path: TabsRoutePath.TOKENS,
-    component: Tokens,
-    icon: [wallet, walletOutline],
-    i18nKey: "tabsmenu.label.tokens",
-  },
-  {
-    path: TabsRoutePath.STAKING,
-    component: Staking,
-    icon: [trophy, trophyOutline],
-    i18nKey: "tabsmenu.label.staking",
-  },
-  {
-    path: TabsRoutePath.GOVERNANCE,
-    component: Governance,
-    icon: [documentText, documentTextOutline],
-    i18nKey: "tabsmenu.label.governance",
-  },
-  {
-    path: TabsRoutePath.DAPP_BROWSER,
-    component: DAppBrowser,
-    icon: [globe, globeOutline],
-    i18nKey: "tabsmenu.label.browser",
   },
   {
     path: TabsRoutePath.NOTIFICATIONS,
@@ -165,21 +166,21 @@ const TabsMenu = () => {
   return (
     <IonTabs>
       <IonRouterOutlet animated={false}>
-        {/* Render default Home tab when visiting /tabs without a subpath */}
-        <Route path={TabsRoutePath.ROOT} component={Home} exact />
-        
+        {/* Render default Wallet tab when visiting /tabs without a subpath */}
+        <Route path={TabsRoutePath.ROOT} component={Tokens} exact />
+
         {/* Main navigation routes */}
+        <Route path={TabsRoutePath.TOKENS} component={Tokens} exact />
+        <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
+        <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
+        <Route path={TabsRoutePath.GOVERNANCE} component={Governance} exact />
+        <Route path={TabsRoutePath.STAKING} component={Staking} exact />
+        <Route path={TabsRoutePath.MENU} component={Settings} exact />
+
+        {/* Legacy routes (accessible via direct URL or navigation from other pages) */}
         <Route path={TabsRoutePath.HOME} component={Home} exact />
         <Route path={TabsRoutePath.NFTS} component={NFTs} exact />
         <Route path={TabsRoutePath.SCAN} component={Scan} exact />
-        <Route path={TabsRoutePath.MENU} component={Settings} exact />
-        
-        {/* Legacy routes (accessible via direct URL or navigation from other pages) */}
-        <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
-        <Route path={TabsRoutePath.TOKENS} component={Tokens} exact />
-        <Route path={TabsRoutePath.STAKING} component={Staking} exact />
-        <Route path={TabsRoutePath.GOVERNANCE} component={Governance} exact />
-        <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
         <Route path={TabsRoutePath.NOTIFICATIONS} component={Notifications} exact />
         {/* Legacy Menu component */}
         <Route path="/tabs/legacy-menu" component={Menu} exact />

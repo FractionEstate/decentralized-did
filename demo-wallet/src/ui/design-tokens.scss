@@ -6,316 +6,387 @@
  */
 
 :root {
-  /* ========================================
+   /* ========================================
      SPACING SYSTEM (8px base)
      ======================================== */
-  --spacing-xs: 0.5rem; /* 8px */
-  --spacing-sm: 0.75rem; /* 12px */
-  --spacing-md: 1rem; /* 16px */
-  --spacing-lg: 1.5rem; /* 24px */
-  --spacing-xl: 2rem; /* 32px */
-  --spacing-2xl: 2.5rem; /* 40px */
-  --spacing-3xl: 3rem; /* 48px */
-  --spacing-4xl: 4rem; /* 64px */
+   --spacing-xs: 0.5rem;
+   /* 8px */
+   --spacing-sm: 0.75rem;
+   /* 12px */
+   --spacing-md: 1rem;
+   /* 16px */
+   --spacing-lg: 1.5rem;
+   /* 24px */
+   --spacing-xl: 2rem;
+   /* 32px */
+   --spacing-2xl: 2.5rem;
+   /* 40px */
+   --spacing-3xl: 3rem;
+   /* 48px */
+   --spacing-4xl: 4rem;
+   /* 64px */
 
-  /* ========================================
+   /* ========================================
      TYPOGRAPHY SYSTEM
      ======================================== */
-  /* Font Sizes (Modular Scale 1.25) */
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-md: 1.125rem; /* 18px */
-  --font-size-lg: 1.25rem; /* 20px */
-  --font-size-xl: 1.5rem; /* 24px */
-  --font-size-2xl: 1.875rem; /* 30px */
-  --font-size-3xl: 2.25rem; /* 36px */
-  --font-size-4xl: 3rem; /* 48px */
+   /* Font Sizes (Modular Scale 1.25) */
+   --font-size-xs: 0.75rem;
+   /* 12px */
+   --font-size-sm: 0.875rem;
+   /* 14px */
+   --font-size-base: 1rem;
+   /* 16px */
+   --font-size-md: 1.125rem;
+   /* 18px */
+   --font-size-lg: 1.25rem;
+   /* 20px */
+   --font-size-xl: 1.5rem;
+   /* 24px */
+   --font-size-2xl: 1.875rem;
+   /* 30px */
+   --font-size-3xl: 2.25rem;
+   /* 36px */
+   --font-size-4xl: 3rem;
+   /* 48px */
 
-  /* Line Heights */
-  --line-height-tight: 1.25;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.75;
+   /* Line Heights */
+   --line-height-tight: 1.25;
+   --line-height-normal: 1.5;
+   --line-height-relaxed: 1.75;
 
-  /* Font Weights */
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+   /* Font Weights */
+   --font-weight-regular: 400;
+   --font-weight-medium: 500;
+   --font-weight-semibold: 600;
+   --font-weight-bold: 700;
 
-  /* Letter Spacing */
-  --letter-spacing-tight: -0.025em;
-  --letter-spacing-normal: 0;
-  --letter-spacing-wide: 0.025em;
+   /* Letter Spacing */
+   --letter-spacing-tight: -0.025em;
+   --letter-spacing-normal: 0;
+   --letter-spacing-wide: 0.025em;
 
-  /* ========================================
+   /* ========================================
      LAYOUT SYSTEM
      ======================================== */
-  /* Container Widths */
-  --container-xs: 480px;
-  --container-sm: 640px;
-  --container-md: 768px;
-  --container-lg: 1024px;
-  --container-xl: 1280px;
+   /* Container Widths */
+   --container-xs: 480px;
+   --container-sm: 640px;
+   --container-md: 768px;
+   --container-lg: 1024px;
+   --container-xl: 1280px;
 
-  /* Page Padding */
-  --page-padding-mobile: var(--spacing-lg);
-  --page-padding-tablet: var(--spacing-xl);
-  --page-padding-desktop: var(--spacing-2xl);
+   /* Page Padding */
+   --page-padding-mobile: var(--spacing-lg);
+   --page-padding-tablet: var(--spacing-xl);
+   --page-padding-desktop: var(--spacing-2xl);
 
-  /* Component Padding */
-  --component-padding-sm: var(--spacing-md);
-  --component-padding-md: var(--spacing-lg);
-  --component-padding-lg: var(--spacing-xl);
+   /* Component Padding */
+   --component-padding-sm: var(--spacing-md);
+   --component-padding-md: var(--spacing-lg);
+   --component-padding-lg: var(--spacing-xl);
 
-  /* ========================================
+   /* ========================================
      BORDER RADIUS
      ======================================== */
-  --radius-none: 0;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
-  --radius-full: 9999px;
+   --radius-none: 0;
+   --radius-sm: 4px;
+   --radius-md: 8px;
+   --radius-lg: 12px;
+   --radius-xl: 16px;
+   --radius-2xl: 24px;
+   --radius-full: 9999px;
 
-  /* ========================================
+   /* ========================================
      SHADOWS (Elevation System)
      ======================================== */
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.16);
-  --shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.2);
-  --shadow-2xl: 0 16px 32px 0 rgba(0, 0, 0, 0.24);
+   --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+   --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.08);
+   --shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.12);
+   --shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.16);
+   --shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.2);
+   --shadow-2xl: 0 16px 32px 0 rgba(0, 0, 0, 0.24);
 
-  /* ========================================
+   /* ========================================
      Z-INDEX SYSTEM
      ======================================== */
-  --z-index-base: 0;
-  --z-index-dropdown: 1000;
-  --z-index-sticky: 1020;
-  --z-index-fixed: 1030;
-  --z-index-modal-backdrop: 1040;
-  --z-index-modal: 1050;
-  --z-index-popover: 1060;
-  --z-index-tooltip: 1070;
-  --z-index-toast: 1080;
-  --z-index-max: 2147483647;
+   --z-index-base: 0;
+   --z-index-dropdown: 1000;
+   --z-index-sticky: 1020;
+   --z-index-fixed: 1030;
+   --z-index-modal-backdrop: 1040;
+   --z-index-modal: 1050;
+   --z-index-popover: 1060;
+   --z-index-tooltip: 1070;
+   --z-index-toast: 1080;
+   --z-index-max: 2147483647;
 
-  /* ========================================
+   /* ========================================
      TRANSITIONS & ANIMATIONS
      ======================================== */
-  --transition-fast: 150ms;
-  --transition-base: 250ms;
-  --transition-slow: 350ms;
-  --transition-slower: 500ms;
+   --transition-fast: 150ms;
+   --transition-base: 250ms;
+   --transition-slow: 350ms;
+   --transition-slower: 500ms;
 
-  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.2, 1);
-  --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+   --ease-out: cubic-bezier(0, 0, 0.2, 1);
+   --ease-in: cubic-bezier(0.4, 0, 1, 1);
+   --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
-  /* ========================================
+   /* ========================================
+     EFFECTS & FILTERS
+     ======================================== */
+   --blur-xs: 2px;
+   --blur-sm: 4px;
+   --blur-md: 8px;
+   --blur-lg: 12px;
+   --blur-xl: 16px;
+   --blur-2xl: 24px;
+
+   /* Glass-morphism Effects */
+   --glass-bg: rgba(255, 255, 255, 0.1);
+   --glass-border: rgba(255, 255, 255, 0.2);
+   --glass-backdrop: blur(var(--blur-lg));
+
+   /* ========================================
+     OPACITY SYSTEM
+     ======================================== */
+   --opacity-disabled: 0.4;
+   --opacity-light: 0.6;
+   --opacity-medium: 0.7;
+   --opacity-heavy: 0.8;
+   --opacity-full: 1;
+
+   /* ========================================
+     COMPONENT TOKENS
+     ======================================== */
+   /* Tab Bar */
+   --tab-bar-height: 4.5rem;
+   --tab-bar-height-sm: 3.5rem;
+
+   /* Badge System */
+   --badge-size: 1.25rem;
+   --badge-size-sm: 1rem;
+   --z-index-badge: 10;
+
+   /* ========================================
      TOUCH TARGETS (WCAG 2.1 Level AAA)
      ======================================== */
-  --touch-target-min: 44px; /* Minimum for AAA compliance */
-  --touch-target-comfortable: 48px; /* Comfortable touch size */
-  --touch-target-large: 56px; /* Large, easy to hit */
+   --touch-target-min: 44px;
+   /* Minimum for AAA compliance */
+   --touch-target-comfortable: 48px;
+   /* Comfortable touch size */
+   --touch-target-large: 56px;
+   /* Large, easy to hit */
 
-  /* ========================================
+   /* ========================================
      FORM ELEMENTS
      ======================================== */
-  --input-height-sm: 36px;
-  --input-height-md: 44px;
-  --input-height-lg: 52px;
+   --input-height-sm: 36px;
+   --input-height-md: 44px;
+   --input-height-lg: 52px;
 
-  --input-padding-x: var(--spacing-md);
-  --input-padding-y: var(--spacing-sm);
+   --input-padding-x: var(--spacing-md);
+   --input-padding-y: var(--spacing-sm);
 
-  --button-padding-sm: var(--spacing-sm) var(--spacing-md);
-  --button-padding-md: var(--spacing-md) var(--spacing-lg);
-  --button-padding-lg: var(--spacing-lg) var(--spacing-xl);
+   --button-padding-sm: var(--spacing-sm) var(--spacing-md);
+   --button-padding-md: var(--spacing-md) var(--spacing-lg);
+   --button-padding-lg: var(--spacing-lg) var(--spacing-xl);
 
-  /* ========================================
+   /* ========================================
      GRID SYSTEM
      ======================================== */
-  --grid-columns: 12;
-  --grid-gap: var(--spacing-md);
-  --grid-gap-lg: var(--spacing-lg);
+   --grid-columns: 12;
+   --grid-gap: var(--spacing-md);
+   --grid-gap-lg: var(--spacing-lg);
 
-  /* ========================================
+   /* ========================================
      BREAKPOINTS
      ======================================== */
-  --breakpoint-xs: 375px; /* Small phones */
-  --breakpoint-sm: 640px; /* Large phones */
-  --breakpoint-md: 768px; /* Tablets */
-  --breakpoint-lg: 1024px; /* Small desktops */
-  --breakpoint-xl: 1280px; /* Large desktops */
+   --breakpoint-xs: 375px;
+   /* Small phones */
+   --breakpoint-sm: 640px;
+   /* Large phones */
+   --breakpoint-md: 768px;
+   /* Tablets */
+   --breakpoint-lg: 1024px;
+   /* Small desktops */
+   --breakpoint-xl: 1280px;
+   /* Large desktops */
 
-  /* ========================================
+   /* ========================================
      OPACITY LEVELS
      ======================================== */
-  --opacity-disabled: 0.38;
-  --opacity-hover: 0.08;
-  --opacity-focus: 0.12;
-  --opacity-selected: 0.16;
-  --opacity-active: 0.24;
+   --opacity-disabled: 0.38;
+   --opacity-hover: 0.08;
+   --opacity-focus: 0.12;
+   --opacity-selected: 0.16;
+   --opacity-active: 0.24;
 
-  /* ========================================
+   /* ========================================
      PRESENTATION DESIGN SYSTEM (Cardano Summit 2025)
      ======================================== */
-  /* Modern cyber theme: Cyan, Purple, Dark Blue */
-  --cardano-blue: #0033ad; /* Primary blue */
-  --cardano-cyan: #00d4ff; /* Bright cyan accent */
-  --cardano-purple: #7b3ff2; /* Purple accent */
-  --cardano-dark: #0f0f1e; /* Deep dark background */
+   /* Modern cyber theme: Cyan, Purple, Dark Blue */
+   --cardano-blue: #0033ad;
+   /* Primary blue */
+   --cardano-cyan: #00d4ff;
+   /* Bright cyan accent */
+   --cardano-purple: #7b3ff2;
+   /* Purple accent */
+   --cardano-dark: #0f0f1e;
+   /* Deep dark background */
 
-  /* ========================================
+   /* RGB Values for alpha compositions */
+   --cardano-blue-rgb: 0, 51, 173;
+   --cardano-cyan-rgb: 0, 212, 255;
+   --cardano-purple-rgb: 123, 63, 242;
+   --cardano-dark-rgb: 15, 15, 30;
+
+   /* ========================================
      COLOR SYSTEM EXTENSIONS
      ======================================== */
-  /* Using Ionic color system as base, adding semantic colors */
+   /* Using Ionic color system as base, adding semantic colors */
 
-  /* Success States */
-  --color-success-light: #10b9811a;
-  --color-success: #10b981; /* Emerald green */
-  --color-success-dark: #059669;
+   /* Success States */
+   --color-success-light: #10b9811a;
+   --color-success: #10b981;
+   /* Emerald green */
+   --color-success-dark: #059669;
 
-  /* Error States */
-  --color-error-light: var(--ion-color-danger-tint);
-  --color-error: var(--ion-color-danger);
-  --color-error-dark: var(--ion-color-danger-shade);
+   /* Error States */
+   --color-error-light: var(--ion-color-danger-tint);
+   --color-error: var(--ion-color-danger);
+   --color-error-dark: var(--ion-color-danger-shade);
 
-  /* Warning States */
-  --color-warning-light: var(--ion-color-warning-tint);
-  --color-warning: var(--ion-color-warning);
-  --color-warning-dark: var(--ion-color-warning-shade);
+   /* Warning States */
+   --color-warning-light: var(--ion-color-warning-tint);
+   --color-warning: var(--ion-color-warning);
+   --color-warning-dark: var(--ion-color-warning-shade);
 
-  /* Info States */
-  --color-info-light: #00d4ff1a;
-  --color-info: var(--cardano-cyan); /* Use cyan for primary info */
-  --color-info-dark: #00a8cc;
+   /* Info States */
+   --color-info-light: #00d4ff1a;
+   --color-info: var(--cardano-cyan);
+   /* Use cyan for primary info */
+   --color-info-dark: #00a8cc;
 
-  /* Neutral Grays */
-  --color-gray-50: #fafafa;
-  --color-gray-100: #f5f5f5;
-  --color-gray-200: #eeeeee;
-  --color-gray-300: #e0e0e0;
-  --color-gray-400: #bdbdbd;
-  --color-gray-500: #9e9e9e;
-  --color-gray-600: #757575;
-  --color-gray-700: #616161;
-  --color-gray-800: #424242;
-  --color-gray-900: #212121;
+   /* Neutral Grays */
+   --color-gray-50: #fafafa;
+   --color-gray-100: #f5f5f5;
+   --color-gray-200: #eeeeee;
+   --color-gray-300: #e0e0e0;
+   --color-gray-400: #bdbdbd;
+   --color-gray-500: #9e9e9e;
+   --color-gray-600: #757575;
+   --color-gray-700: #616161;
+   --color-gray-800: #424242;
+   --color-gray-900: #212121;
 
-  /* ========================================
+   /* ========================================
      COMPONENT TOKENS
      ======================================== */
 
-  /* Glass-Morphism Cards */
-  --card-glass-background: rgba(255, 255, 255, 0.05);
-  --card-glass-backdrop: blur(10px);
-  --card-glass-border: 1px solid rgba(255, 255, 255, 0.1);
+   /* Glass-Morphism Cards */
+   --card-glass-background: rgba(255, 255, 255, 0.05);
+   --card-glass-backdrop: blur(10px);
+   --card-glass-border: 1px solid rgba(255, 255, 255, 0.1);
 
-  /* Cards */
-  --card-border-radius: var(--radius-xl);
-  --card-padding: var(--spacing-lg);
-  --card-shadow: var(--shadow-md);
-  --card-background: rgba(255, 255, 255, 0.02);
-  --card-backdrop: blur(5px);
-  --card-border: 1px solid rgba(255, 255, 255, 0.05);
+   /* Cards */
+   --card-border-radius: var(--radius-xl);
+   --card-padding: var(--spacing-lg);
+   --card-shadow: var(--shadow-md);
+   --card-background: rgba(255, 255, 255, 0.02);
+   --card-backdrop: blur(5px);
+   --card-border: 1px solid rgba(255, 255, 255, 0.05);
 
-  /* Buttons */
-  --button-border-radius: var(--radius-md);
-  --button-shadow: var(--shadow-sm);
-  --button-shadow-hover: var(--shadow-md);
-  --button-transition: all var(--transition-base) var(--ease-out);
-  --button-primary-bg: var(--cardano-cyan);
-  --button-primary-text: #000000;
-  --button-secondary-bg: var(--cardano-purple);
-  --button-secondary-text: #ffffff;
+   /* Buttons */
+   --button-border-radius: var(--radius-md);
+   --button-shadow: var(--shadow-sm);
+   --button-shadow-hover: var(--shadow-md);
+   --button-transition: all var(--transition-base) var(--ease-out);
+   --button-primary-bg: var(--cardano-cyan);
+   --button-primary-text: #000000;
+   --button-secondary-bg: var(--cardano-purple);
+   --button-secondary-text: #ffffff;
 
-  /* Modals */
-  --modal-border-radius: var(--radius-2xl);
-  --modal-padding: var(--spacing-xl);
-  --modal-backdrop: rgba(0, 0, 0, 0.5);
-  --modal-max-width: var(--container-md);
+   /* Modals */
+   --modal-border-radius: var(--radius-2xl);
+   --modal-padding: var(--spacing-xl);
+   --modal-backdrop: rgba(0, 0, 0, 0.5);
+   --modal-max-width: var(--container-md);
 
-  /* Icons */
-  --icon-size-sm: 1rem;
-  --icon-size-md: 1.5rem;
-  --icon-size-lg: 2rem;
-  --icon-size-xl: 3rem;
-  --icon-size-2xl: 4rem;
+   /* Icons */
+   --icon-size-sm: 1rem;
+   --icon-size-md: 1.5rem;
+   --icon-size-lg: 2rem;
+   --icon-size-xl: 3rem;
+   --icon-size-2xl: 4rem;
 
-  /* Progress Bars */
-  --progress-height: 12px;
-  --progress-border-radius: var(--radius-full);
-  --progress-background: var(--color-gray-200);
-  --progress-fill: linear-gradient(
-    90deg,
-    var(--ion-color-primary),
-    var(--ion-color-primary-shade)
-  );
+   /* Progress Bars */
+   --progress-height: 12px;
+   --progress-border-radius: var(--radius-full);
+   --progress-background: var(--color-gray-200);
+   --progress-fill: linear-gradient(90deg,
+         var(--ion-color-primary),
+         var(--ion-color-primary-shade));
 
-  /* Badges */
-  --badge-border-radius: var(--radius-full);
-  --badge-padding: var(--spacing-xs) var(--spacing-sm);
-  --badge-font-size: var(--font-size-xs);
+   /* Badges */
+   --badge-border-radius: var(--radius-full);
+   --badge-padding: var(--spacing-xs) var(--spacing-sm);
+   --badge-font-size: var(--font-size-xs);
 
-  /* Avatars */
-  --avatar-size-sm: 32px;
-  --avatar-size-md: 40px;
-  --avatar-size-lg: 48px;
-  --avatar-size-xl: 64px;
+   /* Avatars */
+   --avatar-size-sm: 32px;
+   --avatar-size-md: 40px;
+   --avatar-size-lg: 48px;
+   --avatar-size-xl: 64px;
 
-  /* ========================================
+   /* ========================================
      ACCESSIBILITY
      ======================================== */
-  /* Focus States */
-  --focus-ring-width: 3px;
-  --focus-ring-color: var(--ion-color-primary);
-  --focus-ring-offset: 2px;
-  --focus-ring-style: solid;
+   /* Focus States */
+   --focus-ring-width: 3px;
+   --focus-ring-color: var(--ion-color-primary);
+   --focus-ring-offset: 2px;
+   --focus-ring-style: solid;
 
-  /* Skip Links */
-  --skip-link-background: var(--ion-color-primary);
-  --skip-link-color: white;
-  --skip-link-padding: var(--spacing-md) var(--spacing-lg);
+   /* Skip Links */
+   --skip-link-background: var(--ion-color-primary);
+   --skip-link-color: white;
+   --skip-link-padding: var(--spacing-md) var(--spacing-lg);
 }
 
 /* ========================================
    DARK MODE OVERRIDES
    ======================================== */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --card-background: var(--ion-color-neutral-800);
-    --modal-backdrop: rgba(0, 0, 0, 0.7);
+   :root {
+      --card-background: var(--ion-color-neutral-800);
+      --modal-backdrop: rgba(0, 0, 0, 0.7);
 
-    /* Adjust shadows for dark mode */
-    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
-    --shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.7);
-    --shadow-2xl: 0 16px 32px 0 rgba(0, 0, 0, 0.8);
-  }
+      /* Adjust shadows for dark mode */
+      --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 8px 16px 0 rgba(0, 0, 0, 0.6);
+      --shadow-xl: 0 12px 24px 0 rgba(0, 0, 0, 0.7);
+      --shadow-2xl: 0 16px 32px 0 rgba(0, 0, 0, 0.8);
+   }
 }
 
 /* ========================================
    REDUCED MOTION
    ======================================== */
 @media (prefers-reduced-motion: reduce) {
-  :root {
-    --transition-fast: 0ms;
-    --transition-base: 0ms;
-    --transition-slow: 0ms;
-    --transition-slower: 0ms;
-  }
+   :root {
+      --transition-fast: 0ms;
+      --transition-base: 0ms;
+      --transition-slow: 0ms;
+      --transition-slower: 0ms;
+   }
 
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+   * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+   }
 }

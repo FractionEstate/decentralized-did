@@ -1,7 +1,117 @@
 /**
- * DAppBrowser Styles
+ * DAppBrowser Styles - Mobile-First Design
  */
 
+/* Navigation container - moved to content for maximum screen space */
+.dapp-browser-nav-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg,
+      rgba(0, 212, 255, 0.05) 0%,
+      rgba(123, 63, 242, 0.05) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  margin-bottom: 8px;
+
+  .browser-controls {
+    display: flex;
+    gap: 4px;
+
+    ion-button {
+      --padding-start: 8px;
+      --padding-end: 8px;
+      --color: var(--cardano-cyan);
+      height: 36px;
+
+      &[disabled] {
+        --color: var(--ion-color-medium);
+        opacity: 0.4;
+      }
+    }
+  }
+
+  .url-bar {
+    --background: rgba(255, 255, 255, 0.9);
+    --border-radius: 8px;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    flex: 1;
+    font-size: 14px;
+    height: 36px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .connection-status {
+    ion-button {
+      --color: var(--cardano-green, #00d084);
+      height: 36px;
+
+      ion-badge {
+        font-size: 10px;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  /* Mobile optimization */
+  @media (max-width: 374px) {
+    padding: 8px 12px;
+    gap: 6px;
+
+    .browser-controls {
+      gap: 2px;
+
+      ion-button {
+        --padding-start: 6px;
+        --padding-end: 6px;
+        height: 32px;
+      }
+    }
+
+    .url-bar {
+      font-size: 12px;
+      height: 32px;
+      --padding-start: 8px;
+      --padding-end: 8px;
+    }
+
+    .connection-status ion-button {
+      height: 32px;
+    }
+  }
+
+  /* Desktop enhancement */
+  @media (min-width: 768px) {
+    padding: 16px 24px;
+    gap: 12px;
+
+    .browser-controls {
+      gap: 8px;
+
+      ion-button {
+        height: 40px;
+        --padding-start: 12px;
+        --padding-end: 12px;
+      }
+    }
+
+    .url-bar {
+      font-size: 16px;
+      height: 40px;
+    }
+
+    .connection-status ion-button {
+      height: 40px;
+    }
+  }
+}
+
+/* Legacy nav styles (keep for reference - can be removed later) */
 .dapp-browser-nav {
   --background: var(--ion-color-light);
 

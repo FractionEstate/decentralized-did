@@ -96,8 +96,8 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
   };
 
   return (
-    <IonItem 
-      button={!!onClick || !!href} 
+    <IonItem
+      button={!!onClick || !!href}
       onClick={handleClick}
       disabled={disabled}
       className="settings-item"
@@ -206,8 +206,7 @@ const Settings = () => {
       <TabLayout
         pageId={pageId}
         hardwareBackButtonConfig={backHardwareConfig}
-        header={true}
-        title="Settings"
+        header={false}
         customClass="settings-page"
       >
         <div className="settings-content">
