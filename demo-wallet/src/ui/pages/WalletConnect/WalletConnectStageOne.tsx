@@ -3,7 +3,7 @@ import { personCircleOutline } from "ionicons/icons";
 import { useState } from "react";
 import { i18n } from "../../../i18n";
 import { Alert } from "../../components/common/Alert";
-import { PageFooter } from "../../components/common/PageFooter";
+import { PageFooter } from "../../components/PageFooter";
 import { PageHeader } from "../../components/common/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
 import { combineClassNames } from "../../utils/style";
@@ -11,7 +11,7 @@ import "./WalletConnect.scss";
 import { WalletConnectStageOneProps } from "./WalletConnect.types";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { setPendingConnection } from "../../../store/reducers/walletConnectionsCache";
-import { ANIMATION_DURATION } from "../../components/layout/SideSlider/SideSlider.types";
+import { ANIMATION_DURATION } from "../../components/SideSlider/SideSlider.types";
 import { getIdentifiersCache } from "../../../store/reducers/identifiersCache";
 import { CreateIdentifier } from "../../components/identifier/CreateIdentifier";
 

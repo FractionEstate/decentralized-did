@@ -1,6 +1,6 @@
-import { i18n } from "../../../../../i18n";
-import { CardBlock, CardDetailsItem } from "../../../../components/CardDetails";
-import { ListHeader } from "../../../../components/ListHeader";
+import { i18n } from "../../../../../../i18n";
+import { CardDetailsBlock, CardDetailsItem } from "../../../../card/CardDetails";
+import { ListHeader } from "../../../../ListHeader";
 import { SigningThresholdProps } from "./IdentifierAttributeDetailModal.types";
 
 const RotationThreshold = ({ data }: SigningThresholdProps) => {
@@ -11,7 +11,7 @@ const RotationThreshold = ({ data }: SigningThresholdProps) => {
           "tabs.identifiers.details.detailmodal.rotationthreshold.threshold.title"
         )}
       />
-      <CardBlock testId="threshhold-block">
+      <CardDetailsBlock>
         <CardDetailsItem
           info={i18n.t(
             "tabs.identifiers.details.detailmodal.rotationthreshold.threshold.text",
@@ -21,7 +21,7 @@ const RotationThreshold = ({ data }: SigningThresholdProps) => {
             }
           )}
         />
-      </CardBlock>
+      </CardDetailsBlock>
     </>
   );
 };

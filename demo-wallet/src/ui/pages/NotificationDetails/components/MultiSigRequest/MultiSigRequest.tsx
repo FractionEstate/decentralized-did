@@ -21,12 +21,12 @@ import {
   setNotificationsCache,
 } from "../../../../../store/reducers/notificationsCache";
 import { Alert as AlertDecline } from "../../../../components/common/Alert";
-import { FallbackIcon } from "../../../../components/image/FallbackIcon";
+import { FallbackIcon } from "../../../../components/FallbackIcon";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { Spinner } from "../../../../components/common/Spinner";
-import { Verification } from "../../../../components/auth/Verification";
+import { Verification } from "../../../../components/Verification";
 import { BackEventPriorityType, ToastMsgType } from "../../../../globals/types";
 import {
   useIonHardwareBackButton,

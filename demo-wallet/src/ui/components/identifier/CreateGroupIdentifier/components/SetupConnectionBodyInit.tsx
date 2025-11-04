@@ -7,12 +7,12 @@ import { i18n } from "../../../../i18n";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
 import { setToastMsg } from "../../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../../globals/types";
-import { writeToClipboard } from "../../../utils/clipboard";
-import { PageHeader } from "../../PageHeader";
-import { Spinner } from "../../Spinner";
-import { SpinnerConverage } from "../../Spinner/Spinner.type";
-import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { ToastMsgType } from "../../../../globals/types";
+import { writeToClipboard } from "../../../../utils/clipboard";
+import { PageHeader } from "../../../common/PageHeader";
+import { Spinner } from "../../../common/Spinner";
+import { SpinnerConverage } from "../../../common/Spinner/Spinner.type";
+import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
 import { IdentifierStage1BodyProps } from "../CreateGroupIdentifier.types";
 
 const SetupConnectionBodyInit = ({
@@ -57,9 +57,8 @@ const SetupConnectionBodyInit = ({
         {i18n.t("createidentifier.share.notes.top")}
       </p>
       <div
-        className={`multisig-share-qr-code${
-          oobi.length && !isPending ? " reveal" : " blur"
-        }`}
+        className={`multisig-share-qr-code${oobi.length && !isPending ? " reveal" : " blur"
+          }`}
         data-testid="multisig-share-qr-code"
       >
         <div className="qr-container">

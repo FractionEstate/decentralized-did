@@ -7,7 +7,7 @@ import { i18n } from "../../../../i18n";
 import { useAppDispatch } from "../../../../store/hooks";
 import { setToastMsg } from "../../../../store/reducers/stateCache";
 import { Alert } from "../../../components/common/Alert/Alert";
-import { PageFooter } from "../../../components/common/PageFooter/PageFooter";
+import { PageFooter } from "../../../components/PageFooter";
 import { PageHeader } from "../../../components/common/PageHeader/PageHeader";
 import { ScrollablePageLayout } from "../../../components/layout/ScrollablePageLayout/ScrollablePageLayout";
 import { ToastMsgType } from "../../../globals/types";

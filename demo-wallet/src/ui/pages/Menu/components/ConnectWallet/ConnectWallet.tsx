@@ -21,12 +21,12 @@ import {
   setPendingConnection,
   setWalletConnectionsCache,
 } from "../../../../../store/reducers/walletConnectionsCache";
-import { Alert } from "../../../../components/common/Alert";
+import { Alert } from "../../../../components/common/Alert/Alert";
 import { CardList } from "../../../../components/card/CardList";
-import { CardsPlaceholder } from "../../../../components/common/CardsPlaceholder";
+import { CardsPlaceholder } from "../../../../components/card/CardsPlaceholder/CardsPlaceholder";
 import { CreateIdentifier } from "../../../../components/identifier/CreateIdentifier";
-import { ANIMATION_DURATION } from "../../../../components/layout/SideSlider.types";
-import { Verification } from "../../../../components/auth/Verification";
+import { ANIMATION_DURATION } from "../../../../components/SideSlider/SideSlider.types";
+import { Verification } from "../../../../components/Verification/Verification";
 import { OperationType, ToastMsgType } from "../../../../globals/types";
 import { showError } from "../../../../utils/error";
 import { ConfirmConnectModal } from "../ConfirmConnectModal";

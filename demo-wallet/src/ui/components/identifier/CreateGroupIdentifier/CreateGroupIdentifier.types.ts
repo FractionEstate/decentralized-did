@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
-import { ConnectionShortDetails } from "../../../core/agent/agent.types";
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { MultiSigGroup } from "../../../store/reducers/identifiersCache/identifiersCache.types";
+import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
+import { MultiSigGroup } from "../../../../store/reducers/identifiersCache/identifiersCache.types";
 import { IdentifierColor } from "../CreateIdentifier/components/IdentifierColorSelector";
 
 enum Stage {

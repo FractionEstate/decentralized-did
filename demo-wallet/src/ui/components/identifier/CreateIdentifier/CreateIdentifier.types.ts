@@ -1,4 +1,4 @@
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
 import { IdentifierColor } from "./components/IdentifierColorSelector";
 
 interface IdentifierModel

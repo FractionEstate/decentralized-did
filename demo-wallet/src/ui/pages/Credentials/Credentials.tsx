@@ -36,17 +36,17 @@ import {
 } from "../../../store/reducers/stateCache";
 import { ArchivedCredentials } from "../../components/credential/ArchivedCredentials";
 import { CardSlider } from "../../components/card/CardSlider";
-import { CardsPlaceholder } from "../../components/placeholders/CardsPlaceholder";
-import { FilterChip } from "../../components/common/FilterChip";
-import { AllowedChipFilter } from "../../components/common/FilterChip.types";
-import { FilteredItemsPlaceholder } from "../../components/placeholders/FilteredItemsPlaceholder";
+import { CardsPlaceholder } from "../../components/card/CardsPlaceholder/CardsPlaceholder";
+import { FilterChip } from "../../components/FilterChip/FilterChip";
+import { AllowedChipFilter } from "../../components/FilterChip/FilterChip.types";
+import { FilteredItemsPlaceholder } from "../../components/FilteredItemsPlaceholder/FilteredItemsPlaceholder";
 import { TabLayout } from "../../components/layout/TabLayout";
-import { ListHeader } from "../../components/common/ListHeader";
-import { RemovePendingAlert } from "../../components/alert/RemovePendingAlert";
+import { ListHeader } from "../../components/ListHeader/ListHeader";
+import { RemovePendingAlert } from "../../components/RemovePendingAlert/RemovePendingAlert";
 import { SwitchCardView } from "../../components/card/SwitchCardView";
-import { CardList as CredentialCardList } from "../../components/card/CardList";
+import { CardList as CredentialCardList } from "../../components/card/CardList/CardList";
 import { CardType, ToastMsgType } from "../../globals/types";
-import { useOnlineStatusEffect } from "../../hooks";
+import { useOnlineStatusEffect } from "../../hooks/useOnlineStatusEffect";
 import { showError } from "../../utils/error";
 import { combineClassNames } from "../../utils/style";
 import { StartAnimationSource } from "../Identifiers/Identifiers.types";
@@ -132,16 +132,17 @@ const Credentials = () => {
     favouriteCredentialsCache?.some((fav) => fav.id === cred.id)
   );
 
-  const sortedFavouriteCredentials = favouriteCredentials.sort((a, b) => {
-    const timeA = findTimeById(a.id);
-    const timeB = findTimeById(b.id);
+  const sortedFavouriteCredentials: CredentialShortDetails[] =
+    favouriteCredentials.sort((a, b) => {
+      const timeA = findTimeById(a.id);
+      const timeB = findTimeById(b.id);
 
-    if (timeA === null && timeB === null) return 0;
-    if (timeA === null) return 1;
-    if (timeB === null) return -1;
+      if (timeA === null && timeB === null) return 0;
+      if (timeA === null) return 1;
+      if (timeB === null) return -1;
 
-    return timeA - timeB;
-  });
+      return timeA - timeB;
+    });
 
   useEffect(() => {
     setShowPlaceholder(confirmedCreds.length + pendingCreds.length === 0);
@@ -360,8 +361,11 @@ const Credentials = () => {
                   title={`${i18n.t("tabs.credentials.tab.pendingcred")}`}
                 />
                 <CredentialCardList
-                  cardsData={pendingCreds}
-                  cardTypes={CardType.CREDENTIALS}
+                  data={pendingCreds.map((cred) => ({
+                    id: cred.id,
+                    title: cred.credentialType,
+                    data: cred,
+                  }))}
                   testId="pending-creds-list"
                   onCardClick={(cred: CredentialShortDetails) => {
                     setDeletePendingItem(cred as CredentialShortDetails);

@@ -47,7 +47,7 @@ import { SubMenu } from "../Menu/components/SubMenu/SubMenu";
 import {
   emptySubMenu,
   SubMenuItems,
-} from "../Menu/components/SubMenuItems/SubMenuItems";
+} from "../Menu/components/SubMenuItems";
 import { SubMenuKey } from "../Menu/Menu.types";
 import "./Settings.scss";
 
@@ -228,8 +228,8 @@ const Settings = () => {
             {!ConfigurationService.env.features.cut.includes(OptionalFeature.ConnectWallet) && (
               <SettingsItem
                 icon={linkOutline}
-                label={i18n.t("tabs.menu.tab.items.connectwallet.title")}
-                value={i18n.t("tabs.menu.tab.items.connectwallet.sublabel")}
+                label={String(i18n.t("tabs.menu.tab.items.connectwallet.title"))}
+                value={String(i18n.t("tabs.menu.tab.items.connectwallet.sublabel"))}
                 onClick={() => showSelectedOption(SubMenuKey.ConnectWallet)}
               />
             )}
@@ -316,7 +316,7 @@ const Settings = () => {
         nestedMenu={selectSubmenu.nestedMenu}
         closeButtonLabel={selectSubmenu.closeButtonLabel}
         closeButtonAction={selectSubmenu.closeButtonAction}
-        title={selectSubmenu.title ? i18n.t(selectSubmenu.title) : ""}
+        title={selectSubmenu.title ? String(i18n.t(selectSubmenu.title)) : undefined}
         additionalButtons={selectSubmenu.additionalButtons}
         actionButton={selectSubmenu.actionButton}
         actionButtonAction={selectSubmenu.actionButtonAction}

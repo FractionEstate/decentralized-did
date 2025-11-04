@@ -1,7 +1,7 @@
 import { IonModal } from "@ionic/react";
-import { i18n } from "../../../../../i18n";
-import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
-import { PageHeader } from "../../../PageHeader";
+import { i18n } from "../../../../../../i18n";
+import { ScrollablePageLayout } from "../../../../layout/ScrollablePageLayout";
+import { PageHeader } from "../../../../../components/common/PageHeader";
 import "./AIDTypeInfoModal.scss";
 import { IADTypeInfoModalProps } from "./IADTypeInfoModal.types";
 

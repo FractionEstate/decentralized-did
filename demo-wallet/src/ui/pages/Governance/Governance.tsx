@@ -11,7 +11,6 @@ import {
   selectGovernanceError,
 } from "../../../store/reducers/governanceCache";
 import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
-import { PageHeader } from "../../components/common/PageHeader";
 import { showError } from "../../utils/error";
 import { formatVotingPower, getStatusColor, formatProposalId } from "../../../core/cardano/governanceService";
 import "./Governance.scss";

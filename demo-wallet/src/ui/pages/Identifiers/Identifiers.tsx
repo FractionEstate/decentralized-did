@@ -28,16 +28,16 @@ import {
   showConnections,
 } from "../../../store/reducers/stateCache";
 import { CardSlider } from "../../components/card/CardSlider";
-import { CardsPlaceholder } from "../../components/common/CardsPlaceholder";
-import { CreateGroupIdentifier } from "../../components/identifier/CreateGroupIdentifier";
-import { CreateIdentifier } from "../../components/identifier/CreateIdentifier";
-import { FilterChip } from "../../components/common/FilterChip";
-import { AllowedChipFilter } from "../../components/common/FilterChip.types";
-import { FilteredItemsPlaceholder } from "../../components/common/FilteredItemsPlaceholder";
-import { ListHeader } from "../../components/common/ListHeader";
-import { RemovePendingAlert } from "../../components/common/RemovePendingAlert";
+import { CardsPlaceholder } from "../../components/card/CardsPlaceholder/CardsPlaceholder";
+import { CreateGroupIdentifier } from "../../components/identifier/CreateGroupIdentifier/CreateGroupIdentifier";
+import { CreateIdentifier } from "../../components/identifier/CreateIdentifier/CreateIdentifier";
+import { FilterChip } from "../../components/FilterChip/FilterChip";
+import { AllowedChipFilter } from "../../components/FilterChip/FilterChip.types";
+import { FilteredItemsPlaceholder } from "../../components/FilteredItemsPlaceholder/FilteredItemsPlaceholder";
+import { ListHeader } from "../../components/ListHeader/ListHeader";
+import { RemovePendingAlert } from "../../components/RemovePendingAlert/RemovePendingAlert";
 import { SwitchCardView } from "../../components/card/SwitchCardView";
-import { CardList as IdentifierCardList } from "../../components/card/CardList";
+import { CardList as IdentifierCardList } from "../../components/card/CardList/CardList";
 import { TabLayout } from "../../components/layout/TabLayout";
 import { CardType, OperationType, ToastMsgType } from "../../globals/types";
 import { showError } from "../../utils/error";
@@ -426,9 +426,12 @@ const Identifiers = () => {
               <div className="identifiers-tab-content-block multisig-container">
                 <h3>{t("tabs.identifiers.tab.multisigidentifiers")}</h3>
                 <IdentifierCardList
-                  cardTypes={CardType.IDENTIFIERS}
-                  cardsData={multiSigIdentifiers}
-                  onCardClick={async (identifier: IdentifierShortDetails) =>
+                  data={multiSigIdentifiers.map((identifier) => ({
+                    id: identifier.id,
+                    title: identifier.displayName,
+                    data: identifier,
+                  }))}
+                  onCardClick={async (identifier) =>
                     handleMultiSigClick(identifier as IdentifierShortDetails)
                   }
                   testId="identifiers-list"
@@ -441,10 +444,13 @@ const Identifiers = () => {
                   title={`${t("tabs.identifiers.tab.pendingidentifiers")}`}
                 />
                 <IdentifierCardList
-                  cardsData={pendingIdentifiers}
-                  cardTypes={CardType.IDENTIFIERS}
+                  data={pendingIdentifiers.map((identifier) => ({
+                    id: identifier.id,
+                    title: identifier.displayName,
+                    data: identifier,
+                  }))}
                   testId="pending-identifiers-list"
-                  onCardClick={(identifier: IdentifierShortDetails) => {
+                  onCardClick={(identifier) => {
                     setDeletePendingItem(identifier as IdentifierShortDetails);
                     setOpenDeletePendingAlert(true);
                   }}

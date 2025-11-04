@@ -19,11 +19,11 @@ import {
 } from "../../../../components/card/CardDetails";
 import { reservedKeysFilter } from "../../../../components/card/CardDetails/CardDetailsAttributes/CardDetailsAttributes.utils";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
-import { PageHeader } from "../../../../components/layout/PageHeader";
+import { PageFooter } from "../../../../components/PageFooter";
+import { PageHeader } from "../../../../components/common/PageHeader";
 import { Spinner } from "../../../../components/common/Spinner";
 import { SpinnerConverage } from "../../../../components/common/Spinner/Spinner.type";
-import { Verification } from "../../../../components/auth/Verification";
+import { Verification } from "../../../../components/Verification";
 import { ToastMsgType } from "../../../../globals/types";
 import { showError } from "../../../../utils/error";
 import { combineClassNames } from "../../../../utils/style";

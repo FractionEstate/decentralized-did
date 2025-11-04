@@ -1,7 +1,7 @@
 import { IonButton, IonIcon, IonToolbar } from "@ionic/react";
 import { archiveOutline, trashOutline } from "ionicons/icons";
-import "./PageFooter.scss";
 import { PageFooterProps } from "./PageFooter.types";
+import "./PageFooter.scss";
 
 const PageFooter = ({
   pageId,

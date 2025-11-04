@@ -22,10 +22,10 @@ import {
   MemberAcceptStatus,
   MultisigMember,
 } from "../../../../../components/credential/CredentialDetailModule/components";
-import { FallbackIcon } from "../../../../../components/image/FallbackIcon";
+import { FallbackIcon } from "../../../../../components/FallbackIcon";
 import { InfoCard } from "../../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../../components/PageFooter";
 import { PageHeader } from "../../../../../components/common/PageHeader";
 import { Verification } from "../../../../../components/auth/Verification";
 import { ToastMsgType } from "../../../../../globals/types";
@@ -458,6 +458,7 @@ const CredentialRequestInformation = ({
         onClose={handleClose}
         joinedCredRequestMembers={linkedGroup?.memberInfos}
         viewOnly
+        defaultSelected
       />
       <AlertDecline
         isOpen={alertDeclineIsOpen}

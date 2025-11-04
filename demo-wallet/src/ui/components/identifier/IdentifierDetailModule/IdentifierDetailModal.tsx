@@ -1,6 +1,6 @@
 import { IonModal } from "@ionic/react";
 import { useCallback, useMemo } from "react";
-import { BackEventPriorityType } from "../../globals/types";
+import { BackEventPriorityType } from "../../../globals/types";
 import { IdentifierDetailModule } from "./IdentifierDetailModule";
 import { IdentifierDetailModalProps } from "./IdentifierDetailModule.types";
 

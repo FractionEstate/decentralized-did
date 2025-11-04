@@ -1,13 +1,13 @@
 import { IonModal } from "@ionic/react";
 import { useCallback, useEffect, useState } from "react";
-import { Agent } from "../../../core/agent/agent";
-import { useAppDispatch } from "../../../store/hooks";
-import { setMultiSigGroupCache } from "../../../store/reducers/identifiersCache";
-import { MultiSigGroup } from "../../../store/reducers/identifiersCache/identifiersCache.types";
-import { useOnlineStatusEffect } from "../../hooks";
-import { showError } from "../../utils/error";
+import { Agent } from "../../../../core/agent/agent";
+import { useAppDispatch } from "../../../../store/hooks";
+import { setMultiSigGroupCache } from "../../../../store/reducers/identifiersCache";
+import { MultiSigGroup } from "../../../../store/reducers/identifiersCache/identifiersCache.types";
+import { useOnlineStatusEffect } from "../../../hooks";
+import { showError } from "../../../utils/error";
 import { IdentifierColor } from "../CreateIdentifier/components/IdentifierColorSelector";
-import { Spinner } from "../Spinner";
+import { Spinner } from "../../common/Spinner";
 import "./CreateGroupIdentifier.scss";
 import {
   CreateIdentifierProps,
@@ -17,7 +17,7 @@ import { GroupMembers } from "./components/GroupMembers";
 import { SetupConnections } from "./components/SetupConnections";
 import { SetupThreshold } from "./components/SetupThreshold";
 import { Summary } from "./components/Summary";
-import { CreationStatus } from "../../../core/agent/agent.types";
+import { CreationStatus } from "../../../../core/agent/agent.types";
 
 const stages = [SetupConnections, GroupMembers, SetupThreshold, Summary];
 

@@ -6,7 +6,7 @@ import {
 import { ConnectionHistoryType } from "../../../../core/agent/services/connectionService.types";
 import { i18n } from "../../../../i18n";
 import { CardTheme } from "../../../components/card/CardTheme/CardTheme";
-import { FallbackIcon } from "../../../components/common/FallbackIcon/FallbackIcon";
+import { FallbackIcon } from "../../../components/FallbackIcon/FallbackIcon";
 import {
   formatShortDate,
   formatTimeToSec,

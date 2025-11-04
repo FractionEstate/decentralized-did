@@ -21,11 +21,11 @@ import {
 } from "../../../../../../store/reducers/notificationsCache";
 import { setToastMsg } from "../../../../../../store/reducers/stateCache";
 import { CardItem, CardList } from "../../../../../components/card/CardList";
-import { BackReason } from "../../../../../components/credential/CredentialDetailModule.types";
+import { BackReason } from "../../../../../components/credential/CredentialDetailModule/CredentialDetailModule.types";
 import { InfoCard } from "../../../../../components/card/InfoCard";
-import { PageFooter } from "../../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../../components/PageFooter";
 import { PageHeader } from "../../../../../components/common/PageHeader";
-import { Verification } from "../../../../../components/auth/Verification";
+import { Verification } from "../../../../../components/Verification";
 import { ScrollablePageLayout } from "../../../../../components/layout/ScrollablePageLayout";
 import { ToastMsgType } from "../../../../../globals/types";
 import {

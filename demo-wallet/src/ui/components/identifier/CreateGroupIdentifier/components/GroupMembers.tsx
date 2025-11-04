@@ -2,10 +2,10 @@ import { IonCheckbox, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useState } from "react";
 import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
 import { i18n } from "../../../../i18n";
-import { FallbackIcon } from "../../FallbackIcon";
-import { PageFooter } from "../../PageFooter";
-import { PageHeader } from "../../PageHeader";
-import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { FallbackIcon } from "../../../FallbackIcon";
+import { PageFooter } from "../../../PageFooter";
+import { PageHeader } from "../../../common/PageHeader";
+import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
 import { IdentifierStageProps, Stage } from "../CreateGroupIdentifier.types";
 
 const GroupMembers = ({
@@ -72,10 +72,9 @@ const GroupMembers = ({
             <IonItem
               key={index}
               onClick={() => handleSelectConnection(connection)}
-              className={`${
-                selectedConnections.includes(connection) &&
+              className={`${selectedConnections.includes(connection) &&
                 "selected-connection"
-              }`}
+                }`}
             >
               <IonLabel className="connection-item">
                 <FallbackIcon

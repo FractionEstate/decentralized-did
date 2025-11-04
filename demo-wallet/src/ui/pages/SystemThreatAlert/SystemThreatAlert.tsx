@@ -6,8 +6,8 @@ import {
 } from "ionicons/icons";
 import React from "react";
 import { i18n } from "../../../i18n";
-import { CardDetailsBlock } from "../../components/CardDetails";
-import { InfoCard } from "../../components/InfoCard";
+import { CardDetailsBlock } from "../../components/card/CardDetails";
+import { InfoCard } from "../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import { PageFooter } from "../../components/PageFooter";
 import "./SystemThreatAlert.scss";

@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
 import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
 import { CardType } from "../../../globals/types";
 import { combineClassNames } from "../../../utils/style";
 import { CardsStack } from "../CardsStack/CardsStack";
-import { ListHeader } from "../../common/ListHeader";
+import { ListHeader } from "../../ListHeader/ListHeader";
 import { CardList } from "../CardList";
 import "./SwitchCardView.scss";
 import { CardListViewType, SwitchCardViewProps } from "./SwitchCardView.types";
@@ -76,7 +76,8 @@ const SwitchCardView = ({
   }, [setViewType, viewTypeCache]);
 
   const handleOpenDetail = (
-    data: IdentifierShortDetails | CredentialShortDetails
+    data: IdentifierShortDetails | CredentialShortDetails,
+    e: MouseEvent<HTMLElement>
   ) => {
     let pathname = "";
     if (cardTypes === CardType.IDENTIFIERS) {
@@ -119,8 +120,7 @@ const SwitchCardView = ({
         />
       ) : (
         <CardList
-          cardTypes={cardTypes}
-          cardsData={cardsData}
+          data={cardsData}
           onCardClick={handleOpenDetail}
           testId="card-list"
         />

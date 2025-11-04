@@ -13,7 +13,7 @@ import {
   setWalletConnectionsCache,
 } from "../../../store/reducers/walletConnectionsCache";
 import { CardItem, CardList } from "../../components/card/CardList";
-import { PageFooter } from "../../components/common/PageFooter";
+import { PageFooter } from "../../components/PageFooter";
 import { PageHeader } from "../../components/common/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout/ResponsivePageLayout";
 import { OperationType, ToastMsgType } from "../../globals/types";

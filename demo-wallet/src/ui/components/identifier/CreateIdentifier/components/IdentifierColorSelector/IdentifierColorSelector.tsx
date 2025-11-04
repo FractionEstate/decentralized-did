@@ -1,6 +1,6 @@
 import { IonIcon } from "@ionic/react";
 import { checkmark } from "ionicons/icons";
-import { combineClassNames } from "../../../../utils/style";
+import { combineClassNames } from "../../../../../utils/style";
 import {
   IdentifierColor,
   IdentifierColorSelectorProps,

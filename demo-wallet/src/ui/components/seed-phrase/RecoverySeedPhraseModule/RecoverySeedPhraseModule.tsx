@@ -6,13 +6,13 @@ import { Agent } from "../../../../core/agent/agent";
 import { i18n } from "../../../../i18n";
 import { useAppDispatch } from "../../../../store/hooks";
 import { setSeedPhraseCache } from "../../../../store/reducers/seedPhraseCache";
-import { showError } from "../../../../../utils/error";
-import { Alert } from "../../../alert/Alert";
-import { PageFooter } from "../../../layout/PageFooter";
-import { SeedPhraseModule } from "../SeedPhraseModule/SeedPhraseModule";
+import { showError } from "../../../utils/error";
+import { Alert } from "../../common/Alert";
+import { PageFooter } from "../../PageFooter";
+import { SeedPhraseModule } from "../SeedPhraseModule";
 import { SeedPhraseModuleRef } from "../SeedPhraseModule/SeedPhraseModule.types";
-import { SwitchOnboardingModeModal } from "../../modal/SwitchOnboardingModeModal";
-import { OnboardingMode } from "../../modal/SwitchOnboardingModeModal.types";
+import { SwitchOnboardingModeModal } from "../../SwitchOnboardingModeModal";
+import { OnboardingMode } from "../../SwitchOnboardingModeModal/SwitchOnboardingModeModal.types";
 import "./RecoverySeedPhraseModule.scss";
 import {
   RecoverySeedPhraseModuleProps,

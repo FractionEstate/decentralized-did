@@ -5,7 +5,7 @@ import {
   IdentifierThemeSelectorProps,
   ThemeItemProps,
 } from "./IdentifierThemeSelector.types";
-import { CardTheme } from "../../../CardTheme";
+import { CardTheme } from "../../../../card/CardTheme";
 
 const IdentifierThemeSelector = ({
   color,

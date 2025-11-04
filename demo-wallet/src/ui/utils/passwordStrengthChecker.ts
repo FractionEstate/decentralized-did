@@ -1,5 +1,5 @@
 import { i18n } from "../../i18n";
-import { StrongLevel } from "../components/PasswordModule/components/PasswordMeter";
+import { StrongLevel } from "../components/auth/PasswordModule/components/PasswordMeter";
 
 const passwordRequirements = {
   uppercasePattern: /^(?=.*[A-Z])/,

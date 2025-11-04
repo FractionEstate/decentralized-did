@@ -1,17 +1,17 @@
 import { IonIcon } from "@ionic/react";
 import { star } from "ionicons/icons";
-import { i18n } from "../../../../../i18n";
-import { CardBlock, CardDetailsItem } from "../../../../components/CardDetails";
-import { ListHeader } from "../../../../components/ListHeader";
+import { i18n } from "../../../../../../i18n";
+import { CardDetailsBlock } from "../../../../card/CardDetails";
+import { CardDetailsItem } from "../../../../card/CardDetails";
+import { ListHeader } from "../../../../ListHeader";
 import { ListProps } from "./IdentifierAttributeDetailModal.types";
-import { FallbackIcon } from "../../../FallbackIcon";
+import { FallbackIcon } from "../../../../FallbackIcon";
 
 const List = ({ data, title, bottomText, fullText, mask }: ListProps) => {
   return (
     <>
       <ListHeader title={title} />
-      <CardBlock
-        testId="group-member-block"
+      <CardDetailsBlock
         className="list-item"
       >
         {data.map((item, index) => {
@@ -38,7 +38,7 @@ const List = ({ data, title, bottomText, fullText, mask }: ListProps) => {
           );
         })}
         <p className="bottom-text">{bottomText}</p>
-      </CardBlock>
+      </CardDetailsBlock>
     </>
   );
 };

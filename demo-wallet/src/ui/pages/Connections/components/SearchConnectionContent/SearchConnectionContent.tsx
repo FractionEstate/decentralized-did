@@ -6,7 +6,7 @@ import {
   CardList,
 } from "../../../../components/card/CardList/CardList";
 import { CardItem } from "../../../../components/card/CardList/CardList.types";
-import { ListHeader } from "../../../../components/common/ListHeader/ListHeader";
+import { ListHeader } from "../../../../components/ListHeader/ListHeader";
 import {
   SearchConnectionContentProps,
   SearchConnectionListProps,

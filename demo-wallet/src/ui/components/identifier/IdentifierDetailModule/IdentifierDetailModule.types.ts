@@ -1,4 +1,4 @@
-import { HardwareBackButtonConfig } from "../PageHeader/PageHeader.types";
+import { HardwareBackButtonConfig } from "../../common/PageHeader/PageHeader.types";
 
 interface IdentifierDetailModuleProps {
   pageId: string;

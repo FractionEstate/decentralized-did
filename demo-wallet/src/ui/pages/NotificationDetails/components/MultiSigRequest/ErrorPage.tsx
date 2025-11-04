@@ -11,7 +11,7 @@ import { CardDetailsBlock } from "../../../../components/card/CardDetails";
 import { CreateGroupIdentifier } from "../../../../components/identifier/CreateGroupIdentifier";
 import { InfoCard } from "../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { SUPPORT_EMAIL } from "../../../../globals/constants";
 import "./ErrorPage.scss";

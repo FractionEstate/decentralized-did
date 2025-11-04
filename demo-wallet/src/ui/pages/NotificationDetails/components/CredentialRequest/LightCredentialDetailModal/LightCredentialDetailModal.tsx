@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { CredentialDetailModal } from "../../../../../components/credential/CredentialDetailModule";
-import { LightCredentialDetailModalProps } from "../CredentialRequest.types";
+import { CredentialDetailModule } from "../../../../../components/credential/CredentialDetailModule/CredentialDetailModule";
+import { LightCredentialDetailModalProps } from "./LightCredentialDetailModal.type";
 
 const LightCredentialDetailModal = ({
   credId,
@@ -18,12 +18,10 @@ const LightCredentialDetailModal = ({
   }, [defaultSelected]);
 
   return (
-    <CredentialDetailModal
+    <CredentialDetailModule
       pageId="request-cred-detail"
       id={credId || ""}
-      isOpen={isOpen}
-      setIsOpen={setIsOpen}
-      onClose={(reason) => {
+      onClose={(reason: any) => {
         onClose?.(reason, isSelected, credId);
       }}
       isLightMode

@@ -5,12 +5,12 @@ import {
   trashOutline,
 } from "ionicons/icons";
 import { useEffect, useState } from "react";
-import { i18n } from "../../../i18n";
-import { useAppSelector } from "../../../store/hooks";
-import { getIdentifiersCache } from "../../../store/reducers/identifiersCache";
+import { i18n } from "../../../../i18n";
+import { useAppSelector } from "../../../../store/hooks";
+import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
 import { EditIdentifier } from "../EditIdentifier";
-import { OptionItem, OptionModal } from "../OptionsModal";
-import { ShareConnection } from "../ShareConnection";
+import { OptionItem, OptionModal } from "../../OptionsModal";
+import { ShareConnection } from "../../ShareConnection";
 import "./IdentifierOptions.scss";
 import { IdentifierOptionsProps } from "./IdentifierOptions.types";
 

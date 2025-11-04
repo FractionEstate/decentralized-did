@@ -34,9 +34,9 @@ import {
   showGlobalLoading,
 } from "../../../../../store/reducers/stateCache";
 import { CLEAR_STORE_ACTIONS } from "../../../../../store/utils";
-import { Alert } from "../../../../components/common/Alert";
-import { PageFooter } from "../../../../components/common/PageFooter";
-import { Verification } from "../../../../components/auth/Verification";
+import { Alert } from "../../../../components/common/Alert/Alert";
+import { PageFooter } from "../../../../components/PageFooter/PageFooter";
+import { Verification } from "../../../../components/Verification/Verification";
 import {
   DOCUMENTATION_LINK,
   SUPPORT_EMAIL,

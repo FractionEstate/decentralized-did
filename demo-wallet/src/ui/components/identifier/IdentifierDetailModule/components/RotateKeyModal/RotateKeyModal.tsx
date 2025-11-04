@@ -1,21 +1,19 @@
 import { IonModal } from "@ionic/react";
 import { refreshOutline } from "ionicons/icons";
 import { useState } from "react";
-import { Agent } from "../../../../../core/agent/agent";
-import { i18n } from "../../../../../i18n";
-import { useAppDispatch } from "../../../../../store/hooks";
-import { setToastMsg } from "../../../../../store/reducers/stateCache";
-import {
-  CardDetailsBlock,
-  CardDetailsItem,
-} from "../../../../components/CardDetails";
-import { InfoCard } from "../../../../components/InfoCard";
-import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/PageFooter";
-import { PageHeader } from "../../../../components/PageHeader";
-import { Spinner } from "../../../../components/Spinner";
-import { Verification } from "../../../../components/Verification";
-import { ToastMsgType } from "../../../../globals/types";
+import { Agent } from "../../../../../../core/agent/agent";
+import { i18n } from "../../../../../../i18n";
+import { useAppDispatch } from "../../../../../../store/hooks";
+import { setToastMsg } from "../../../../../../store/reducers/stateCache";
+import { CardDetailsBlock } from "../../../../card/CardDetails/CardDetailsBlock/CardDetailsBlock";
+import { CardDetailsItem } from "../../../../card/CardDetails/CardDetailsItem/CardDetailsItem";
+import { InfoCard } from "../../../../card/InfoCard/InfoCard";
+import { ScrollablePageLayout } from "../../../../layout/ScrollablePageLayout";
+import { PageFooter } from "../../../../PageFooter";
+import { PageHeader } from "../../../../common/PageHeader";
+import { Spinner } from "../../../../common/Spinner";
+import { Verification } from "../../../../Verification";
+import { ToastMsgType } from "../../../../../globals/types";
 import "./RotateKeyModal.scss";
 import { RotateKeyModalProps } from "./RotateKeyModal.types";
 

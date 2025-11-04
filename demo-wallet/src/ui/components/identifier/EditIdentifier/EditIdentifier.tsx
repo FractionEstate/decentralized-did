@@ -2,26 +2,26 @@ import { Capacitor } from "@capacitor/core";
 import { Keyboard } from "@capacitor/keyboard";
 import { IonModal, IonSpinner } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { Agent } from "../../../core/agent/agent";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { Agent } from "../../../../core/agent/agent";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   getIdentifiersCache,
   updateOrAddIdentifiersCache,
-} from "../../../store/reducers/identifiersCache";
-import { setToastMsg } from "../../../store/reducers/stateCache";
-import { DISPLAY_NAME_LENGTH } from "../../globals/constants";
-import { ToastMsgType } from "../../globals/types";
-import { showError } from "../../utils/error";
-import { nameChecker } from "../../utils/nameChecker";
-import { createThemeValue, getTheme } from "../../utils/theme";
+} from "../../../../store/reducers/identifiersCache";
+import { setToastMsg } from "../../../../store/reducers/stateCache";
+import { DISPLAY_NAME_LENGTH } from "../../../globals/constants";
+import { ToastMsgType } from "../../../globals/types";
+import { showError } from "../../../utils/error";
+import { nameChecker } from "../../../utils/nameChecker";
+import { createThemeValue, getTheme } from "../../../utils/theme";
 import { IdentifierColorSelector } from "../CreateIdentifier/components/IdentifierColorSelector";
 import { IdentifierThemeSelector } from "../CreateIdentifier/components/IdentifierThemeSelector";
-import { CustomInput } from "../CustomInput";
-import { ErrorMessage } from "../ErrorMessage";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
+import { CustomInput } from "../../common/CustomInput/CustomInput";
+import { ErrorMessage } from "../../ErrorMessage";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout/ScrollablePageLayout";
+import { PageFooter } from "../../PageFooter";
+import { PageHeader } from "../../common/PageHeader/PageHeader";
 import "./EditIdentifier.scss";
 import { EditIdentifierProps } from "./EditIdentifier.types";
 
@@ -90,7 +90,7 @@ const EditIdentifier = ({
       if (
         newDisplayName.trim() !== cardData.displayName.trim() &&
         Object.values(identifiersData).some(
-          (item) => item.displayName === newDisplayName
+          (item: any) => item.displayName === newDisplayName
         )
       ) {
         throw new Error(DUPLICATE_NAME);

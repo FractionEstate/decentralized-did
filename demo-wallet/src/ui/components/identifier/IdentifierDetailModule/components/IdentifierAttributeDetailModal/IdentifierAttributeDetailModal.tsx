@@ -1,11 +1,11 @@
 import { IonModal } from "@ionic/react";
-import { i18n } from "../../../../../i18n";
-import { useAppSelector } from "../../../../../store/hooks";
-import { getMultisigConnectionsCache } from "../../../../../store/reducers/connectionsCache";
-import { getAuthentication } from "../../../../../store/reducers/stateCache";
-import { InfoCard } from "../../../../components/InfoCard";
-import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageHeader } from "../../../../components/PageHeader";
+import { i18n } from "../../../../../../i18n";
+import { useAppSelector } from "../../../../../../store/hooks";
+import { getMultisigConnectionsCache } from "../../../../../../store/reducers/connectionsCache";
+import { getAuthentication } from "../../../../../../store/reducers/stateCache";
+import { InfoCard } from "../../../../card/InfoCard/InfoCard";
+import { ScrollablePageLayout } from "../../../../layout/ScrollablePageLayout/ScrollablePageLayout";
+import { PageHeader } from "../../../../common/PageHeader/PageHeader";
 import { Advanced } from "./Advanced";
 import "./IdentifierAttributeDetailModal.scss";
 import {
@@ -32,7 +32,7 @@ const IdentifierAttributeDetailModal = ({
 
   const renderContent = () => {
     let currentUserIndex = 0;
-    const members = data.members?.map((member, index) => {
+    const members = data.members?.map((member: string, index: number) => {
       const memberConnection = multisignConnectionsCache[member];
       let name = memberConnection?.label || member;
 

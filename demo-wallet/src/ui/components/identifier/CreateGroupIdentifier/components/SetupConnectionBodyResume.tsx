@@ -7,14 +7,14 @@ import { i18n } from "../../../../i18n";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
 import { setToastMsg } from "../../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../../globals/types";
-import { writeToClipboard } from "../../../utils/clipboard";
-import { FallbackIcon } from "../../FallbackIcon";
-import { PageFooter } from "../../PageFooter";
-import { PageHeader } from "../../PageHeader";
-import { Spinner } from "../../Spinner";
-import { SpinnerConverage } from "../../Spinner/Spinner.type";
-import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { ToastMsgType } from "../../../../globals/types";
+import { writeToClipboard } from "../../../../utils/clipboard";
+import { FallbackIcon } from "../../../FallbackIcon";
+import { PageFooter } from "../../../PageFooter";
+import { PageHeader } from "../../../common/PageHeader";
+import { Spinner } from "../../../common/Spinner";
+import { SpinnerConverage } from "../../../common/Spinner/Spinner.type";
+import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
 import { IdentifierStage1BodyProps } from "../CreateGroupIdentifier.types";
 
 const SetupConnectionBodyResume = ({
@@ -47,9 +47,8 @@ const SetupConnectionBodyResume = ({
     <>
       <ScrollablePageLayout
         pageId={componentId + "-content"}
-        customClass={`${
-          groupMetadata?.groupInitiator ? "initiator-view" : "receiver-view"
-        }`}
+        customClass={`${groupMetadata?.groupInitiator ? "initiator-view" : "receiver-view"
+          }`}
         header={
           <PageHeader
             closeButton={true}
@@ -79,9 +78,8 @@ const SetupConnectionBodyResume = ({
           )}
         </p>
         <div
-          className={`multisig-share-qr-code${
-            oobi.length && !isPending ? " reveal" : " blur"
-          }`}
+          className={`multisig-share-qr-code${oobi.length && !isPending ? " reveal" : " blur"
+            }`}
           data-testid="multisig-share-qr-code"
         >
           <div className="qr-container">

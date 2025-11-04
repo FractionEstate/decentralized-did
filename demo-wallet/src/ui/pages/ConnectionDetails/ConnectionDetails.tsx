@@ -24,12 +24,12 @@ import {
   setCurrentOperation,
   setToastMsg,
 } from "../../../store/reducers/stateCache";
-import { Alert as AlertDeleteConnection } from "../../components/alert/Alert";
-import { CardDetailsBlock } from "../../components/card/CardDetailsBlock";
-import { CloudError } from "../../components/common/CloudError";
-import { PageFooter } from "../../components/layout/PageFooter";
-import { PageHeader } from "../../components/layout/PageHeader";
-import { Verification } from "../../components/auth/Verification";
+import { Alert as AlertDeleteConnection } from "../../components/common/Alert/Alert";
+import { CardDetailsBlock } from "../../components/card/CardDetails/CardDetailsBlock/CardDetailsBlock";
+import { CloudError } from "../../components/CloudError/CloudError";
+import { PageFooter } from "../../components/PageFooter/PageFooter";
+import { PageHeader } from "../../components/common/PageHeader/PageHeader";
+import { Verification } from "../../components/Verification/Verification";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import { OperationType, ToastMsgType } from "../../globals/types";
 import { useOnlineStatusEffect } from "../../hooks";
@@ -39,7 +39,7 @@ import ConnectionDetailsHeader from "./components/ConnectionDetailsHeader";
 import { ConnectionHistoryEvent } from "./components/ConnectionHistoryEvent";
 import { ConnectionNotes } from "./components/ConnectionNotes";
 import { EditConnectionsModal } from "./components/EditConnectionsModal";
-import { ConnectionOptionsModal as ConnectionOptions } from "../../components/modal/ConnectionOptionsModal";
+import { ConnectionOptions } from "../../components/ConnectionOptions/ConnectionOptions";
 
 const ConnectionDetails = ({
   connectionShortDetails,

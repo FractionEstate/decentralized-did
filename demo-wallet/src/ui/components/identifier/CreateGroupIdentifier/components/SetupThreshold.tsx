@@ -1,11 +1,11 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { addOutline, removeOutline } from "ionicons/icons";
-import { i18n } from "../../../../i18n";
-import { PageFooter } from "../../PageFooter";
-import { PageHeader } from "../../PageHeader";
+import { i18n } from "../../../../../i18n";
+import { PageFooter } from "../../../../components/PageFooter";
+import { PageHeader } from "../../../../components/common/PageHeader";
 import { IdentifierStageProps, Stage } from "../CreateGroupIdentifier.types";
-import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
-import { combineClassNames } from "../../../utils/style";
+import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
+import { combineClassNames } from "../../../../utils/style";
 
 const SetupThreshold = ({
   state,

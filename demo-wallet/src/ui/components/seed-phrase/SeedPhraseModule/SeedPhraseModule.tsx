@@ -3,7 +3,7 @@ import { eyeOffOutline } from "ionicons/icons";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import { i18n } from "../../../../i18n";
 import { combineClassNames } from "../../../utils/style";
-import { useHideKeyboard } from "../../../../hooks/useHideKeyboard";
+import { useHideKeyboard } from "../../../hooks/useHideKeyboard";
 import {
   SeedPhraseModuleProps,
   SeedPhraseModuleRef,

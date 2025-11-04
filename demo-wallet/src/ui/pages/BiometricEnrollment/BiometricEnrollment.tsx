@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { setToastMsg } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
 import { Alert } from "../../components/common/Alert/Alert";
-import { PageFooter } from "../../components/common/PageFooter/PageFooter";
+import { PageFooter } from "../../components/PageFooter";
 import { PageHeader } from "../../components/common/PageHeader/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout/ResponsivePageLayout";
 import { ToastMsgType } from "../../globals/types";

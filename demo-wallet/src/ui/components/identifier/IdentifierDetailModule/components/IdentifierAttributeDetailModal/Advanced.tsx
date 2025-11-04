@@ -7,19 +7,19 @@ import {
 } from "@ionic/react";
 import { star } from "ionicons/icons";
 import { useState } from "react";
-import { i18n } from "../../../../../i18n";
+import { i18n } from "../../../../../../i18n";
 import {
-  CardBlock,
+  CardDetailsBlock,
   CardDetailsContent,
   CardDetailsItem,
-} from "../../../../components/CardDetails";
-import { ListHeader } from "../../../../components/ListHeader";
+} from "../../../../card/CardDetails";
+import { ListHeader } from "../../../../ListHeader";
 import {
   formatShortDate,
   formatTimeToSec,
   getUTCOffset,
-} from "../../../../utils/formatters";
-import { combineClassNames } from "../../../../utils/style";
+} from "../../../../../utils/formatters";
+import { combineClassNames } from "../../../../../utils/style";
 import {
   AccordionKey,
   AdvancedProps,
@@ -75,8 +75,7 @@ const Advanced = ({ data, currentUserIndex }: AdvancedProps) => {
               >
                 <span>
                   {i18n.t(
-                    `tabs.identifiers.details.detailmodal.advanceddetail.${
-                      !isShowSigningList ? "viewkey" : "hidekey"
+                    `tabs.identifiers.details.detailmodal.advanceddetail.${!isShowSigningList ? "viewkey" : "hidekey"
                     }`,
                     {
                       keys: data.k.length,
@@ -120,8 +119,7 @@ const Advanced = ({ data, currentUserIndex }: AdvancedProps) => {
               >
                 <span>
                   {i18n.t(
-                    `tabs.identifiers.details.detailmodal.advanceddetail.${
-                      !isShowRotationKey ? "viewrotationkey" : "hiderotationkey"
+                    `tabs.identifiers.details.detailmodal.advanceddetail.${!isShowRotationKey ? "viewrotationkey" : "hiderotationkey"
                     }`,
                     {
                       keys: data.n.length,
@@ -147,11 +145,10 @@ const Advanced = ({ data, currentUserIndex }: AdvancedProps) => {
         </>
       )}
       {data.s && (
-        <CardBlock
+        <CardDetailsBlock
           title={i18n.t(
             "tabs.identifiers.details.keyrotation.sequencenumber.title"
           )}
-          testId="sequence-number-block"
         >
           <CardDetailsContent
             testId="sequence-number"
@@ -162,7 +159,7 @@ const Advanced = ({ data, currentUserIndex }: AdvancedProps) => {
               data.dt
             )} (${getUTCOffset(data.dt)})`}
           />
-        </CardBlock>
+        </CardDetailsBlock>
       )}
     </>
   );

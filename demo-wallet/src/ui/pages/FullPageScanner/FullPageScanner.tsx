@@ -7,9 +7,9 @@ import {
   showConnections,
 } from "../../../store/reducers/stateCache";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout/ResponsivePageLayout";
-import { PageHeader } from "../../components/layout/PageHeader";
-import { Scanner } from "../../components/scanner/Scanner";
-import { useCameraDirection } from "../../components/scanner/useCameraDirection";
+import { PageHeader } from "../../components/common/PageHeader";
+import { Scanner } from "../../components/Scanner/Scanner";
+import { useCameraDirection } from "../../components/Scanner/hook/useCameraDirection";
 import { BackEventPriorityType, OperationType } from "../../globals/types";
 import "./FullPageScanner.scss";
 import {

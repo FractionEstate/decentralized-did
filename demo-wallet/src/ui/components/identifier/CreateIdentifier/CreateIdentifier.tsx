@@ -4,44 +4,44 @@ import { IonCol, IonGrid, IonIcon, IonModal, IonRow, useIonToast } from "@ionic/
 import { informationCircleOutline } from "ionicons/icons";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Salter } from "signify-ts";
-import { Agent } from "../../../core/agent/agent";
-import { CreationStatus, MiscRecordId } from "../../../core/agent/agent.types";
-import { IdentifierService } from "../../../core/agent/services";
+import { Agent } from "../../../../core/agent/agent";
+import { CreationStatus, MiscRecordId } from "../../../../core/agent/agent.types";
+import { IdentifierService } from "../../../../core/agent/services";
 import {
   CreateIdentifierInputs,
   IdentifierShortDetails,
-} from "../../../core/agent/services/identifier.types";
-import { ConfigurationService } from "../../../core/configuration";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+} from "../../../../core/agent/services/identifier.types";
+import { ConfigurationService } from "../../../../core/configuration";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   getIdentifiersCache,
   getIndividualFirstCreateSetting,
   setIndividualFirstCreate,
   setMultiSigGroupCache,
-} from "../../../store/reducers/identifiersCache";
-import { MultiSigGroup } from "../../../store/reducers/identifiersCache/identifiersCache.types";
+} from "../../../../store/reducers/identifiersCache";
+import { MultiSigGroup } from "../../../../store/reducers/identifiersCache/identifiersCache.types";
 import {
   setToastMsg,
   showNoWitnessAlert,
-} from "../../../store/reducers/stateCache";
-import { BackEventPriorityType, ToastMsgType } from "../../globals/types";
-import { useOnlineStatusEffect } from "../../hooks";
-import { showError } from "../../utils/error";
+} from "../../../../store/reducers/stateCache";
+import { BackEventPriorityType, ToastMsgType } from "../../../globals/types";
+import { useOnlineStatusEffect } from "../../../hooks";
+import { showError } from "../../../utils/error";
 import {
   showErrorToast,
   LOADING_MESSAGES,
   SUCCESS_MESSAGES,
-} from "../../../utils/userFriendlyErrors";
-import { nameChecker } from "../../utils/nameChecker";
-import { combineClassNames } from "../../utils/style";
-import { createThemeValue } from "../../utils/theme";
-import { CustomInput } from "../CustomInput";
-import { ErrorMessage } from "../ErrorMessage";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
-import { Spinner } from "../Spinner";
+} from "../../../../utils/userFriendlyErrors";
+import { nameChecker } from "../../../utils/nameChecker";
+import { combineClassNames } from "../../../utils/style";
+import { createThemeValue } from "../../../utils/theme";
+import { CustomInput } from "../../common/CustomInput/CustomInput";
+import { ErrorMessage } from "../../ErrorMessage/ErrorMessage";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { PageFooter } from "../../PageFooter";
+import { PageHeader } from "../../common/PageHeader";
+import { Spinner } from "../../common/Spinner";
 import { IADTypeInfoModal } from "./components/AIDTypeInfoModal";
 import {
   IdentifierColor,
@@ -54,7 +54,7 @@ import {
   CreateIdentifierProps,
   IdentifierModel,
 } from "./CreateIdentifier.types";
-import { IndividualOnlyMode } from "../../../core/configuration/configurationService.types";
+import { IndividualOnlyMode } from "../../../../core/configuration/configurationService.types";
 
 const CREATE_IDENTIFIER_BLUR_TIMEOUT = 250;
 const DUPLICATE_NAME = "Identifier name is a duplicate";

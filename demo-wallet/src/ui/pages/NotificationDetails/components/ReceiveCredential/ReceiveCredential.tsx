@@ -29,21 +29,21 @@ import {
 } from "../../../../../store/reducers/notificationsCache";
 import { getAuthentication } from "../../../../../store/reducers/stateCache";
 import { Alert, Alert as AlertDecline } from "../../../../components/common/Alert";
-import { CardDetailsBlock } from "../../../../components/card/CardDetails";
+import { CardDetailsBlock } from "../../../../components/card/CardDetails/CardDetailsBlock";
 import { CardTheme } from "../../../../components/card/CardTheme";
-import { CredentialDetailModal } from "../../../../components/credential/CredentialDetailModule";
+import { CredentialDetailModule } from "../../../../components/credential/CredentialDetailModule";
 import {
   MemberAcceptStatus,
   MultisigMember,
 } from "../../../../components/credential/CredentialDetailModule/components";
-import { FallbackIcon } from "../../../../components/image/FallbackIcon";
-import { IdentifierDetailModal } from "../../../../components/identifier/IdentifierDetailModule";
+import { FallbackIcon } from "../../../../components/FallbackIcon";
+import { IdentifierDetailModule } from "../../../../components/identifier/IdentifierDetailModule";
 import { InfoCard } from "../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { Spinner } from "../../../../components/common/Spinner";
-import { Verification } from "../../../../components/auth/Verification";
+import { Verification } from "../../../../components/Verification";
 import { BackEventPriorityType } from "../../../../globals/types";
 import {
   useIonHardwareBackButton,
@@ -118,7 +118,7 @@ const ReceiveCredential = ({
   );
 
   const handleNotificationUpdate = async () => {
-    const updatedNotifications = notifications.filter(
+    const updatedNotifications = (notifications as any[]).filter(
       (notification) => notification.id !== notificationDetails.id
     );
     setNotifications(updatedNotifications);
@@ -171,7 +171,7 @@ const ReceiveCredential = ({
       }
     } catch (e) {
       setShowCommonError(true);
-      setTimeout(handleBack);
+      setTimeout(handleBack, 0);
       setInitiateAnimation(false);
       showError("Unable to get acdc", e, dispatch);
     } finally {
@@ -182,6 +182,8 @@ const ReceiveCredential = ({
     getMultiSigMemberStatus,
     identifiersData,
     notificationDetails.a.d,
+    credDetail,
+    handleBack,
   ]);
 
   useOnlineStatusEffect(getAcdc);
@@ -280,7 +282,7 @@ const ReceiveCredential = ({
     let name = memberConnection?.label || member;
 
     if (!memberConnection?.label) {
-      name = userName;
+      name = userName as string;
     }
 
     return {
@@ -539,21 +541,18 @@ const ReceiveCredential = ({
         setVerifyIsOpen={setVerifyIsOpen}
         onVerify={handleAccept}
       />
-      <CredentialDetailModal
+      <CredentialDetailModule
         pageId="receive-credential-detail"
-        isOpen={openInfo}
-        setIsOpen={setOpenInfo}
         onClose={() => setOpenInfo(false)}
         id={credDetail?.id || ""}
         credDetail={credDetail}
         viewOnly
       />
       {credDetail && (
-        <IdentifierDetailModal
-          isOpen={openIdentifierDetail}
-          setIsOpen={setOpenIdentifierDetail}
+        <IdentifierDetailModule
           pageId="identifier-detail"
           identifierDetailId={credDetail.identifierId}
+          navAnimation={false}
         />
       )}
     </>

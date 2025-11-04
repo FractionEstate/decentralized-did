@@ -4,7 +4,7 @@ import { useAppDispatch } from "../../../../../store/hooks";
 import { setCurrentOperation } from "../../../../../store/reducers/stateCache";
 import { CardDetailsBlock } from "../../../../components/card/CardDetails";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { OperationType } from "../../../../globals/types";
 import { NotificationDetailsProps } from "../../NotificationDetails.types";

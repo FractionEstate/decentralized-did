@@ -5,27 +5,26 @@ import {
   refreshOutline,
 } from "ionicons/icons";
 import { useCallback, useState } from "react";
-import { i18n } from "../../../../i18n";
-import { useAppSelector } from "../../../../store/hooks";
-import { getMultisigConnectionsCache } from "../../../../store/reducers/connectionsCache";
-import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
-import { getAuthentication } from "../../../../store/reducers/stateCache";
-import { CardDetailsContent } from "../../../components/CardDetails";
+import { i18n } from "../../../../../i18n";
+import { useAppSelector } from "../../../../../store/hooks";
+import { getMultisigConnectionsCache } from "../../../../../store/reducers/connectionsCache";
+import { getIdentifiersCache } from "../../../../../store/reducers/identifiersCache";
+import { getAuthentication } from "../../../../../store/reducers/stateCache";
+import { CardDetailsContent } from "../../../card/CardDetails/CardDetailsContent/CardDetailsContent";
 import {
-  CardBlock,
-  FlatBorderType,
-} from "../../../components/CardDetails/CardDetailsBlock";
-import { CardDetailsItem } from "../../../components/CardDetails/CardDetailsItem";
-import { ListHeader } from "../../../components/ListHeader";
+  CardDetailsBlock,
+} from "../../../card/CardDetails/CardDetailsBlock";
+import { CardDetailsItem } from "../../../card/CardDetails/CardDetailsItem";
+import { ListHeader } from "../../../ListHeader";
 import {
   formatShortDate,
   formatTimeToSec,
   getUTCOffset,
-} from "../../../utils/formatters";
+} from "../../../../utils/formatters";
 import { IdentifierAttributeDetailModal } from "./IdentifierAttributeDetailModal/IdentifierAttributeDetailModal";
 import { DetailView } from "./IdentifierAttributeDetailModal/IdentifierAttributeDetailModal.types";
 import { IdentifierContentProps } from "./IdentifierContent.types";
-import { FallbackIcon } from "../../FallbackIcon";
+import { FallbackIcon } from "../../../FallbackIcon/FallbackIcon";
 
 const DISPLAY_MEMBERS = 3;
 
@@ -49,7 +48,7 @@ const IdentifierContent = ({
     cardData.groupMemberPre || identifiersData[cardData.id]?.groupMemberPre;
 
   const members = cardData.members
-    ?.map((member) => {
+    ?.map((member: any) => {
       const memberConnection = multisignConnectionsCache[member];
       let name = memberConnection?.label || member;
 
@@ -68,19 +67,19 @@ const IdentifierContent = ({
       {isMultiSig && members && (
         <>
           <ListHeader title={i18n.t("tabs.identifiers.details.group.title")} />
-          <CardBlock
+          <CardDetailsBlock
             onClick={openGroupMember}
             title={i18n.t("tabs.identifiers.details.group.groupmembers.title")}
-            testId="group-member-block"
+            data-testid="group-member-block"
           >
-            {members.map((item, index) => {
+            {members.map((item: any, index: any) => {
               return (
                 <CardDetailsItem
                   key={index}
                   info={item}
                   startSlot={<FallbackIcon />}
                   className="member"
-                  testId={`group-member-${index}`}
+                  data-testid={`group-member-${index}`}
                 />
               );
             })}
@@ -95,14 +94,14 @@ const IdentifierContent = ({
                 })}
               </IonButton>
             )}
-          </CardBlock>
+          </CardDetailsBlock>
           {cardData.kt && (
-            <CardBlock
+            <CardDetailsBlock
               title={i18n.t(
                 "tabs.identifiers.details.group.signingkeysthreshold.title"
               )}
               onClick={() => openPropDetailModal(DetailView.SigningThreshold)}
-              testId="signing-threshold-block"
+              data-testid="signing-threshold-block"
             >
               <CardDetailsContent
                 mainContent={`${cardData.kt}`}
@@ -110,9 +109,9 @@ const IdentifierContent = ({
                   "tabs.identifiers.details.group.signingkeysthreshold.outof",
                   { threshold: memberCount }
                 )}`}
-                testId="signing-threshold-content"
+                data-testid="signing-threshold-content"
               />
-            </CardBlock>
+            </CardDetailsBlock>
           )}
         </>
       )}
@@ -120,26 +119,25 @@ const IdentifierContent = ({
         title={i18n.t("tabs.identifiers.details.identifierdetail.title")}
       />
       <div className="identifier-details-split-section">
-        <CardBlock
-          copyContent={cardData.id}
+        <CardDetailsBlock
           title={i18n.t(
             "tabs.identifiers.details.identifierdetail.identifierid.title"
           )}
-          testId="identifier-id-block"
+          data-testid="identifier-id-block"
         >
           <CardDetailsItem
             info={`${cardData.id.substring(0, 5)}...${cardData.id.slice(-5)}`}
             icon={keyOutline}
-            testId="identifier-id"
+            data-testid="identifier-id"
             className="identifier-id"
             mask={false}
           />
-        </CardBlock>
-        <CardBlock
+        </CardDetailsBlock>
+        <CardDetailsBlock
           title={i18n.t(
             "tabs.identifiers.details.identifierdetail.created.title"
           )}
-          testId="created-block"
+          data-testid="created-block"
         >
           <CardDetailsItem
             keyValue={formatShortDate(cardData.createdAtUTC)}
@@ -147,40 +145,37 @@ const IdentifierContent = ({
               cardData.createdAtUTC
             )})`}
             icon={calendarNumberOutline}
-            testId="creation-timestamp"
+            data-testid="creation-timestamp"
             className="creation-timestamp"
             mask={false}
             fullText
           />
-        </CardBlock>
+        </CardDetailsBlock>
       </div>
       {!isMultiSig && cardData.k.length && (
         <>
-          <CardBlock
-            copyContent={cardData.k[0]}
-            flatBorder={FlatBorderType.BOT}
+          <CardDetailsBlock
             title={i18n.t(
               "tabs.identifiers.details.identifierdetail.signingkey.title"
             )}
-            testId="signingkey-block"
+            data-testid="signingkey-block"
           >
-            {cardData.k.map((item, index) => {
+            {cardData.k.map((item: any, index: any) => {
               return (
                 <CardDetailsItem
                   key={item}
                   info={`${item.substring(0, 5)}...${item.slice(-5)}`}
-                  testId={`signing-key-${index}`}
+                  data-testid={`signing-key-${index}`}
                   icon={keyOutline}
                   mask={false}
                   fullText={false}
                 />
               );
             })}
-          </CardBlock>
-          <CardBlock
+          </CardDetailsBlock>
+          <CardDetailsBlock
             className="rotate-button-container"
-            flatBorder={FlatBorderType.TOP}
-            testId="rotate-button-block"
+            data-testid="rotate-button-block"
           >
             <IonButton
               shape="round"
@@ -195,36 +190,54 @@ const IdentifierContent = ({
               </p>
               <IonIcon icon={refreshOutline} />
             </IonButton>
-          </CardBlock>
+          </CardDetailsBlock>
         </>
       )}
-      <CardBlock
+      <CardDetailsBlock
         title={i18n.t("tabs.identifiers.details.identifierdetail.showadvanced")}
         onClick={() => openPropDetailModal(DetailView.AdvancedDetail)}
-        testId="show-advanced-block"
+        data-testid="show-advanced-block"
       />
       {isMultiSig && cardData.kt && (
         <>
           <ListHeader
             title={i18n.t("tabs.identifiers.details.keyrotation.title")}
           />
-          <CardBlock
+          <CardDetailsBlock
             title={i18n.t(
               "tabs.identifiers.details.keyrotation.rotatesigningkey.title"
             )}
             onClick={() => openPropDetailModal(DetailView.RotationThreshold)}
-            testId="rotate-signing-key-block"
+            data-testid="rotate-signing-key-block"
           >
             <CardDetailsContent
-              testId="rotate-signing-key"
+              data-testid="rotate-signing-key"
               mainContent={`${cardData.kt}`}
               subContent={`${i18n.t(
                 "tabs.identifiers.details.keyrotation.rotatesigningkey.outof",
                 { threshold: memberCount }
               )}`}
             />
-          </CardBlock>
+          </CardDetailsBlock>
         </>
+      )}
+      {cardData.kt && (
+        <CardDetailsBlock
+          title={i18n.t(
+            "tabs.identifiers.details.group.signingkeysthreshold.title"
+          )}
+          onClick={() => openPropDetailModal(DetailView.SigningThreshold)}
+          data-testid="signing-threshold-block"
+        >
+          <CardDetailsContent
+            mainContent={`${cardData.kt}`}
+            subContent={`${i18n.t(
+              "tabs.identifiers.details.group.signingkeysthreshold.outof",
+              { threshold: memberCount }
+            )}`}
+            data-testid="signing-threshold-content"
+          />
+        </CardDetailsBlock>
       )}
       <IdentifierAttributeDetailModal
         isOpen={openDetailModal}

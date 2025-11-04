@@ -12,45 +12,44 @@ import {
 } from "ionicons/icons";
 import { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Agent } from "../../../core/agent/agent";
-import { MiscRecordId } from "../../../core/agent/agent.types";
-import { BasicRecord } from "../../../core/agent/records";
-import { IdentifierDetails as IdentifierDetailsCore } from "../../../core/agent/services/identifier.types";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { Agent } from "../../../../core/agent/agent";
+import { MiscRecordId } from "../../../../core/agent/agent.types";
+import { BasicRecord } from "../../../../core/agent/records";
+import { IdentifierDetails as IdentifierDetailsCore } from "../../../../core/agent/services/identifier.types";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   addFavouriteIdentifierCache,
   getFavouritesIdentifiersCache,
   removeFavouriteIdentifierCache,
   removeIdentifierCache,
-} from "../../../store/reducers/identifiersCache";
+} from "../../../../store/reducers/identifiersCache";
 import {
   getAuthentication,
   getStateCache,
   setCurrentOperation,
   setCurrentRoute,
   setToastMsg,
-} from "../../../store/reducers/stateCache";
-import "../../components/CardDetails/CardDetails.scss";
-import { MAX_FAVOURITES } from "../../globals/constants";
-import { OperationType, ToastMsgType } from "../../globals/types";
-import { useOnlineStatusEffect } from "../../hooks";
-import { showError } from "../../utils/error";
-import { combineClassNames } from "../../utils/style";
-import { Alert } from "../Alert";
-import { CloudError } from "../CloudError";
-import { IdentifierCardTemplate } from "../IdentifierCardTemplate";
+} from "../../../../store/reducers/stateCache";
+import { MAX_FAVOURITES } from "../../../globals/constants";
+import { OperationType, ToastMsgType } from "../../../globals/types";
+import { useOnlineStatusEffect } from "../../../hooks";
+import { showError } from "../../../utils/error";
+import { combineClassNames } from "../../../utils/style";
+import { Alert } from "../../common/Alert";
+import { CloudError } from "../../CloudError";
+import { IdentifierCardTemplate } from "../../card/IdentifierCardTemplate/IdentifierCardTemplate";
 import { IdentifierOptions } from "../IdentifierOptions";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
-import { ShareConnection } from "../ShareConnection";
-import { Verification } from "../Verification";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { PageFooter } from "../../PageFooter";
+import { PageHeader } from "../../common/PageHeader";
+import { ShareConnection } from "../../ShareConnection";
+import { Verification } from "../../Verification/Verification";
 import { IdentifierContent } from "./components/IdentifierContent";
 import { RotateKeyModal } from "./components/RotateKeyModal";
 import "./IdentifierDetailModule.scss";
 import { IdentifierDetailModuleProps } from "./IdentifierDetailModule.types";
-import { getBiometricsCache } from "../../../store/reducers/biometricsCache";
+import { getBiometricsCache } from "../../../../store/reducers/biometricsCache";
 
 const IdentifierDetailModule = ({
   identifierDetailId,
@@ -97,7 +96,7 @@ const IdentifierDetailModule = ({
   }, [cardData?.id, userName, dispatch]);
 
   const isFavourite = favouritesIdentifiersData?.some(
-    (fav) => fav.id === identifierDetailId
+    (fav: { id: string }) => fav.id === identifierDetailId
   );
 
   const getDetails = useCallback(async () => {
@@ -178,7 +177,7 @@ const IdentifierDetailModule = ({
             id: MiscRecordId.IDENTIFIERS_FAVOURITES,
             content: {
               favourites: favouritesIdentifiersData.filter(
-                (fav) => fav.id !== id
+                (fav: { id: string }) => fav.id !== id
               ),
             },
           })
@@ -250,28 +249,25 @@ const IdentifierDetailModule = ({
       <>
         <IonButton
           shape="round"
-          className={`heart-button-${
-            isFavourite ? "favourite" : "no-favourite"
-          }`}
+          className={`heart-button-${isFavourite ? "favourite" : "no-favourite"
+            }`}
           data-testid="heart-button"
           onClick={toggleFavourite}
         >
           <IonIcon
             slot="icon-only"
             icon={isFavourite ? heart : heartOutline}
-            className={`heart-icon-${
-              isFavourite ? "favourite" : "no-favourite"
-            }`}
-            data-testid={`heart-icon-${
-              isFavourite ? "favourite" : "no-favourite"
-            }`}
+            className={`heart-icon-${isFavourite ? "favourite" : "no-favourite"
+              }`}
+            data-testid={`heart-icon-${isFavourite ? "favourite" : "no-favourite"
+              }`}
           />
         </IonButton>
         <IonButton
           shape="round"
           className="share-button"
           data-testid="share-button"
-          onClick={openShareModal}
+          onClick={openShareModal as any}
         >
           <IonIcon
             slot="icon-only"
@@ -365,7 +361,7 @@ const IdentifierDetailModule = ({
                     deleteButtonText={`${i18n.t(
                       "tabs.identifiers.details.delete.button"
                     )}`}
-                    deleteButtonAction={deleteButtonAction}
+                    deleteButtonAction={() => setAlertIsOpen(true)}
                   />
                 )}
               </div>
@@ -412,7 +408,7 @@ const IdentifierDetailModule = ({
       />
       <Verification
         verifyIsOpen={verifyIsOpen}
-        setVerifyIsOpen={(value, isCancel) => {
+        setVerifyIsOpen={(value: boolean, isCancel?: boolean) => {
           if (isCancel) {
             setHidden(false);
           }

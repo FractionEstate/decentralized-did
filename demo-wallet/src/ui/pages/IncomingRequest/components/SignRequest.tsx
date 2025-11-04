@@ -8,10 +8,10 @@ import {
   CardDetailsAttributes,
   CardDetailsBlock,
 } from "../../../components/card/CardDetails";
-import { PageFooter } from "../../../components/layout/PageFooter";
+import { PageFooter } from "../../../components/PageFooter";
 import { PageHeader } from "../../../components/common/PageHeader";
 import { Spinner } from "../../../components/common/Spinner";
-import { Verification } from "../../../components/auth/Verification";
+import { Verification } from "../../../components/Verification";
 import {
   BiometricVerification,
   VerificationMode,

@@ -22,7 +22,7 @@ import { ProgressIndicator } from "./ProgressIndicator";
 import {
   showErrorToast,
   LOADING_MESSAGES,
-  SUCCESS_MESSAGES
+  SUCCESS_MESSAGES,
 } from "../../../utils/userFriendlyErrors";
 import { useExitAppWithDoubleTap } from "../../hooks/exitAppWithDoubleTapHook";
 import "./Onboarding.scss";

@@ -30,9 +30,9 @@ import {
   setToastMsg,
   showConnections as updateShowConnections,
 } from "../../../store/reducers/stateCache";
-import { Alert } from "../../components/alert/Alert";
-import { CardsPlaceholder } from "../../components/placeholders/CardsPlaceholder";
-import { RemovePendingAlert } from "../../components/alert/RemovePendingAlert";
+import { Alert } from "../../components/common/Alert/Alert";
+import { CardsPlaceholder } from "../../components/card/CardsPlaceholder/CardsPlaceholder";
+import { RemovePendingAlert } from "../../components/RemovePendingAlert/RemovePendingAlert";
 import { ShareConnection } from "../../components/ShareConnection";
 import { ShareType } from "../../components/ShareConnection/ShareConnection.types";
 import { OperationType, RequestType, ToastMsgType } from "../../globals/types";

@@ -22,7 +22,7 @@ import {
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
 import { Alert } from "../../components/common/Alert";
-import { PageFooter } from "../../components/common/PageFooter";
+import { PageFooter } from "../../components/PageFooter";
 import { PageHeader } from "../../components/common/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
 import { ToastMsgType } from "../../globals/types";

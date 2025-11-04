@@ -1,18 +1,18 @@
 import { IonCard, IonIcon, IonItem, IonLabel } from "@ionic/react";
 import { pencilOutline } from "ionicons/icons";
 import { useEffect, useState } from "react";
-import { Agent } from "../../../../core/agent/agent";
-import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
-import { i18n } from "../../../../i18n";
-import { useAppDispatch } from "../../../../store/hooks";
-import { setToastMsg } from "../../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../../globals/types";
-import { showError } from "../../../utils/error";
-import { Alert } from "../../Alert";
-import { FallbackIcon } from "../../FallbackIcon";
-import { PageFooter } from "../../PageFooter";
-import { PageHeader } from "../../PageHeader";
-import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { Agent } from "../../../../../core/agent/agent";
+import { ConnectionShortDetails } from "../../../../../core/agent/agent.types";
+import { i18n } from "../../../../../i18n";
+import { useAppDispatch } from "../../../../../store/hooks";
+import { setToastMsg } from "../../../../../store/reducers/stateCache";
+import { ToastMsgType } from "../../../../globals/types";
+import { showError } from "../../../../utils/error";
+import { Alert } from "../../../../components/common/Alert";
+import { FallbackIcon } from "../../../../components/image/FallbackIcon";
+import { PageFooter } from "../../../../components/PageFooter";
+import { PageHeader } from "../../../../components/common/PageHeader";
+import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
 import { IdentifierStageProps, Stage } from "../CreateGroupIdentifier.types";
 
 const Summary = ({

@@ -5,7 +5,7 @@ import { HumanReadableMessage } from "../../../../../core/agent/services/connect
 import { i18n } from "../../../../../i18n";
 import { useAppDispatch } from "../../../../../store/hooks";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { showError } from "../../../../utils/error";
 import { openBrowserLink } from "../../../../utils/openBrowserLink";

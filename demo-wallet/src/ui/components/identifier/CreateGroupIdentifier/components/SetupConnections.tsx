@@ -1,27 +1,27 @@
 import { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { Agent } from "../../../../core/agent/agent";
-import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
-import { i18n } from "../../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { Agent } from "../../../../../core/agent/agent";
+import { ConnectionShortDetails } from "../../../../../core/agent/agent.types";
+import { i18n } from "../../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
   getMultiSigGroupCache,
   removeIdentifierCache,
   setScanGroupId,
-} from "../../../../store/reducers/identifiersCache";
+} from "../../../../../store/reducers/identifiersCache";
 import {
   getCurrentOperation,
   getStateCache,
   setCurrentOperation,
   setToastMsg,
-} from "../../../../store/reducers/stateCache";
-import { OperationType, ToastMsgType } from "../../../globals/types";
-import { useOnlineStatusEffect } from "../../../hooks";
-import { showError } from "../../../utils/error";
-import { getTheme } from "../../../utils/theme";
-import { Alert } from "../../Alert";
-import { TabsRoutePath } from "../../navigation/TabsMenu";
-import { Verification } from "../../Verification";
+} from "../../../../../store/reducers/stateCache";
+import { OperationType, ToastMsgType } from "../../../../globals/types";
+import { useOnlineStatusEffect } from "../../../../hooks";
+import { showError } from "../../../../utils/error";
+import { getTheme } from "../../../../utils/theme";
+import { Alert } from "../../../../components/common/Alert";
+import { TabsRoutePath } from "../../../navigation/TabsMenu";
+import { Verification } from "../../../Verification";
 import { IdentifierStageProps, Stage } from "../CreateGroupIdentifier.types";
 import { SetupConnectionBodyInit } from "./SetupConnectionBodyInit";
 import { SetupConnectionBodyResume } from "./SetupConnectionBodyResume";
