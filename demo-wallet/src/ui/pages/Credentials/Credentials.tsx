@@ -34,19 +34,17 @@ import {
   setToastMsg,
   showConnections,
 } from "../../../store/reducers/stateCache";
-import { ArchivedCredentials } from "../../components/ArchivedCredentials";
-import { CardSlider } from "../../components/CardSlider";
-import { CardsPlaceholder } from "../../components/CardsPlaceholder";
-import { FilterChip } from "../../components/FilterChip/FilterChip";
-import { AllowedChipFilter } from "../../components/FilterChip/FilterChip.types";
-import { FilteredItemsPlaceholder } from "../../components/FilteredItemsPlaceholder";
+import { ArchivedCredentials } from "../../components/credential/ArchivedCredentials";
+import { CardSlider } from "../../components/card/CardSlider";
+import { CardsPlaceholder } from "../../components/placeholders/CardsPlaceholder";
+import { FilterChip } from "../../components/common/FilterChip";
+import { AllowedChipFilter } from "../../components/common/FilterChip.types";
+import { FilteredItemsPlaceholder } from "../../components/placeholders/FilteredItemsPlaceholder";
 import { TabLayout } from "../../components/layout/TabLayout";
-import { ListHeader } from "../../components/ListHeader";
-import { RemovePendingAlert } from "../../components/RemovePendingAlert";
-import {
-  CardList as CredentialCardList,
-  SwitchCardView,
-} from "../../components/SwitchCardView";
+import { ListHeader } from "../../components/common/ListHeader";
+import { RemovePendingAlert } from "../../components/alert/RemovePendingAlert";
+import { SwitchCardView } from "../../components/card/SwitchCardView";
+import { CardList as CredentialCardList } from "../../components/card/CardList";
 import { CardType, ToastMsgType } from "../../globals/types";
 import { useOnlineStatusEffect } from "../../hooks";
 import { showError } from "../../utils/error";
@@ -199,11 +197,10 @@ const Credentials = () => {
   const ArchivedCredentialsButton = () => {
     return (
       <div
-        className={`archived-credentials-button-container${
-          archivedCreds?.length > 0 || revokedCreds.length > 0
-            ? " visible"
-            : " hidden"
-        }`}
+        className={`archived-credentials-button-container${archivedCreds?.length > 0 || revokedCreds.length > 0
+          ? " visible"
+          : " hidden"
+          }`}
       >
         <IonButton
           fill="outline"
@@ -366,7 +363,7 @@ const Credentials = () => {
                   cardsData={pendingCreds}
                   cardTypes={CardType.CREDENTIALS}
                   testId="pending-creds-list"
-                  onCardClick={(cred) => {
+                  onCardClick={(cred: CredentialShortDetails) => {
                     setDeletePendingItem(cred as CredentialShortDetails);
                     setOpenDeletePendingAlert(true);
                   }}

@@ -27,19 +27,17 @@ import {
   setToastMsg,
   showConnections,
 } from "../../../store/reducers/stateCache";
-import { CardSlider } from "../../components/CardSlider";
-import { CardsPlaceholder } from "../../components/CardsPlaceholder";
-import { CreateGroupIdentifier } from "../../components/CreateGroupIdentifier";
-import { CreateIdentifier } from "../../components/CreateIdentifier";
-import { FilterChip } from "../../components/FilterChip/FilterChip";
-import { AllowedChipFilter } from "../../components/FilterChip/FilterChip.types";
-import { FilteredItemsPlaceholder } from "../../components/FilteredItemsPlaceholder";
-import { ListHeader } from "../../components/ListHeader";
-import { RemovePendingAlert } from "../../components/RemovePendingAlert";
-import {
-  CardList as IdentifierCardList,
-  SwitchCardView,
-} from "../../components/SwitchCardView";
+import { CardSlider } from "../../components/card/CardSlider";
+import { CardsPlaceholder } from "../../components/common/CardsPlaceholder";
+import { CreateGroupIdentifier } from "../../components/identifier/CreateGroupIdentifier";
+import { CreateIdentifier } from "../../components/identifier/CreateIdentifier";
+import { FilterChip } from "../../components/common/FilterChip";
+import { AllowedChipFilter } from "../../components/common/FilterChip.types";
+import { FilteredItemsPlaceholder } from "../../components/common/FilteredItemsPlaceholder";
+import { ListHeader } from "../../components/common/ListHeader";
+import { RemovePendingAlert } from "../../components/common/RemovePendingAlert";
+import { SwitchCardView } from "../../components/card/SwitchCardView";
+import { CardList as IdentifierCardList } from "../../components/card/CardList";
 import { TabLayout } from "../../components/layout/TabLayout";
 import { CardType, OperationType, ToastMsgType } from "../../globals/types";
 import { showError } from "../../utils/error";
@@ -430,7 +428,7 @@ const Identifiers = () => {
                 <IdentifierCardList
                   cardTypes={CardType.IDENTIFIERS}
                   cardsData={multiSigIdentifiers}
-                  onCardClick={async (identifier) =>
+                  onCardClick={async (identifier: IdentifierShortDetails) =>
                     handleMultiSigClick(identifier as IdentifierShortDetails)
                   }
                   testId="identifiers-list"
@@ -446,7 +444,7 @@ const Identifiers = () => {
                   cardsData={pendingIdentifiers}
                   cardTypes={CardType.IDENTIFIERS}
                   testId="pending-identifiers-list"
-                  onCardClick={(identifier) => {
+                  onCardClick={(identifier: IdentifierShortDetails) => {
                     setDeletePendingItem(identifier as IdentifierShortDetails);
                     setOpenDeletePendingAlert(true);
                   }}
@@ -473,7 +471,7 @@ const Identifiers = () => {
       />
       <CreateGroupIdentifier
         modalIsOpen={groupIdentifierOpen}
-        setModalIsOpen={(value) => {
+        setModalIsOpen={(value: boolean) => {
           setGroupIdentifierOpen(value);
           setOpenGroupAfterCreate(false);
         }}

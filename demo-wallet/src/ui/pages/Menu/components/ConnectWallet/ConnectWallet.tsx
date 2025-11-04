@@ -21,12 +21,12 @@ import {
   setPendingConnection,
   setWalletConnectionsCache,
 } from "../../../../../store/reducers/walletConnectionsCache";
-import { Alert } from "../../../../components/Alert";
-import { CardList } from "../../../../components/CardList";
-import { CardsPlaceholder } from "../../../../components/CardsPlaceholder";
-import { CreateIdentifier } from "../../../../components/CreateIdentifier";
-import { ANIMATION_DURATION } from "../../../../components/SideSlider/SideSlider.types";
-import { Verification } from "../../../../components/Verification";
+import { Alert } from "../../../../components/common/Alert";
+import { CardList } from "../../../../components/card/CardList";
+import { CardsPlaceholder } from "../../../../components/common/CardsPlaceholder";
+import { CreateIdentifier } from "../../../../components/identifier/CreateIdentifier";
+import { ANIMATION_DURATION } from "../../../../components/layout/SideSlider.types";
+import { Verification } from "../../../../components/auth/Verification";
 import { OperationType, ToastMsgType } from "../../../../globals/types";
 import { showError } from "../../../../utils/error";
 import { ConfirmConnectModal } from "../ConfirmConnectModal";

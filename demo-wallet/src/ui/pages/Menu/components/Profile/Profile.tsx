@@ -3,7 +3,7 @@ import { IonCard, IonItem } from "@ionic/react";
 import { ProfileOptionRef, ProfileProps } from "./Profile.types";
 import "./Profile.scss";
 import { i18n } from "../../../../../i18n";
-import { CustomInput } from "../../../../components/CustomInput";
+import { CustomInput } from "../../../../components/common/CustomInput";
 import { Agent } from "../../../../../core/agent/agent";
 import { BasicRecord } from "../../../../../core/agent/records";
 import { MiscRecordId } from "../../../../../core/agent/agent.types";

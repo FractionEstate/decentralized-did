@@ -20,12 +20,12 @@ import {
   setNotificationsCache,
 } from "../../../../../../store/reducers/notificationsCache";
 import { setToastMsg } from "../../../../../../store/reducers/stateCache";
-import { CardItem, CardList } from "../../../../../components/CardList";
-import { BackReason } from "../../../../../components/CredentialDetailModule/CredentialDetailModule.types";
-import { InfoCard } from "../../../../../components/InfoCard";
-import { PageFooter } from "../../../../../components/PageFooter";
-import { PageHeader } from "../../../../../components/PageHeader";
-import { Verification } from "../../../../../components/Verification";
+import { CardItem, CardList } from "../../../../../components/card/CardList";
+import { BackReason } from "../../../../../components/credential/CredentialDetailModule.types";
+import { InfoCard } from "../../../../../components/card/InfoCard";
+import { PageFooter } from "../../../../../components/layout/PageFooter";
+import { PageHeader } from "../../../../../components/common/PageHeader";
+import { Verification } from "../../../../../components/auth/Verification";
 import { ScrollablePageLayout } from "../../../../../components/layout/ScrollablePageLayout";
 import { ToastMsgType } from "../../../../../globals/types";
 import {

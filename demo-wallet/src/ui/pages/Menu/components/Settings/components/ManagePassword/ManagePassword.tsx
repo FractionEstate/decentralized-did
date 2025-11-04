@@ -11,8 +11,8 @@ import { useSelector } from "react-redux";
 import { useRef, useState } from "react";
 import { chevronForward } from "ionicons/icons";
 import { i18n } from "../../../../../../../i18n";
-import { VerifyPassword } from "../../../../../../components/VerifyPassword";
-import { VerifyPasscode } from "../../../../../../components/VerifyPasscode";
+import { VerifyPassword } from "../../../../../../components/auth/VerifyPassword";
+import { VerifyPasscode } from "../../../../../../components/auth/VerifyPasscode";
 import {
   getStateCache,
   setAuthentication,
@@ -21,7 +21,7 @@ import {
 import {
   Alert as AlertEnable,
   Alert as AlertDisable,
-} from "../../../../../../components/Alert";
+} from "../../../../../../components/common/Alert";
 import { CreatePassword } from "../../../../../CreatePassword";
 import { KeyStoreKeys, SecureStorage } from "../../../../../../../core/storage";
 import { useAppDispatch } from "../../../../../../../store/hooks";

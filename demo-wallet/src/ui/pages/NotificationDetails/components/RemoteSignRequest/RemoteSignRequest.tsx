@@ -16,14 +16,14 @@ import {
   CardBlock,
   CardDetailsAttributes,
   CardDetailsItem,
-} from "../../../../components/CardDetails";
-import { reservedKeysFilter } from "../../../../components/CardDetails/CardDetailsAttributes/CardDetailsAttributes.utils";
+} from "../../../../components/card/CardDetails";
+import { reservedKeysFilter } from "../../../../components/card/CardDetails/CardDetailsAttributes/CardDetailsAttributes.utils";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/PageFooter";
-import { PageHeader } from "../../../../components/PageHeader";
-import { Spinner } from "../../../../components/Spinner";
-import { SpinnerConverage } from "../../../../components/Spinner/Spinner.type";
-import { Verification } from "../../../../components/Verification";
+import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageHeader } from "../../../../components/layout/PageHeader";
+import { Spinner } from "../../../../components/common/Spinner";
+import { SpinnerConverage } from "../../../../components/common/Spinner/Spinner.type";
+import { Verification } from "../../../../components/auth/Verification";
 import { ToastMsgType } from "../../../../globals/types";
 import { showError } from "../../../../utils/error";
 import { combineClassNames } from "../../../../utils/style";

@@ -9,9 +9,9 @@ import {
   showGenericError,
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
-import { CreatePasscodeModule } from "../../components/CreatePasscodeModule";
-import { CreatePasscodeModuleRef } from "../../components/CreatePasscodeModule/CreatePasscodeModule.types";
-import { PageHeader } from "../../components/PageHeader";
+import { CreatePasscodeModule } from "../../components/auth/CreatePasscodeModule";
+import { CreatePasscodeModuleRef } from "../../components/auth/CreatePasscodeModule/CreatePasscodeModule.types";
+import { PageHeader } from "../../components/common/PageHeader";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
 import { useAppIonRouter } from "../../hooks";
 import "./SetPasscode.scss";

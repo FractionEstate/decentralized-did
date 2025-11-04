@@ -10,11 +10,11 @@ import {
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
 import "../../components/CardDetails/CardDetails.scss";
-import { CredentialDetailModule } from "../../components/CredentialDetailModule";
+import { CredentialDetailModule } from "../../components/credential/CredentialDetailModule";
 import {
   BackReason,
   CredHistory,
-} from "../../components/CredentialDetailModule/CredentialDetailModule.types";
+} from "../../components/credential/CredentialDetailModule/CredentialDetailModule.types";
 import { useAppIonRouter } from "../../hooks";
 
 const NAVIGATION_DELAY = 250;

@@ -42,9 +42,12 @@ import {
   showConnectWallet,
 } from "../../../store/reducers/walletConnectionsCache";
 import { getBiometricsCache } from "../../../store/reducers/biometricsCache";
-import { TabLayout } from "../../components/layout/TabLayout";
-import { SubMenu } from "../Menu/components/SubMenu";
-import { emptySubMenu, SubMenuItems } from "../Menu/components/SubMenuItems";
+import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
+import { SubMenu } from "../Menu/components/SubMenu/SubMenu";
+import {
+  emptySubMenu,
+  SubMenuItems,
+} from "../Menu/components/SubMenuItems/SubMenuItems";
 import { SubMenuKey } from "../Menu/Menu.types";
 import "./Settings.scss";
 
@@ -111,7 +114,7 @@ const SettingsItem: React.FC<SettingsItemProps> = ({
         <IonToggle
           slot="end"
           checked={toggleValue}
-          onIonToggle={(e) => onToggle(e.detail.checked)}
+          onIonChange={(e: any) => onToggle(e.detail.checked)}
         />
       )}
       {!toggle && (onClick || href) && (

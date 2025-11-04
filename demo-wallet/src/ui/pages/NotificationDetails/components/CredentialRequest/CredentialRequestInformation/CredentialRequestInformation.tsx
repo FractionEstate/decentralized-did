@@ -13,21 +13,21 @@ import {
   setNotificationsCache,
 } from "../../../../../../store/reducers/notificationsCache";
 import { setToastMsg } from "../../../../../../store/reducers/stateCache";
-import { Alert as AlertDecline } from "../../../../../components/Alert";
+import { Alert as AlertDecline } from "../../../../../components/common/Alert";
 import {
   CardDetailsAttributes,
   CardDetailsBlock,
-} from "../../../../../components/CardDetails";
+} from "../../../../../components/card/CardDetails";
 import {
   MemberAcceptStatus,
   MultisigMember,
-} from "../../../../../components/CredentialDetailModule/components";
-import { FallbackIcon } from "../../../../../components/FallbackIcon";
-import { InfoCard } from "../../../../../components/InfoCard";
+} from "../../../../../components/credential/CredentialDetailModule/components";
+import { FallbackIcon } from "../../../../../components/image/FallbackIcon";
+import { InfoCard } from "../../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../../components/PageFooter";
-import { PageHeader } from "../../../../../components/PageHeader";
-import { Verification } from "../../../../../components/Verification";
+import { PageFooter } from "../../../../../components/layout/PageFooter";
+import { PageHeader } from "../../../../../components/common/PageHeader";
+import { Verification } from "../../../../../components/auth/Verification";
 import { ToastMsgType } from "../../../../../globals/types";
 import { useOnlineStatusEffect } from "../../../../../hooks";
 import { showError } from "../../../../../utils/error";
@@ -70,9 +70,9 @@ const CredentialRequestInformation = ({
   const missingProposedCred = proposedCredId
     ? !(
       credsCache.some((credential) => credential.id === proposedCredId) ||
-        archivedCredsCache.some(
-          (credential) => credential.id === proposedCredId
-        )
+      archivedCredsCache.some(
+        (credential) => credential.id === proposedCredId
+      )
     )
     : false;
 
@@ -150,8 +150,8 @@ const CredentialRequestInformation = ({
   const reachedThreshold =
     linkedGroup &&
     linkedGroup.othersJoined.length +
-      (linkedGroup.linkedRequest.accepted ? 1 : 0) >=
-      Number(linkedGroup.threshold);
+    (linkedGroup.linkedRequest.accepted ? 1 : 0) >=
+    Number(linkedGroup.threshold);
 
   const showProvidedCred = () => {
     if (missingProposedCred) return;
@@ -234,9 +234,9 @@ const CredentialRequestInformation = ({
 
   const groupInitiatorDeclineButtonText =
     reachedThreshold ||
-    groupInitiatorJoined ||
-    !isGroupInitiator ||
-    missingProposedCred
+      groupInitiatorJoined ||
+      !isGroupInitiator ||
+      missingProposedCred
       ? undefined
       : `${i18n.t("tabs.notifications.details.buttons.decline")}`;
 
@@ -346,9 +346,8 @@ const CredentialRequestInformation = ({
               <CardDetailsBlock
                 dataTestId="proposed-cred"
                 onClick={showProvidedCred}
-                className={`proposed-cred ${
-                  missingProposedCred ? "missing-proposed-cred" : ""
-                }`}
+                className={`proposed-cred ${missingProposedCred ? "missing-proposed-cred" : ""
+                  }`}
                 title={`${i18n.t(
                   "tabs.notifications.details.credential.request.information.proposedcred"
                 )}`}

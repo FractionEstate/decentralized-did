@@ -28,22 +28,22 @@ import {
   setNotificationsCache,
 } from "../../../../../store/reducers/notificationsCache";
 import { getAuthentication } from "../../../../../store/reducers/stateCache";
-import { Alert, Alert as AlertDecline } from "../../../../components/Alert";
-import { CardDetailsBlock } from "../../../../components/CardDetails";
-import { CardTheme } from "../../../../components/CardTheme";
-import { CredentialDetailModal } from "../../../../components/CredentialDetailModule";
+import { Alert, Alert as AlertDecline } from "../../../../components/common/Alert";
+import { CardDetailsBlock } from "../../../../components/card/CardDetails";
+import { CardTheme } from "../../../../components/card/CardTheme";
+import { CredentialDetailModal } from "../../../../components/credential/CredentialDetailModule";
 import {
   MemberAcceptStatus,
   MultisigMember,
-} from "../../../../components/CredentialDetailModule/components";
-import { FallbackIcon } from "../../../../components/FallbackIcon";
-import { IdentifierDetailModal } from "../../../../components/IdentifierDetailModule";
-import { InfoCard } from "../../../../components/InfoCard";
+} from "../../../../components/credential/CredentialDetailModule/components";
+import { FallbackIcon } from "../../../../components/image/FallbackIcon";
+import { IdentifierDetailModal } from "../../../../components/identifier/IdentifierDetailModule";
+import { InfoCard } from "../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
-import { PageFooter } from "../../../../components/PageFooter";
-import { PageHeader } from "../../../../components/PageHeader";
-import { Spinner } from "../../../../components/Spinner";
-import { Verification } from "../../../../components/Verification";
+import { PageFooter } from "../../../../components/layout/PageFooter";
+import { PageHeader } from "../../../../components/common/PageHeader";
+import { Spinner } from "../../../../components/common/Spinner";
+import { Verification } from "../../../../components/auth/Verification";
 import { BackEventPriorityType } from "../../../../globals/types";
 import {
   useIonHardwareBackButton,
@@ -99,8 +99,8 @@ const ReceiveCredential = ({
   const maxThreshold =
     isMultisig &&
     multisigMemberStatus.othersJoined.length +
-      (multisigMemberStatus.linkedRequest.accepted ? 1 : 0) >=
-      Number(multisigMemberStatus.threshold);
+    (multisigMemberStatus.linkedRequest.accepted ? 1 : 0) >=
+    Number(multisigMemberStatus.threshold);
 
   const identifier = identifiersData[credDetail?.identifierId || ""];
   const groupInitiatorAid = multisigMemberStatus.members[0] || "";
@@ -372,8 +372,7 @@ const ReceiveCredential = ({
           <InfoCard
             className="alert"
             content={i18n.t(
-              `tabs.notifications.details.credential.receive.${
-                isRevoked ? "revokedalert" : "initiatoracceptedalert"
+              `tabs.notifications.details.credential.receive.${isRevoked ? "revokedalert" : "initiatoracceptedalert"
               }`
             )}
             icon={isRevoked ? alertCircleOutline : undefined}

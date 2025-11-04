@@ -1,4 +1,4 @@
-import { BackReason } from "../../../../../components/CredentialDetailModule/CredentialDetailModule.types";
+import { BackReason } from "../../../../../components/credential/CredentialDetailModule/CredentialDetailModule.types";
 import { MemberInfo } from "../CredentialRequest.types";
 
 interface LightCredentialDetailModalProps {

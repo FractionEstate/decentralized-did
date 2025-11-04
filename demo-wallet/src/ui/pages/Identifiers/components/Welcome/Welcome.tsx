@@ -8,9 +8,9 @@ import {
 } from "../../../../../store/reducers/stateCache";
 import IdImage from "../../../../assets/images/id.png";
 import WelcomeBG from "../../../../assets/images/welcome-bg.svg";
-import { CreateIdentifier } from "../../../../components/CreateIdentifier";
+import { CreateIdentifier } from "../../../../components/identifier/CreateIdentifier";
 import { PageFooter } from "../../../../components/PageFooter";
-import { PageHeader } from "../../../../components/PageHeader";
+import { PageHeader } from "../../../../components/common/PageHeader";
 import { ResponsivePageLayout } from "../../../../components/layout/ResponsivePageLayout";
 import "./Welcome.scss";
 import { Agent } from "../../../../../core/agent/agent";

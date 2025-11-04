@@ -6,10 +6,10 @@ import {
   setCurrentOperation,
   showConnections,
 } from "../../../store/reducers/stateCache";
-import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
-import { PageHeader } from "../../components/PageHeader";
-import { Scanner } from "../../components/Scanner";
-import { useCameraDirection } from "../../components/Scanner/hook/useCameraDirection";
+import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout/ResponsivePageLayout";
+import { PageHeader } from "../../components/layout/PageHeader";
+import { Scanner } from "../../components/scanner/Scanner";
+import { useCameraDirection } from "../../components/scanner/useCameraDirection";
 import { BackEventPriorityType, OperationType } from "../../globals/types";
 import "./FullPageScanner.scss";
 import {

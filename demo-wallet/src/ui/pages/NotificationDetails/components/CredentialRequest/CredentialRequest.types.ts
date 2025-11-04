@@ -3,7 +3,7 @@ import {
   CredentialsMatchingApply,
   LinkedGroupInfo,
 } from "../../../../../core/agent/services/ipexCommunicationService.types";
-import { BackReason } from "../../../../components/CredentialDetailModule/CredentialDetailModule.types";
+import { BackReason } from "../../../../components/credential/CredentialDetailModule/CredentialDetailModule.types";
 
 interface MemberInfo {
   aid: string;

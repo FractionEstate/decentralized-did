@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CredentialDetailModal } from "../../../../../components/CredentialDetailModule";
+import { CredentialDetailModal } from "../../../../../components/credential/CredentialDetailModule";
 import { LightCredentialDetailModalProps } from "../CredentialRequest.types";
 
 const LightCredentialDetailModal = ({

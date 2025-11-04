@@ -8,7 +8,7 @@ import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import { getMultisigConnectionsCache } from "../../../../../store/reducers/connectionsCache";
 import { getIdentifiersCache } from "../../../../../store/reducers/identifiersCache";
 import { getAuthentication } from "../../../../../store/reducers/stateCache";
-import { Alert } from "../../../../components/Alert";
+import { Alert } from "../../../../components/common/Alert";
 import { useOnlineStatusEffect } from "../../../../hooks";
 import { showError } from "../../../../utils/error";
 import { NotificationDetailsProps } from "../../NotificationDetails.types";
@@ -37,8 +37,8 @@ const CredentialRequest = ({
   const reachThreshold =
     linkedGroup &&
     linkedGroup.othersJoined.length +
-      (linkedGroup.linkedRequest.accepted ? 1 : 0) >=
-      Number(linkedGroup.threshold);
+    (linkedGroup.linkedRequest.accepted ? 1 : 0) >=
+    Number(linkedGroup.threshold);
 
   const userAID = !credentialRequest
     ? null

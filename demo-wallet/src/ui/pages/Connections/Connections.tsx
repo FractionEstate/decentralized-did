@@ -30,9 +30,9 @@ import {
   setToastMsg,
   showConnections as updateShowConnections,
 } from "../../../store/reducers/stateCache";
-import { Alert } from "../../components/Alert";
-import { CardsPlaceholder } from "../../components/CardsPlaceholder";
-import { RemovePendingAlert } from "../../components/RemovePendingAlert";
+import { Alert } from "../../components/alert/Alert";
+import { CardsPlaceholder } from "../../components/placeholders/CardsPlaceholder";
+import { RemovePendingAlert } from "../../components/alert/RemovePendingAlert";
 import { ShareConnection } from "../../components/ShareConnection";
 import { ShareType } from "../../components/ShareConnection/ShareConnection.types";
 import { OperationType, RequestType, ToastMsgType } from "../../globals/types";
@@ -41,7 +41,7 @@ import { useSwipeBack } from "../../hooks/swipeBackHook";
 import { showError } from "../../utils/error";
 import { ConnectionsBody } from "./components/ConnectionsBody";
 import { ConnectionsOptionModal } from "./components/ConnectionsOptionModal";
-import { IdentifierSelectorModal } from "../../components/IdentifierSelectorModal";
+import { IdentifierSelectorModal } from "../../components/identifier/IdentifierSelectorModal";
 import "./Connections.scss";
 import {
   ConnectionsComponentProps,
@@ -49,10 +49,10 @@ import {
   MappedConnections,
 } from "./Connections.types";
 import { combineClassNames } from "../../utils/style";
-import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
-import { PageHeader } from "../../components/PageHeader";
+import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout/ScrollablePageLayout";
+import { PageHeader } from "../../components/common/PageHeader/PageHeader";
 import { ConnectionDetails } from "../ConnectionDetails";
-import { CreateIdentifier } from "../../components/CreateIdentifier";
+import { CreateIdentifier } from "../../components/identifier/CreateIdentifier/CreateIdentifier";
 import { SearchInput } from "./components/SearchInput";
 
 const Connections = forwardRef<ConnectionsOptionRef, ConnectionsComponentProps>(

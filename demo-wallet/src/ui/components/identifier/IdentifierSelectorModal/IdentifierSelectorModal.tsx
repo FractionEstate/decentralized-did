@@ -1,14 +1,14 @@
 import { IonCheckbox, IonContent, IonModal } from "@ionic/react";
 import { useState } from "react";
-import { CreationStatus } from "../../../core/agent/agent.types";
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { i18n } from "../../../i18n";
-import { useAppSelector } from "../../../store/hooks";
-import { getIdentifiersCache } from "../../../store/reducers/identifiersCache";
-import { CardItem, CardList } from "../CardList";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
-import { ResponsivePageLayout } from "../layout/ResponsivePageLayout";
+import { CreationStatus } from "../../../../core/agent/agent.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
+import { i18n } from "../../../../i18n";
+import { useAppSelector } from "../../../../store/hooks";
+import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
+import { CardItem, CardList } from "../../card/CardList";
+import { PageFooter } from "../../layout/PageFooter";
+import { PageHeader } from "../../layout/PageHeader";
+import { ResponsivePageLayout } from "../../layout/ResponsivePageLayout";
 import "./IdentifierSelectorModal.scss";
 import { IdentifierSelectorProps } from "./IdentifierSelectorModal.types";
 
@@ -27,11 +27,14 @@ const IdentifierSelectorModal = ({
     const result = identifiers
       ? identifiers
       : Object.values(identifierCache)
-        .filter((item) => item.creationStatus === CreationStatus.COMPLETE)
-        .filter((item) => !item.groupMetadata?.groupId);
+        .filter(
+          (item: IdentifierShortDetails) =>
+            item.creationStatus === CreationStatus.COMPLETE
+        )
+        .filter((item: IdentifierShortDetails) => !item.groupMetadata?.groupId);
 
     return result.map(
-      (identifier): CardItem<IdentifierShortDetails> => ({
+      (identifier: IdentifierShortDetails): CardItem<IdentifierShortDetails> => ({
         id: identifier.id,
         title: identifier.displayName,
         data: identifier,
@@ -83,17 +86,20 @@ const IdentifierSelectorModal = ({
         <IonContent className="identifier-list">
           <CardList
             data={displayIdentifiers}
-            onCardClick={(data, e) => {
+            onCardClick={(
+              data: IdentifierShortDetails,
+              e: React.MouseEvent<Element, MouseEvent>
+            ) => {
               e.stopPropagation();
             }}
-            onRenderEndSlot={(data) => {
+            onRenderEndSlot={(data: IdentifierShortDetails) => {
               return (
                 <IonCheckbox
                   checked={selectedIdentifier?.id === data.id}
                   aria-label="Select identifier"
                   className="checkbox"
                   data-testid={`identifier-select-${data.id}`}
-                  onClick={(e) => {
+                  onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
                     e.stopPropagation();
                     handleSelectIdentifier(data);
                   }}

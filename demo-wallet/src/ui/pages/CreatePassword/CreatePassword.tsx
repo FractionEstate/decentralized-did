@@ -12,10 +12,10 @@ import {
   setToastMsg,
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
-import { Alert } from "../../components/Alert";
-import { PageHeader } from "../../components/PageHeader";
-import { PasswordModule } from "../../components/PasswordModule";
-import { PasswordModuleRef } from "../../components/PasswordModule/PasswordModule.types";
+import { Alert } from "../../components/common/Alert";
+import { PageHeader } from "../../components/common/PageHeader";
+import { PasswordModule } from "../../components/auth/PasswordModule";
+import { PasswordModuleRef } from "../../components/auth/PasswordModule/PasswordModule.types";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import { OperationType, ToastMsgType } from "../../globals/types";
 import { useAppIonRouter } from "../../hooks";

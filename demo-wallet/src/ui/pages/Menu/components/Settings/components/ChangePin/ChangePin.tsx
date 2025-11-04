@@ -3,8 +3,8 @@ import { IonModal } from "@ionic/react";
 import "./ChangePin.scss";
 import { useDispatch } from "react-redux";
 import { ResponsivePageLayout } from "../../../../../../components/layout/ResponsivePageLayout";
-import { PageHeader } from "../../../../../../components/PageHeader";
-import { CreatePasscodeModule } from "../../../../../../components/CreatePasscodeModule";
+import { PageHeader } from "../../../../../../components/common/PageHeader";
+import { CreatePasscodeModule } from "../../../../../../components/auth/CreatePasscodeModule";
 import { i18n } from "../../../../../../../i18n";
 import { ChangePinModalProps, ChangePinModuleRef } from "./ChangePin.types";
 import { setToastMsg } from "../../../../../../../store/reducers/stateCache";
@@ -52,15 +52,14 @@ const ChangePin = ({ isOpen, setIsOpen }: ChangePinModalProps) => {
           header={
             <PageHeader
               closeButton={true}
-              closeButtonLabel={`${
-                passCodeValue.originalPasscode.length === 6
+              closeButtonLabel={`${passCodeValue.originalPasscode.length === 6
                   ? i18n.t(
                     "tabs.menu.tab.settings.sections.security.changepin.back"
                   )
                   : i18n.t(
                     "tabs.menu.tab.settings.sections.security.changepin.cancel"
                   )
-              }`}
+                }`}
               closeButtonAction={handleCancel}
             />
           }

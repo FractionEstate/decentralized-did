@@ -4,7 +4,7 @@ import {
   ConnectionShortDetails,
   ConnectionStatus,
 } from "../../../../core/agent/agent.types";
-import { CardList } from "../../../components/CardList";
+import { CardList } from "../../../components/card/CardList/CardList";
 import { formatShortDate } from "../../../utils/formatters";
 
 const AlphabeticList = ({
@@ -26,17 +26,17 @@ const AlphabeticList = ({
     <CardList
       onCardClick={handleShowConnectionDetails}
       data={displayConnection}
-      onRenderEndSlot={(data) =>
+      onRenderEndSlot={(data: ConnectionShortDetails) =>
         data.status === ConnectionStatus.PENDING ||
-        data.status === ConnectionStatus.FAILED ? (
-            <IonChip>
-              <IonIcon
-                icon={hourglassOutline}
-                color="primary"
-              ></IonIcon>
-              <span>{ConnectionStatus.PENDING}</span>
-            </IonChip>
-          ) : null
+          data.status === ConnectionStatus.FAILED ? (
+          <IonChip>
+            <IonIcon
+              icon={hourglassOutline}
+              color="primary"
+            ></IonIcon>
+            <span>{ConnectionStatus.PENDING}</span>
+          </IonChip>
+        ) : null
       }
     />
   );

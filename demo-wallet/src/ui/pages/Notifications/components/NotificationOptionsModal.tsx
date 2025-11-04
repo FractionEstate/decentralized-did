@@ -12,7 +12,7 @@ import {
   deleteNotificationById,
   markNotificationAsRead,
 } from "../../../../store/reducers/notificationsCache";
-import { Alert } from "../../../components/Alert";
+import { Alert } from "../../../components/common/Alert";
 import { OptionItem, OptionModal } from "../../../components/OptionsModal";
 import { NotificationOptionModalProps } from "./NotificationOptionsModal.types";
 import { NotificationRoute } from "../../../../core/agent/services/keriaNotificationService.types";

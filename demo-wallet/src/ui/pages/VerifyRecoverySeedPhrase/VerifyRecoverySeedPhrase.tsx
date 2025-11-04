@@ -6,11 +6,11 @@ import { DataProps } from "../../../routes/nextRoute/nextRoute.types";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import { getStateCache } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
-import { PageHeader } from "../../components/PageHeader";
+import { PageHeader } from "../../components/common/PageHeader";
 import {
   RecoverySeedPhraseModule,
   RecoverySeedPhraseModuleRef,
-} from "../../components/RecoverySeedPhraseModule";
+} from "../../components/auth/RecoverySeedPhraseModule";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import { useAppIonRouter } from "../../hooks";
 import "./VerifyRecoverySeedPhrase.scss";

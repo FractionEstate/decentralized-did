@@ -8,7 +8,7 @@ import {
   getCurrentAddressData,
   setCurrentAddress,
 } from "../../../store/reducers/tokensCache";
-import { TabLayout } from "../../components/layout/TabLayout";
+import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
 import { showError } from "../../utils/error";
 import BalanceCard from "./components/BalanceCard";
 import QuickActions from "./components/QuickActions";

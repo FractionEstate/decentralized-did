@@ -2,8 +2,11 @@ import { IonIcon } from "@ionic/react";
 import { search } from "ionicons/icons";
 import { ConnectionShortDetails } from "../../../../../core/agent/agent.types";
 import { i18n } from "../../../../../i18n";
-import { CardItem, CardList } from "../../../../components/CardList";
-import { ListHeader } from "../../../../components/ListHeader";
+import {
+  CardList,
+} from "../../../../components/card/CardList/CardList";
+import { CardItem } from "../../../../components/card/CardList/CardList.types";
+import { ListHeader } from "../../../../components/common/ListHeader/ListHeader";
 import {
   SearchConnectionContentProps,
   SearchConnectionListProps,

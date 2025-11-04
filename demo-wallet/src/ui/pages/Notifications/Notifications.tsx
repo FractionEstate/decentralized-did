@@ -15,8 +15,8 @@ import {
   markNotificationAsRead,
 } from "../../../store/reducers/notificationsCache";
 import { setCurrentRoute } from "../../../store/reducers/stateCache";
-import { Alert } from "../../components/Alert";
-import { CredentialDetailModal } from "../../components/CredentialDetailModule";
+import { Alert } from "../../components/common/Alert";
+import { CredentialDetailModal } from "../../components/credential/CredentialDetailModule";
 import { FilterChip } from "../../components/FilterChip/FilterChip";
 import { AllowedChipFilter } from "../../components/FilterChip/FilterChip.types";
 import { TabLayout } from "../../components/layout/TabLayout";

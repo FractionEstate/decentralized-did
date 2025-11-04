@@ -5,8 +5,8 @@ import {
 } from "../../../../core/agent/agent.types";
 import { ConnectionHistoryType } from "../../../../core/agent/services/connectionService.types";
 import { i18n } from "../../../../i18n";
-import { CardTheme } from "../../../components/CardTheme";
-import { FallbackIcon } from "../../../components/FallbackIcon";
+import { CardTheme } from "../../../components/card/CardTheme/CardTheme";
+import { FallbackIcon } from "../../../components/common/FallbackIcon/FallbackIcon";
 import {
   formatShortDate,
   formatTimeToSec,
@@ -30,14 +30,14 @@ const ConnectionHistoryEvent = ({
     >
       <div className="connection-details-logo">
         {historyItem.type ===
-        ConnectionHistoryType.CREDENTIAL_REQUEST_PRESENT ? (
-            <FallbackIcon
-              src={connectionDetails?.logo}
-              alt="connection-logo"
-            />
-          ) : (
-            <CardTheme />
-          )}
+          ConnectionHistoryType.CREDENTIAL_REQUEST_PRESENT ? (
+          <FallbackIcon
+            src={connectionDetails?.logo}
+            alt="connection-logo"
+          />
+        ) : (
+          <CardTheme />
+        )}
       </div>
       <p className="connection-details-history-event-info">
         <span className="connection-details-history-text">

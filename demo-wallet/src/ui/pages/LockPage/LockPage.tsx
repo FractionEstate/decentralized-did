@@ -30,23 +30,23 @@ import {
   setAuthentication,
   setFirstAppLaunchComplete,
 } from "../../../store/reducers/stateCache";
-import { Alert } from "../../components/Alert";
+import { Alert } from "../../components/common/Alert";
 import {
   ErrorMessage,
   MESSAGE_MILLISECONDS,
 } from "../../components/ErrorMessage";
-import { ForgotAuthInfo } from "../../components/ForgotAuthInfo";
-import { ForgotType } from "../../components/ForgotAuthInfo/ForgotAuthInfo.types";
+import { ForgotAuthInfo } from "../../components/auth/ForgotAuthInfo";
+import { ForgotType } from "../../components/auth/ForgotAuthInfo/ForgotAuthInfo.types";
 import {
   BiometricVerification,
   VerificationMode,
-} from "../../components/BiometricVerification";
+} from "../../components/auth/BiometricVerification";
 import {
   MaxLoginAttemptAlert,
   useLoginAttempt,
-} from "../../components/MaxLoginAttemptAlert";
+} from "../../components/auth/MaxLoginAttemptAlert";
 import { PageFooter } from "../../components/PageFooter";
-import { PasscodeModule } from "../../components/PasscodeModule";
+import { PasscodeModule } from "../../components/auth/PasscodeModule";
 import { ResponsivePageLayout } from "../../components/layout/ResponsivePageLayout";
 import { BackEventPriorityType } from "../../globals/types";
 import { useExitAppWithDoubleTap } from "../../hooks/exitAppWithDoubleTapHook";

@@ -10,7 +10,7 @@ import {
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
 import "../../components/CardDetails/CardDetails.scss";
-import { IdentifierDetailModule } from "../../components/IdentifierDetailModule";
+import { IdentifierDetailModule } from "../../components/identifier/IdentifierDetailModule";
 import { useAppIonRouter } from "../../hooks";
 
 const NAVIGATION_DELAY = 250;

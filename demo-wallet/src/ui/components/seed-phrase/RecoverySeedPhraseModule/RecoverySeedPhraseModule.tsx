@@ -2,17 +2,17 @@ import { IonButton, IonIcon } from "@ionic/react";
 import { wordlists } from "bip39";
 import { closeOutline, addOutline } from "ionicons/icons";
 import { forwardRef, useImperativeHandle, useRef, useState } from "react";
-import { Agent } from "../../../core/agent/agent";
-import { i18n } from "../../../i18n";
-import { useAppDispatch } from "../../../store/hooks";
-import { setSeedPhraseCache } from "../../../store/reducers/seedPhraseCache";
-import { showError } from "../../utils/error";
-import { Alert as AlertFail } from "../Alert";
-import { PageFooter } from "../PageFooter";
-import { SeedPhraseModule } from "../SeedPhraseModule";
+import { Agent } from "../../../../core/agent/agent";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch } from "../../../../store/hooks";
+import { setSeedPhraseCache } from "../../../../store/reducers/seedPhraseCache";
+import { showError } from "../../../../../utils/error";
+import { Alert } from "../../../alert/Alert";
+import { PageFooter } from "../../../layout/PageFooter";
+import { SeedPhraseModule } from "../SeedPhraseModule/SeedPhraseModule";
 import { SeedPhraseModuleRef } from "../SeedPhraseModule/SeedPhraseModule.types";
-import { SwitchOnboardingModeModal } from "../SwitchOnboardingModeModal";
-import { OnboardingMode } from "../SwitchOnboardingModeModal/SwitchOnboardingModeModal.types";
+import { SwitchOnboardingModeModal } from "../../modal/SwitchOnboardingModeModal";
+import { OnboardingMode } from "../../modal/SwitchOnboardingModeModal.types";
 import "./RecoverySeedPhraseModule.scss";
 import {
   RecoverySeedPhraseModuleProps,
@@ -308,7 +308,7 @@ const RecoverySeedPhraseModule = forwardRef<
             tertiaryButtonIcon={addOutline}
           />
         </div>
-        <AlertFail
+        <Alert
           isOpen={alertIsOpen}
           setIsOpen={setAlertIsOpen}
           dataTestId="alert-fail"
@@ -320,7 +320,7 @@ const RecoverySeedPhraseModule = forwardRef<
           actionConfirm={closeFailAlert}
           backdropDismiss={false}
         />
-        <AlertFail
+        <Alert
           isOpen={clearAlertOpen}
           setIsOpen={setClearAlertOpen}
           dataTestId="alert-fail"

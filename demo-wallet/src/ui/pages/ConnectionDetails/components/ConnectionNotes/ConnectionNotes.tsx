@@ -2,8 +2,8 @@ import { addOutline } from "ionicons/icons";
 import { IonText } from "@ionic/react";
 import { ConnectionNotesProps } from "./ConnectionNotes.types";
 import { i18n } from "../../../../../i18n";
-import { PageFooter } from "../../../../components/PageFooter";
-import { CardDetailsBlock } from "../../../../components/CardDetails";
+import { PageFooter } from "../../../../components/common/PageFooter/PageFooter";
+import { CardDetailsBlock } from "../../../../components/card/CardDetailsBlock/CardDetailsBlock";
 import "./ConnectionNotes.scss";
 
 const ConnectionNotes = ({
@@ -36,11 +36,10 @@ const ConnectionNotes = ({
       <PageFooter
         pageId={pageId}
         primaryButtonIcon={notes.length > 0 ? "" : addOutline}
-        primaryButtonText={`${
-          notes.length > 0
-            ? i18n.t("connections.details.options.labels.manage")
-            : i18n.t("connections.details.options.labels.add")
-        }`}
+        primaryButtonText={`${notes.length > 0
+          ? i18n.t("connections.details.options.labels.manage")
+          : i18n.t("connections.details.options.labels.add")
+          }`}
         primaryButtonAction={onOptionButtonClick}
       />
     </>

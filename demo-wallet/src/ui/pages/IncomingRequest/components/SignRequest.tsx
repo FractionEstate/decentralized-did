@@ -7,15 +7,15 @@ import { IncomingRequestType } from "../../../../store/reducers/stateCache/state
 import {
   CardDetailsAttributes,
   CardDetailsBlock,
-} from "../../../components/CardDetails";
-import { PageFooter } from "../../../components/PageFooter";
-import { PageHeader } from "../../../components/PageHeader";
-import { Spinner } from "../../../components/Spinner";
-import { Verification } from "../../../components/Verification";
+} from "../../../components/card/CardDetails";
+import { PageFooter } from "../../../components/layout/PageFooter";
+import { PageHeader } from "../../../components/common/PageHeader";
+import { Spinner } from "../../../components/common/Spinner";
+import { Verification } from "../../../components/auth/Verification";
 import {
   BiometricVerification,
   VerificationMode,
-} from "../../../components/BiometricVerification";
+} from "../../../components/auth/BiometricVerification";
 import { biometricDidService } from "../../../../core/biometric";
 import { ScrollablePageLayout } from "../../../components/layout/ScrollablePageLayout";
 import { RequestProps } from "../IncomingRequest.types";

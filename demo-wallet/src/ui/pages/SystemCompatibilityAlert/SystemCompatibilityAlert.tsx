@@ -3,7 +3,7 @@ import { alertCircleOutline, checkmark, closeOutline } from "ionicons/icons";
 import React, { useEffect, useState } from "react";
 import { SecureStorage } from "../../../core/storage";
 import { i18n } from "../../../i18n";
-import { CardDetailsBlock } from "../../components/CardDetails";
+import { CardDetailsBlock } from "../../components/card/CardDetails";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import {
   ANDROID_MIN_VERSION,
@@ -87,7 +87,7 @@ const SystemCompatibilityAlert: React.FC<SystemCompatibilityAlertProps> = ({
       const isWebViewMet =
         deviceInfo.platform === "android" &&
         compareVersion(deviceInfo.webViewVersion, `${WEBVIEW_MIN_VERSION}`) >=
-          0;
+        0;
       const isIosMet =
         deviceInfo.platform === "ios" &&
         compareVersion(deviceInfo.osVersion, `${IOS_MIN_VERSION}`) >= 0;

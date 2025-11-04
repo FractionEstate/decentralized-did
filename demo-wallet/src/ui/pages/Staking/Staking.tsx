@@ -9,7 +9,7 @@ import {
   getPools,
   setCurrentStakeAddress,
 } from "../../../store/reducers/stakingCache";
-import { TabLayout } from "../../components/layout/TabLayout";
+import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
 import { showError } from "../../utils/error";
 import { StakingService } from "../../../core/cardano/stakingService";
 import "./Staking.scss";

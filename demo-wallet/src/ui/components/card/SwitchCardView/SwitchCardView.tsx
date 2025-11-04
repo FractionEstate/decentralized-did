@@ -1,26 +1,26 @@
 import { useCallback, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { CardType } from "../../globals/types";
-import { combineClassNames } from "../../utils/style";
-import { CardsStack } from "../CardsStack";
-import { ListHeader } from "../ListHeader";
-import { CardList } from "./CardList";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
+import { CardType } from "../../../globals/types";
+import { combineClassNames } from "../../../utils/style";
+import { CardsStack } from "../CardsStack/CardsStack";
+import { ListHeader } from "../../common/ListHeader";
+import { CardList } from "../CardList";
 import "./SwitchCardView.scss";
 import { CardListViewType, SwitchCardViewProps } from "./SwitchCardView.types";
-import { TabsRoutePath } from "../../../routes/paths";
-import { MiscRecordId } from "../../../core/agent/agent.types";
-import { BasicRecord } from "../../../core/agent/records";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { TabsRoutePath } from "../../../../routes/paths";
+import { MiscRecordId } from "../../../../core/agent/agent.types";
+import { BasicRecord } from "../../../../core/agent/records";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   getCredentialViewTypeCache,
   getIdentifierViewTypeCache,
   setCredentialViewTypeCache,
   setIdentifierViewTypeCache,
-} from "../../../store/reducers/viewTypeCache";
-import { Agent } from "../../../core/agent/agent";
-import { setCurrentRoute } from "../../../store/reducers/stateCache";
+} from "../../../../store/reducers/viewTypeCache";
+import { Agent } from "../../../../core/agent/agent";
+import { setCurrentRoute } from "../../../../store/reducers/stateCache";
 
 const SwitchCardView = ({
   title,

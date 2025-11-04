@@ -1,14 +1,13 @@
 import { IonButton, IonChip, IonIcon, IonInput } from "@ionic/react";
 import { eyeOffOutline } from "ionicons/icons";
 import { forwardRef, useImperativeHandle, useRef } from "react";
-import { i18n } from "../../../i18n";
-import { combineClassNames } from "../../utils/style";
-import "./SeedPhraseModule.scss";
+import { i18n } from "../../../../i18n";
+import { combineClassNames } from "../../../utils/style";
+import { useHideKeyboard } from "../../../../hooks/useHideKeyboard";
 import {
   SeedPhraseModuleProps,
   SeedPhraseModuleRef,
 } from "./SeedPhraseModule.types";
-import { useHideKeyboard } from "../../hooks/useHideKeyboard";
 
 const SeedPhraseModule = forwardRef<SeedPhraseModuleRef, SeedPhraseModuleProps>(
   (
@@ -35,7 +34,7 @@ const SeedPhraseModule = forwardRef<SeedPhraseModuleRef, SeedPhraseModuleProps>(
     const { hideKeyboard } = useHideKeyboard();
 
     useImperativeHandle(ref, () => ({
-      focusInputByIndex: (index) => {
+      focusInputByIndex: (index: number) => {
         const input = seedInputs.current.at(index);
         if (!input) return;
 
@@ -83,7 +82,7 @@ const SeedPhraseModule = forwardRef<SeedPhraseModuleRef, SeedPhraseModuleProps>(
           data-testid={testId}
           className="seed-phrase-container"
         >
-          {seedPhrase.map((word, index) => {
+          {seedPhrase.map((word: string, index: number) => {
             return (
               <IonChip
                 key={index}

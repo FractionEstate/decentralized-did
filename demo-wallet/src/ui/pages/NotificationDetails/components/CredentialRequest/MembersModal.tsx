@@ -1,9 +1,9 @@
 import { IonText } from "@ionic/react";
 import { i18n } from "../../../../../i18n";
-import { CardDetailsBlock } from "../../../../components/CardDetails";
+import { CardDetailsBlock } from "../../../../components/card/CardDetails";
 import { OptionModal } from "../../../../components/OptionsModal";
 import { MembersModalProps } from "./CredentialRequest.types";
-import { MultisigMember } from "../../../../components/CredentialDetailModule/components/MultisigMember";
+import { MultisigMember } from "../../../../components/credential/CredentialDetailModule/components/MultisigMember";
 
 const MembersModal = ({
   isOpen,
