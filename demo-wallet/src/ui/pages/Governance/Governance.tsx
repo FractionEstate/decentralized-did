@@ -11,12 +11,15 @@ import {
   selectGovernanceError,
 } from "../../../store/reducers/governanceCache";
 import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
+import { EmptyState } from "../../components/common/EmptyState";
+import { LoadingPlaceholder } from "../../components/common/LoadingPlaceholder";
+import { ErrorDisplay } from "../../components/common/ErrorDisplay";
 import { showError } from "../../utils/error";
 import { formatVotingPower, getStatusColor, formatProposalId } from "../../../core/cardano/governanceService";
 import "./Governance.scss";
+import { getCurrentStakeAddress } from "../../../store/reducers/stakingCache";
 
-// Placeholder stake address - in production this would come from wallet state
-const DEMO_STAKE_ADDRESS = "stake1ux2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3qf0000";
+// Uses current stake address from store when available
 
 const Governance = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +27,7 @@ const Governance = () => {
   const proposals = useAppSelector((state) => selectProposals(state, 'all'));
   const loading = useAppSelector(selectGovernanceLoading);
   const error = useAppSelector(selectGovernanceError);
+  const currentStakeAddress = useAppSelector(getCurrentStakeAddress);
   const [activeTab, setActiveTab] = useState<"dreps" | "proposals" | "votes">("proposals");
 
   useIonViewWillEnter(() => {
@@ -34,7 +38,9 @@ const Governance = () => {
     try {
       dispatch(fetchDReps({ limit: 20, offset: 0 }));
       dispatch(fetchProposals({ limit: 20, offset: 0 }));
-      dispatch(fetchVotingPower(DEMO_STAKE_ADDRESS));
+      if (currentStakeAddress) {
+        dispatch(fetchVotingPower(currentStakeAddress));
+      }
     } catch (err) {
       showError("Failed to load governance data", err, dispatch);
     }
@@ -49,15 +55,15 @@ const Governance = () => {
 
   const renderDReps = () => {
     if (loading.dreps && dreps.length === 0) {
-      return <div className="loading-placeholder">Loading DReps...</div>;
+      return <LoadingPlaceholder message="Loading DReps..." />;
     }
 
     if (error.dreps) {
-      return <div className="error-message">Error: {error.dreps}</div>;
+      return <ErrorDisplay error={error.dreps} onRetry={loadGovernanceData} title="Failed to Load DReps" />;
     }
 
     if (dreps.length === 0) {
-      return <div className="empty-state">No DReps found. Governance data may not be available yet on this network.</div>;
+      return <EmptyState icon="document-text-outline" title="No DReps Found" description="Governance data may not be available yet on this network." />;
     }
 
     return (
@@ -91,15 +97,15 @@ const Governance = () => {
 
   const renderProposals = () => {
     if (loading.proposals && proposals.length === 0) {
-      return <div className="loading-placeholder">Loading proposals...</div>;
+      return <LoadingPlaceholder message="Loading proposals..." />;
     }
 
     if (error.proposals) {
-      return <div className="error-message">Error: {error.proposals}</div>;
+      return <ErrorDisplay error={error.proposals} onRetry={loadGovernanceData} title="Failed to Load Proposals" />;
     }
 
     if (proposals.length === 0) {
-      return <div className="empty-state">No proposals found. Governance actions may not be available yet on this network.</div>;
+      return <EmptyState icon="document-text-outline" title="No Proposals Found" description="Governance actions may not be available yet on this network." />;
     }
 
     return (
@@ -149,11 +155,19 @@ const Governance = () => {
   };
 
   const renderVotes = () => {
+    if (!currentStakeAddress) {
+      return (
+        <EmptyState
+          icon="document-text-outline"
+          title="No Wallet Connected"
+          description="Connect a wallet with a stake address to view your voting power and history."
+        />
+      );
+    }
     return (
       <div className="votes-section">
         <div className="info-message">
           Vote history will be displayed here once you participate in governance.
-          Connect your wallet to view your voting history.
         </div>
       </div>
     );

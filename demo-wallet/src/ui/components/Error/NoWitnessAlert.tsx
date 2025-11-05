@@ -5,7 +5,7 @@ import {
   getShowNoWitnessAlert,
   showNoWitnessAlert,
 } from "../../../store/reducers/stateCache";
-import { Alert } from "../Alert";
+import { Alert } from "../common/Alert";
 
 const NoWitnessAlert = () => {
   const dispatch = useAppDispatch();

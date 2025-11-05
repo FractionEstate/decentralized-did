@@ -1,5 +1,5 @@
 import { i18n } from "../../../i18n";
-import { InfoCard } from "../InfoCard";
+import { InfoCard } from "../card/InfoCard";
 import { ResponsivePageLayout } from "../layout/ResponsivePageLayout";
 import "./CloudError.scss";
 import { CloudErrorProps } from "./CloudError.types";
@@ -7,14 +7,14 @@ import { CloudErrorProps } from "./CloudError.types";
 const CloudError = ({ pageId, header, children }: CloudErrorProps) => {
   const getMessage = (pageId: string) => {
     switch (pageId) {
-    case "identifier-card-details":
-      return i18n.t("tabs.identifiers.details.clouderror");
-    case "credential-card-details":
-      return i18n.t("tabs.credentials.details.clouderror");
-    case "connection-details":
-      return i18n.t("connections.details.clouderror");
-    default:
-      return "";
+      case "identifier-card-details":
+        return i18n.t("tabs.identifiers.details.clouderror");
+      case "credential-card-details":
+        return i18n.t("tabs.credentials.details.clouderror");
+      case "connection-details":
+        return i18n.t("connections.details.clouderror");
+      default:
+        return "";
     }
   };
 

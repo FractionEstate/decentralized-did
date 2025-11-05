@@ -82,8 +82,8 @@ import { OperationType, ToastMsgType } from "../../globals/types";
 import { CredentialsFilters } from "../../pages/Credentials/Credentials.types";
 import { IdentifiersFilters } from "../../pages/Identifiers/Identifiers.types";
 import { showError } from "../../utils/error";
-import { Alert } from "../Alert";
-import { CardListViewType } from "../SwitchCardView";
+import { Alert } from "../common/Alert";
+import { CardListViewType } from "../card/SwitchCardView";
 import "./AppWrapper.scss";
 import {
   groupCreatedHandler,

@@ -1,6 +1,6 @@
 import { IonButton, IonIcon } from "@ionic/react";
 import { chevronForwardOutline } from "ionicons/icons";
-import { combineClassNames } from "../../../utils/style";
+import { combineClassNames } from "../../../../utils/style";
 import { CardDetailsItem } from "../CardDetailsItem";
 import { CardDetailsBlock } from "./CardDetailsBlock";
 import { CardBlockProps, FlatBorderType } from "./CardDetailsBlock.types";

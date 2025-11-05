@@ -1,0 +1,47 @@
+{
+  "tabs": {
+    "scan": {
+      "tab": {
+        "title": "Scan",
+        "cameraunavailable": "Camera unavailable",
+        "permissionalert": "Camera permission is required",
+        "missingidentifier": {
+          "title": "No Identifier Found",
+          "create": "Create Identifier",
+          "cancel": "Cancel"
+        }
+      },
+      "pastemeerkatid": "Paste Peer ID"
+    },
+    "menu": {
+      "tab": {
+        "items": {
+          "connectwallet": {
+            "inputpidmodal": {
+              "header": "Enter Peer ID"
+            }
+          }
+        }
+      }
+    }
+  },
+  "createidentifier": {
+    "scan": {
+      "initiate": "Initiate",
+      "pasteoobi": "Paste OOBI",
+      "pastecontents": "Paste contents",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    }
+  },
+  "tabs.credentials.details": {
+    "attributes": {
+      "issuee": "Issuee",
+      "issuancedate": "Issuance Date",
+      "lei": "LEI"
+    },
+    "status": {
+      "label": "Status"
+    }
+  }
+}

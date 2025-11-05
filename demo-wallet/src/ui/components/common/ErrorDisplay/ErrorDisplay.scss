@@ -1,0 +1,44 @@
+.error-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ion-padding, 32px);
+    text-align: center;
+    min-height: 200px;
+
+    .error-display-icon {
+        font-size: 56px;
+        color: var(--ion-color-danger);
+        margin-bottom: 16px;
+    }
+
+    .error-display-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--ion-color-step-850, #1a1a1a);
+        margin: 0 0 12px 0;
+    }
+
+    .error-display-message {
+        font-size: 14px;
+        color: var(--ion-color-medium);
+        line-height: 1.5;
+        margin: 0 0 24px 0;
+        max-width: 360px;
+    }
+
+    .error-display-retry {
+        --border-radius: 8px;
+        margin-top: 8px;
+    }
+}
+
+// Dark mode support
+@media (prefers-color-scheme: dark) {
+    .error-display {
+        .error-display-title {
+            color: var(--ion-color-step-150, #e6e6e6);
+        }
+    }
+}

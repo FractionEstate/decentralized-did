@@ -34,26 +34,7 @@
     min-height: 400px;
   }
 
-  // Loading and empty states
-  .loading-placeholder,
-  .error-message,
-  .empty-state,
-  .info-message {
-    padding: 40px 20px;
-    text-align: center;
-    color: var(--ion-color-medium);
-  }
-
-  .error-message {
-    color: var(--ion-color-danger);
-  }
-
-  .info-message {
-    background: var(--ion-color-light);
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px 0;
-  }
+  // Shared components (EmptyState, LoadingPlaceholder, ErrorDisplay) handle these states
 
   // DReps list
   .dreps-list {

@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
 import { ViewTypeCacheProps } from "./viewTypeCache.types";
-import { CardListViewType } from "../../../ui/components/SwitchCardView";
+import { CardListViewType } from "../../../ui/components/card/SwitchCardView";
 
 const initialState: ViewTypeCacheProps = {
   identifier: {

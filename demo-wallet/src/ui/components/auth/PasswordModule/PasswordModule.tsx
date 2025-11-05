@@ -2,28 +2,28 @@ import { IonIcon } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
 import { forwardRef, useImperativeHandle, useState } from "react";
 import { useSelector } from "react-redux";
-import { Agent } from "../../../core/agent/agent";
-import { MiscRecordId } from "../../../core/agent/agent.types";
-import { BasicRecord } from "../../../core/agent/records";
-import { AuthService } from "../../../core/agent/services";
-import { KeyStoreKeys } from "../../../core/storage";
-import { i18n } from "../../../i18n";
-import { useAppDispatch } from "../../../store/hooks";
+import { Agent } from "../../../../core/agent/agent";
+import { MiscRecordId } from "../../../../core/agent/agent.types";
+import { BasicRecord } from "../../../../core/agent/records";
+import { AuthService } from "../../../../core/agent/services";
+import { KeyStoreKeys } from "../../../../core/storage";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch } from "../../../../store/hooks";
 import {
   getStateCache,
   setAuthentication,
-} from "../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../globals/types";
-import { showError } from "../../utils/error";
+} from "../../../../store/reducers/stateCache";
+import { ToastMsgType } from "../../../globals/types";
+import { showError } from "../../../utils/error";
 import {
   errorMessages,
   passwordStrengthChecker,
-} from "../../utils/passwordStrengthChecker";
-import { combineClassNames } from "../../utils/style";
-import { Alert as AlertExisting } from "../Alert";
-import { CustomInput } from "../CustomInput";
-import { ErrorMessage } from "../ErrorMessage";
-import { PageFooter } from "../PageFooter";
+} from "../../../utils/passwordStrengthChecker";
+import { combineClassNames } from "../../../utils/style";
+import { Alert as AlertExisting } from "../../common/Alert";
+import { CustomInput } from "../../common/CustomInput";
+import { ErrorMessage } from "../../ErrorMessage";
+import { PageFooter } from "../../PageFooter";
 import "./PasswordModule.scss";
 import { PasswordModuleProps, PasswordModuleRef } from "./PasswordModule.types";
 import { PasswordMeter } from "./components/PasswordMeter";
@@ -247,10 +247,10 @@ const PasswordModule = forwardRef<PasswordModuleRef, PasswordModuleProps>(
             {!confirmPasswordFocus &&
               !!confirmPasswordValue.length &&
               createPasswordValueNotMatching && (
-              <ErrorMessage
-                message={`${i18n.t("createpassword.error.hasNoMatch")}`}
-              />
-            )}
+                <ErrorMessage
+                  message={`${i18n.t("createpassword.error.hasNoMatch")}`}
+                />
+              )}
             <CustomInput
               dataTestId="create-hint-input"
               title={`${i18n.t("createpassword.input.third.title")}`}

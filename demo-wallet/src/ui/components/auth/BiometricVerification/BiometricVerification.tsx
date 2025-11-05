@@ -7,12 +7,12 @@
 import { IonIcon, IonSpinner } from "@ionic/react";
 import { checkmarkCircle, closeCircle, fingerPrintOutline } from "ionicons/icons";
 import { useState, useEffect } from "react";
-import { i18n } from "../../../i18n";
+import { i18n } from "../../../../i18n";
 import {
   biometricDidService,
   fingerprintCaptureService,
   FingerId,
-} from "../../../core/biometric";
+} from "../../../../core/biometric";
 import "./BiometricVerification.scss";
 
 export enum VerificationMode {

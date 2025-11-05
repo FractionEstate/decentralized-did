@@ -1,4 +1,4 @@
-import { JSONObject, JSONValue } from "../../../../core/agent/agent.types";
+import { JSONObject, JSONValue } from "../../../../../core/agent/agent.types";
 import { CardDetailsItemProps } from "../CardDetailsItem/CardDetailsItem.types";
 
 export interface CardDetailsExpandAttributesProps {

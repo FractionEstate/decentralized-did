@@ -1,4 +1,4 @@
-import { combineClassNames } from "../../../utils/style";
+import { combineClassNames } from "../../../../utils/style";
 import { CardDetailsItem } from "../CardDetailsItem";
 import { CardDetailsAttributesProps } from "./CardDetailsAttributes.types";
 import { reservedKeysFilter } from "./CardDetailsAttributes.utils";

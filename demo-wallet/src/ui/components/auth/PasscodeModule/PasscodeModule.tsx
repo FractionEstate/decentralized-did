@@ -4,10 +4,10 @@ import { useSelector } from "react-redux";
 import { BiometryType } from "@aparajita/capacitor-biometric-auth";
 import { PasscodeModuleProps } from "./PasscodeModule.types";
 import "./PasscodeModule.scss";
-import { PASSCODE_MAPPING } from "../../globals/types";
-import { useBiometricAuth } from "../../hooks/useBiometricsHook";
-import { getBiometricsCache } from "../../../store/reducers/biometricsCache";
-import faceIdIcon from "../../assets/images/face-id.png";
+import { PASSCODE_MAPPING } from "../../../globals/types";
+import { useBiometricAuth } from "../../../hooks/useBiometricsHook";
+import { getBiometricsCache } from "../../../../store/reducers/biometricsCache";
+import faceIdIcon from "../../../assets/images/face-id.png";
 
 const PasscodeModule = ({
   error,

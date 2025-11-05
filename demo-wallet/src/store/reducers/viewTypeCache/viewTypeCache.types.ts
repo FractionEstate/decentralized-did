@@ -1,4 +1,4 @@
-import { CardListViewType } from "../../../ui/components/SwitchCardView";
+import { CardListViewType } from "../../../ui/components/card/SwitchCardView";
 
 interface ViewType {
   viewType: CardListViewType | null;

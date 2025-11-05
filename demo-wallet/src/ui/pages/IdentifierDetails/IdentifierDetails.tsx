@@ -9,7 +9,7 @@ import {
   setCurrentRoute,
 } from "../../../store/reducers/stateCache";
 import { updateReduxState } from "../../../store/utils";
-import "../../components/CardDetails/CardDetails.scss";
+import "../../components/card/CardDetails/CardDetails.scss";
 import { IdentifierDetailModule } from "../../components/identifier/IdentifierDetailModule";
 import { useAppIonRouter } from "../../hooks";
 

@@ -2,23 +2,23 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Swiper, SwiperClass, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
-import { Agent } from "../../../core/agent/agent";
-import { MiscRecordId } from "../../../core/agent/agent.types";
-import { BasicRecord } from "../../../core/agent/records";
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
+import { Agent } from "../../../../core/agent/agent";
+import { MiscRecordId } from "../../../../core/agent/agent.types";
+import { BasicRecord } from "../../../../core/agent/records";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
 import {
   IdentifierDetails,
   IdentifierShortDetails,
-} from "../../../core/agent/services/identifier.types";
-import { useAppSelector } from "../../../store/hooks";
+} from "../../../../core/agent/services/identifier.types";
+import { useAppSelector } from "../../../../store/hooks";
 import {
   getCredentialFavouriteIndex,
   getIdentifierFavouriteIndex,
-} from "../../../store/reducers/viewTypeCache";
-import { CardType } from "../../globals/types";
+} from "../../../../store/reducers/viewTypeCache";
+import { CardType } from "../../../globals/types";
 import { CredentialCardTemplate } from "../CredentialCardTemplate";
 import { IdentifierCardTemplate } from "../IdentifierCardTemplate";
-import { TabsRoutePath } from "../navigation/TabsMenu";
+import { TabsRoutePath } from "../../navigation/TabsMenu";
 import "./CardSlider.scss";
 import { CardProps, CardSliderProps } from "./CardSlider.types";
 
@@ -117,9 +117,8 @@ const CardSlider = ({
     swiper.slideTo(favouriteIndex, 300);
   }, [swiper]);
 
-  const containerClasses = `card-slider ${
-    pickedCardIndex !== null ? "transition-start" : ""
-  }`;
+  const containerClasses = `card-slider ${pickedCardIndex !== null ? "transition-start" : ""
+    }`;
 
   return (
     <div className={containerClasses}>

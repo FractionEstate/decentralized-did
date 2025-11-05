@@ -2,33 +2,33 @@ import { BiometryErrorType } from "@aparajita/capacitor-biometric-auth";
 import { BiometryError } from "@aparajita/capacitor-biometric-auth/dist/esm/definitions";
 import { getPlatforms } from "@ionic/react";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { Agent } from "../../../core/agent/agent";
-import { MiscRecordId } from "../../../core/agent/agent.types";
-import { BasicRecord } from "../../../core/agent/records";
-import { i18n } from "../../../i18n";
-import { useAppDispatch } from "../../../store/hooks";
-import { setEnableBiometricsCache } from "../../../store/reducers/biometricsCache";
-import { setToastMsg } from "../../../store/reducers/stateCache";
-import { ToastMsgType } from "../../globals/types";
-import { useBiometricAuth } from "../../hooks/useBiometricsHook";
-import { Alert } from "../Alert";
-import { ErrorMessage, MESSAGE_MILLISECONDS } from "../ErrorMessage";
-import { PageFooter } from "../PageFooter";
+import { Agent } from "../../../../core/agent/agent";
+import { MiscRecordId } from "../../../../core/agent/agent.types";
+import { BasicRecord } from "../../../../core/agent/records";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch } from "../../../../store/hooks";
+import { setEnableBiometricsCache } from "../../../../store/reducers/biometricsCache";
+import { setToastMsg } from "../../../../store/reducers/stateCache";
+import { ToastMsgType } from "../../../globals/types";
+import { useBiometricAuth } from "../../../hooks/useBiometricsHook";
+import { Alert } from "../../common/Alert";
+import { ErrorMessage, MESSAGE_MILLISECONDS } from "../../ErrorMessage";
+import { PageFooter } from "../../PageFooter";
 import { PasscodeModule } from "../PasscodeModule";
 import "./CreatePasscodeModule.scss";
 import {
   CreatePasscodeModuleProps,
   CreatePasscodeModuleRef,
 } from "./CreatePasscodeModule.types";
-import { showError } from "../../utils/error";
-import { KeyStoreKeys } from "../../../core/storage";
-import { AuthService } from "../../../core/agent/services";
+import { showError } from "../../../utils/error";
+import { KeyStoreKeys } from "../../../../core/storage";
+import { AuthService } from "../../../../core/agent/services";
 import {
   isConsecutive,
   isRepeat,
   isReverseConsecutive,
-} from "../../utils/passcodeChecker";
-import { usePrivacyScreen } from "../../hooks/privacyScreenHook";
+} from "../../../utils/passcodeChecker";
+import { usePrivacyScreen } from "../../../hooks/privacyScreenHook";
 
 const CreatePasscodeModule = forwardRef<
   CreatePasscodeModuleRef,
@@ -117,7 +117,7 @@ const CreatePasscodeModule = forwardRef<
         if (
           isBiometricAuthenticated.code === BiometryErrorType.userCancel ||
           isBiometricAuthenticated.code ===
-            BiometryErrorType.biometryNotAvailable
+          BiometryErrorType.biometryNotAvailable
         ) {
           setShowCancelBiometricsAlert(true);
         }

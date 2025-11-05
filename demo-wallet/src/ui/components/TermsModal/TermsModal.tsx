@@ -9,7 +9,7 @@ import {
 } from "../../globals/constants";
 import { openBrowserLink } from "../../utils/openBrowserLink";
 import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { PageHeader } from "../PageHeader";
+import { PageHeader } from "../common/PageHeader";
 import "./TermsModal.scss";
 import {
   TermContent,

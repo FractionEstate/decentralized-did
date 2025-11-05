@@ -5,7 +5,7 @@ import {
   getShowCommonError,
   showGenericError,
 } from "../../../store/reducers/stateCache";
-import { Alert } from "../Alert";
+import { Alert } from "../common/Alert";
 import { CommonErrorAlertProps } from "./Error.types";
 
 const CommonErrorAlert = ({

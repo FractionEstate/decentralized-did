@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
-import { Agent } from "../../../../core/agent/agent";
-import { LoginAttempts } from "../../../../core/agent/services/auth.types";
-import { i18n } from "../../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { Agent } from "../../../../../core/agent/agent";
+import { LoginAttempts } from "../../../../../core/agent/services/auth.types";
+import { i18n } from "../../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../../store/hooks";
 import {
   getLoginAttempt,
   setLoginAttempt as setStoreLoginAttempt,
-} from "../../../../store/reducers/stateCache";
-import { showError } from "../../../utils/error";
+} from "../../../../../store/reducers/stateCache";
+import { showError } from "../../../../utils/error";
 
 const MAX_LOGIN_ATTEMPT = 5;
 

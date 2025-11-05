@@ -2,8 +2,8 @@ import {
   formatShortDate,
   formatTimeToSec,
   getUTCOffset,
-} from "../../../utils/formatters";
-import { combineClassNames } from "../../../utils/style";
+} from "../../../../utils/formatters";
+import { combineClassNames } from "../../../../utils/style";
 import { CardDetailsBlock } from "../CardDetailsBlock";
 import { CardDetailsItem } from "../CardDetailsItem";
 import "./CardDetailsAttributes.scss";

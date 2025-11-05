@@ -7,7 +7,7 @@ import { useAppDispatch } from "../../../store/hooks";
 import { setToastMsg } from "../../../store/reducers/stateCache";
 import { ToastMsgType } from "../../globals/types";
 import { writeToClipboard } from "../../utils/clipboard";
-import { PageHeader } from "../PageHeader";
+import { PageHeader } from "../common/PageHeader";
 import { ResponsiveModal } from "../layout/ResponsiveModal";
 import "./ShareConnection.scss";
 import { ShareConnectionProps, ShareType } from "./ShareConnection.types";
@@ -58,9 +58,8 @@ const ShareConnection = ({
       <p className="share-identifier-subtitle">{subtitle}</p>
       <div className="share-identifier-body">
         <div
-          className={`share-identifier-body-component share-qr ${
-            oobi ? "reveal" : "blur"
-          }`}
+          className={`share-identifier-body-component share-qr ${oobi ? "reveal" : "blur"
+            }`}
           data-testid="share-identifier-qr-code"
         >
           <QRCode

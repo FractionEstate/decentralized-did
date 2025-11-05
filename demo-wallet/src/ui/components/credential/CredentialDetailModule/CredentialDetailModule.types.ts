@@ -1,7 +1,7 @@
-import { ACDCDetails } from "../../../core/agent/services/credentialService.types";
-import { MemberInfo } from "../../pages/NotificationDetails/components/CredentialRequest/CredentialRequest.types";
-import { NotificationDetailState } from "../../pages/NotificationDetails/NotificationDetails.types";
-import { HardwareBackButtonConfig } from "../PageHeader/PageHeader.types";
+import { ACDCDetails } from "../../../../core/agent/services/credentialService.types";
+import { MemberInfo } from "../../../pages/NotificationDetails/components/CredentialRequest/CredentialRequest.types";
+import { NotificationDetailState } from "../../../pages/NotificationDetails/NotificationDetails.types";
+import { HardwareBackButtonConfig } from "../../common/PageHeader/PageHeader.types";
 
 type CredHistory = NotificationDetailState;
 

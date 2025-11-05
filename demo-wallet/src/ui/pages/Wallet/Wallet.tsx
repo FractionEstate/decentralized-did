@@ -6,34 +6,38 @@ import {
   fetchBalance,
   fetchNFTs,
   fetchTransactionHistory,
+  getCurrentAddress,
   getCurrentAddressData,
-  setCurrentAddress,
 } from "../../../store/reducers/tokensCache";
 import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
-import { PageHeader } from "../../components/common/PageHeader";
+import { EmptyState } from "../../components/common/EmptyState";
+import { LoadingPlaceholder } from "../../components/common/LoadingPlaceholder";
+import { ErrorDisplay } from "../../components/common/ErrorDisplay";
 import { showError } from "../../utils/error";
-import "./Tokens.scss";
+import "./Wallet.scss";
 
-// Placeholder address - in production this would come from wallet state
-const DEMO_ADDRESS = "addr1qx2fxv2umyhttkxyxp8x0dlpdt3k6cwng5pxj3jhsydzer3n0d3vllmyqwsx5wktcd8cc3sq835lu7drv2xwl2wywfgse35a3x";
+// Current address now comes from store; if missing, UI prompts to connect
 
-const Tokens = () => {
+const Wallet = () => {
   const dispatch = useAppDispatch();
+  const currentAddress = useAppSelector(getCurrentAddress);
   const addressData = useAppSelector(getCurrentAddressData);
   const [activeTab, setActiveTab] = useState<"balance" | "nfts" | "history">("balance");
   const [isRefreshing, setIsRefreshing] = useState(false);
 
   useIonViewWillEnter(() => {
-    // Set current address and load data
-    dispatch(setCurrentAddress(DEMO_ADDRESS));
-    loadTokenData();
+    if (currentAddress) {
+      loadTokenData(currentAddress);
+    }
   });
 
-  const loadTokenData = () => {
+  const loadTokenData = (address?: string) => {
     try {
-      dispatch(fetchBalance(DEMO_ADDRESS));
-      dispatch(fetchNFTs(DEMO_ADDRESS));
-      dispatch(fetchTransactionHistory({ address: DEMO_ADDRESS, limit: 50 }));
+      const addr = address || currentAddress;
+      if (!addr) return;
+      dispatch(fetchBalance(addr));
+      dispatch(fetchNFTs(addr));
+      dispatch(fetchTransactionHistory({ address: addr, limit: 50 }));
     } catch (error) {
       showError("Failed to load token data", error, dispatch);
     }
@@ -50,15 +54,23 @@ const Tokens = () => {
 
   const renderBalance = () => {
     if (addressData?.isLoading && !addressData?.balance) {
-      return <div className="loading-placeholder">Loading balance...</div>;
+      return <LoadingPlaceholder message="Loading wallet balance..." />;
     }
 
     if (addressData?.error) {
-      return <div className="error-message">{addressData.error}</div>;
+      return <ErrorDisplay error={addressData.error} onRetry={loadTokenData} />;
     }
 
     if (!addressData?.balance) {
-      return <div className="empty-state">No balance data available</div>;
+      return (
+        <EmptyState
+          icon={albumsOutline}
+          title="No Balance Data"
+          description="Unable to load wallet balance. Please try refreshing."
+          actionLabel="Retry"
+          onAction={loadTokenData}
+        />
+      );
     }
 
     const { balance } = addressData;
@@ -99,24 +111,22 @@ const Tokens = () => {
 
   const renderNFTs = () => {
     if (addressData?.isLoading && !addressData?.nfts) {
-      return <div className="loading-placeholder">Loading NFTs...</div>;
+      return <LoadingPlaceholder message="Loading NFT collection..." />;
     }
 
     if (addressData?.error) {
-      return <div className="error-message">{addressData.error}</div>;
+      return <ErrorDisplay error={addressData.error} onRetry={loadTokenData} />;
     }
 
     const nfts = addressData?.nfts || [];
 
     if (nfts.length === 0) {
       return (
-        <div className="empty-state">
-          <IonIcon icon={imagesOutline} className="empty-icon" />
-          <div className="empty-title">No NFTs Found</div>
-          <div className="empty-description">
-            Your wallet doesn't contain any NFTs yet.
-          </div>
-        </div>
+        <EmptyState
+          icon={imagesOutline}
+          title="No NFTs Found"
+          description="Your wallet doesn't contain any NFTs yet."
+        />
       );
     }
 
@@ -150,24 +160,22 @@ const Tokens = () => {
 
   const renderHistory = () => {
     if (addressData?.isLoading && !addressData?.transactions) {
-      return <div className="loading-placeholder">Loading transactions...</div>;
+      return <LoadingPlaceholder message="Loading transaction history..." />;
     }
 
     if (addressData?.error) {
-      return <div className="error-message">{addressData.error}</div>;
+      return <ErrorDisplay error={addressData.error} onRetry={loadTokenData} />;
     }
 
     const transactions = addressData?.transactions || [];
 
     if (transactions.length === 0) {
       return (
-        <div className="empty-state">
-          <IonIcon icon={timeOutline} className="empty-icon" />
-          <div className="empty-title">No Transactions</div>
-          <div className="empty-description">
-            Transaction history will appear here.
-          </div>
-        </div>
+        <EmptyState
+          icon={timeOutline}
+          title="No Transactions"
+          description="Transaction history will appear here."
+        />
       );
     }
 
@@ -199,46 +207,58 @@ const Tokens = () => {
 
   return (
     <TabLayout
-      pageId="tokens-page"
+      pageId="wallet-page"
       header={false}
-      customClass="tokens-page"
+      customClass="wallet-page"
       theme="dark"
     >
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />
       </IonRefresher>
 
-      <div className="tokens-tabs">
-        <button
-          className={`tab-button ${activeTab === "balance" ? "active" : ""}`}
-          onClick={() => setActiveTab("balance")}
-        >
-          <IonIcon icon={albumsOutline} />
-          <span>Balance</span>
-        </button>
-        <button
-          className={`tab-button ${activeTab === "nfts" ? "active" : ""}`}
-          onClick={() => setActiveTab("nfts")}
-        >
-          <IonIcon icon={imagesOutline} />
-          <span>NFTs</span>
-        </button>
-        <button
-          className={`tab-button ${activeTab === "history" ? "active" : ""}`}
-          onClick={() => setActiveTab("history")}
-        >
-          <IonIcon icon={timeOutline} />
-          <span>History</span>
-        </button>
-      </div>
+      {!currentAddress ? (
+        <div className="wallet-content">
+          <EmptyState
+            icon={albumsOutline}
+            title="No Wallet Connected"
+            description="Connect or select a wallet to view your balance, NFTs, and history."
+          />
+        </div>
+      ) : (
+        <>
+          <div className="wallet-tabs">
+            <button
+              className={`tab-button ${activeTab === "balance" ? "active" : ""}`}
+              onClick={() => setActiveTab("balance")}
+            >
+              <IonIcon icon={albumsOutline} />
+              <span>Balance</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === "nfts" ? "active" : ""}`}
+              onClick={() => setActiveTab("nfts")}
+            >
+              <IonIcon icon={imagesOutline} />
+              <span>NFTs</span>
+            </button>
+            <button
+              className={`tab-button ${activeTab === "history" ? "active" : ""}`}
+              onClick={() => setActiveTab("history")}
+            >
+              <IonIcon icon={timeOutline} />
+              <span>History</span>
+            </button>
+          </div>
 
-      <div className="tokens-content">
-        {activeTab === "balance" && renderBalance()}
-        {activeTab === "nfts" && renderNFTs()}
-        {activeTab === "history" && renderHistory()}
-      </div>
+          <div className="wallet-content">
+            {activeTab === "balance" && renderBalance()}
+            {activeTab === "nfts" && renderNFTs()}
+            {activeTab === "history" && renderHistory()}
+          </div>
+        </>
+      )}
     </TabLayout>
   );
 };
 
-export default Tokens;
+export default Wallet;

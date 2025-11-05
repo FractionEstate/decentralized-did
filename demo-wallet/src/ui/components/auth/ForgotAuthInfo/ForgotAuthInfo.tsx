@@ -1,21 +1,21 @@
 import { IonModal } from "@ionic/react";
 import { useRef, useState } from "react";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
 import {
   getStateCache,
   setAuthentication,
-} from "../../../store/reducers/stateCache";
-import { BackEventPriorityType } from "../../globals/types";
-import { combineClassNames } from "../../utils/style";
+} from "../../../../store/reducers/stateCache";
+import { BackEventPriorityType } from "../../../globals/types";
+import { combineClassNames } from "../../../utils/style";
 import { CreatePasscodeModule } from "../CreatePasscodeModule";
-import { PageHeader } from "../PageHeader";
+import { PageHeader } from "../../common/PageHeader";
 import { PasswordModule } from "../PasswordModule";
 import {
   RecoverySeedPhraseModule,
   RecoverySeedPhraseModuleRef,
-} from "../RecoverySeedPhraseModule";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
+} from "../../seed-phrase/RecoverySeedPhraseModule";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
 import "./ForgotAuthInfo.scss";
 import { ForgotAuthInfoProps, ForgotType } from "./ForgotAuthInfo.types";
 

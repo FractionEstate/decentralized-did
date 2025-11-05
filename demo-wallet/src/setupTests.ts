@@ -39,11 +39,12 @@ class NoopObserver {
   unobserve() { }
   disconnect() { }
 }
-// @ts-ignore
+
 if (typeof window !== 'undefined') {
-  if (!("ResizeObserver" in window)) window.ResizeObserver = NoopObserver as any;
   // @ts-ignore
-  if (!("IntersectionObserver" in window)) window.IntersectionObserver = NoopObserver as any;
+  if (!("ResizeObserver" in window)) window.ResizeObserver = NoopObserver;
+  // @ts-ignore
+  if (!("IntersectionObserver" in window)) window.IntersectionObserver = NoopObserver;
   // @ts-ignore
   if (!window.scrollTo) window.scrollTo = () => { };
 }

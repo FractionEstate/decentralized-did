@@ -1,12 +1,12 @@
 import { IonButton, IonIcon, IonItem, IonText } from "@ionic/react";
 import { copyOutline } from "ionicons/icons";
-import { ToastMsgType } from "../../../globals/types";
-import { setToastMsg } from "../../../../store/reducers/stateCache";
-import { useAppDispatch } from "../../../../store/hooks";
+import { ToastMsgType } from "../../../../globals/types";
+import { setToastMsg } from "../../../../../store/reducers/stateCache";
+import { useAppDispatch } from "../../../../../store/hooks";
 import { CardDetailsItemProps } from "./CardDetailsItem.types";
-import { writeToClipboard } from "../../../utils/clipboard";
+import { writeToClipboard } from "../../../../utils/clipboard";
 import "./CardDetailsItem.scss";
-import { combineClassNames } from "../../../utils/style";
+import { combineClassNames } from "../../../../utils/style";
 
 const CardDetailsItem = ({
   info,

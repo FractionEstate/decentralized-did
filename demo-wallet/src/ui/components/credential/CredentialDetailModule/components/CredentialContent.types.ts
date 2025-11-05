@@ -1,5 +1,5 @@
-import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
-import { ACDCDetails } from "../../../../core/agent/services/credentialService.types";
+import { ConnectionShortDetails } from "../../../../../core/agent/agent.types";
+import { ACDCDetails } from "../../../../../core/agent/services/credentialService.types";
 
 interface MemberInfo {
   aid: string;

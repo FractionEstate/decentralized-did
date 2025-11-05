@@ -7,7 +7,7 @@ import {
   setIdentifierViewTypeCache,
   viewTypeCacheSlice,
 } from "./viewTypeCache";
-import { CardListViewType } from "../../../ui/components/SwitchCardView";
+import { CardListViewType } from "../../../ui/components/card/SwitchCardView";
 
 describe("identifierViewTypeCache", () => {
   const initialState = {

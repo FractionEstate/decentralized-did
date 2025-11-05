@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { i18n } from "../../../i18n";
+import { i18n } from "../../../../i18n";
 import "./MaxLoginAttemptAlert.scss";
 import { MaxLoginAttemptAlertProps } from "./MaxLoginAttemptAlert.types";
 

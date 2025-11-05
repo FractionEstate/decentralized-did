@@ -1,8 +1,8 @@
 import { alertCircleOutline } from "ionicons/icons";
 import { useState } from "react";
 import { i18n } from "../../../i18n";
-import { Alert } from "../Alert";
-import { InfoCard } from "../InfoCard";
+import { Alert } from "../common/Alert";
+import { InfoCard } from "../card/InfoCard";
 import { OptionModal } from "../OptionsModal";
 import { PageFooter } from "../PageFooter";
 import { Verification } from "../Verification";

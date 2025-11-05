@@ -24,10 +24,6 @@ import {
   documentText,
   globeOutline,
   globe,
-  home,
-  homeOutline,
-  images,
-  imagesOutline,
   settings,
   settingsOutline,
 } from "ionicons/icons";
@@ -36,14 +32,12 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import "./TabsMenu.scss";
 import { TabsRoutePath } from "../../../../routes/paths";
-import { Home } from "../../../pages/Home";
-import { NFTs } from "../../../pages/NFTs";
 import { Settings } from "../../../pages/Settings";
 import { Identifiers } from "../../../pages/Identifiers";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
 import { Menu } from "../../../pages/Menu";
-import Tokens from "../../../pages/Tokens/Tokens";
+import Wallet from "../../../pages/Wallet/Wallet";
 import Staking from "../../../pages/Staking/Staking";
 import Governance from "../../../pages/Governance/Governance";
 import DAppBrowser from "../../../pages/DAppBrowser/DAppBrowser";
@@ -70,9 +64,7 @@ const FALLBACK_TAB_LABELS: Record<string, string> = {
   [TabsRoutePath.GOVERNANCE]: "Governance",
   [TabsRoutePath.STAKING]: "Staking",
   [TabsRoutePath.MENU]: "Settings",
-  // Legacy/Hidden routes
-  [TabsRoutePath.HOME]: "Home",
-  [TabsRoutePath.NFTS]: "NFTs",
+  // Utility routes
   [TabsRoutePath.SCAN]: "Scan",
   [TabsRoutePath.NOTIFICATIONS]: "Notifications",
 };
@@ -80,7 +72,7 @@ const FALLBACK_TAB_LABELS: Record<string, string> = {
 const tabsRoutesBase: TabConfigBase[] = [
   {
     path: TabsRoutePath.TOKENS,
-    component: Tokens,
+    component: Wallet,
     icon: [wallet, walletOutline],
     i18nKey: "tabsmenu.label.wallet",
   },
@@ -119,18 +111,6 @@ const tabsRoutesBase: TabConfigBase[] = [
 // Legacy routes - still accessible but not in main navigation
 const legacyRoutesBase: TabConfigBase[] = [
   {
-    path: TabsRoutePath.HOME,
-    component: Home,
-    icon: [home, homeOutline],
-    i18nKey: "tabsmenu.label.home",
-  },
-  {
-    path: TabsRoutePath.NFTS,
-    component: NFTs,
-    icon: [images, imagesOutline],
-    i18nKey: "tabsmenu.label.nfts",
-  },
-  {
     path: TabsRoutePath.SCAN,
     component: Scan,
     icon: [scan, scanOutline],
@@ -167,19 +147,17 @@ const TabsMenu = () => {
     <IonTabs>
       <IonRouterOutlet animated={false}>
         {/* Render default Wallet tab when visiting /tabs without a subpath */}
-        <Route path={TabsRoutePath.ROOT} component={Tokens} exact />
+        <Route path={TabsRoutePath.ROOT} component={Wallet} exact />
 
         {/* Main navigation routes */}
-        <Route path={TabsRoutePath.TOKENS} component={Tokens} exact />
+        <Route path={TabsRoutePath.TOKENS} component={Wallet} exact />
         <Route path={TabsRoutePath.IDENTIFIERS} component={Identifiers} exact />
         <Route path={TabsRoutePath.DAPP_BROWSER} component={DAppBrowser} exact />
         <Route path={TabsRoutePath.GOVERNANCE} component={Governance} exact />
         <Route path={TabsRoutePath.STAKING} component={Staking} exact />
         <Route path={TabsRoutePath.MENU} component={Settings} exact />
 
-        {/* Legacy routes (accessible via direct URL or navigation from other pages) */}
-        <Route path={TabsRoutePath.HOME} component={Home} exact />
-        <Route path={TabsRoutePath.NFTS} component={NFTs} exact />
+        {/* Utility routes (accessible via direct URL or navigation from other pages) */}
         <Route path={TabsRoutePath.SCAN} component={Scan} exact />
         <Route path={TabsRoutePath.NOTIFICATIONS} component={Notifications} exact />
         {/* Legacy Menu component */}

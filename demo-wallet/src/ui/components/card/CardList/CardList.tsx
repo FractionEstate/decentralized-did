@@ -8,7 +8,7 @@ import {
 import { personCircleOutline } from "ionicons/icons";
 import { CardItemProps, CardListProps } from "./CardList.types";
 import "./CardList.scss";
-import { combineClassNames } from "../../utils/style";
+import { combineClassNames } from "../../../utils/style";
 
 const CardInfo = <T extends object = object>({
   card,

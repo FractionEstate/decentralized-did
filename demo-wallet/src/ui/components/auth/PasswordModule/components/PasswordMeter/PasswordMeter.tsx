@@ -1,7 +1,7 @@
 import { Trans } from "react-i18next";
-import { i18n } from "../../../../../i18n";
-import { passwordStrengthChecker } from "../../../../utils/passwordStrengthChecker";
-import { combineClassNames } from "../../../../utils/style";
+import { i18n } from "../../../../../../i18n";
+import { passwordStrengthChecker } from "../../../../../utils/passwordStrengthChecker";
+import { combineClassNames } from "../../../../../utils/style";
 import "./PasswordMeter.scss";
 import { PasswordMeterProps, StrongLevel } from "./PasswordMeter.types";
 

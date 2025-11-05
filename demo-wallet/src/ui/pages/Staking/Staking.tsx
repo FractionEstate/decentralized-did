@@ -6,33 +6,42 @@ import {
   fetchPoolList,
   fetchRewards,
   getAddressData,
+  getCurrentStakeAddress,
   getPools,
-  setCurrentStakeAddress,
 } from "../../../store/reducers/stakingCache";
 import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
+import { EmptyState } from "../../components/common/EmptyState";
+import { LoadingPlaceholder } from "../../components/common/LoadingPlaceholder";
+import { ErrorDisplay } from "../../components/common/ErrorDisplay";
 import { showError } from "../../utils/error";
 import { StakingService } from "../../../core/cardano/stakingService";
 import "./Staking.scss";
 
-// Demo stake address
-const DEMO_STAKE_ADDRESS = "stake1u80jysjtdzqt8qz8xq9y6dtj0rqh8kqwj5qjkqzqxqz0qg6q6q6";
+// Current stake address comes from store; if missing, UI prompts to connect
 
 const Staking = () => {
   const dispatch = useAppDispatch();
-  const addressData = useAppSelector(state => getAddressData(DEMO_STAKE_ADDRESS)(state));
+  const currentStakeAddress = useAppSelector(getCurrentStakeAddress);
+  const addressData = useAppSelector(
+    currentStakeAddress ? getAddressData(currentStakeAddress) : () => undefined
+  );
   const pools = useAppSelector(getPools);
   const [activeTab, setActiveTab] = useState<"account" | "pools" | "rewards">("account");
 
   useIonViewWillEnter(() => {
-    dispatch(setCurrentStakeAddress(DEMO_STAKE_ADDRESS));
-    loadStakingData();
+    if (currentStakeAddress) {
+      loadStakingData(currentStakeAddress);
+    }
   });
 
-  const loadStakingData = () => {
+  const loadStakingData = (stakeAddr?: string) => {
     try {
-      dispatch(fetchAccountInfo(DEMO_STAKE_ADDRESS));
+      const addr = stakeAddr || currentStakeAddress;
+      if (addr) {
+        dispatch(fetchAccountInfo(addr));
+        dispatch(fetchRewards(addr));
+      }
       dispatch(fetchPoolList());
-      dispatch(fetchRewards(DEMO_STAKE_ADDRESS));
     } catch (error) {
       showError("Failed to load staking data", error, dispatch);
     }
@@ -47,16 +56,16 @@ const Staking = () => {
 
   const renderAccount = () => {
     if (addressData?.isLoading && !addressData?.account) {
-      return <div className="loading-placeholder">Loading account...</div>;
+      return <LoadingPlaceholder message="Loading account information..." />;
     }
 
     if (addressData?.error) {
-      return <div className="error-message">{addressData.error}</div>;
+      return <ErrorDisplay error={addressData.error} onRetry={loadStakingData} title="Failed to Load Account" />;
     }
 
     const account = addressData?.account;
     if (!account) {
-      return <div className="empty-state">No account data available</div>;
+      return <EmptyState icon="trophy-outline" title="No Account Data" description="Unable to load staking account information." actionLabel="Retry" onAction={loadStakingData} />;
     }
 
     return (
@@ -100,7 +109,7 @@ const Staking = () => {
 
   const renderPools = () => {
     if (pools.length === 0) {
-      return <div className="loading-placeholder">Loading pools...</div>;
+      return <LoadingPlaceholder message="Loading stake pools..." />;
     }
 
     return (
@@ -148,13 +157,13 @@ const Staking = () => {
 
   const renderRewards = () => {
     if (addressData?.isLoading && !addressData?.rewards) {
-      return <div className="loading-placeholder">Loading rewards...</div>;
+      return <LoadingPlaceholder message="Loading rewards history..." />;
     }
 
     const rewards = addressData?.rewards || [];
 
     if (rewards.length === 0) {
-      return <div className="empty-state">No rewards history available</div>;
+      return <EmptyState icon="trophy-outline" title="No Rewards" description="Your staking rewards history will appear here once you start earning." />;
     }
 
     return (
@@ -184,36 +193,49 @@ const Staking = () => {
       header={false}
       customClass="staking-page"
     >
+      {!currentStakeAddress && (
+        <div className="staking-content">
+          <EmptyState
+            icon="trophy-outline"
+            title="No Wallet Connected"
+            description="Connect or select a wallet to view staking account, pools, and rewards."
+          />
+        </div>
+      )}
       <IonRefresher slot="fixed" onIonRefresh={handleRefresh}>
         <IonRefresherContent />
       </IonRefresher>
 
-      <div className="staking-tabs">
-        <button
-          className={`tab-button ${activeTab === "account" ? "active" : ""}`}
-          onClick={() => setActiveTab("account")}
-        >
-          Account
-        </button>
-        <button
-          className={`tab-button ${activeTab === "pools" ? "active" : ""}`}
-          onClick={() => setActiveTab("pools")}
-        >
-          Pools
-        </button>
-        <button
-          className={`tab-button ${activeTab === "rewards" ? "active" : ""}`}
-          onClick={() => setActiveTab("rewards")}
-        >
-          Rewards
-        </button>
-      </div>
+      {currentStakeAddress && (
+        <div className="staking-tabs">
+          <button
+            className={`tab-button ${activeTab === "account" ? "active" : ""}`}
+            onClick={() => setActiveTab("account")}
+          >
+            Account
+          </button>
+          <button
+            className={`tab-button ${activeTab === "pools" ? "active" : ""}`}
+            onClick={() => setActiveTab("pools")}
+          >
+            Pools
+          </button>
+          <button
+            className={`tab-button ${activeTab === "rewards" ? "active" : ""}`}
+            onClick={() => setActiveTab("rewards")}
+          >
+            Rewards
+          </button>
+        </div>
+      )}
 
-      <div className="staking-content">
-        {activeTab === "account" && renderAccount()}
-        {activeTab === "pools" && renderPools()}
-        {activeTab === "rewards" && renderRewards()}
-      </div>
+      {currentStakeAddress && (
+        <div className="staking-content">
+          {activeTab === "account" && renderAccount()}
+          {activeTab === "pools" && renderPools()}
+          {activeTab === "rewards" && renderRewards()}
+        </div>
+      )}
     </TabLayout>
   );
 };

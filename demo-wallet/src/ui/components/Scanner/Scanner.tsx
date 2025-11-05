@@ -63,11 +63,11 @@ import { OperationType, ToastMsgType } from "../../globals/types";
 import { showError } from "../../utils/error";
 import { combineClassNames } from "../../utils/style";
 import { isValidConnectionUrl, isValidHttpUrl } from "../../utils/urlChecker";
-import { Alert } from "../Alert";
-import { CreateGroupIdentifier } from "../CreateGroupIdentifier";
-import { CreateIdentifier } from "../CreateIdentifier";
-import { CustomInput } from "../CustomInput";
-import { IdentifierSelectorModal } from "../IdentifierSelectorModal";
+import { Alert } from "../common/Alert";
+import { CreateGroupIdentifier } from "../identifier/CreateGroupIdentifier";
+import { CreateIdentifier } from "../identifier/CreateIdentifier";
+import { CustomInput } from "../common/CustomInput";
+import { IdentifierSelectorModal } from "../identifier/IdentifierSelectorModal";
 import { TabsRoutePath } from "../navigation/TabsMenu";
 import { OptionModal } from "../OptionsModal";
 import { PageFooter } from "../PageFooter";
@@ -494,7 +494,7 @@ const Scanner = forwardRef(
               scanGroupId
                 ? handleReset?.()
                 : groupId &&
-                  openGroupIdentifierSetupWhenScanByFullPage(groupId);
+                openGroupIdentifierSetupWhenScanByFullPage(groupId);
             } else {
               handleAfterScanMultisig(groupId);
             }
@@ -811,16 +811,15 @@ const Scanner = forwardRef(
             closeButton: true,
             closeButtonAction: () => setPasteModalIsOpen(false),
             closeButtonLabel: `${i18n.t("createidentifier.scan.cancel")}`,
-            title: `${
-              currentOperation === OperationType.MULTI_SIG_INITIATOR_SCAN ||
-              currentOperation === OperationType.MULTI_SIG_RECEIVER_SCAN
+            title: `${currentOperation === OperationType.MULTI_SIG_INITIATOR_SCAN ||
+                currentOperation === OperationType.MULTI_SIG_RECEIVER_SCAN
                 ? `${i18n.t("createidentifier.scan.pasteoobi")}`
                 : currentOperation === OperationType.SCAN_WALLET_CONNECTION
                   ? i18n.t(
                     "tabs.menu.tab.items.connectwallet.inputpidmodal.header"
                   )
                   : `${i18n.t("createidentifier.scan.pastecontents")}`
-            }`,
+              }`,
             actionButton: true,
             actionButtonDisabled: !pastedValue,
             actionButtonAction: handleSubmitPastedValue,

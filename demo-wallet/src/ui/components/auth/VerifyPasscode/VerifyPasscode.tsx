@@ -1,18 +1,18 @@
 import { IonModal } from "@ionic/react";
 import { useEffect, useState } from "react";
-import { i18n } from "../../../i18n";
-import { Alert } from "../Alert";
-import { ErrorMessage, MESSAGE_MILLISECONDS } from "../ErrorMessage";
+import { i18n } from "../../../../i18n";
+import { Alert } from "../../common/Alert";
+import { ErrorMessage, MESSAGE_MILLISECONDS } from "../../ErrorMessage";
 import { ForgotAuthInfo } from "../ForgotAuthInfo";
 import { ForgotType } from "../ForgotAuthInfo/ForgotAuthInfo.types";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
+import { PageFooter } from "../../PageFooter";
+import { PageHeader } from "../../common/PageHeader";
 import { PasscodeModule } from "../PasscodeModule";
-import { ResponsivePageLayout } from "../layout/ResponsivePageLayout";
+import { ResponsivePageLayout } from "../../layout/ResponsivePageLayout";
 import "./VerifyPasscode.scss";
 import { VerifyPasscodeProps } from "./VerifyPasscode.types";
-import { Agent } from "../../../core/agent/agent";
-import { KeyStoreKeys } from "../../../core/storage";
+import { Agent } from "../../../../core/agent/agent";
+import { KeyStoreKeys } from "../../../../core/storage";
 
 const VerifyPasscode = ({
   isOpen,

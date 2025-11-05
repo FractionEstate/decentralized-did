@@ -1,4 +1,4 @@
-import { MouseEvent, useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
 import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
@@ -7,6 +7,7 @@ import { combineClassNames } from "../../../utils/style";
 import { CardsStack } from "../CardsStack/CardsStack";
 import { ListHeader } from "../../ListHeader/ListHeader";
 import { CardList } from "../CardList";
+import { CardItem } from "../CardList/CardList.types";
 import "./SwitchCardView.scss";
 import { CardListViewType, SwitchCardViewProps } from "./SwitchCardView.types";
 import { TabsRoutePath } from "../../../../routes/paths";
@@ -95,6 +96,30 @@ const SwitchCardView = ({
     history.push({ pathname: pathname });
   };
 
+  // Transform cardsData into CardItem format for CardList component
+  const cardItems = useMemo((): CardItem<
+    IdentifierShortDetails | CredentialShortDetails
+  >[] => {
+    return cardsData.map((cardData) => {
+      if (cardTypes === CardType.IDENTIFIERS) {
+        const identifier = cardData as IdentifierShortDetails;
+        return {
+          id: identifier.id,
+          title: identifier.displayName,
+          data: identifier,
+        };
+      } else {
+        const credential = cardData as CredentialShortDetails;
+        return {
+          id: credential.id,
+          title: credential.credentialType,
+          subtitle: credential.issuanceDate,
+          data: credential,
+        };
+      }
+    });
+  }, [cardsData, cardTypes]);
+
   const classes = combineClassNames("card-switch-view", className);
 
   return (
@@ -120,7 +145,7 @@ const SwitchCardView = ({
         />
       ) : (
         <CardList
-          data={cardsData}
+          data={cardItems}
           onCardClick={handleOpenDetail}
           testId="card-list"
         />

@@ -4,8 +4,8 @@ import {
   formatShortDate,
   formatTimeToSec,
   getUTCOffset,
-} from "../../../utils/formatters";
-import { combineClassNames } from "../../../utils/style";
+} from "../../../../utils/formatters";
+import { combineClassNames } from "../../../../utils/style";
 import { CardDetailsItem } from "../CardDetailsItem";
 import { CardDetailsAttributeProps } from "./CardDetailsExpandAttributes.types";
 import { reservedKeysFilter } from "./CardDetailsExpandAttributes.utils";

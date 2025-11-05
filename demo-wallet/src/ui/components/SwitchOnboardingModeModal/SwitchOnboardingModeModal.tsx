@@ -16,10 +16,10 @@ import {
 } from "../../../store/reducers/stateCache";
 import { useAppIonRouter } from "../../hooks";
 import { showError } from "../../utils/error";
-import { CardDetailsBlock } from "../CardDetails";
+import { CardDetailsBlock } from "../card/CardDetails";
 import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
 import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
+import { PageHeader } from "../common/PageHeader";
 import "./SwitchOnboardingModeModal.scss";
 import {
   OnboardingMode,
@@ -43,13 +43,13 @@ const SwitchOnboardingModeModal = ({
       const action = isCreateMode
         ? Agent.agent.basicStorage.deleteById(MiscRecordId.APP_RECOVERY_WALLET)
         : Agent.agent.basicStorage.createOrUpdateBasicRecord(
-            new BasicRecord({
-              id: MiscRecordId.APP_RECOVERY_WALLET,
-              content: {
-                value: String(true),
-              },
-            })
-          );
+          new BasicRecord({
+            id: MiscRecordId.APP_RECOVERY_WALLET,
+            content: {
+              value: String(true),
+            },
+          })
+        );
 
       await Promise.all([
         SecureStorage.delete(KeyStoreKeys.SIGNIFY_BRAN),

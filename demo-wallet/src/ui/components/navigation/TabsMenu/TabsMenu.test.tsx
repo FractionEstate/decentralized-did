@@ -10,7 +10,7 @@ import { notificationsFix } from "../../../__fixtures__/notificationsFix";
 import { i18n } from "../../../../i18n";
 
 // Mock heavy tab pages to avoid deep Redux selector dependencies in this unit test
-jest.mock("../../../pages/Tokens/Tokens", () => ({
+jest.mock("../../../pages/Wallet/Wallet", () => ({
   __esModule: true,
   default: () => <div data-testid="tokens-page">Tokens</div>,
 }));

@@ -1,8 +1,8 @@
 import { IonItem, IonLabel, IonList, IonModal } from "@ionic/react";
-import { i18n } from "../../../../../i18n";
-import { BackEventPriorityType } from "../../../../globals/types";
-import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";
-import { PageHeader } from "../../../PageHeader";
+import { i18n } from "../../../../../../i18n";
+import { BackEventPriorityType } from "../../../../../globals/types";
+import { ScrollablePageLayout } from "../../../../layout/ScrollablePageLayout";
+import { PageHeader } from "../../../../common/PageHeader";
 import { SymbolModalProps, Symbols } from "./SymbolModal.type";
 import "./SymbolModal.scss";
 

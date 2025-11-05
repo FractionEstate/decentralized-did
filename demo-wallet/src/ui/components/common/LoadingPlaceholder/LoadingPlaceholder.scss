@@ -1,0 +1,50 @@
+.loading-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ion-padding, 32px);
+    min-height: 200px;
+
+    ion-spinner {
+        color: var(--ion-color-primary);
+    }
+
+    &.loading-placeholder--small {
+        min-height: 100px;
+        padding: 16px;
+
+        ion-spinner {
+            --spinner-size: 24px;
+        }
+
+        .loading-placeholder-message {
+            font-size: 12px;
+        }
+    }
+
+    &.loading-placeholder--default {
+        ion-spinner {
+            --spinner-size: 32px;
+        }
+    }
+
+    &.loading-placeholder--large {
+        min-height: 300px;
+
+        ion-spinner {
+            --spinner-size: 48px;
+        }
+
+        .loading-placeholder-message {
+            font-size: 16px;
+        }
+    }
+
+    .loading-placeholder-message {
+        margin-top: 16px;
+        font-size: 14px;
+        color: var(--ion-color-medium);
+        text-align: center;
+    }
+}

@@ -1,4 +1,4 @@
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
 
 interface ArchivedCredentialsProps {
   archivedCreds: CredentialShortDetails[];

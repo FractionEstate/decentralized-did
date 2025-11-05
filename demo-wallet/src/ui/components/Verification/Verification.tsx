@@ -9,8 +9,8 @@ import { getStateCache } from "../../../store/reducers/stateCache";
 import { usePrivacyScreen } from "../../hooks/privacyScreenHook";
 import { useBiometricAuth } from "../../hooks/useBiometricsHook";
 import { showError } from "../../utils/error";
-import { VerifyPasscode } from "../VerifyPasscode";
-import { VerifyPassword } from "../VerifyPassword";
+import { VerifyPasscode } from "../auth/VerifyPasscode";
+import { VerifyPassword } from "../auth/VerifyPassword";
 import { VerifyProps } from "./Verification.types";
 
 const Verification = ({

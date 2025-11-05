@@ -1,4 +1,4 @@
-import { AlertProps } from "../Alert/Alert.types";
+import { AlertProps } from "../common/Alert/Alert.types";
 
 type CommonErrorAlertProps = Pick<
   AlertProps,

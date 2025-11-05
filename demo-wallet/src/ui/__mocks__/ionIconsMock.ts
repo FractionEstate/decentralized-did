@@ -44,7 +44,6 @@ export const images = 'images';
 export const notificationsOutline = 'notifications-outline';
 export const notifications = 'notifications';
 export const fingerPrint = 'finger-print';
-export const fingerPrintOutline = 'finger-print-outline';
 export const appsOutline = 'apps-outline';
 export const apps = 'apps';
 
@@ -95,7 +94,6 @@ export default {
     notificationsOutline,
     notifications,
     fingerPrint,
-    fingerPrintOutline,
     appsOutline,
     apps,
 };

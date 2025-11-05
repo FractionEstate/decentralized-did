@@ -1,6 +1,6 @@
 import { IonCard } from "@ionic/react";
 import { CardDetailsBlockProps } from "./CardDetailsBlock.types";
-import { combineClassNames } from "../../../utils/style";
+import { combineClassNames } from "../../../../utils/style";
 import "./CardDetailsBlock.scss";
 
 const CardDetailsBlock = ({

@@ -1,6 +1,6 @@
 import { IonIcon, IonItem, IonLabel, IonList } from "@ionic/react";
 import { ResponsiveModal } from "../layout/ResponsiveModal";
-import { PageHeader } from "../PageHeader";
+import { PageHeader } from "../common/PageHeader";
 import { OptionListProps, OptionModalProps } from "./OptionsModal.types";
 import { combineClassNames } from "../../utils/style";
 import "./OptionsModal.scss";
