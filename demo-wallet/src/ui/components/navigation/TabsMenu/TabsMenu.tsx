@@ -36,7 +36,6 @@ import { Settings } from "../../../pages/Settings";
 import { Identifiers } from "../../../pages/Identifiers";
 import { Scan } from "../../../pages/Scan";
 import { Notifications } from "../../../pages/Notifications";
-import { Menu } from "../../../pages/Menu";
 import Wallet from "../../../pages/Wallet/Wallet";
 import Staking from "../../../pages/Staking/Staking";
 import Governance from "../../../pages/Governance/Governance";
@@ -160,8 +159,6 @@ const TabsMenu = () => {
         {/* Utility routes (accessible via direct URL or navigation from other pages) */}
         <Route path={TabsRoutePath.SCAN} component={Scan} exact />
         <Route path={TabsRoutePath.NOTIFICATIONS} component={Notifications} exact />
-        {/* Legacy Menu component */}
-        <Route path="/tabs/legacy-menu" component={Menu} exact />
       </IonRouterOutlet>
 
       <BackupWarningBanner />

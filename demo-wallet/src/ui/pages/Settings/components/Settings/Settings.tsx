@@ -46,7 +46,7 @@ import { usePrivacyScreen } from "../../../../hooks/privacyScreenHook";
 import { useBiometricAuth } from "../../../../hooks/useBiometricsHook";
 import { showError } from "../../../../utils/error";
 import { openBrowserLink } from "../../../../utils/openBrowserLink";
-import { SubMenuKey } from "../../Menu.types";
+import { SubMenuKey } from "../../Settings.types";
 import { ChangePin } from "./components/ChangePin";
 import { SettingsItem } from "./components/SettingsItem";
 import "./Settings.scss";

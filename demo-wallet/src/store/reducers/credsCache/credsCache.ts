@@ -2,16 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../../index";
 import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
 import { FavouriteIdentifier } from "../identifiersCache/identifiersCache.types";
-import { CredentialsFilters } from "../../../ui/pages/Credentials/Credentials.types";
+import { FilterType } from "../../../ui/types/filter.types";
 
 const initialState: {
   creds: CredentialShortDetails[];
   favourites: FavouriteIdentifier[];
-  filters: CredentialsFilters;
+  filters: FilterType;
 } = {
   creds: [],
   favourites: [],
-  filters: CredentialsFilters.All,
+  filters: FilterType.All,
 };
 const credsCacheSlice = createSlice({
   name: "credsCache",
@@ -47,7 +47,7 @@ const credsCacheSlice = createSlice({
     },
     setCredentialsFilters: (
       state,
-      action: PayloadAction<CredentialsFilters>
+      action: PayloadAction<FilterType>
     ) => {
       state.filters = action.payload;
     },

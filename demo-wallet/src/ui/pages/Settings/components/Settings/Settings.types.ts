@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { SubMenuKey } from "../../Menu.types";
+import { SubMenuKey } from "../../Settings.types";
 
 interface SettingsProps {
   switchView?: (key: SubMenuKey) => void;

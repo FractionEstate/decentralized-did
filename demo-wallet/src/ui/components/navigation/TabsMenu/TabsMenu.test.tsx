@@ -47,9 +47,6 @@ jest.mock("../../../pages/Notifications", () => ({
     <div data-testid="notifications-page">Notifications</div>
   ),
 }));
-jest.mock("../../../pages/Menu", () => ({
-  Menu: () => <div data-testid="menu-page">Menu</div>,
-}));
 
 describe("Tab menu", () => {
   const mockStore = configureStore();

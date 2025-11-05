@@ -12,7 +12,7 @@ import { setAuthentication } from "../../store/reducers/stateCache";
 import { DataProps } from "./nextRoute.types";
 import { OperationType } from "../../ui/globals/types";
 import { IdentifiersFilters } from "../../ui/pages/Identifiers/Identifiers.types";
-import { CredentialsFilters } from "../../ui/pages/Credentials/Credentials.types";
+import { FilterType } from "../../ui/types/filter.types";
 import { InitializationPhase } from "../../store/reducers/stateCache/stateCache.types";
 
 describe("NextRoute", () => {
@@ -71,7 +71,7 @@ describe("NextRoute", () => {
       credsCache: {
         creds: [],
         favourites: [],
-        filters: CredentialsFilters.All,
+        filters: FilterType.All,
       },
       credsArchivedCache: { creds: [] },
       connectionsCache: {
@@ -331,7 +331,7 @@ describe("getNextRoute", () => {
       },
       filters: IdentifiersFilters.All,
     },
-    credsCache: { creds: [], favourites: [], filters: CredentialsFilters.All },
+    credsCache: { creds: [], favourites: [], filters: FilterType.All },
     credsArchivedCache: { creds: [] },
     connectionsCache: {
       connections: {},

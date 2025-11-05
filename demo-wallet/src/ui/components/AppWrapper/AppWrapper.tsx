@@ -79,7 +79,7 @@ import {
   updateWalletConnectionMetadata,
 } from "../../../store/reducers/walletConnectionsCache";
 import { OperationType, ToastMsgType } from "../../globals/types";
-import { CredentialsFilters } from "../../pages/Credentials/Credentials.types";
+import { FilterType } from "../../types/filter.types";
 import { IdentifiersFilters } from "../../pages/Identifiers/Identifiers.types";
 import { showError } from "../../utils/error";
 import { Alert } from "../common/Alert";
@@ -395,8 +395,8 @@ const AppWrapper = (props: { children: ReactNode }) => {
       let userName: { userName: string } = { userName: "" };
       let identifiersSelectedFilter: IdentifiersFilters =
         IdentifiersFilters.All;
-      let credentialsSelectedFilter: CredentialsFilters =
-        CredentialsFilters.All;
+      let credentialsSelectedFilter: FilterType =
+        FilterType.All;
       const passcodeIsSet = await SecureStorage.keyExists(
         KeyStoreKeys.APP_PASSCODE
       );
@@ -474,7 +474,7 @@ const AppWrapper = (props: { children: ReactNode }) => {
       );
       if (credentialsFilters) {
         credentialsSelectedFilter = credentialsFilters.content
-          .filter as CredentialsFilters;
+          .filter as FilterType;
       }
       if (credentialsSelectedFilter) {
         dispatch(setCredentialsFilters(credentialsSelectedFilter));

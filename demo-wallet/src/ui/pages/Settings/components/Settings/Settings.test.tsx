@@ -15,7 +15,7 @@ import { setToastMsg } from "../../../../../store/reducers/stateCache";
 import { DOCUMENTATION_LINK } from "../../../../globals/constants";
 import { ToastMsgType } from "../../../../globals/types";
 import { passcodeFiller } from "../../../../utils/passcodeFiller";
-import { SubMenuKey } from "../../Menu.types";
+import { SubMenuKey } from "../../Settings.types";
 import { Settings } from "./Settings";
 import { OptionIndex } from "./Settings.types";
 

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { addOutline } from "ionicons/icons";
 import { IonButton, IonIcon } from "@ionic/react";
-import { SubMenuData, SubMenuKey } from "../Menu.types";
+import { SubMenuData, SubMenuKey } from "../Settings.types";
 import { Profile } from "./Profile";
 import { i18n } from "../../../../i18n";
 import { ConnectWallet, ConnectWalletOptionRef } from "./ConnectWallet";

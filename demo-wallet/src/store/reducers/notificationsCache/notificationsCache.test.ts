@@ -11,7 +11,7 @@ import {
   clearNotifications,
 } from "./notificationsCache";
 import { IdentifiersFilters } from "../../../ui/pages/Identifiers/Identifiers.types";
-import { CredentialsFilters } from "../../../ui/pages/Credentials/Credentials.types";
+import { FilterType } from "../../../ui/types/filter.types";
 import { InitializationPhase } from "../stateCache/stateCache.types";
 
 const notification: KeriaNotification = {
@@ -165,7 +165,7 @@ describe("Notifications cache", () => {
       credsCache: {
         creds: [],
         favourites: [],
-        filters: CredentialsFilters.All,
+        filters: FilterType.All,
       },
       credsArchivedCache: { creds: [] },
       connectionsCache: {

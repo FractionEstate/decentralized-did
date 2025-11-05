@@ -1,7 +1,7 @@
 import { RootState } from "../../store";
 import { InitializationPhase } from "../../store/reducers/stateCache/stateCache.types";
 import { OperationType } from "../../ui/globals/types";
-import { CredentialsFilters } from "../../ui/pages/Credentials/Credentials.types";
+import { FilterType } from "../../ui/types/filter.types";
 import { IdentifiersFilters } from "../../ui/pages/Identifiers/Identifiers.types";
 import { DataProps } from "../nextRoute/nextRoute.types";
 import { calcPreviousRoute, getBackRoute, getPreviousRoute } from "./backRoute";
@@ -72,7 +72,7 @@ describe("getBackRoute", () => {
       credsCache: {
         creds: [],
         favourites: [],
-        filters: CredentialsFilters.All,
+        filters: FilterType.All,
       },
       credsArchivedCache: { creds: [] },
       connectionsCache: {
@@ -226,7 +226,7 @@ describe("getPreviousRoute", () => {
       credsCache: {
         creds: [],
         favourites: [],
-        filters: CredentialsFilters.All,
+        filters: FilterType.All,
       },
       credsArchivedCache: { creds: [] },
       connectionsCache: {

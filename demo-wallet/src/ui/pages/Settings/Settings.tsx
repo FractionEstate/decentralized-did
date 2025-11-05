@@ -43,12 +43,12 @@ import {
 } from "../../../store/reducers/walletConnectionsCache";
 import { getBiometricsCache } from "../../../store/reducers/biometricsCache";
 import { TabLayout } from "../../components/layout/TabLayout/TabLayout";
-import { SubMenu } from "../Menu/components/SubMenu/SubMenu";
+import { SubMenu } from "./components/SubMenu/SubMenu";
 import {
   emptySubMenu,
   SubMenuItems,
-} from "../Menu/components/SubMenuItems";
-import { SubMenuKey } from "../Menu/Menu.types";
+} from "./components/SubMenuItems";
+import { SubMenuKey } from "./Settings.types";
 import "./Settings.scss";
 
 interface SettingsSectionProps {

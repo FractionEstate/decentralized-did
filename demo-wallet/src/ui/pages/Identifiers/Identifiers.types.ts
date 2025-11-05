@@ -1,10 +1,11 @@
+
+import { FilterType } from "../../types/filter.types";
+
 type StartAnimationSource = "favourite" | "cards" | "none";
 
-enum IdentifiersFilters {
-  All = "all",
-  Individual = "individual",
-  Group = "group",
-}
+// Re-export shared FilterType as IdentifiersFilters for full compatibility
+type IdentifiersFilters = FilterType;
+const IdentifiersFilters = FilterType;
 
 export type { StartAnimationSource };
 export { IdentifiersFilters };

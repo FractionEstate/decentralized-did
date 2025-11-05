@@ -59,12 +59,6 @@ const Routes = () => {
           exact
           render={() => <Redirect to={TabsRoutePath.IDENTIFIERS} />}
         />
-        {/* Legacy credentials route redirected to default tab */}
-        <Route
-          path={TabsRoutePath.CREDENTIALS}
-          exact
-          render={() => <Redirect to={TabsRoutePath.IDENTIFIERS} />}
-        />
         <Route
           path={RoutePath.SET_PASSCODE}
           exact

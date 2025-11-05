@@ -5,7 +5,7 @@ import { SubMenuProps } from "./SubMenu.types";
 import { ScrollablePageLayout } from "../../../../components/layout/ScrollablePageLayout";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { SideSlider } from "../../../../components/SideSlider";
-import { SubMenuKey } from "../../Menu.types";
+import { SubMenuKey } from "../../Settings.types";
 
 const SubMenu = ({
   showSubMenu,

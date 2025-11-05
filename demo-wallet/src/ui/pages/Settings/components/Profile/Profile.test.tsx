@@ -9,7 +9,7 @@ import { TabsRoutePath } from "../../../../../routes/paths";
 import { setAuthentication } from "../../../../../store/reducers/stateCache";
 import { CustomInputProps } from "../../../../components/CustomInput/CustomInput.types";
 import { Menu } from "../../Menu";
-import { SubMenuKey } from "../../Menu.types";
+import { SubMenuKey } from "../../Settings.types";
 
 jest.mock("../../../../../core/configuration", () => ({
   ...jest.requireActual("../../../../../core/configuration"),

@@ -20,13 +20,13 @@ import {
 import { IdentifierType } from "../../../core/agent/services/identifier.types";
 import { FavouriteIdentifier } from "../identifiersCache/identifiersCache.types";
 import { multisigMetadataRecord } from "../../../core/__fixtures__/agent/multiSigFixtures";
-import { CredentialsFilters } from "../../../ui/pages/Credentials/Credentials.types";
+import { FilterType } from "../../../ui/types/filter.types";
 
 describe("credsCacheSlice", () => {
   const initialState = {
     creds: [],
     favourites: [],
-    filters: CredentialsFilters.All,
+    filters: FilterType.All,
   };
   it("should return the initial state", () => {
     expect(credsCacheSlice.reducer(undefined, {} as PayloadAction)).toEqual(
@@ -126,7 +126,7 @@ describe("credsCacheSlice", () => {
       {
         creds: [cred1, cred2],
         favourites: [],
-        filters: CredentialsFilters.All,
+        filters: FilterType.All,
       },
       updateOrAddCredsCache(updateCred)
     );
@@ -168,7 +168,7 @@ describe("credsCacheSlice", () => {
           time: 1,
         },
       ],
-      filters: CredentialsFilters.All,
+      filters: FilterType.All,
     };
     const newState = credsCacheSlice.reducer(
       state,
@@ -182,9 +182,9 @@ it("should handle setCredentialsFilters", () => {
   const initialState = {
     creds: [],
     favourites: [],
-    filters: CredentialsFilters.All,
+    filters: FilterType.All,
   };
-  const filter: CredentialsFilters = CredentialsFilters.Individual;
+  const filter: CredentialsFilters = FilterType.Individual;
   const newState = credsCacheSlice.reducer(
     initialState,
     setCredentialsFilters(filter)
@@ -237,7 +237,7 @@ describe("get methods for CredsCache", () => {
   it("should return the Credentials Filters from RootState", () => {
     const state = {
       credsCache: {
-        filters: CredentialsFilters.Individual,
+        filters: FilterType.Individual,
       },
     } as RootState;
     const filtersCache = getCredentialsFilters(state);

@@ -1,5 +1,5 @@
 import { IonCol, IonCard, IonIcon, IonLabel } from "@ionic/react";
-import { MenuItemProps } from "../Menu.types";
+import { MenuItemProps } from "../Settings.types";
 
 const MenuItem = ({
   itemKey,
