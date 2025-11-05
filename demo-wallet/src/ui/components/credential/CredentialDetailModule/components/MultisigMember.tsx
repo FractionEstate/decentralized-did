@@ -1,7 +1,7 @@
 import { IonIcon, IonItem, IonText } from "@ionic/react";
 import { checkmark, closeOutline, hourglassOutline } from "ionicons/icons";
-import { combineClassNames } from "../../../utils/style";
-import { FallbackIcon } from "../../FallbackIcon";
+import { combineClassNames } from "../../../../utils/style";
+import { FallbackIcon } from "../../../FallbackIcon";
 import "./MultisigMember.scss";
 import { MemberAcceptStatus, MemberProps } from "./MultisigMember.types";
 

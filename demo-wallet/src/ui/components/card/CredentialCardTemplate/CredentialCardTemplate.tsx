@@ -1,4 +1,4 @@
-import { IpexCommunicationService } from "../../../core/agent/services";
+import { IpexCommunicationService } from "../../../../core/agent/services";
 import { RomeCardTemplate } from "./components/RomeCardTemplate";
 import { KeriCardTemplate } from "./components";
 import { CredentialCardTemplateProps } from "./CredentialCardTemplate.types";

@@ -1,7 +1,7 @@
 import { IonCheckbox, IonItem, IonLabel, IonList } from "@ionic/react";
 import { useState } from "react";
-import { ConnectionShortDetails } from "../../../../core/agent/agent.types";
-import { i18n } from "../../../../i18n";
+import { ConnectionShortDetails } from "../../../../../core/agent/agent.types";
+import { i18n } from "../../../../../i18n";
 import { FallbackIcon } from "../../../FallbackIcon";
 import { PageFooter } from "../../../PageFooter";
 import { PageHeader } from "../../../common/PageHeader";

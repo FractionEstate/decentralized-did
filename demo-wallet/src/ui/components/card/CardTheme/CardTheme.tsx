@@ -1,4 +1,4 @@
-import { combineClassNames } from "../../utils/style";
+import { combineClassNames } from "../../../utils/style";
 import { CardThemeProps } from "./CardTheme.types";
 import { CardThemeFour } from "./CardThemeFour";
 import { CardThemeOne } from "./CardThemeOne";

@@ -27,7 +27,7 @@ import { InfoCard } from "../../../../../components/card/InfoCard";
 import { ScrollablePageLayout } from "../../../../../components/layout/ScrollablePageLayout";
 import { PageFooter } from "../../../../../components/PageFooter";
 import { PageHeader } from "../../../../../components/common/PageHeader";
-import { Verification } from "../../../../../components/auth/Verification";
+import { Verification } from "../../../../../components/Verification";
 import { ToastMsgType } from "../../../../../globals/types";
 import { useOnlineStatusEffect } from "../../../../../hooks";
 import { showError } from "../../../../../utils/error";

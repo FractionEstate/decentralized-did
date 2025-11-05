@@ -4,15 +4,15 @@ import "./CardsStack.scss";
 import {
   IdentifierDetails,
   IdentifierShortDetails,
-} from "../../../core/agent/services/identifier.types";
-import { CardType } from "../../globals/types";
+} from "../../../../core/agent/services/identifier.types";
+import { CardType } from "../../../globals/types";
 import { IdentifierCardTemplate } from "../IdentifierCardTemplate";
 import { CredentialCardTemplate } from "../CredentialCardTemplate";
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
 import { CardsStackProps } from "./CardsStack.types";
-import { TabsRoutePath } from "../navigation/TabsMenu";
-import { useAppDispatch } from "../../../store/hooks";
-import { setCurrentRoute } from "../../../store/reducers/stateCache";
+import { TabsRoutePath } from "../../navigation/TabsMenu";
+import { useAppDispatch } from "../../../../store/hooks";
+import { setCurrentRoute } from "../../../../store/reducers/stateCache";
 
 const NAVIGATION_DELAY = 250;
 const CLEAR_STATE_DELAY = 1000;
@@ -91,9 +91,8 @@ const CardsStack = ({
     }, CLEAR_STATE_DELAY);
   };
 
-  const containerClasses = `cards-stack-container ${
-    pickedCardIndex !== null ? "transition-start" : ""
-  }`;
+  const containerClasses = `cards-stack-container ${pickedCardIndex !== null ? "transition-start" : ""
+    }`;
 
   return (
     <div

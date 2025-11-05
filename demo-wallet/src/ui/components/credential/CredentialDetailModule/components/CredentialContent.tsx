@@ -4,29 +4,29 @@ import {
   keyOutline,
 } from "ionicons/icons";
 import { useState } from "react";
-import { JSONObject } from "../../../../core/agent/agent.types";
-import { i18n } from "../../../../i18n";
-import { useAppSelector } from "../../../../store/hooks";
-import { getIdentifiersCache } from "../../../../store/reducers/identifiersCache";
+import { JSONObject } from "../../../../../core/agent/agent.types";
+import { i18n } from "../../../../../i18n";
+import { useAppSelector } from "../../../../../store/hooks";
+import { getIdentifiersCache } from "../../../../../store/reducers/identifiersCache";
 import {
   formatShortDate,
   formatTimeToSec,
   getUTCOffset,
-} from "../../../utils/formatters";
-import { getTheme } from "../../../utils/theme";
-import { Alert } from "../../Alert";
+} from "../../../../utils/formatters";
+import { getTheme } from "../../../../utils/theme";
+import { Alert } from "../../../common/Alert";
 import {
   CardBlock,
   CardDetailsBlock,
   CardDetailsExpandAttributes,
   CardDetailsItem,
   FlatBorderType,
-} from "../../CardDetails";
-import { CardTheme } from "../../CardTheme";
-import { FallbackIcon } from "../../FallbackIcon";
-import { IdentifierDetailModal } from "../../IdentifierDetailModule";
-import { ListHeader } from "../../ListHeader";
-import { ReadMore } from "../../ReadMore";
+} from "../../../card/CardDetails";
+import { CardTheme } from "../../../card/CardTheme";
+import { FallbackIcon } from "../../../FallbackIcon";
+import { IdentifierDetailModal } from "../../../identifier/IdentifierDetailModule";
+import { ListHeader } from "../../../ListHeader";
+import { ReadMore } from "../../../ReadMore";
 import {
   CredentialContentProps,
   IssuedIdentifierProps,

@@ -1,7 +1,7 @@
 import { IonSpinner } from "@ionic/react";
 import "./Spinner.scss";
 import { SpinnerConverage, SpinnerProps } from "./Spinner.type";
-import { combineClassNames } from "../../utils/style";
+import { combineClassNames } from "../../../utils/style";
 
 export const Spinner = ({
   show,

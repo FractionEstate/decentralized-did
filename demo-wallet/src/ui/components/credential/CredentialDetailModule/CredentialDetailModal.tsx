@@ -5,7 +5,7 @@ import {
   BackReason,
   CredentialDetailModalProps,
 } from "./CredentialDetailModule.types";
-import { BackEventPriorityType } from "../../globals/types";
+import { BackEventPriorityType } from "../../../globals/types";
 
 const CredentialDetailModal = ({
   isOpen,

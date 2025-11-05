@@ -9,7 +9,7 @@ import { setToastMsg } from "../../../../../store/reducers/stateCache";
 import { ToastMsgType } from "../../../../globals/types";
 import { showError } from "../../../../utils/error";
 import { Alert } from "../../../../components/common/Alert";
-import { FallbackIcon } from "../../../../components/image/FallbackIcon";
+import { FallbackIcon } from "../../../../components/FallbackIcon";
 import { PageFooter } from "../../../../components/PageFooter";
 import { PageHeader } from "../../../../components/common/PageHeader";
 import { ScrollablePageLayout } from "../../../layout/ScrollablePageLayout";

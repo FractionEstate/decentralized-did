@@ -1,6 +1,6 @@
 import { archiveOutline } from "ionicons/icons";
-import { i18n } from "../../../i18n";
-import { OptionItem, OptionModal } from "../OptionsModal";
+import { i18n } from "../../../../i18n";
+import { OptionItem, OptionModal } from "../../OptionsModal";
 import { CredentialOptionsProps } from "./CredentialOptions.types";
 
 const CredentialOptions = ({

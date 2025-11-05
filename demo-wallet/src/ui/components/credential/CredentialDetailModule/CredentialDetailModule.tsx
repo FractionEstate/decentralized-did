@@ -1,58 +1,58 @@
 import { IonButton, IonCheckbox, IonIcon, IonSpinner } from "@ionic/react";
 import { ellipsisVertical, heart, heartOutline } from "ionicons/icons";
 import { useCallback, useState } from "react";
-import { Agent } from "../../../core/agent/agent";
+import { Agent } from "../../../../core/agent/agent";
 import {
   ConnectionShortDetails,
   MiscRecordId,
-} from "../../../core/agent/agent.types";
-import { NotificationRoute } from "../../../core/agent/services/keriaNotificationService.types";
-import { BasicRecord } from "../../../core/agent/records";
+} from "../../../../core/agent/agent.types";
+import { NotificationRoute } from "../../../../core/agent/services/keriaNotificationService.types";
+import { BasicRecord } from "../../../../core/agent/records";
 import {
   ACDCDetails,
   CredentialStatus,
-} from "../../../core/agent/services/credentialService.types";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { setCredsArchivedCache } from "../../../store/reducers/credsArchivedCache";
+} from "../../../../core/agent/services/credentialService.types";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { setCredsArchivedCache } from "../../../../store/reducers/credsArchivedCache";
 import {
   addFavouritesCredsCache,
   getCredsCache,
   getFavouritesCredsCache,
   removeFavouritesCredsCache,
   setCredsCache,
-} from "../../../store/reducers/credsCache";
+} from "../../../../store/reducers/credsCache";
 import {
   getNotificationsCache,
   setNotificationsCache,
-} from "../../../store/reducers/notificationsCache";
+} from "../../../../store/reducers/notificationsCache";
 import {
   getAuthentication,
   setCurrentOperation,
   setToastMsg,
-} from "../../../store/reducers/stateCache";
-import "../../components/CardDetails/CardDetails.scss";
-import { MAX_FAVOURITES } from "../../globals/constants";
-import { OperationType, ToastMsgType } from "../../globals/types";
-import { useOnlineStatusEffect } from "../../hooks";
-import { ConnectionDetails } from "../../pages/ConnectionDetails";
-import { showError } from "../../utils/error";
-import { combineClassNames } from "../../utils/style";
-import { Alert as AlertDeleteArchive, Alert as AlertRestore } from "../Alert";
-import { CloudError } from "../CloudError";
-import { CredentialCardTemplate } from "../CredentialCardTemplate";
+} from "../../../../store/reducers/stateCache";
+import "../../card/CardDetails/CardDetails.scss";
+import { MAX_FAVOURITES } from "../../../globals/constants";
+import { OperationType, ToastMsgType } from "../../../globals/types";
+import { useOnlineStatusEffect } from "../../../hooks";
+import { ConnectionDetails } from "../../../pages/ConnectionDetails";
+import { showError } from "../../../utils/error";
+import { combineClassNames } from "../../../utils/style";
+import { Alert as AlertDeleteArchive, Alert as AlertRestore } from "../../common/Alert";
+import { CloudError } from "../../CloudError";
+import { CredentialCardTemplate } from "../../card/CredentialCardTemplate";
 import { CredentialOptions } from "../CredentialOptions";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { PageFooter } from "../PageFooter";
-import { PageHeader } from "../PageHeader";
-import { Verification } from "../Verification";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { PageFooter } from "../../PageFooter";
+import { PageHeader } from "../../common/PageHeader";
+import { Verification } from "../../Verification";
 import { CredentialContent } from "./components/CredentialContent";
 import "./CredentialDetailModule.scss";
 import {
   BackReason,
   CredentialDetailModuleProps,
 } from "./CredentialDetailModule.types";
-import { getBiometricsCache } from "../../../store/reducers/biometricsCache";
+import { getBiometricsCache } from "../../../../store/reducers/biometricsCache";
 
 const CredentialDetailModule = ({
   pageId,

@@ -6,14 +6,14 @@ import {
   IonItemSliding,
   IonLabel,
 } from "@ionic/react";
-import { CredentialStatus } from "../../../core/agent/services/credentialService.types";
-import { i18n } from "../../../i18n";
-import { formatShortDate } from "../../utils/formatters";
-import { CardTheme } from "../CardTheme";
+import { CredentialStatus } from "../../../../core/agent/services/credentialService.types";
+import { i18n } from "../../../../i18n";
+import { formatShortDate } from "../../../utils/formatters";
+import { CardTheme } from "../../card/CardTheme";
 import "./ArchivedCredentials.scss";
 import { CredentialItemProps } from "./ArchivedCredentials.types";
-import { IpexCommunicationService } from "../../../core/agent/services/ipexCommunicationService";
-import BackgroundROME from "../../assets/images/rome-bg.png";
+import { IpexCommunicationService } from "../../../../core/agent/services/ipexCommunicationService";
+import BackgroundROME from "../../../assets/images/rome-bg.png";
 
 const CredentialItem = ({
   credential,

@@ -1,7 +1,7 @@
 import { AlertButton, IonAlert } from "@ionic/react";
-import { BackEventPriorityType } from "../../globals/types";
-import { useIonHardwareBackButton } from "../../hooks";
-import { combineClassNames } from "../../utils/style";
+import { BackEventPriorityType } from "../../../globals/types";
+import { useIonHardwareBackButton } from "../../../hooks";
+import { combineClassNames } from "../../../utils/style";
 import "./Alert.scss";
 import { AlertProps } from "./Alert.types";
 
@@ -93,9 +93,8 @@ const Alert = ({
   return (
     <div
       data-testid={dataTestId + "-container"}
-      className={`custom-alert-container ${
-        isOpen ? "alert-visible" : "alert-invisible"
-      }`}
+      className={`custom-alert-container ${isOpen ? "alert-visible" : "alert-invisible"
+        }`}
     >
       <IonAlert
         data-testid={dataTestId}

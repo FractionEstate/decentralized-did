@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { BackEventPriorityType } from "../../globals/types";
+import { BackEventPriorityType } from "../../../globals/types";
 
 interface HardwareBackButtonConfig {
   prevent?: boolean;

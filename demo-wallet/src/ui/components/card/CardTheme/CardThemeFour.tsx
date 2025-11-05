@@ -1,4 +1,4 @@
-import { generateElementId } from "../../utils/idGenerator";
+import { generateElementId } from "../../../utils/idGenerator";
 import { CardThemeBaseProps } from "./CardTheme.types";
 
 const CardThemeFour = ({ className }: CardThemeBaseProps) => {

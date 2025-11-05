@@ -1,11 +1,11 @@
 import { useCallback } from "react";
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { IpexCommunicationService } from "../../../core/agent/services/ipexCommunicationService";
-import BackgroundRome from "../../assets/images/rome-bg.png";
-import { CardType } from "../../globals/types";
-import { formatShortDate } from "../../utils/formatters";
-import { getTheme } from "../../utils/theme";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
+import { IpexCommunicationService } from "../../../../core/agent/services/ipexCommunicationService";
+import BackgroundRome from "../../../assets/images/rome-bg.png";
+import { CardType } from "../../../globals/types";
+import { formatShortDate } from "../../../utils/formatters";
+import { getTheme } from "../../../utils/theme";
 import { CardList as BaseCardList, CardItem } from "../CardList";
 import { CardTheme } from "../CardTheme";
 import "./SwitchCardView.scss";

@@ -10,7 +10,7 @@ import { PageHeader } from "../../components/common/PageHeader";
 import {
   RecoverySeedPhraseModule,
   RecoverySeedPhraseModuleRef,
-} from "../../components/auth/RecoverySeedPhraseModule";
+} from "../../components/seed-phrase/RecoverySeedPhraseModule";
 import { ScrollablePageLayout } from "../../components/layout/ScrollablePageLayout";
 import { useAppIonRouter } from "../../hooks";
 import "./VerifyRecoverySeedPhrase.scss";

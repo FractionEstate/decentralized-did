@@ -1,6 +1,6 @@
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
-import { IdentifierShortDetails } from "../../../core/agent/services/identifier.types";
-import { CardType } from "../../globals/types";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
+import { IdentifierShortDetails } from "../../../../core/agent/services/identifier.types";
+import { CardType } from "../../../globals/types";
 
 interface CardProps {
   name: string;

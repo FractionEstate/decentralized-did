@@ -1,7 +1,7 @@
-import { i18n } from "../../../i18n";
-import KERILogo from "../../../ui/assets/images/keri-aid.png";
-import { formatShortDate } from "../../utils/formatters";
-import { getTheme } from "../../utils/theme";
+import { i18n } from "../../../../i18n";
+import KERILogo from "../../../assets/images/keri-aid.png";
+import { formatShortDate } from "../../../utils/formatters";
+import { getTheme } from "../../../utils/theme";
 import { CardTheme } from "../CardTheme";
 import "./IdentifierCardTemplate.scss";
 import { IdentifierCardTemplateProps } from "./IdentifierCardTemplate.types";
@@ -34,12 +34,10 @@ const IdentifierCardTemplate = ({
     <div
       ref={cardRef}
       key={index}
-      data-testid={`identifier-card-template${
-        index !== undefined ? `-${name}-index-${index}` : ""
-      }`}
-      className={`identifier-card-template ${isActive ? "active" : ""} ${
-        pickedCard ? "picked-card" : "not-picked"
-      }`}
+      data-testid={`identifier-card-template${index !== undefined ? `-${name}-index-${index}` : ""
+        }`}
+      className={`identifier-card-template ${isActive ? "active" : ""} ${pickedCard ? "picked-card" : "not-picked"
+        }`}
       onClick={() => handleCardClick()}
       style={identifierCardTemplateStyles}
     >

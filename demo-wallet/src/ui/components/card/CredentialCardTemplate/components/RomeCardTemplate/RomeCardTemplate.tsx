@@ -1,13 +1,13 @@
 import { IonChip, IonIcon } from "@ionic/react";
 import { useState } from "react";
 import { hourglassOutline } from "ionicons/icons";
-import { CredentialStatus } from "../../../../../core/agent/services/credentialService.types";
-import { i18n } from "../../../../../i18n";
-import { formatShortDate } from "../../../../utils/formatters";
-import { Alert } from "../../../Alert";
+import { CredentialStatus } from "../../../../../../core/agent/services/credentialService.types";
+import { i18n } from "../../../../../../i18n";
+import { formatShortDate } from "../../../../../utils/formatters";
+import { Alert } from "../../../../common/Alert";
 import { CredentialCardTemplateProps } from "../../CredentialCardTemplate.types";
 import { useCardOffsetTop } from "../../../IdentifierCardTemplate";
-import RomeBackground from "../../../../assets/images/rome-bg.png";
+import RomeBackground from "../../../../../assets/images/rome-bg.png";
 import "./RomeCardTemplate.scss";
 
 const RomeCardTemplate = ({
@@ -42,12 +42,10 @@ const RomeCardTemplate = ({
     <div
       ref={cardRef}
       key={index}
-      data-testid={`rome-card-template${
-        index !== undefined ? `-${name}-index-${index}` : ""
-      }`}
-      className={`rome-card-template ${isActive ? "active" : ""} ${
-        pickedCard ? "picked-card" : "not-picked"
-      }`}
+      data-testid={`rome-card-template${index !== undefined ? `-${name}-index-${index}` : ""
+        }`}
+      className={`rome-card-template ${isActive ? "active" : ""} ${pickedCard ? "picked-card" : "not-picked"
+        }`}
       onClick={() => handleCardClick()}
       style={CredentialCardTemplateStyles}
     >

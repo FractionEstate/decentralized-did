@@ -14,41 +14,41 @@ import {
   useRef,
   useState,
 } from "react";
-import { Agent } from "../../../core/agent/agent";
-import { NotificationRoute } from "../../../core/agent/services/keriaNotificationService.types";
-import { CredentialShortDetails } from "../../../core/agent/services/credentialService.types";
-import { i18n } from "../../../i18n";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { setCredsArchivedCache } from "../../../store/reducers/credsArchivedCache";
+import { Agent } from "../../../../core/agent/agent";
+import { NotificationRoute } from "../../../../core/agent/services/keriaNotificationService.types";
+import { CredentialShortDetails } from "../../../../core/agent/services/credentialService.types";
+import { i18n } from "../../../../i18n";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { setCredsArchivedCache } from "../../../../store/reducers/credsArchivedCache";
 import {
   getCredsCache,
   setCredsCache,
-} from "../../../store/reducers/credsCache";
+} from "../../../../store/reducers/credsCache";
 import {
   getNotificationsCache,
   setNotificationsCache,
-} from "../../../store/reducers/notificationsCache";
+} from "../../../../store/reducers/notificationsCache";
 import {
   setCurrentOperation,
   setToastMsg,
-} from "../../../store/reducers/stateCache";
+} from "../../../../store/reducers/stateCache";
 import {
   Alert as AlertDelete,
   Alert as AlertRestore,
-} from "../../components/Alert";
-import { OperationType, ToastMsgType } from "../../globals/types";
+} from "../../common/Alert";
+import { OperationType, ToastMsgType } from "../../../globals/types";
 import { CredentialDetailModal } from "../CredentialDetailModule";
-import { ScrollablePageLayout } from "../layout/ScrollablePageLayout";
-import { ListHeader } from "../ListHeader";
-import { PageHeader } from "../PageHeader";
-import { Verification } from "../Verification";
+import { ScrollablePageLayout } from "../../layout/ScrollablePageLayout";
+import { ListHeader } from "../../ListHeader";
+import { PageHeader } from "../../common/PageHeader";
+import { Verification } from "../../Verification";
 import "./ArchivedCredentials.scss";
 import {
   ArchivedCredentialsContainerRef,
   ArchivedCredentialsProps,
 } from "./ArchivedCredentials.types";
 import { CredentialItem } from "./CredentialItem";
-import { showError } from "../../utils/error";
+import { showError } from "../../../utils/error";
 
 const ArchivedCredentialsContainer = forwardRef<
   ArchivedCredentialsContainerRef,
@@ -247,24 +247,22 @@ const ArchivedCredentialsContainer = forwardRef<
         : setSelectedCredentials(selectAll)
       : setArchivedCredentialsIsOpen(false);
 
-  const closeButtonLabel = `${
-    activeList
+  const closeButtonLabel = `${activeList
       ? selectedCredentials.length > 0
         ? i18n.t("tabs.credentials.archived.deselectall")
         : i18n.t("tabs.credentials.archived.selectall")
       : i18n.t("tabs.credentials.archived.done")
-  }`;
+    }`;
 
   const handleActionButtonClick = () => {
     setSelectedCredentials([]);
     setActiveList(!activeList);
   };
 
-  const actionButtonLabel = `${
-    activeList
+  const actionButtonLabel = `${activeList
       ? i18n.t("tabs.credentials.archived.cancel")
       : i18n.t("tabs.credentials.archived.select")
-  }`;
+    }`;
 
   const handleClickCard = (id: string) => {
     activeList ? handleSelectCredentials(id) : handleShowCardDetails(id);
@@ -347,9 +345,8 @@ const ArchivedCredentialsContainer = forwardRef<
         {haveArchivedCreds && (
           <IonList
             lines="none"
-            className={`archived-credentials-list ${
-              haveRevokedCreds ? "all-border" : ""
-            }`}
+            className={`archived-credentials-list ${haveRevokedCreds ? "all-border" : ""
+              }`}
           >
             {archivedCreds.map((credential: CredentialShortDetails) => {
               return (

@@ -3,9 +3,9 @@ import { IonButton, IonIcon, IonInput, IonItem, IonLabel } from "@ionic/react";
 import { eyeOutline, eyeOffOutline } from "ionicons/icons";
 import { CustomInputProps } from "./CustomInput.types";
 import "./CustomInput.scss";
-import { i18n } from "../../../i18n";
-import { combineClassNames } from "../../utils/style";
-import { useHideKeyboard } from "../../hooks/useHideKeyboard";
+import { i18n } from "../../../../i18n";
+import { combineClassNames } from "../../../utils/style";
+import { useHideKeyboard } from "../../../hooks/useHideKeyboard";
 
 const CustomInput = ({
   dataTestId,

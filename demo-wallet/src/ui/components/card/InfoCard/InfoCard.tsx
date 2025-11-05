@@ -1,7 +1,7 @@
 import { IonCard, IonIcon } from "@ionic/react";
 import { informationCircleOutline } from "ionicons/icons";
 import { InfoCardProps } from "./InfoCard.types";
-import { combineClassNames } from "../../utils/style";
+import { combineClassNames } from "../../../utils/style";
 import "./InfoCard.scss";
 
 const InfoCard = ({

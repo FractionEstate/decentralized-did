@@ -1,7 +1,7 @@
 import { addOutline } from "ionicons/icons";
 import { CardsPlaceholderProps } from "./CardsPlaceholder.types";
 import "./CardsPlaceholder.scss";
-import { PageFooter } from "../PageFooter";
+import { PageFooter } from "../../PageFooter";
 
 const CardsPlaceholder = ({
   buttonLabel,

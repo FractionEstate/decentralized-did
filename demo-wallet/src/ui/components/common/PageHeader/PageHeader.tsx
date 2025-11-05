@@ -10,15 +10,15 @@ import {
 import { arrowBackOutline, closeOutline } from "ionicons/icons";
 import { useCallback, useRef } from "react";
 import { PageHeaderProps } from "./PageHeader.types";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { getStateCache } from "../../../store/reducers/stateCache";
-import { updateReduxState } from "../../../store/utils";
-import { getBackRoute } from "../../../routes/backRoute";
+import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
+import { getStateCache } from "../../../../store/reducers/stateCache";
+import { updateReduxState } from "../../../../store/utils";
+import { getBackRoute } from "../../../../routes/backRoute";
 import "./PageHeader.scss";
-import { useAppIonRouter, useIonHardwareBackButton } from "../../hooks";
-import { BackEventPriorityType } from "../../globals/types";
-import { combineClassNames } from "../../utils/style";
-import { useSwipeBack } from "../../hooks/swipeBackHook";
+import { useAppIonRouter, useIonHardwareBackButton } from "../../../hooks";
+import { BackEventPriorityType } from "../../../globals/types";
+import { combineClassNames } from "../../../utils/style";
+import { useSwipeBack } from "../../../hooks/swipeBackHook";
 
 const PageHeader = ({
   backButton,

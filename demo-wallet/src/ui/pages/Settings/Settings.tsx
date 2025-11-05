@@ -316,7 +316,7 @@ const Settings = () => {
         nestedMenu={selectSubmenu.nestedMenu}
         closeButtonLabel={selectSubmenu.closeButtonLabel}
         closeButtonAction={selectSubmenu.closeButtonAction}
-        title={selectSubmenu.title ? String(i18n.t(selectSubmenu.title)) : undefined}
+        title={selectSubmenu.title ? String(i18n.t(selectSubmenu.title)) : ""}
         additionalButtons={selectSubmenu.additionalButtons}
         actionButton={selectSubmenu.actionButton}
         actionButtonAction={selectSubmenu.actionButtonAction}

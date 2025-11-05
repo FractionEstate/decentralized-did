@@ -1,17 +1,17 @@
 import { IonChip, IonIcon } from "@ionic/react";
 import { hourglassOutline } from "ionicons/icons";
 import { useState } from "react";
-import { CredentialStatus } from "../../../../../core/agent/services/credentialService.types";
-import { i18n } from "../../../../../i18n";
-import ACDCLogo from "../../../../../ui/assets/images/keri-acdc.svg";
-import { formatShortDate } from "../../../../utils/formatters";
-import { Alert } from "../../../Alert";
+import { CredentialStatus } from "../../../../../../core/agent/services/credentialService.types";
+import { i18n } from "../../../../../../i18n";
+import ACDCLogo from "../../../../../assets/images/keri-acdc.svg";
+import { formatShortDate } from "../../../../../utils/formatters";
+import { Alert } from "../../../../common/Alert";
 import { useCardOffsetTop } from "../../../IdentifierCardTemplate";
 import { CredentialCardTemplateProps } from "../../CredentialCardTemplate.types";
 import "./KeriCardTemplate.scss";
 import { CardTheme } from "../../../CardTheme";
-import { useAppSelector } from "../../../../../store/hooks";
-import { getConnectionsCache } from "../../../../../store/reducers/connectionsCache";
+import { useAppSelector } from "../../../../../../store/hooks";
+import { getConnectionsCache } from "../../../../../../store/reducers/connectionsCache";
 
 const KeriCardTemplate = ({
   name = "default",
@@ -47,12 +47,10 @@ const KeriCardTemplate = ({
     <div
       ref={cardRef}
       key={index}
-      data-testid={`keri-card-template${
-        index !== undefined ? `-${name}-index-${index}` : ""
-      }`}
-      className={`keri-card-template ${isActive ? "active" : ""} ${
-        pickedCard ? "picked-card" : "not-picked"
-      }`}
+      data-testid={`keri-card-template${index !== undefined ? `-${name}-index-${index}` : ""
+        }`}
+      className={`keri-card-template ${isActive ? "active" : ""} ${pickedCard ? "picked-card" : "not-picked"
+        }`}
       onClick={() => handleCardClick()}
       style={CredentialCardTemplateStyles}
     >
