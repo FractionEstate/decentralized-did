@@ -13,7 +13,6 @@ const CredentialDetails = lazy(() => import("../ui/pages/CredentialDetails").the
 const DeferredBackup = lazy(() => import("../ui/pages/DeferredBackup").then(m => ({ default: m.DeferredBackup })));
 const GenerateSeedPhrase = lazy(() => import("../ui/pages/GenerateSeedPhrase").then(m => ({ default: m.GenerateSeedPhrase })));
 const IdentifierDetails = lazy(() => import("../ui/pages/IdentifierDetails").then(m => ({ default: m.IdentifierDetails })));
-const NotificationDetails = lazy(() => import("../ui/pages/NotificationDetails").then(m => ({ default: m.NotificationDetails })));
 const Onboarding = lazy(() => import("../ui/pages/Onboarding").then(m => ({ default: m.Onboarding })));
 const SetPasscode = lazy(() => import("../ui/pages/SetPasscode").then(m => ({ default: m.SetPasscode })));
 const SetupBiometrics = lazy(() => import("../ui/pages/SetupBiometrics/SetupBiometrics").then(m => ({ default: m.SetupBiometrics })));
@@ -123,11 +122,7 @@ const Routes = () => {
           exact
           render={() => <CredentialDetails />}
         />
-        <Route
-          path={TabsRoutePath.NOTIFICATION_DETAILS}
-          exact
-          render={() => <NotificationDetails />}
-        />
+        {/** Notification details now open as a modal within Notifications page */}
         {/* Root should always resolve to the computed initial route */}
         <Redirect exact from="/" to={initialRedirectPath} />
       </Suspense>

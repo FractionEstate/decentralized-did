@@ -1,4 +1,4 @@
-import { IonList, useIonViewWillEnter } from "@ionic/react";
+import { IonList, IonModal, useIonViewWillEnter } from "@ionic/react";
 import { useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Agent } from "../../../core/agent/agent";
@@ -24,6 +24,7 @@ import { showError } from "../../utils/error";
 import { timeDifference } from "../../utils/formatters";
 import { IdentifiersFilters } from "../Identifiers/Identifiers.types";
 import { NotificationFilters } from "./Notification.types";
+import { NotificationDetailView } from "../../components/notification/NotificationDetailView";
 import { NotificationItem } from "./NotificationItem";
 import "./Notifications.scss";
 import { EarlierNotification } from "./components";
@@ -43,9 +44,8 @@ const Notifications = () => {
     NotificationFilters | IdentifiersFilters
   >(NotificationFilters.All);
   const earlierNotificationRef = useRef<EarlierNotificationRef>(null);
-  const [selectedItem, setSelectedItem] = useState<KeriaNotification | null>(
-    null
-  );
+  const [selectedItem, setSelectedItem] = useState<KeriaNotification | null>(null);
+  const [detailOpen, setDetailOpen] = useState(false);
   const [isOpenCredModal, setIsOpenCredModal] = useState(false);
   const [viewCred, setViewCred] = useState("");
   const [openUnknownConnectionAlert, setOpenUnknownConnectionAlert] =
@@ -134,9 +134,9 @@ const Notifications = () => {
       return;
     }
 
-    const path = `${TabsRoutePath.NOTIFICATIONS}/${item.id}`;
-
-    history.push(path);
+    // Open inline detail view instead of navigating to a route
+    setSelectedItem(item);
+    setDetailOpen(true);
   };
 
   const filterOptions = [
@@ -245,6 +245,15 @@ const Notifications = () => {
           />
         )}
       </TabLayout>
+      {/* Notification detail modal */}
+      <IonModal isOpen={detailOpen} onDidDismiss={() => setDetailOpen(false)}>
+        {selectedItem && (
+          <NotificationDetailView
+            notification={selectedItem}
+            onBack={() => setDetailOpen(false)}
+          />
+        )}
+      </IonModal>
       <CredentialDetailModal
         pageId="revoke-credential"
         isOpen={isOpenCredModal}
